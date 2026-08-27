@@ -1,0 +1,13 @@
+CVE-2020-7752,https://github.com/sebhildebrandt/systeminformation.git,147550532ab11cac4b609844a519a1d945f5c103,CWE-078|CWE-088,lib/network.js,1079
+CVE-2020-7763,https://github.com/pofider/phantom-html-to-pdf.git,c1c4d4df05f3d019e74ed209bae345d2c38d8962,CWE-022|CWE-023|CWE-036|CWE-073|CWE-099,lib/conversion.js,14
+CVE-2020-8116,https://github.com/sindresorhus/dot-prop.git,e0f8abf71164321caf1b20109000b08be506f227,CWE-078|CWE-079|CWE-094|CWE-400|CWE-915,index.js,70
+CVE-2020-8135,https://github.com/transloadit/uppy.git,4aeef4dac0490ebb1d1fccd5582ba42c6c0fb87d,CWE-601,packages/@uppy/companion/src/server/helpers/utils.js,73
+CVE-2020-8149,https://github.com/zamotany/logkitty.git,e1e229687472d8c9266d17f2969ff7431a78db86,CWE-078|CWE-088,src/android/adb.ts,55
+CVE-2020-8192,https://github.com/fastify/fastify.git,854e150c0d78e7c31f4f6eca57908f9da19c379f,CWE-770,lib/validation.js,37
+CVE-2020-8203,https://github.com/lodash/lodash.git,e7b28ea6cb17b4ca021e7c9d66218c8c89782f32,CWE-078|CWE-079|CWE-094|CWE-400|CWE-915,lodash.js,2559
+CVE-2020-8205,https://github.com/transloadit/uppy.git,ab88612dff3ce24b001acb3b626516f0e2f7fd0c,CWE-918,packages/@uppy/companion/src/server/controllers/url.js,120
+CVE-2020-8244,https://github.com/rvagg/bl.git,ecc0cc51ef62f41ae151e82d61a8eac71c2ca672,CWE-125|CWE-126,bl.js,189
+CVE-2020-9038,https://github.com/laurent22/joplin.git,06d807d9ff86527151fd219b98e11b76adfb8068,CWE-020,Clipper/joplin-webclipper/content_scripts/index.js,24
+CVE-2021-23344,https://github.com/totaljs/framework.git,b3f901561d66ab799a4a99279893b94cad7ae4ff,CWE-094,utils.js,6625
+CVE-2021-23364,https://github.com/browserslist/browserslist.git,209adf9e0051fa39a2b25354cffd493300f34b02,CWE-400,index.js,802|827|855|890|921|925
+CVE-2021-31712,https://github.com/jpuri/react-draft-wysiwyg.git,f59ee8419cdbd45aab3bdfdf1995f112b09bbb6a,CWE-079,src/decorators/Link/index.js,35|59

@@ -1,0 +1,58 @@
+# ─────────────────────────────────────────────────────────────
+# IC Security Project — pipeline SAST (CodeQL / Semgrep / Snyk Code)
+#
+# Regra geral: entra no repositório tudo que é *nosso* e leve
+# (datasets, listas, scripts, resultados tratados, logs).
+# Fica de fora tudo que é reproduzível, pesado ou externo
+# (clones, databases, saídas brutas das ferramentas).
+# ─────────────────────────────────────────────────────────────
+
+# Dependência externa: clone do benchmark da OpenSSF.
+# Não é conteúdo nosso — o README (etapa 3) explica como cloná-lo.
+/ossf-cve-benchmark/
+
+# Saída bruta das ferramentas (SARIF/JSON grandes, regeneráveis).
+# O schema comum em results/*/treated/ é versionado.
+results/*/raw/
+
+# Clones temporários do código vulnerável (um por CVE).
+src-CVE-*/
+**/src-CVE-*/
+
+# Databases e artefatos do CodeQL.
+codeql-db-*/
+**/codeql-db-*/
+codeql-databases/
+*.codeqldb/
+*.ql-cache/
+
+# ─── Exceções explícitas (documentam a intenção do projeto) ───
+!datasets/
+!datasets/**
+!results/*/treated/
+!results/*/treated/**
+!logs/
+!logs/**
+!tools/
+!tools/**
+
+# ─── Ignores genéricos (vêm por último: têm precedência sobre
+#     as exceções acima, ex. datasets/node_modules/) ───
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Credenciais das ferramentas (Snyk Code / GitHub) — nunca versionar
+.env
+.env.*
+!.env.example
+.snyk-token
+
+# Sistema operacional / editores
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

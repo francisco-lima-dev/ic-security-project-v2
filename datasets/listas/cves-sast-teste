@@ -1,0 +1,5 @@
+CVE-2018-14040,https://github.com/twbs/bootstrap.git,13bf8aeae3db71e28af69782328c22215795c169,CWE-079|CWE-116,js/collapse.js,140
+CVE-2018-14041,https://github.com/twbs/bootstrap.git,149096016f70fd815540d62c0989fd99cdc809e0,CWE-079|CWE-116,js/src/scrollspy.js,118
+CVE-2019-10744,https://github.com/lodash/lodash.git,1f8ea07746963a535385a5befc19fa687a627d2b,CWE-094|CWE-079|CWE-116,lodash.js,6608
+CVE-2016-1000229,https://github.com/linxiaowu66/swagger-ui.git,14fad2b4c76efe249db515c98432eb609aa77691,CWE-079|CWE-116,src/main/javascript/helpers/handlebars.js,68
+CVE-2017-16042,https://github.com/tj/node-growl.git,dc8aae046df328edd32dd69f3cd2d6b114d7018e,CWE-078|CWE-088,lib/growl.js,289
