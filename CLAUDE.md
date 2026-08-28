@@ -186,6 +186,20 @@ O pack vendorizado **deve** ser montado na raiz do sistema de arquivos do
 container. Caso contrário os identificadores de regra divergem dos do
 registry e da campanha anterior, quebrando a comparação em silêncio.
 
+**Pack: `p/default`, sozinho.** Foi o que o `--config=auto` resolvia na
+campanha anterior (145/145 regras, cobertura total dos achados). Cobre 73%
+dos pares CVE×CWE do benchmark, contra 45% de `p/javascript` e 58% da
+combinação `p/javascript` + `p/security-audit`.
+
+`p/javascript` é orientado a framework, não a linguagem: é subconjunto de
+`p/default` a menos de uma única regra, e não contém as regras genéricas
+mais produtivas (path traversal, prototype pollution). `p/security-audit`
+tem apenas 20 regras JS/TS de 225.
+
+A união com `p/javascript` foi medida e descartada: acrescentaria uma
+regra, de CWE-079 já coberto por outras 35, com zero achados na amostra, ao
+custo de um segundo snapshot para versionar.
+
 Os packs `p/*` do registry respondem sem autenticação — exigem apenas rede.
 
 ### Snyk Code
@@ -234,6 +248,14 @@ Pontos de atenção do normalizador:
 - No Snyk, `runs[0].properties.coverage[]` permite distinguir "analisou e
   não achou" de "não havia arquivo analisável", e `automationDetails.id`
   serve como fonte do `analysis_date`.
+- **`security-severity` do CodeQL** é campo à parte, exclusivo dessa
+  ferramenta, capturado no schema como numérico anulável. Não serve de base
+  para `severity_normalized`: mede impacto no estilo CVSS, enquanto o
+  `level` (derivado de `problem.severity`) mede confiança na alegação — o
+  mesmo valor 7.5 aparece tanto como `warning` quanto como `error`.
+  Presente em toda regra com tag `security`, logo cobertura de 100% sob
+  `security-extended`. Formato inconsistente (`5` e `5.0`): parsear como
+  float, nunca comparar como texto.
 
 ## Características do conjunto de dados relevantes ao cruzamento
 
