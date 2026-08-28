@@ -10,8 +10,10 @@ normalized into a common schema so detection metrics can be computed (true
 positives, false negatives, coverage per CWE).
 
 > **Status:** Stage 1 complete (project structure + input lists).
-> Stage 2 (Docker images and analysis scripts) and stage 3 (execution and
-> post-processing) are not implemented yet.
+> Stage 2 (Docker images, analysis scripts and the normalizer) is **decided but
+> not implemented** — the tool configuration is locked and documented under
+> [Tool configuration](#tool-configuration--stage-2-decisions). Stage 3
+> (workflows, execution and metrics) has not started.
 
 ---
 
@@ -92,7 +94,12 @@ application source code is cloned at this stage.
 │       └── cves-sast-batch-aa..ah # sliced execution — 30 lines/batch
 ├── tools/
 │   ├── extract-urls.js            # benchmark JSON → cve-metadata.{csv,json}
-│   └── generate-lists.js          # cve-metadata.csv → listas/
+│   ├── generate-lists.js          # cve-metadata.csv → listas/
+│   ├── normalize.py               # raw → common schema      (stage 2, pending)
+│   └── semgrep-packs/             # vendored p/default snapshot (stage 2)
+├── .claude/
+│   └── agents/
+│       └── revisor-pipeline.md    # review subagent (VERSIONED)
 ├── ic-security-lab-codeql/        # image + scripts    (stage 2)
 ├── ic-security-lab-semgrep/       # image + scripts    (stage 2)
 ├── ic-security-lab-snyk-code/     # image + scripts    (stage 2)
@@ -118,6 +125,8 @@ application source code is cloned at this stage.
 | `tools/**` | ✅ | reproducibility — this is what generates the lists |
 | `results/*/treated/**` | ✅ | common schema, small, this is the research output |
 | `logs/**` | ✅ | duration, exit code and tool version per CVE |
+| `tools/semgrep-packs/**` | ✅ | the exact ruleset that ran — pinned by sha256 |
+| `.claude/agents/**` | ✅ | the review checklist is part of the method |
 | `results/*/raw/**` | ❌ | raw SARIF/JSON, large and regenerable |
 | `ossf-cve-benchmark/` | ❌ | external dependency, not our content |
 | `src-CVE-*/`, `codeql-db-*/` | ❌ | temporary clones and databases |
@@ -394,16 +403,237 @@ browserslist line 855 used to count as a false negative for not being line 802.
 
 ---
 
+## Tool configuration — stage 2 decisions
+
+Every choice below was measured against the **previous campaign's archived
+results** (37 CodeQL SARIF, 185 Semgrep JSON, 182 Snyk SARIF) rather than picked
+from documentation. Two initial hypotheses were tested and dropped; both are
+recorded here, because the reason they failed is itself a finding.
+
+> **Nothing in this section is implemented yet.** It is the contract stage 2 has
+> to satisfy.
+
+### Architecture: normalization runs outside the containers
+
+The containers produce **raw output only**. Converting SARIF/JSON into the common
+schema is a separate step — a single `tools/normalize.py`, run locally over the
+raw files downloaded from the CI artifacts.
+
+Normalization is the code most likely to need fixing (three formats, CWE
+extraction, path normalization). Kept separate, a bug costs seconds of local
+re-parsing; embedded in the images, it would cost re-running every clone and
+every analysis. Consequences: the normalizer is **not** in any image; the
+analysis loop's idempotence check looks for the **raw** file; `normalize.py` has
+its own idempotence plus an `--overwrite` flag.
+
+### CodeQL
+
+**Suite: `javascript-security-extended.qls`** — the previous campaign used
+`javascript-security-and-quality.qls`, and **908 of its 1 969 findings (46.1 %)**
+came from rules carrying no CWE at all: `js/unused-local-variable` (534),
+`js/use-before-declaration` (259), `js/regex/duplicate-in-character-class` (35).
+Those are not vulnerability claims. Counting them as false positives would
+measure the choice of suite, not the tool's precision. The switch is clean
+subtraction — `security-and-quality` runs everything `security-extended` runs
+plus maintainability queries, so no security query is lost.
+
+Three format facts that the normalizer has to honour:
+
+- **Severity is absent from the finding.** `level` appears on **0 of 1 969**
+  results; it only exists on the rule, at `defaultConfiguration.level`. The rule
+  is resolved **by `ruleId`, not by `ruleIndex`** — index resolution happens to
+  work here (0 invalid indices, 0 `rule.toolComponent` references, extensions
+  carry no rules) but breaks the moment a query pack ships rules in an extension.
+  The normalizer reports how many findings ended with no severity resolved.
+- **`security-severity` is present iff the rule is tagged `security`** — verified:
+  all **100** security-tagged rules carry it, and the 18 rules that have a CWE
+  tag but no score (`js/useless-assignment-to-local`, `js/trivial-conditional`, …)
+  have no `security` tag. Under `security-extended` its coverage is therefore
+  complete. It is **not** the base for `severity_normalized` — it is a CVSS-style
+  *impact* score, on a different axis from `level` (the same 7.5 shows up as
+  `warning` 48× and as `error` 13×), and neither of the other two tools has a
+  counterpart. It is captured as a separate CodeQL-only nullable numeric field,
+  parsed as float: the raw value is a string with inconsistent decimals (`5` and
+  `5.0` both occur).
+- **`endLine` is absent from 96.7 %** of findings (present on 65 of 1 969), so
+  `line_end` must accept null.
+
+### Semgrep
+
+**Config: `p/default`, vendored and pinned by sha256, mounted at the container's
+filesystem root.**
+
+The previous campaign used `--config=auto`. Measurement shows `auto` resolved to
+exactly `p/default` — it accounts for **145 of 145** distinct rules and **19 174
+of 19 174** findings. The reason to abandon `auto` is reproducibility alone: it
+is unpinnable and cannot even be described in the monograph.
+
+The intuitive alternative, `p/javascript` + `p/security-audit`, was measured and
+**rejected**:
+
+| Config | Rules matched | Findings covered | CVE×CWE pairs |
+|---|---|---|---|
+| `p/javascript` (= `p/typescript`) | 24 / 54 | 228 / 4 062 (5.6 %) | 218 / 486 (45 %) |
+| `p/javascript` + `p/security-audit` | 28 / 54 | 322 / 4 062 (7.9 %) | 281 / 486 (58 %) |
+| `p/owasp-top-ten` | 22 / 54 | 198 / 4 062 (4.9 %) | — |
+| **`p/default`** | **54 / 54** | **4 062 / 4 062 (100 %)** | **354 / 486 (73 %)** |
+
+`p/javascript` is organised by *framework*, not by language: of its 74 rules, 31
+are `javascript.express.*` and only **3** are `javascript.lang.security.*`
+(`p/default` has 24). It therefore misses the highest-volume rules in the
+benchmark's own CWE families — `path-join-resolve-traversal` (1 847 findings),
+`detect-non-literal-regexp` (737), `prototype-pollution-loop` (310),
+`unsafe-formatstring` (268). And `p/security-audit` is barely JavaScript at all:
+83 Python, 52 Java, 28 Go rules against 17 JS + 3 TS.
+
+Adding `p/javascript` to the union was measured too, and also rejected:
+`p/javascript` is a **subset of `p/default` minus a single rule** —
+`typescript.react.security.audit.react-unsanitized-property`, which declares
+CWE-079 (already covered by 35 other rules) and produced **zero findings** in
+19 174. In the other direction `p/default` has 91 JS/TS rules `p/javascript`
+lacks.
+
+**No `--exclude-rule`.** A single HTML rule,
+`html.security.audit.missing-integrity`, produced **10 826 findings — 56.5 % of
+the whole campaign**, and `html.*` as a family accounts for 67.5 % against 20.7 %
+for `javascript.*`/`typescript.*`. That imbalance is *a result of the study* —
+direct material for the discussion of precision and triage effort — so it is
+measured, not discarded at collection time. The `html.*`/`yaml.*` noise is
+handled in stage 3.
+
+Execution flags and their reasons:
+
+- **`--metrics=off`** — the default is `auto`, which per `--help` sends telemetry
+  whenever `--config` pulls from the server.
+- **`--time`** — records the inventory of rules actually applied at
+  `.time.rules[]`, in-band, per CVE. The count goes into the normalized file's
+  `metadata`.
+- The registry needs **network but not authentication**: every `p/*` returns HTTP
+  200 anonymously, and a scan with the vendored pack ran under `--network=none`.
+  The `fingerprint` and `lines` fields come back as the literal string
+  `"requires login"` regardless of where the config came from — that depends on
+  being logged in, not on the config source, and it touches nothing the
+  normalizer consumes.
+- Snapshot identity: the registry's **ETag is the exact sha1 of the body**, so
+  the vendored YAML is pinned by hash and dated for citation.
+
+> **Trap — the vendored pack must be mounted at `/`.** Semgrep prefixes every
+> `check_id` with the name of the directory holding the YAML:
+> `--config=/packs/default.yaml` yields `packs.javascript.lang.security…`, and
+> `--config=/rulesdir/js.yaml` yields `rulesdir.javascript…`. Only a config at the
+> filesystem root leaves the IDs identical to the registry's. Get this wrong and
+> the rule identifiers drift silently, with no error.
+
+### Snyk Code
+
+**Pinned by versioned URL:** `https://static.snyk.io/cli/v<VERSION>/snyk-linux`.
+The previous image pulled `cli/latest`, which has already moved since that
+campaign.
+
+The `1.1306.1` reported in the archived SARIF is the **CLI version**, not a
+separate SnykCode engine version — `static.snyk.io/cli/v1.1306.1/version` returns
+exactly `1.1306.1`, and that pinned binary answers `1.1306.1` to `--version`. The
+driver is *named* `SnykCode` but carries the CLI version; **no engine version is
+recorded anywhere in the SARIF**, so it must be captured another way if the
+monograph needs it.
+
+- **Only `--sarif-file-output`.** The previous script also passed
+  `--json-file-output`; the two files are **byte-identical**. There is no native
+  Snyk JSON to parse.
+- **`runs[0].properties.coverage[]` goes into the normalized `metadata`** — file
+  counts per extension are what distinguishes *"analyzed and found nothing"* from
+  *"there was nothing analyzable"*, a confusion that occurred in the previous
+  campaign.
+- **`automationDetails.id`** (`Snyk/Code/<ISO timestamp>`) is the source of
+  `analysis_date`, being internal to the report.
+- CWEs live on the rule, at `properties.cwe[]`, and Snyk's own vocabulary is
+  inconsistent — both `CWE-74` and `CWE-074` occur — which is exactly why the
+  3-digit normalization is applied to all three tools.
+
+### Common schema: severity
+
+Two fields. `severity_original` carries the raw value with no transformation;
+`severity_normalized` carries the comparable axis.
+
+| `severity_original` | `severity_normalized` |
+|---|---|
+| CodeQL `error` · Semgrep `ERROR` · Snyk `error` | `high` |
+| CodeQL `warning` · Semgrep `WARNING` and `MEDIUM` · Snyk `warning` | `medium` |
+| CodeQL `note` · Semgrep `INFO` · Snyk `note` | `low` |
+| CodeQL rule with no level | `unknown` |
+
+Any value outside this table **aborts** the normalization, naming the value and
+the CVE. No silent default: normalization is cheap to re-run, so failing loudly
+costs seconds and a wrong mapping would corrupt the metrics invisibly.
+
+Two notes on the edges of that table:
+
+- **Semgrep's vocabulary is frozen by the pin.** `p/default` declares exactly
+  `WARNING` (722), `ERROR` (310), `INFO` (31) and `MEDIUM` (12) — no `HIGH`,
+  `LOW` or `CRITICAL`. The `MEDIUM` rules are a recent supply-chain family (11
+  `package_managers.*` + 1 `generic.secrets.*`) filling the same `severity:` field
+  from a CVSS-style vocabulary; their profile is impact `HIGH` × likelihood
+  `LOW`, which sits mid-scale alongside `WARNING`'s centre of gravity. In the
+  archived campaign all **137** `MEDIUM` findings were `package_managers.*` —
+  entirely inside the noise band stage 3 discards.
+- **`unknown` should never fire.** The 74 rules with a null level produced no
+  findings: 1 969 of 1 969 resolved. The row stays because the suite change alters
+  which rules load — if `unknown` appears, it is a signal to investigate, not an
+  expected outcome.
+
+### Pinned versions
+
+| Tool | Pinned | Latest at time of writing |
+|---|---|---|
+| CodeQL bundle | `codeql-bundle-v2.25.4` | `codeql-bundle-v2.26.4` |
+| Semgrep | `1.171.0` (PyPI, and the matching Docker tag) | `1.175.0` |
+| Snyk CLI | `1.1306.1` via versioned URL | `1.1307.0` (`latest`/`stable`) |
+
+Pinning is deliberate: the point is that the numbers can be reproduced, not that
+the newest tool is used.
+
+---
+
+## Review subagent
+
+`.claude/agents/revisor-pipeline.md` defines a review agent invoked before
+committing any shell script, Dockerfile, normalizer or workflow. Its checklist is
+derived from the **defects that actually invalidated the previous campaign** —
+analysing HEAD instead of the vulnerable commit, `|| true` masking build
+failures, `git clone` stderr sent to `/dev/null`, outputs named by repository,
+`while read` without the `|| [ -n "$VAR" ]` guard dropping the last line of a
+file with no trailing newline.
+
+It is read-only by construction: it reports defects, risks and observations, and
+never edits code. It is versioned because the checklist is part of the method,
+not a local convenience.
+
+---
+
 ## Next stages
 
-**Stage 2 — images and analysis scripts.** A `Dockerfile` and a runner script
-per tool under `ic-security-lab-{codeql,semgrep,snyk-code}/`, consuming the
-lists in `datasets/listas/`. Points of attention already mapped out: shallow
-clone at the exact commit (`fetch --depth 1 origin <sha>`), directory and
-database named by CVE, raw output at `results/<tool>/raw/<CVE>.<ext>`, and a
-`logs/execution-log-*.csv` carrying CVE, tool, duration, exit code and version.
+**Stage 2 — images, analysis scripts and the normalizer.** A `Dockerfile` and a
+runner script per tool under `ic-security-lab-{codeql,semgrep,snyk-code}/`,
+consuming the lists in `datasets/listas/`, plus `tools/normalize.py` outside the
+images. The tool configuration is settled above; what remains is implementation.
+Points of attention already mapped out: shallow clone at the exact commit
+(`fetch --depth 1 origin <sha>`), directory and database named by CVE, raw output
+at `results/<tool>/raw/<CVE>.<ext>`, and a `logs/execution-log-*.csv` carrying
+CVE, tool, duration, exit code and version.
 
-**Stage 3 — post-processing and metrics.** Normalization of SARIF/JSON into the
-common schema under `results/*/treated/`, cross-referencing with the *ground
-truth* (`FILEPATH`/`FILELINE`), and computing the metrics per tool and per CWE —
-excluding `CVE-2018-1000096` from the per-CWE aggregations.
+**Stage 3 — workflows, execution and metrics.** GitHub Actions workflows per
+tool and per batch, the campaign itself, and then cross-referencing the
+normalized results in `results/*/treated/` against the *ground truth*
+(`FILEPATH`/`FILELINE`), computing metrics per tool and per CWE — excluding
+`CVE-2018-1000096` from the per-CWE aggregations.
+
+Two analysis decisions are already queued for that stage:
+
+- **CWE families.** The benchmark labels path traversal across `CWE-022`,
+  `CWE-023`, `CWE-036`, `CWE-073` and `CWE-099`, while Semgrep tags its
+  path-traversal rules with only `022`/`073` and CodeQL's `js/path-injection`
+  carries all five at once. Scoring per literal CWE would under-count real
+  detections; the grouping has to be explicit.
+- **Noise segmentation.** The `html.*`/`yaml.*`/`package_managers.*` bands are
+  reported separately from `javascript.*`/`typescript.*` rather than deleted, so
+  the triage-effort figure survives into the discussion.
