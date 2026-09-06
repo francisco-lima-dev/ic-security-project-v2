@@ -33,6 +33,9 @@ menos um alerta relevante no commit `prePatch` e nenhum no `postPatch`.
 O benchmark pontua por **CVE detectado**, não por localização coberta.
 Acertar qualquer uma das localizações de um CVE conta como detecção.
 
+Esse critério é o que fundamenta a modalidade de **correspondência por
+conjunto** descrita adiante.
+
 ## Unidade de análise
 
 A unidade é o **CVE**, não o repositório. O mesmo repositório aparece com
@@ -43,6 +46,112 @@ Todos os arquivos de saída são nomeados pelo ID do CVE, nunca pelo nome do
 repositório. Nomear por repositório causa sobrescrita entre CVEs do mesmo
 repositório e colisão entre repositórios homônimos
 (`linxiaowu66/swagger-ui` vs `swagger-api/swagger-ui`).
+
+## Proveniência do ground truth — CodeQL
+
+**Medido em setembro de 2026. Condiciona todo o cruzamento.**
+
+Os rótulos do ground truth não resultam de classificação independente dos
+CVEs: em 83% do conjunto, `explanation` e `CWEs` foram herdados da consulta
+do CodeQL que identificou o caso.
+
+| Verificação | Resultado |
+|---|---|
+| `explanation` idêntica ao `@name` de consulta do pacote JS do CodeQL | 185 de 223 (83,0%) |
+| Destas, com `CWEs` idêntico às tags `external/cwe/` da consulta (estado de dez/2020) | 185 de 185 (100%) |
+| Divergências não explicadas | 0 |
+| Controle: `explanation` idêntica a mensagem de regra do Semgrep (2.228 regras) | 0 (0,0%) |
+
+O cotejo contra o CodeQL **atual** dá 108 idênticos, 75 subconjuntos e 2
+divergentes; as três situações se resolvem pela evolução posterior do
+catálogo. Usar sempre o estado de **9 de dezembro de 2020**, data do anúncio
+do benchmark.
+
+Os 38 sem correspondência têm `explanation` em prosa, escrita à mão — outra
+camada de proveniência.
+
+### Consequência prática
+
+**O campo `CWEs` não é classificação do defeito.** É o conjunto de tags da
+consulta que originou o registro, e descreve uma família (path traversal:
+022+023+036+073+099) ou um conjunto de impactos potenciais (prototype
+pollution: 078+079+094+400+915).
+
+Isso invalida qualquer tratamento que assuma um CWE por defeito.
+
+### Reprodução
+
+Scripts versionados em `tools/ground-truth/`. O CWE pretendido pelo
+benchmark para qualquer CVE do núcleo é recuperável consultando as tags da
+consulta correspondente no CodeQL em dez/2020.
+
+## Caracterização estrutural do ground truth
+
+| Característica | Valor |
+|---|---:|
+| CVEs no conjunto | 223 |
+| CVEs que apontam exatamente um arquivo | 223 (a totalidade) |
+| Weaknesses (localizações) no conjunto | 233 |
+| CVEs com mais de uma weakness | 3 |
+| CVEs com um único CWE | 57 |
+| CVEs com mais de um CWE | 165 (74,0%) |
+| CVEs sem CWE | 1 |
+| Pares (CWE, arquivo) efetivamente afirmados | 222 |
+| Pares que a expansão cartesiana geraria | 534 (+140,5%) |
+| CVEs com CWE sem zero à esquerda no próprio benchmark | 14 |
+
+**A dimensão de arquivo é degenerada:** (CWE, arquivo) ≡ (CWE, CVE). O
+arquivo é função do CVE e não acrescenta poder discriminante.
+
+**165 CVEs têm mais de um CWE para um defeito único**, em um único arquivo.
+Os 165 se distribuem em apenas **17 conjuntos distintos**; os cinco maiores
+cobrem 136 deles (82,4%).
+
+## Tratamento do ground truth — dupla apuração
+
+**Nunca expandir um CVE multivalorado em uma linha por CWE.** Os 222 pares
+reais virariam 534, e as ~312 linhas acrescidas seriam combinações que
+ferramenta alguma pode reportar — todas contadas como falso negativo, por
+artefato do protocolo.
+
+As métricas são apuradas em duas modalidades sobre o mesmo conjunto de
+resultados:
+
+| Modalidade | TP quando | Unidade |
+|---|---|---|
+| Correspondência por conjunto | a ferramenta reporta **qualquer um** dos CWEs do CVE, no arquivo do ground truth | (CVE, arquivo) — 222 |
+| Correspondência por CWE primário | a ferramenta reporta **o** CWE que descreve o defeito | (CWE, arquivo) — 222 |
+
+Denominadores idênticos, apurações diretamente comparáveis. A diferença
+entre elas é resultado em si: mede acerto de família versus acerto de
+classificação específica.
+
+### Regra de fechamento do CWE primário
+
+**O primário tem que pertencer ao conjunto declarado pelo benchmark para
+aquele CVE.** Atribuir identificador de fora — ainda que taxonomicamente
+mais preciso — é editar o ground truth, não interpretá-lo, e torna o alvo
+inatingível para qualquer ferramenta.
+
+Evidência, em ordem de precedência: o campo `explanation`; na sua
+insuficiência, o diff entre `prePatch` e `postPatch`.
+
+A tabela de mapeamento dos 17 conjuntos é versionada em
+`datasets/cwe-primario.csv`, uma linha por conjunto, com a evidência de cada
+decisão. Sua aplicação é automática.
+
+**Exceção documentada:** `CVE-2017-16023` e `CVE-2018-7560` descrevem
+injeção de expressão regular, não ReDoS como os outros 23 do conjunto
+`CWE-400 + CWE-730`. O identificador adequado (CWE-624) não está no
+conjunto; pela regra de fechamento, recebem o primário do grupo.
+
+### Sem agrupamento por família de CWE
+
+Decisão fechada. O agrupamento em família é propriedade do **ground truth**,
+não convenção de rotulagem das ferramentas: os cinco identificadores de path
+traversal comparecem juntos porque são as tags da consulta `js/path-injection`.
+O problema é tratado na origem, pela seleção do CWE primário, e não por
+critério de agrupamento na comparação.
 
 ## Formato das listas de entrada
 
@@ -91,7 +200,9 @@ CWEs. O schema do benchmark confirma — `Weakness` tem
 ficam no nível do CVE.
 
 Preservar todas as linhas evita contar como erro de localização um acerto
-legítimo em linha diferente da primeira.
+legítimo em linha diferente da primeira. Na métrica de precisão de
+localização, a faixa é atribuída pela **menor** divergência entre a linha
+reportada e qualquer uma das linhas do ground truth.
 
 ## Regra de processo — não regerar listas em execução
 
@@ -104,7 +215,8 @@ O gerador exige a flag `--force` para remover lotes existentes.
 
 ## Política de versionamento
 
-**Versionados:** `datasets/`, `tools/`, `results/*/treated/`, `logs/`,
+**Versionados:** `datasets/` (incluindo `cwe-primario.csv`), `tools/`
+(incluindo `tools/ground-truth/`), `results/*/treated/`, `logs/`,
 Dockerfiles, scripts, workflows.
 
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
@@ -137,6 +249,20 @@ depender de artifacts do GitHub Actions, que expiram em 30 dias.
 - Sete CVEs de "Zip Slip" contêm aspas no campo `Explanation`. O
   `cve-metadata.csv` é RFC 4180 válido: aspas internas são escapadas por
   duplicação
+- **14 CVEs trazem CWE sem zero à esquerda** (`CWE-79`) no próprio ground
+  truth. A normalização de três dígitos aplica-se ao ground truth **e** às
+  saídas das ferramentas, não só a estas
+- `CVE-2017-16114` e `CVE-2017-17461` incidem sobre o mesmo repositório e
+  arquivo, em linhas adjacentes (459 e 460). Sem colisão na execução, já que
+  cada um roda em seu commit; relevante apenas se resultados forem agregados
+  entre CVEs na métrica de localização
+- `docs/benchmark-CVEs.md` exemplifica `CVE-2020-8203` com `CWE-471` e
+  descrição em prosa; o arquivo distribuído para o mesmo CVE traz cinco CWEs
+  e o nome de consulta do CodeQL. A especificação e a instância divergem, e
+  ambas entraram no mesmo release
+- O repositório do benchmark é importação achatada: 88 commits, o mais
+  antigo sendo o release 1.0.0 de 22/09/2020. O processo de construção do
+  dataset não é recuperável a partir dele
 
 ## Arquitetura — normalização fora dos containers
 
@@ -151,6 +277,21 @@ embutida no container, exigiria reexecutar clones e análises inteiras.
 
 Por isso a idempotência do laço de análise verifica a existência do **raw**,
 não do arquivo normalizado.
+
+Corolário prático: **a tabela de CWE primário não bloqueia a campanha**. O
+campo `gt_cwe_primario` é preenchido na normalização, que roda depois e é
+barata de refazer.
+
+## Schema comum de saída
+
+Bloco `metadata` por CVE, lista `findings`. Campos de ground truth
+prefixados por `gt_`, no bloco de metadados, não repetidos por achado:
+
+- `gt_cwes` — conjunto declarado pelo benchmark, normalizado
+- `gt_cwe_primario` — CWE selecionado pela tabela de mapeamento; nulo nos
+  CVEs sem CWE
+- `gt_file_path` — escalar
+- `gt_file_lines` — lista, podendo ter mais de um elemento em três CVEs
 
 ## Configuração das ferramentas
 
@@ -257,18 +398,29 @@ Pontos de atenção do normalizador:
   `security-extended`. Formato inconsistente (`5` e `5.0`): parsear como
   float, nunca comparar como texto.
 
-## Características do conjunto de dados relevantes ao cruzamento
+## Ameaças à validade que o pipeline não resolve
 
-- **Famílias de CWE.** CWE-023, 036, 073 e 099 são variantes de path
-  traversal. O benchmark usa a família inteira; as ferramentas costumam
-  rotular suas regras apenas com 022 ou 073. Comparar por identificador
-  exato subestima a detecção — o agrupamento por família é decisão a
-  resolver na etapa de cruzamento.
+Declaradas na monografia, não corrigíveis por código:
+
+- **Assimetria de comparabilidade.** O CodeQL é avaliado contra um gabarito
+  derivado da sua própria taxonomia; Semgrep e Snyk Code não. Vantagem do
+  CodeQL nas métricas admite explicação alternativa à de superioridade
+  técnica. A modalidade por conjunto atenua, não elimina.
+- **Viés de seleção.** Se o núcleo do dataset veio de casos que o CodeQL
+  detecta, vulnerabilidades que ele não detecta estão sub-representadas. O
+  recall absoluto incide sobre universo já filtrado.
+- **Alcance do controle com o Semgrep.** Cotejo feito contra o catálogo
+  atual, não o de 2020. O viés é conservador: catálogo menor daria
+  correspondência ainda menor que a nula medida.
 
 ## O que NÃO fazer
 
 - Não analisar HEAD nem `PostPatchCommit`
 - Não nomear saídas pelo nome do repositório
+- **Não expandir CVE multivalorado em uma linha por CWE**
+- **Não tratar o campo `CWEs` como classificação do defeito** — é conjunto
+  de tags de consulta
+- **Não atribuir CWE primário fora do conjunto declarado pelo benchmark**
 - Não usar `|| true` em builds ou execuções de workflow — mascara falhas e
   faz o job passar como bem-sucedido com o container quebrado
 - Não redirecionar o stderr de `git clone`/`fetch` para `/dev/null` —
