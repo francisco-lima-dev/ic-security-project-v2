@@ -1,0 +1,1515 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Fri, 24 Jul 2026 11:22:23",
+	"created": "2026-07-24T11:22:23.609054221Z",
+	"insights":[
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.warn",
+			"description": "ZAP warnings logged - see the zap.log file for details",
+			"statistic": "31"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.code.2xx",
+			"description": "Percentage of responses with status code 2xx",
+			"statistic": "56"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.code.3xx",
+			"description": "Percentage of responses with status code 3xx",
+			"statistic": "19"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.code.4xx",
+			"description": "Percentage of responses with status code 4xx",
+			"statistic": "23"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.ctype.application/javascript",
+			"description": "Percentage of endpoints with content type application/javascript",
+			"statistic": "12"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.ctype.image/png",
+			"description": "Percentage of endpoints with content type image/png",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.ctype.text/css",
+			"description": "Percentage of endpoints with content type text/css",
+			"statistic": "6"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.ctype.text/html",
+			"description": "Percentage of endpoints with content type text/html",
+			"statistic": "64"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.ctype.text/plain",
+			"description": "Percentage of endpoints with content type text/plain",
+			"statistic": "14"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "90"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.method.POST",
+			"description": "Percentage of endpoints with method POST",
+			"statistic": "9"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "62"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4000",
+			"key": "insight.response.slow",
+			"description": "Percentage of slow responses",
+			"statistic": "34"
+		}
+	],
+	"site":[ 
+		{
+			"@name": "http://localhost:4000",
+			"@host": "localhost",
+			"@port": "4000",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "10028",
+					"alertRef": "10028",
+					"alert": "Off-site Redirect",
+					"name": "Off-site Redirect",
+					"riskcode": "3",
+					"confidence": "2",
+					"riskdesc": "High (Medium)",
+					"desc": "<p>Open redirects are one of the OWASP 2010 Top Ten vulnerabilities. This check looks at user-supplied input in query string parameters and POST data to identify where open redirects might be possible. Open redirects occur when an application allows user-supplied input (e.g. https://nottrusted.com) to control an off-site destination. This is generally a pretty accurate way to find where 301 or 302 redirects could be exploited by spammers or phishing attacks.</p><p></p><p>For example an attacker could supply a user with the following link: https://example.com/example.php?url=https://malicious.example.com.</p><p></p><p>NOTE: For the purposes of the passive check the authority portion of the origin and destination were compared. Manual testing may be required to validate the impact of this finding.</p>",
+					"instances":[ 
+						{
+							"id": "146",
+							"uri": "http://localhost:4000/learn?url=https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras",
+							"nodeName": "http:\/\/localhost:4000\/learn (url)",
+							"method": "GET",
+							"param": "url",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "The 301 or 302 response to a request for the following URL appeared to contain user input in the location header:\n\nhttp://localhost:4000/learn?url=https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras\n\nThe user input found was:\n\nurl=https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras\n\nThe context was:\n\nhttps://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras"
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>To avoid the open redirect vulnerability, parameters of the application script/program must be validated before sending 302 HTTP code (redirect) to the client browser. Implement safe redirect functionality that only redirects to relative URI's, or a list of trusted domains.</p>",
+					"otherinfo": "<p>The 301 or 302 response to a request for the following URL appeared to contain user input in the location header:</p><p></p><p>http://localhost:4000/learn?url=https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras</p><p></p><p>The user input found was:</p><p></p><p>url=https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras</p><p></p><p>The context was:</p><p></p><p>https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras</p>",
+					"reference": "<p>https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html</p><p>https://cwe.mitre.org/data/definitions/601.html</p>",
+					"cweid": "601",
+					"wascid": "38",
+					"sourceid": "117"
+				},
+				{
+					"pluginid": "10055",
+					"alertRef": "10055-13",
+					"alert": "CSP: Failure to Define Directive with No Fallback",
+					"name": "CSP: Failure to Define Directive with No Fallback",
+					"riskcode": "2",
+					"confidence": "3",
+					"riskdesc": "Medium (High)",
+					"desc": "<p>The Content Security Policy fails to define one of the directives that has no fallback. Missing/excluding them is the same as allowing anything.</p>",
+					"instances":[ 
+						{
+							"id": "138",
+							"uri": "http://localhost:4000/a",
+							"nodeName": "http:\/\/localhost:4000\/a",
+							"method": "GET",
+							"param": "Content-Security-Policy",
+							"attack": "",
+							"evidence": "default-src 'self'",
+							"otherinfo": "The directive(s): frame-ancestors, form-action is/are among the directives that do not fallback to default-src."
+						},
+						{
+							"id": "10",
+							"uri": "http://localhost:4000/robots.txt",
+							"nodeName": "http:\/\/localhost:4000\/robots.txt",
+							"method": "GET",
+							"param": "Content-Security-Policy",
+							"attack": "",
+							"evidence": "default-src 'self'",
+							"otherinfo": "The directive(s): frame-ancestors, form-action is/are among the directives that do not fallback to default-src."
+						},
+						{
+							"id": "139",
+							"uri": "http://localhost:4000/script",
+							"nodeName": "http:\/\/localhost:4000\/script",
+							"method": "GET",
+							"param": "Content-Security-Policy",
+							"attack": "",
+							"evidence": "default-src 'self'",
+							"otherinfo": "The directive(s): frame-ancestors, form-action is/are among the directives that do not fallback to default-src."
+						},
+						{
+							"id": "19",
+							"uri": "http://localhost:4000/sitemap.xml",
+							"nodeName": "http:\/\/localhost:4000\/sitemap.xml",
+							"method": "GET",
+							"param": "Content-Security-Policy",
+							"attack": "",
+							"evidence": "default-src 'self'",
+							"otherinfo": "The directive(s): frame-ancestors, form-action is/are among the directives that do not fallback to default-src."
+						},
+						{
+							"id": "137",
+							"uri": "http://localhost:4000/span",
+							"nodeName": "http:\/\/localhost:4000\/span",
+							"method": "GET",
+							"param": "Content-Security-Policy",
+							"attack": "",
+							"evidence": "default-src 'self'",
+							"otherinfo": "The directive(s): frame-ancestors, form-action is/are among the directives that do not fallback to default-src."
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is properly configured to set the Content-Security-Policy header.</p>",
+					"otherinfo": "<p>The directive(s): frame-ancestors, form-action is/are among the directives that do not fallback to default-src.</p>",
+					"reference": "<p>https://www.w3.org/TR/CSP/</p><p>https://caniuse.com/#search=content+security+policy</p><p>https://content-security-policy.com/</p><p>https://github.com/HtmlUnit/htmlunit-csp</p><p>https://web.dev/articles/csp#resource-options</p>",
+					"cweid": "693",
+					"wascid": "15",
+					"sourceid": "97"
+				},
+				{
+					"pluginid": "10038",
+					"alertRef": "10038-1",
+					"alert": "Content Security Policy (CSP) Header Not Set",
+					"name": "Content Security Policy (CSP) Header Not Set",
+					"riskcode": "2",
+					"confidence": "3",
+					"riskdesc": "Medium (High)",
+					"desc": "<p>Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including Cross Site Scripting (XSS) and data injection attacks. These attacks are used for everything from data theft to site defacement or distribution of malware. CSP provides a set of standard HTTP headers that allow website owners to declare approved sources of content that browsers should be allowed to load on that page \u2014 covered types are JavaScript, CSS, HTML frames, fonts, images and embeddable objects such as Java applets, ActiveX, audio and video files.</p>",
+					"instances":[ 
+						{
+							"id": "5",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "28",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "27",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "43",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "83",
+							"uri": "http://localhost:4000/tutorial/a2",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to set the Content-Security-Policy header.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP</p><p>https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html</p><p>https://www.w3.org/TR/CSP/</p><p>https://w3c.github.io/webappsec-csp/</p><p>https://web.dev/articles/csp</p><p>https://caniuse.com/#feat=contentsecuritypolicy</p><p>https://content-security-policy.com/</p>",
+					"cweid": "693",
+					"wascid": "15",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10020",
+					"alertRef": "10020-1",
+					"alert": "Missing Anti-clickjacking Header",
+					"name": "Missing Anti-clickjacking Header",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>The response does not protect against 'ClickJacking' attacks. It should include either Content-Security-Policy with 'frame-ancestors' directive or X-Frame-Options.</p>",
+					"instances":[ 
+						{
+							"id": "2",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "x-frame-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "25",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "x-frame-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "26",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "x-frame-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "42",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "x-frame-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "82",
+							"uri": "http://localhost:4000/tutorial/a2",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a2",
+							"method": "GET",
+							"param": "x-frame-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Modern Web browsers support the Content-Security-Policy and X-Frame-Options HTTP headers. Ensure one of them is set on all web pages returned by your site/app.</p><p>If you expect the page to be framed only by pages on your server (e.g. it's part of a FRAMESET) then you'll want to use SAMEORIGIN, otherwise if you never expect the page to be framed, you should use DENY. Alternatively consider implementing Content Security Policy's \"frame-ancestors\" directive.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options</p>",
+					"cweid": "1021",
+					"wascid": "15",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10099",
+					"alertRef": "10099",
+					"alert": "Source Code Disclosure - SQL",
+					"name": "Source Code Disclosure - SQL",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>Application Source Code was disclosed by the web server. - SQL</p>",
+					"instances":[ 
+						{
+							"id": "70",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "SELECT * FROM accounts WHERE username ",
+							"otherinfo": ""
+						},
+						{
+							"id": "101",
+							"uri": "http://localhost:4000/tutorial/a1",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "SELECT * FROM accounts WHERE username ",
+							"otherinfo": ""
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "<p>Ensure that application Source Code is not available with alternative extensions, and ensure that source code is not present within other files or data deployed to the web server, or served by the web server.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://nhimg.org/twitter-breach</p>",
+					"cweid": "540",
+					"wascid": "13",
+					"sourceid": "24"
+				},
+				{
+					"pluginid": "10003",
+					"alertRef": "10003",
+					"alert": "Vulnerable JS Library",
+					"name": "Vulnerable JS Library",
+					"riskcode": "2",
+					"confidence": "2",
+					"riskdesc": "Medium (Medium)",
+					"desc": "<p>The identified library appears to be vulnerable.</p>",
+					"instances":[ 
+						{
+							"id": "74",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap.js",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "* Bootstrap v3.0.0",
+							"otherinfo": "The identified library bootstrap, version 3.0.0 is vulnerable.\nCVE-2019-8331\nCVE-2018-14040\nCVE-2018-20677\nCVE-2018-20676\nCVE-2018-14042\nCVE-2016-10735\nCVE-2024-6485\nhttps://github.com/twbs/bootstrap/issues/28236\nhttps://nvd.nist.gov/vuln/detail/CVE-2024-6485\nhttps://www.herodevs.com/vulnerability-directory/cve-2024-6485\nhttps://github.com/twbs/bootstrap/issues/20184\nhttps://github.com/advisories/GHSA-vxmc-5x29-h64v\nhttps://github.com/advisories/GHSA-ph58-4vrj-w6hr\nhttps://github.com/twbs/bootstrap\nhttps://github.com/twbs/bootstrap/issues/20631\nhttps://github.com/advisories/GHSA-4p24-vmcr-4gqj\nhttps://github.com/advisories/GHSA-9v3m-8fp8-mj99\nhttps://nvd.nist.gov/vuln/detail/CVE-2018-20676\n"
+						},
+						{
+							"id": "57",
+							"uri": "http://localhost:4000/vendor/jquery.min.js",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/jquery.min.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "/*! jQuery v1.10.2",
+							"otherinfo": "The identified library jquery, version 1.10.2 is vulnerable.\nCVE-2020-11023\nCVE-2015-9251\nCVE-2019-11358\nhttps://github.com/jquery/jquery/issues/2432\nhttp://blog.jquery.com/2016/01/08/jquery-2-2-and-1-12-released/\nhttp://research.insecurelabs.org/jquery/test/\nhttps://blog.jquery.com/2019/04/10/jquery-3-4-0-released/\nhttps://nvd.nist.gov/vuln/detail/CVE-2019-11358\nhttps://github.com/advisories/GHSA-rmxg-73gg-4p98\nhttps://nvd.nist.gov/vuln/detail/CVE-2015-9251\nhttps://github.com/jquery/jquery/commit/753d591aea698e57d6db58c9f722cd0808619b1b\nhttps://bugs.jquery.com/ticket/11974\nhttps://github.com/jquery/jquery.com/issues/162\nhttps://blog.jquery.com/2020/04/10/jquery-3-5-0-released/\n"
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "<p>Upgrade to the latest version of the affected library.</p>",
+					"otherinfo": "<p>The identified library bootstrap, version 3.0.0 is vulnerable.</p><p>CVE-2019-8331</p><p>CVE-2018-14040</p><p>CVE-2018-20677</p><p>CVE-2018-20676</p><p>CVE-2018-14042</p><p>CVE-2016-10735</p><p>CVE-2024-6485</p><p>https://github.com/twbs/bootstrap/issues/28236</p><p>https://nvd.nist.gov/vuln/detail/CVE-2024-6485</p><p>https://www.herodevs.com/vulnerability-directory/cve-2024-6485</p><p>https://github.com/twbs/bootstrap/issues/20184</p><p>https://github.com/advisories/GHSA-vxmc-5x29-h64v</p><p>https://github.com/advisories/GHSA-ph58-4vrj-w6hr</p><p>https://github.com/twbs/bootstrap</p><p>https://github.com/twbs/bootstrap/issues/20631</p><p>https://github.com/advisories/GHSA-4p24-vmcr-4gqj</p><p>https://github.com/advisories/GHSA-9v3m-8fp8-mj99</p><p>https://nvd.nist.gov/vuln/detail/CVE-2018-20676</p><p></p>",
+					"reference": "<p>https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/</p>",
+					"cweid": "1395",
+					"wascid": "-1",
+					"sourceid": "43"
+				},
+				{
+					"pluginid": "10054",
+					"alertRef": "10054-1",
+					"alert": "Cookie without SameSite Attribute",
+					"name": "Cookie without SameSite Attribute",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>A cookie has been set without the SameSite attribute, which means that the cookie can be sent as a result of a 'cross-site' request. The SameSite attribute is an effective counter measure to cross-site request forgery, cross-site script inclusion, and timing attacks.</p>",
+					"instances":[ 
+						{
+							"id": "3",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "connect.sid",
+							"attack": "",
+							"evidence": "set-cookie: connect.sid",
+							"otherinfo": ""
+						},
+						{
+							"id": "148",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap-tour.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap-tour.css",
+							"method": "GET",
+							"param": "connect.sid",
+							"attack": "",
+							"evidence": "set-cookie: connect.sid",
+							"otherinfo": ""
+						},
+						{
+							"id": "149",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap-tour.js",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap-tour.js",
+							"method": "GET",
+							"param": "connect.sid",
+							"attack": "",
+							"evidence": "set-cookie: connect.sid",
+							"otherinfo": ""
+						},
+						{
+							"id": "135",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup ()(_csrf,email,firstName,lastName,password,userName,verify)",
+							"method": "POST",
+							"param": "connect.sid",
+							"attack": "",
+							"evidence": "set-cookie: connect.sid",
+							"otherinfo": ""
+						}
+					],
+					"count": "4",
+					"systemic": false,
+					"solution": "<p>Ensure that the SameSite attribute is set to either 'lax' or ideally 'strict' for all cookies.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cookie-same-site</p>",
+					"cweid": "1275",
+					"wascid": "13",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "10017",
+					"alertRef": "10017",
+					"alert": "Cross-Domain JavaScript Source File Inclusion",
+					"name": "Cross-Domain JavaScript Source File Inclusion",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>The page includes one or more script files from a third-party domain.</p>",
+					"instances":[ 
+						{
+							"id": "7",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js",
+							"attack": "",
+							"evidence": "<script src='http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js'></\" + \"script>\");</script>",
+							"otherinfo": ""
+						},
+						{
+							"id": "30",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js",
+							"attack": "",
+							"evidence": "<script src='http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js'></\" + \"script>\");</script>",
+							"otherinfo": ""
+						},
+						{
+							"id": "29",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js",
+							"attack": "",
+							"evidence": "<script src='http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js'></\" + \"script>\");</script>",
+							"otherinfo": ""
+						},
+						{
+							"id": "44",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js",
+							"attack": "",
+							"evidence": "<script src='http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js'></\" + \"script>\");</script>",
+							"otherinfo": ""
+						},
+						{
+							"id": "84",
+							"uri": "http://localhost:4000/tutorial/a2",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a2",
+							"method": "GET",
+							"param": "http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js",
+							"attack": "",
+							"evidence": "<script src='http://\" + (location.host || \"localhost\").split(\":\")[0] + \":35729/livereload.js'></\" + \"script>\");</script>",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure JavaScript source files are loaded from only trusted sources, and the sources can't be controlled by end users of the application.</p>",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "829",
+					"wascid": "15",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "90004",
+					"alertRef": "90004-2",
+					"alert": "Cross-Origin-Embedder-Policy Header Missing or Invalid",
+					"name": "Cross-Origin-Embedder-Policy Header Missing or Invalid",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>Cross-Origin-Embedder-Policy header is a response header that prevents a document from loading any cross-origin resources that don't explicitly grant the document permission (using CORP or CORS).</p>",
+					"instances":[ 
+						{
+							"id": "20",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "Cross-Origin-Embedder-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "51",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "Cross-Origin-Embedder-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "36",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "Cross-Origin-Embedder-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "68",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "Cross-Origin-Embedder-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "4",
+					"systemic": false,
+					"solution": "<p>Ensure that the application/web server sets the Cross-Origin-Embedder-Policy header appropriately, and that it sets the Cross-Origin-Embedder-Policy header to 'require-corp' for documents.</p><p>If possible, ensure that the end user uses a standards-compliant and modern web browser that supports the Cross-Origin-Embedder-Policy header (https://caniuse.com/mdn-http_headers_cross-origin-embedder-policy).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Embedder-Policy</p>",
+					"cweid": "693",
+					"wascid": "14",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "90004",
+					"alertRef": "90004-3",
+					"alert": "Cross-Origin-Opener-Policy Header Missing or Invalid",
+					"name": "Cross-Origin-Opener-Policy Header Missing or Invalid",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>Cross-Origin-Opener-Policy header is a response header that allows a site to control if others included documents share the same browsing context. Sharing the same browsing context with untrusted documents might lead to data leak.</p>",
+					"instances":[ 
+						{
+							"id": "21",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "Cross-Origin-Opener-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "52",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "Cross-Origin-Opener-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "37",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "Cross-Origin-Opener-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "69",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "Cross-Origin-Opener-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "4",
+					"systemic": false,
+					"solution": "<p>Ensure that the application/web server sets the Cross-Origin-Opener-Policy header appropriately, and that it sets the Cross-Origin-Opener-Policy header to 'same-origin' for documents.</p><p>'same-origin-allow-popups' is considered as less secured and should be avoided.</p><p>If possible, ensure that the end user uses a standards-compliant and modern web browser that supports the Cross-Origin-Opener-Policy header (https://caniuse.com/mdn-http_headers_cross-origin-opener-policy).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Opener-Policy</p>",
+					"cweid": "693",
+					"wascid": "14",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "90004",
+					"alertRef": "90004-1",
+					"alert": "Cross-Origin-Resource-Policy Header Missing or Invalid",
+					"name": "Cross-Origin-Resource-Policy Header Missing or Invalid",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>Cross-Origin-Resource-Policy header is an opt-in header designed to counter side-channels attacks like Spectre. Resource should be specifically set as shareable amongst different origins.</p>",
+					"instances":[ 
+						{
+							"id": "18",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "50",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "35",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "41",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap.css",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "56",
+							"uri": "http://localhost:4000/vendor/theme/sb-admin.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/theme\/sb-admin.css",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that the application/web server sets the Cross-Origin-Resource-Policy header appropriately, and that it sets the Cross-Origin-Resource-Policy header to 'same-origin' for all web pages.</p><p>'same-site' is considered as less secured and should be avoided.</p><p>If resources must be shared, set the header to 'cross-origin'.</p><p>If possible, ensure that the end user uses a standards-compliant and modern web browser that supports the Cross-Origin-Resource-Policy header (https://caniuse.com/mdn-http_headers_cross-origin-resource-policy).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Embedder-Policy</p>",
+					"cweid": "693",
+					"wascid": "14",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10110",
+					"alertRef": "10110",
+					"alert": "Dangerous JS Functions",
+					"name": "Dangerous JS Functions",
+					"riskcode": "1",
+					"confidence": "1",
+					"riskdesc": "Low (Low)",
+					"desc": "<p>A dangerous JS function seems to be in use that would leave the site vulnerable.</p>",
+					"instances":[ 
+						{
+							"id": "65",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "eval(",
+							"otherinfo": ""
+						},
+						{
+							"id": "98",
+							"uri": "http://localhost:4000/tutorial/a1",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "eval(",
+							"otherinfo": ""
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "<p>See the references for security advice on the use of these functions.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://v17.angular.io/guide/security</p>",
+					"cweid": "749",
+					"wascid": "-1",
+					"sourceid": "24"
+				},
+				{
+					"pluginid": "10063",
+					"alertRef": "10063-1",
+					"alert": "Permissions Policy Header Not Set",
+					"name": "Permissions Policy Header Not Set",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>Permissions Policy Header is an added layer of security that helps to restrict from unauthorized access or usage of browser/client features by web resources. This policy ensures the user privacy by limiting or specifying the features of the browsers can be used by the web resources. Permissions Policy provides a set of standard HTTP headers that allow website owners to limit which features of browsers can be used by the page such as camera, microphone, location, full screen etc.</p>",
+					"instances":[ 
+						{
+							"id": "17",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "49",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "16",
+							"uri": "http://localhost:4000/robots.txt",
+							"nodeName": "http:\/\/localhost:4000\/robots.txt",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "34",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "24",
+							"uri": "http://localhost:4000/sitemap.xml",
+							"nodeName": "http:\/\/localhost:4000\/sitemap.xml",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to set the Permissions-Policy header.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy</p><p>https://developer.chrome.com/blog/feature-policy/</p><p>https://scotthelme.co.uk/a-new-security-header-feature-policy/</p><p>https://w3c.github.io/webappsec-feature-policy/</p><p>https://www.smashingmagazine.com/2018/12/feature-policy/</p>",
+					"cweid": "693",
+					"wascid": "15",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10037",
+					"alertRef": "10037",
+					"alert": "Server Leaks Information via \"X-Powered-By\" HTTP Response Header Field(s)",
+					"name": "Server Leaks Information via \"X-Powered-By\" HTTP Response Header Field(s)",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>The web/application server is leaking information via one or more \"X-Powered-By\" HTTP response headers. Access to such information may facilitate attackers identifying other frameworks/components your web application is reliant upon and the vulnerabilities such components may be subject to.</p>",
+					"instances":[ 
+						{
+							"id": "4",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "14",
+							"uri": "http://localhost:4000/robots.txt",
+							"nodeName": "http:\/\/localhost:4000\/robots.txt",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "32",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "22",
+							"uri": "http://localhost:4000/sitemap.xml",
+							"nodeName": "http:\/\/localhost:4000\/sitemap.xml",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						},
+						{
+							"id": "39",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap.css",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "X-Powered-By: Express",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that your web server, application server, load balancer, etc. is configured to suppress \"X-Powered-By\" headers.</p>",
+					"otherinfo": "",
+					"reference": "<p>https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework</p><p>https://www.troyhunt.com/shhh-dont-let-your-response-headers/</p>",
+					"cweid": "497",
+					"wascid": "13",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "10021",
+					"alertRef": "10021",
+					"alert": "X-Content-Type-Options Header Missing",
+					"name": "X-Content-Type-Options Header Missing",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'. This allows older versions of Internet Explorer and Chrome to perform MIME-sniffing on the response body, potentially causing the response body to be interpreted and displayed as a content type other than the declared content type. Current (early 2014) and legacy versions of Firefox will use the declared content type (if one is set), rather than performing MIME-sniffing.</p>",
+					"instances":[ 
+						{
+							"id": "11",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						},
+						{
+							"id": "46",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						},
+						{
+							"id": "31",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						},
+						{
+							"id": "38",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap.css",
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						},
+						{
+							"id": "53",
+							"uri": "http://localhost:4000/vendor/theme/sb-admin.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/theme\/sb-admin.css",
+							"method": "GET",
+							"param": "x-content-type-options",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.\nAt \"High\" threshold this scan rule will not alert on client or server error responses."
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that the application/web server sets the Content-Type header appropriately, and that it sets the X-Content-Type-Options header to 'nosniff' for all web pages.</p><p>If possible, ensure that the end user uses a standards-compliant and modern web browser that does not perform MIME-sniffing at all, or that can be directed by the web application/web server to not perform MIME-sniffing.</p>",
+					"otherinfo": "<p>This issue still applies to error type pages (401, 403, 500, etc.) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.</p><p>At \"High\" threshold this scan rule will not alert on client or server error responses.</p>",
+					"reference": "<p>https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/gg622941(v=vs.85)</p><p>https://owasp.org/www-community/Security_Headers</p>",
+					"cweid": "693",
+					"wascid": "15",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10111",
+					"alertRef": "10111",
+					"alert": "Authentication Request Identified",
+					"name": "Authentication Request Identified",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>The given request has been identified as an authentication request. The 'Other Info' field contains a set of key=value lines which identify any relevant fields. If the request is in a context which has an Authentication Method set to \"Auto-Detect\" then this rule will change the authentication to match the request identified.</p>",
+					"instances":[ 
+						{
+							"id": "127",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login ()(_csrf,password,userName)",
+							"method": "POST",
+							"param": "userName",
+							"attack": "",
+							"evidence": "password",
+							"otherinfo": "userParam=userName\nuserValue=ZAP\npasswordParam=password\nreferer=http://localhost:4000/login\ncsrfToken=_csrf"
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>This is an informational alert rather than a vulnerability and so there is nothing to fix.</p>",
+					"otherinfo": "<p>userParam=userName</p><p>userValue=ZAP</p><p>passwordParam=password</p><p>referer=http://localhost:4000/login</p><p>csrfToken=_csrf</p>",
+					"reference": "<p>https://www.zaproxy.org/docs/desktop/addons/authentication-helper/auth-req-id/</p>",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "65"
+				},
+				{
+					"pluginid": "10027",
+					"alertRef": "10027",
+					"alert": "Information Disclosure - Suspicious Comments",
+					"name": "Information Disclosure - Suspicious Comments",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response appears to contain suspicious comments which may help an attacker.</p>",
+					"instances":[ 
+						{
+							"id": "144",
+							"uri": "http://localhost:4000/allocations/4",
+							"nodeName": "http:\/\/localhost:4000\/allocations\/4",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "   The attacker, or user should not be able ",
+							"otherinfo": "The following pattern was used: \\bUSER\\b and was detected in likely comment: \"<!--Fix for A1 - 2 NoSQL Injection - Provide validation for input.\n                        Adhering to defence in depth, on the \", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "147",
+							"uri": "http://localhost:4000/profile",
+							"nodeName": "http:\/\/localhost:4000\/profile",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<!-- @FIXME use a properly esca",
+							"otherinfo": "The following pattern was used: \\bFIXME\\b and was detected in likely comment: \"<!-- @FIXME use a properly escaped variable that matches the URL context, for example\n                    refer to a firstNameSa\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "60",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": " Step 2: Encode the user input that will be ",
+							"otherinfo": "The following pattern was used: \\bUSER\\b and was detected in likely comment: \"// - Step 2: Encode the user input that will be logged in the correct context\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "58",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<!-- DB Injection -->",
+							"otherinfo": "The following pattern was used: \\bDB\\b and was detected in likely comment: \"<!-- DB Injection -->\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "59",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "gin -X POST --data 'userName=vyva%0aError: alex ",
+							"otherinfo": "The following pattern was used: \\bUSERNAME\\b and was detected in likely comment: \"//localhost:4000/login -X POST --data 'userName=vyva%0aError: alex moldovan failed $1,000,000 transaction&password=Admin_123&_cs\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "95",
+							"uri": "http://localhost:4000/tutorial/a1",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": " Step 2: Encode the user input that will be ",
+							"otherinfo": "The following pattern was used: \\bUSER\\b and was detected in likely comment: \"// - Step 2: Encode the user input that will be logged in the correct context\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "93",
+							"uri": "http://localhost:4000/tutorial/a1",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<!-- DB Injection -->",
+							"otherinfo": "The following pattern was used: \\bDB\\b and was detected in likely comment: \"<!-- DB Injection -->\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "94",
+							"uri": "http://localhost:4000/tutorial/a1",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "gin -X POST --data 'userName=vyva%0aError: alex ",
+							"otherinfo": "The following pattern was used: \\bUSERNAME\\b and was detected in likely comment: \"//localhost:4000/login -X POST --data 'userName=vyva%0aError: alex moldovan failed $1,000,000 transaction&password=Admin_123&_cs\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "85",
+							"uri": "http://localhost:4000/tutorial/a2",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "// Create user document",
+							"otherinfo": "The following pattern was used: \\bUSER\\b and was detected 2 times, the first in likely comment: \"// Create user document\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "86",
+							"uri": "http://localhost:4000/tutorial/a2",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "//received from request param",
+							"otherinfo": "The following pattern was used: \\bFROM\\b and was detected in likely comment: \"//received from request param\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "125",
+							"uri": "http://localhost:4000/tutorial/a5",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a5",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "r iframe to protect from clickjacking",
+							"otherinfo": "The following pattern was used: \\bFROM\\b and was detected 4 times, the first in likely comment: \"// Prevent opening page in frame or iframe to protect from clickjacking\", see evidence field for the suspicious comment/snippet."
+						},
+						{
+							"id": "123",
+							"uri": "http://localhost:4000/tutorial/a7",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a7",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "o check if user has admin rights",
+							"otherinfo": "The following pattern was used: \\bADMIN\\b and was detected in likely comment: \"//Middleware to check if user has admin rights\", see evidence field for the suspicious comment/snippet."
+						}
+					],
+					"count": "12",
+					"systemic": false,
+					"solution": "<p>Remove all comments that return information that may help an attacker and fix any underlying problems they refer to.</p>",
+					"otherinfo": "<p>The following pattern was used: \\bUSER\\b and was detected in likely comment: \"<!--Fix for A1 - 2 NoSQL Injection - Provide validation for input.</p><p>                        Adhering to defence in depth, on the \", see evidence field for the suspicious comment/snippet.</p>",
+					"reference": "",
+					"cweid": "615",
+					"wascid": "13",
+					"sourceid": "111"
+				},
+				{
+					"pluginid": "10109",
+					"alertRef": "10109",
+					"alert": "Modern Web Application",
+					"name": "Modern Web Application",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The application appears to be a modern web application. If you need to explore it automatically then the Client Spider may well be more effective than the standard one.</p>",
+					"instances":[ 
+						{
+							"id": "9",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" style=\"font-size: larger\"><i class=\"fa fa-info-circle\"></i></a>",
+							"otherinfo": "Links have been found that do not have traditional href attributes, which is an indication that this is a modern web application."
+						},
+						{
+							"id": "45",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" style=\"font-size: larger\"><i class=\"fa fa-info-circle\"></i></a>",
+							"otherinfo": "Links have been found that do not have traditional href attributes, which is an indication that this is a modern web application."
+						},
+						{
+							"id": "61",
+							"uri": "http://localhost:4000/tutorial",
+							"nodeName": "http:\/\/localhost:4000\/tutorial",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<script src=\"../vendor/html5shiv.js\"><![endif]-->\n</head>\n\n<body>\n\n    <div id=\"wrapper\">\n\n        <!-- Sidebar -->\n        <nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\">\n            <!-- Brand and toggle get grouped for better mobile display -->\n            <div class=\"navbar-header\">\n                <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-ex1-collapse\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <a class=\"navbar-brand\" href=\"/tutorial\"><b>OWASP Node Goat Tutorial:</b> Fixing OWASP Top 10 </a>\n            </div>\n\n            <!-- Collect the nav links, forms, and other content for toggling -->\n            <div class=\"collapse navbar-collapse navbar-ex1-collapse\">\n                <ul class=\"nav navbar-nav side-nav\">\n                    <li><a href=\"/tutorial/a1\"><i class=\"fa fa-wrench\"></i> A1 Injection</a>\n                    </li>\n                    <li><a href=\"/tutorial/a2\"><i class=\"fa fa-wrench\"></i> A2 Broken Auth</a>\n                    </li>\n                    <li><a href=\"/tutorial/a3\"><i class=\"fa fa-wrench\"></i> A3 XSS</a>\n                    </li>\n                    <li><a href=\"/tutorial/a4\"><i class=\"fa fa-wrench\"></i> A4 Insecure DOR</a>\n                    </li>\n                    <li><a href=\"/tutorial/a5\"><i class=\"fa fa-wrench\"></i> A5 Misconfig</a>\n                    </li>\n                    <li><a href=\"/tutorial/a6\"><i class=\"fa fa-wrench\"></i> A6 Sensitive Data</a>\n                    </li>\n                    <li><a href=\"/tutorial/a7\"><i class=\"fa fa-wrench\"></i> A7 Access Controls</a>\n                    </li>\n                    <li><a href=\"/tutorial/a8\"><i class=\"fa fa-wrench\"></i> A8 CSRF</a>\n                    </li>\n                    <li><a href=\"/tutorial/a9\"><i class=\"fa fa-wrench\"></i> A9 Insecure Components</a>\n                    </li>\n                    <li><a href=\"/tutorial/a10\"><i class=\"fa fa-wrench\"></i> A10 Redirects</a>\n                    </li>\n                    <li><a href=\"/tutorial/redos\"><i class=\"fa\"></i> ReDoS Attacks</a>\n                    </li>\n                    <li><a href=\"/tutorial/ssrf\"><i class=\"fa\"></i> SSRF</a>\n                    </li>\n                </ul>\n\n                <ul class=\"nav navbar-nav navbar-right navbar-user\">\n                    <li><a href=\"/login\"><i class=\"fa fa-power-off\"></i> Exit</a>\n                    </li>\n                </ul>\n            </div>\n            <!-- /.navbar-collapse -->\n        </nav>\n\n        <div id=\"page-wrapper\">\n\n            <div class=\"row\">\n                <div class=\"col-lg-12\">\n                    <h1>A1 - Injection \n                        <small></small>\n                    </h1>\n                </div>\n            </div>\n            <!-- /.row -->\n            \n<div class=\"row\">\n    <div class=\"col-lg-12\">\n        <div class=\"bs-example\" style=\"margin-bottom: 40px;\">\n            <span class=\"label label-danger\">Exploitability: EASY</span>\n            <span class=\"label label-warning\">Prevalence: COMMON</span>\n            <span class=\"label label-warning\">Detectability: AVERAGE</span>\n            <span class=\"label label-danger\">Technical Impact: SEVERE</span>\n        </div>\n    </div>\n</div>\n\n\n<div class=\"row\">\n    <div class=\"col-lg-12\">\n        <div class=\"panel panel-info\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">Description</h3>\n            </div>\n            <div class=\"panel-body\">\n                Injection flaws occur when untrusted data is sent to an interpreter as part of a command or query. The attacker\u2019s hostile data can trick the interpreter into executing unintended commands or accessing data without proper authorization.\n            </div>\n        </div>\n        <!--\n        <div class=\"panel panel-info\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">Real World Attack Incident Examples</h3>\n            </div>\n            <div class=\"panel-body\">\n                Screencast here ...\n            </div>\n        </div>\n        -->\n    </div>\n</div>\n\n\n<!-- accordions -->\n<div class=\"panel-group\" id=\"accordion\">\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">\n                    <i class=\"fa fa-chevron-down\"></i>A1 - 1 Server Side JS Injection\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseOne\" class=\"panel-collapse collapse in\">\n            <div class=\"panel-body\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        When\n                        <code>eval()</code>,\n                        <code>setTimeout()</code>,\n                        <code>setInterval()</code>,\n                        <code>Function()</code>are used to process user provided inputs, it can be exploited by an attacker to inject and execute malicious JavaScript code on server.\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            Web applications using the JavaScript\n                            <code>eval()</code>function to parse the incoming data without any type of input validation are vulnerable to this attack. An attacker can inject arbitrary JavaScript code to be executed on the server. Similarly\n                            <code>setTimeout()</code>, and\n                            <code>setInterval()</code>functions can take code in string format as a first argument causing same issues as\n                            <code>eval()</code>.\n                        </p>\n                        <p>This vulnerability can be very critical and damaging by allowing attacker to send various types of commands.</p>\n                        <p>\n                            <b>Denial of Service Attack:</b>\n                        </p>\n                        <iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/krOx9QWwcYw?rel=0\" frameborder=\"0\" allowfullscreen></iframe>\n                        <p>\n                            An effective denial-of-service attack can be executed simply by sending the commands below to\n                            <code>eval()</code>function:\n                        </p>\n\n\n                        <pre>while(1)</pre>\n                        <p>\n                            This input will cause the target server's event loop to use 100% of its processor time and unable to process any other incoming requests until process is restarted.\n                        </p>\n                        <p>\n                            An alternative DoS attack would be to simply exit or kill the running process:\n                            <pre>process.exit()</pre> or <pre>process.kill(process.pid) </pre>\n                        </p>\n                        <p>\n                            <b>File System Access</b>\n                            <br/>\n                        </p>\n                        <iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/Mr-Jh9bjSLo?rel=0\" frameborder=\"0\" allowfullscreen></iframe>\n                        <p>\n                            Another potential goal of an attacker might be to read the contents of files from the server. For example, following two commands list the contents of the current directory and parent directory respectively:\n                        </p>\n                        <p>\n                            <pre>res.end(require('fs').readdirSync('.').toString())</pre>\n                            <pre>res.end(require('fs').readdirSync('..').toString()) </pre>\n                        </p>\n                        <p>\n                            Once file names are obtained, an attacker can issue the command below to view the actual contents of a file:\n                        </p>\n                        <p>\n                            <pre>res.end(require('fs').readFileSync(filename))</pre>\n                        </p>\n                        <p>\n                            An attacker can further exploit this vulnerability by writing and executing harmful binary files using\n                            <code>fs</code>and\n                            <code>child_process</code>modules.\n                        </p>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        To prevent server-side js injection attacks:\n                        <ul>\n                            <li>Validate user inputs on server side before processing</li>\n                            <li>Do not use\n                                <code>eval()</code>function to parse user inputs. Avoid using other commands with similar effect, such as\n                                <code>setTimeOut()</code>,\n                                <code>setInterval()</code>, and\n                                <code>Function()</code>.\n                            </li>\n                            <li>\n                                For parsing JSON input, instead of using\n                                <code>eval()</code>, use a safer alternative such as\n                                <code>JSON.parse()</code>. For type conversions use type related\n                                <code>parseXXX()</code>methods.\n                            </li>\n                            <li>Include\n                                <code>\"use strict\"</code>at the beginning of a function, which enables <a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode\"> strict mode </a>within the enclosing function scope.</li>\n\n                        </ul>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Example</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>In\n                            <code>routes/contributions.js</code>, the\n                            <code>handleContributionsUpdate()</code>function insecurely uses\n                            <code>eval()</code>to convert user supplied contribution amounts to integer.\n                            <pre>\n        // Insecure use of eval() to parse inputs\n        var preTax = eval(req.body.preTax);\n        var afterTax = eval(req.body.afterTax);\n        var roth = eval(req.body.roth);\n                            </pre> This makes application vulnerable to SSJS attack. It can fixed simply by using\n                            <code>parseInt()</code>instead.\n                            <pre>\n        //Fix for A1 -1 SSJS Injection attacks - uses alternate method to eval\n        var preTax = parseInt(req.body.preTax);\n        var afterTax = parseInt(req.body.afterTax);\n        var roth = parseInt(req.body.roth);\n                            </pre>\n                        </p>\n                        <p>In addition, all functions begin with\n                            <code>use strict</code>pragma.\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Further Reading</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <ul>\n                            <li><a target=\"_blank\" href=\"https://media.blackhat.com/bh-us-11/Sullivan/BH_US_11_Sullivan_Server_Side_WP.pdf\">\u201CServerSide JavaScript Injection: Attacking NoSQL and Node.js\"</a> a whitepaper by Bryan Sullivan.</li>\n                        </ul>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <!-- /ssjs -->\n\n    <!-- DB Injection -->\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">\n                    <i class=\"fa fa-chevron-down\"></i> A1 - 2 SQL and NoSQL Injection\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseTwo\" class=\"panel-collapse\">\n            <div class=\"panel-body\">\n\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            SQL and NoSQL injections enable an attacker to inject code into the query that would be executed by the database. These flaws are introduced when software developers create dynamic database queries that include user supplied input.\n                        </p>\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>Both SQL and NoSQL databases are vulnerable to injection attack. Here is an example of equivalent attack in both cases, where attacker manages to retrieve admin user's record without knowing password:</p>\n                        <h5>1. SQL Injection</h5>\n                        <p>Lets consider an example SQL statement used to authenticate the user with username and password</p>\n                        <pre>SELECT * FROM accounts WHERE username = '$username' AND password = '$password'</pre>\n                        <p>If this statement is not prepared or properly handled when constructed, an attacker may be able to supply\n                            <code>admin' --</code>in the username field to access the admin user's account bypassing the condition that checks for the password. The resultant SQL query would looks like:</p>\n                        <pre>SELECT * FROM accounts WHERE username = 'admin' -- AND password = ''</pre>\n                        <br/>\n                        <h5>2. NoSQL Injection</h5>\n                        <p>The equivalent of above query for NoSQL MongoDB database is:</p>\n                        <pre>db.accounts.find({username: username, password: password});</pre>\n                        <p>While here we are no longer dealing with query language, an attacker can still achieve the same results as SQL injection by supplying JSON input object as below:</p>\n                        <pre>\n{\n    \"username\": \"admin\",\n    \"password\": {$gt: \"\"}\n}\n                        </pre>\n                        <p>In MongoDB,\n                            <code>$gt</code>selects those documents where the value of the field is greater than (i.e. >) the specified value. Thus above statement compares password in database with empty string for greatness, which returns\n                            <code>true</code>.</p>\n                        <p>The same results can be achieved using other comparison operator such as\n                            <code>$ne</code>.</p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">SSJS Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            Server-side JavaScript Injection (SSJS) is an attack where JavaScript code is injected and executed in a server component. MongoDB specifically, is vulnerable to this attack when queries are run without proper sanitization.\n                        </p>\n\n                        <h5>$where operator</h5>\n                        <p>\n                            MongoDB's\n                            <code>$where</code> operator performs JavaScript expression evaluation on the MongoDB server. If the user is able to inject direct code into such queries then such an attack can take place\n                        </p>\n\n                        <p>\n                            Lets consider an example query:\n                        </p>\n                        <pre> db.allocationsCollection.find({ $where: \"this.userId == '\" + parsedUserId + \"' && \" + \"this.stocks > \" + \"'\" + threshold + \"'\" }); </pre>\n\n                        <p>\n                            The code will match all documents which have a\n                            <code>userId</code> field as specified by\n                            <code>parsedUserId</code> and a\n                            <code>stocks</code> field as specified by\n                            <code>threshold</code>. The problem is that these parameters are not validated, filtered, or sanitised, and vulnerable to SSJS Injection.\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        Here are some measures to prevent SQL / NoSQL injection attacks, or minimize impact if it happens:\n                        <ul>\n                            <li>Prepared Statements: For SQL calls, use prepared statements instead of building dynamic queries using string concatenation.</li>\n                            <li>Input Validation: Validate inputs to detect malicious values. For NoSQL databases, also validate input types against expected types</li>\n                            <li>Least Privilege: To minimize the potential damage of a successful injection attack, do not assign DBA or admin type access rights to your application accounts. Similarly minimize the privileges of the operating system account that the database process runs under.</li>\n                        </ul>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Example</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p><strong>Note: These vulnerabilities are not present when using an Atlas M0 cluster with NodeGoat.</strong></p>\n                        <p>The Allocations page of the demo application is vulnerable to NoSQL Injection. For example, set the stocks threshold filter to:</p>\n                        <pre>1'; return 1 == '1</pre>\n                        <p>This will retrieve allocations for all the users in the database.</p>\n                        <p>An attacker could also send the following input for the\n                            <code>threshold</code> field in the request's query, which will create a valid JavaScript expression and satisfy the\n                            <code> $where</code> query as well, resulting in a DoS attack on the MongoDB server:\n                        </p>\n                        <pre>http://localhost:4000/allocations/2?threshold=5';while(true){};' </pre>\n                        <p>\n                            You can also just drop the following into the Stocks Threshold input box:\n                        </p>\n                        <pre>';while(true){};'</pre>\n                        <p>For these vulnerabilities, bare minimum fixes can be found in\n                        <code>allocations.html</code> and\n                        <code>allocations-dao.js</code></p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <!-- /NoSQL Injection -->\n\n    <!-- Log Injection -->\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseThree\">\n                    <i class=\"fa fa-chevron-down\"></i> A1 - 3 Log Injection\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseThree\" class=\"panel-collapse\">\n            <div class=\"panel-body\">\n\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            Log injection vulnerabilities enable an attacker to forge and tamper with an application's logs.\n                        </p>\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>An attacker may craft a malicious request that may deliberately fail, which the application will log, and when attacker's user input is unsanitized, the payload is sent as-is to the logging facility. Vulnerabilities may vary depending on the logging facility:</p>\n                        <h5>1. Log Forging (CRLF) </h5>\n                        <p>Lets consider an example where an application logs a failed attempt to login to the system. A very common example for this is as follows:\n                        </p>\n                        <pre>\nvar userName = req.body.userName;\nconsole.log('Error: attempt to login with invalid user: ', userName);\n                        </pre>\n                        <p>When user input is unsanitized and the output mechanism is an ordinary terminal stdout facility then the application will be vulnerable to CRLF injection, where an attacker can create a malicious payload as follows:\n                        <pre>\ncurl http://localhost:4000/login -X POST --data 'userName=vyva%0aError: alex moldovan failed $1,000,000 transaction&password=Admin_123&_csrf='\n                        </pre>\n                        Where the <code>userName</code> parameter is encoding in the request the LF symbol which will result in a new line to begin. Resulting log output will look as follows:\n                        <pre>\nError: attempt to login with invalid user:  vyva\nError: alex moldovan failed $1,000,000 transaction\n                        </pre>\n                        <br/>\n                        <h5>2. Log Injection Escalation </h5>\n                        <p>\n                            An attacker may craft malicious input in hope of an escalated attack where the target isn't the logs themselves, but rather the actual logging system. For example, if an application has a back-office web app that manages viewing and tracking the logs, then an attacker may send an XSS payload into the log, which may not result in log forging on the log itself, but when viewed by a system administrator on the log viewing web app then it may compromise it and result in XSS injection that if the logs app is vulnerable.\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n\n                        As always when dealing with user input:\n                        <ul>\n                            <li>\n                                Do not allow user input into logs\n                            </li>\n                            <li>\n                                Encode to proper context, or sanitize user input\n                            </li>\n                        </ul>\n\n                        Encoding example:\n                        <pre>\n// Step 1: Require a module that supports encoding\nvar ESAPI = require('node-esapi');\n// - Step 2: Encode the user input that will be logged in the correct context\n// following are a few examples:\nconsole.log('Error: attempt to login with invalid user: %s', ESAPI.encoder().encodeForHTML(userName));\nconsole.log('Error: attempt to login with invalid user: %s', ESAPI.encoder().encodeForJavaScript(userName));\nconsole.log('Error: attempt to login with invalid user: %s', ESAPI.encoder().encodeForURL(userName));\n                        </pre>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Example</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>For the above Log Injection vulnerability, example and fix can be found at\n                        <code>routes/session.js</code></p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <!-- /Log Injection -->\n\n</div>\n<!-- end accordions -->\n\n        </div>\n        <!-- /#page-wrapper -->\n\n    </div>\n    <!-- /#wrapper -->\n\n    <script src=\"../vendor/jquery.min.js\"></script>",
+							"otherinfo": "No links have been found while there are scripts, which is an indication that this is a modern web application."
+						},
+						{
+							"id": "96",
+							"uri": "http://localhost:4000/tutorial/a1",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<script src=\"../vendor/html5shiv.js\"><![endif]-->\n</head>\n\n<body>\n\n    <div id=\"wrapper\">\n\n        <!-- Sidebar -->\n        <nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\">\n            <!-- Brand and toggle get grouped for better mobile display -->\n            <div class=\"navbar-header\">\n                <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-ex1-collapse\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <a class=\"navbar-brand\" href=\"/tutorial\"><b>OWASP Node Goat Tutorial:</b> Fixing OWASP Top 10 </a>\n            </div>\n\n            <!-- Collect the nav links, forms, and other content for toggling -->\n            <div class=\"collapse navbar-collapse navbar-ex1-collapse\">\n                <ul class=\"nav navbar-nav side-nav\">\n                    <li><a href=\"/tutorial/a1\"><i class=\"fa fa-wrench\"></i> A1 Injection</a>\n                    </li>\n                    <li><a href=\"/tutorial/a2\"><i class=\"fa fa-wrench\"></i> A2 Broken Auth</a>\n                    </li>\n                    <li><a href=\"/tutorial/a3\"><i class=\"fa fa-wrench\"></i> A3 XSS</a>\n                    </li>\n                    <li><a href=\"/tutorial/a4\"><i class=\"fa fa-wrench\"></i> A4 Insecure DOR</a>\n                    </li>\n                    <li><a href=\"/tutorial/a5\"><i class=\"fa fa-wrench\"></i> A5 Misconfig</a>\n                    </li>\n                    <li><a href=\"/tutorial/a6\"><i class=\"fa fa-wrench\"></i> A6 Sensitive Data</a>\n                    </li>\n                    <li><a href=\"/tutorial/a7\"><i class=\"fa fa-wrench\"></i> A7 Access Controls</a>\n                    </li>\n                    <li><a href=\"/tutorial/a8\"><i class=\"fa fa-wrench\"></i> A8 CSRF</a>\n                    </li>\n                    <li><a href=\"/tutorial/a9\"><i class=\"fa fa-wrench\"></i> A9 Insecure Components</a>\n                    </li>\n                    <li><a href=\"/tutorial/a10\"><i class=\"fa fa-wrench\"></i> A10 Redirects</a>\n                    </li>\n                    <li><a href=\"/tutorial/redos\"><i class=\"fa\"></i> ReDoS Attacks</a>\n                    </li>\n                    <li><a href=\"/tutorial/ssrf\"><i class=\"fa\"></i> SSRF</a>\n                    </li>\n                </ul>\n\n                <ul class=\"nav navbar-nav navbar-right navbar-user\">\n                    <li><a href=\"/login\"><i class=\"fa fa-power-off\"></i> Exit</a>\n                    </li>\n                </ul>\n            </div>\n            <!-- /.navbar-collapse -->\n        </nav>\n\n        <div id=\"page-wrapper\">\n\n            <div class=\"row\">\n                <div class=\"col-lg-12\">\n                    <h1>A1 - Injection \n                        <small></small>\n                    </h1>\n                </div>\n            </div>\n            <!-- /.row -->\n            \n<div class=\"row\">\n    <div class=\"col-lg-12\">\n        <div class=\"bs-example\" style=\"margin-bottom: 40px;\">\n            <span class=\"label label-danger\">Exploitability: EASY</span>\n            <span class=\"label label-warning\">Prevalence: COMMON</span>\n            <span class=\"label label-warning\">Detectability: AVERAGE</span>\n            <span class=\"label label-danger\">Technical Impact: SEVERE</span>\n        </div>\n    </div>\n</div>\n\n\n<div class=\"row\">\n    <div class=\"col-lg-12\">\n        <div class=\"panel panel-info\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">Description</h3>\n            </div>\n            <div class=\"panel-body\">\n                Injection flaws occur when untrusted data is sent to an interpreter as part of a command or query. The attacker\u2019s hostile data can trick the interpreter into executing unintended commands or accessing data without proper authorization.\n            </div>\n        </div>\n        <!--\n        <div class=\"panel panel-info\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">Real World Attack Incident Examples</h3>\n            </div>\n            <div class=\"panel-body\">\n                Screencast here ...\n            </div>\n        </div>\n        -->\n    </div>\n</div>\n\n\n<!-- accordions -->\n<div class=\"panel-group\" id=\"accordion\">\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">\n                    <i class=\"fa fa-chevron-down\"></i>A1 - 1 Server Side JS Injection\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseOne\" class=\"panel-collapse collapse in\">\n            <div class=\"panel-body\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        When\n                        <code>eval()</code>,\n                        <code>setTimeout()</code>,\n                        <code>setInterval()</code>,\n                        <code>Function()</code>are used to process user provided inputs, it can be exploited by an attacker to inject and execute malicious JavaScript code on server.\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            Web applications using the JavaScript\n                            <code>eval()</code>function to parse the incoming data without any type of input validation are vulnerable to this attack. An attacker can inject arbitrary JavaScript code to be executed on the server. Similarly\n                            <code>setTimeout()</code>, and\n                            <code>setInterval()</code>functions can take code in string format as a first argument causing same issues as\n                            <code>eval()</code>.\n                        </p>\n                        <p>This vulnerability can be very critical and damaging by allowing attacker to send various types of commands.</p>\n                        <p>\n                            <b>Denial of Service Attack:</b>\n                        </p>\n                        <iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/krOx9QWwcYw?rel=0\" frameborder=\"0\" allowfullscreen></iframe>\n                        <p>\n                            An effective denial-of-service attack can be executed simply by sending the commands below to\n                            <code>eval()</code>function:\n                        </p>\n\n\n                        <pre>while(1)</pre>\n                        <p>\n                            This input will cause the target server's event loop to use 100% of its processor time and unable to process any other incoming requests until process is restarted.\n                        </p>\n                        <p>\n                            An alternative DoS attack would be to simply exit or kill the running process:\n                            <pre>process.exit()</pre> or <pre>process.kill(process.pid) </pre>\n                        </p>\n                        <p>\n                            <b>File System Access</b>\n                            <br/>\n                        </p>\n                        <iframe width=\"560\" height=\"315\" src=\"//www.youtube.com/embed/Mr-Jh9bjSLo?rel=0\" frameborder=\"0\" allowfullscreen></iframe>\n                        <p>\n                            Another potential goal of an attacker might be to read the contents of files from the server. For example, following two commands list the contents of the current directory and parent directory respectively:\n                        </p>\n                        <p>\n                            <pre>res.end(require('fs').readdirSync('.').toString())</pre>\n                            <pre>res.end(require('fs').readdirSync('..').toString()) </pre>\n                        </p>\n                        <p>\n                            Once file names are obtained, an attacker can issue the command below to view the actual contents of a file:\n                        </p>\n                        <p>\n                            <pre>res.end(require('fs').readFileSync(filename))</pre>\n                        </p>\n                        <p>\n                            An attacker can further exploit this vulnerability by writing and executing harmful binary files using\n                            <code>fs</code>and\n                            <code>child_process</code>modules.\n                        </p>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        To prevent server-side js injection attacks:\n                        <ul>\n                            <li>Validate user inputs on server side before processing</li>\n                            <li>Do not use\n                                <code>eval()</code>function to parse user inputs. Avoid using other commands with similar effect, such as\n                                <code>setTimeOut()</code>,\n                                <code>setInterval()</code>, and\n                                <code>Function()</code>.\n                            </li>\n                            <li>\n                                For parsing JSON input, instead of using\n                                <code>eval()</code>, use a safer alternative such as\n                                <code>JSON.parse()</code>. For type conversions use type related\n                                <code>parseXXX()</code>methods.\n                            </li>\n                            <li>Include\n                                <code>\"use strict\"</code>at the beginning of a function, which enables <a target=\"_blank\" href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode\"> strict mode </a>within the enclosing function scope.</li>\n\n                        </ul>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Example</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>In\n                            <code>routes/contributions.js</code>, the\n                            <code>handleContributionsUpdate()</code>function insecurely uses\n                            <code>eval()</code>to convert user supplied contribution amounts to integer.\n                            <pre>\n        // Insecure use of eval() to parse inputs\n        var preTax = eval(req.body.preTax);\n        var afterTax = eval(req.body.afterTax);\n        var roth = eval(req.body.roth);\n                            </pre> This makes application vulnerable to SSJS attack. It can fixed simply by using\n                            <code>parseInt()</code>instead.\n                            <pre>\n        //Fix for A1 -1 SSJS Injection attacks - uses alternate method to eval\n        var preTax = parseInt(req.body.preTax);\n        var afterTax = parseInt(req.body.afterTax);\n        var roth = parseInt(req.body.roth);\n                            </pre>\n                        </p>\n                        <p>In addition, all functions begin with\n                            <code>use strict</code>pragma.\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Further Reading</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <ul>\n                            <li><a target=\"_blank\" href=\"https://media.blackhat.com/bh-us-11/Sullivan/BH_US_11_Sullivan_Server_Side_WP.pdf\">\u201CServerSide JavaScript Injection: Attacking NoSQL and Node.js\"</a> a whitepaper by Bryan Sullivan.</li>\n                        </ul>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <!-- /ssjs -->\n\n    <!-- DB Injection -->\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">\n                    <i class=\"fa fa-chevron-down\"></i> A1 - 2 SQL and NoSQL Injection\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseTwo\" class=\"panel-collapse\">\n            <div class=\"panel-body\">\n\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            SQL and NoSQL injections enable an attacker to inject code into the query that would be executed by the database. These flaws are introduced when software developers create dynamic database queries that include user supplied input.\n                        </p>\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>Both SQL and NoSQL databases are vulnerable to injection attack. Here is an example of equivalent attack in both cases, where attacker manages to retrieve admin user's record without knowing password:</p>\n                        <h5>1. SQL Injection</h5>\n                        <p>Lets consider an example SQL statement used to authenticate the user with username and password</p>\n                        <pre>SELECT * FROM accounts WHERE username = '$username' AND password = '$password'</pre>\n                        <p>If this statement is not prepared or properly handled when constructed, an attacker may be able to supply\n                            <code>admin' --</code>in the username field to access the admin user's account bypassing the condition that checks for the password. The resultant SQL query would looks like:</p>\n                        <pre>SELECT * FROM accounts WHERE username = 'admin' -- AND password = ''</pre>\n                        <br/>\n                        <h5>2. NoSQL Injection</h5>\n                        <p>The equivalent of above query for NoSQL MongoDB database is:</p>\n                        <pre>db.accounts.find({username: username, password: password});</pre>\n                        <p>While here we are no longer dealing with query language, an attacker can still achieve the same results as SQL injection by supplying JSON input object as below:</p>\n                        <pre>\n{\n    \"username\": \"admin\",\n    \"password\": {$gt: \"\"}\n}\n                        </pre>\n                        <p>In MongoDB,\n                            <code>$gt</code>selects those documents where the value of the field is greater than (i.e. >) the specified value. Thus above statement compares password in database with empty string for greatness, which returns\n                            <code>true</code>.</p>\n                        <p>The same results can be achieved using other comparison operator such as\n                            <code>$ne</code>.</p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">SSJS Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            Server-side JavaScript Injection (SSJS) is an attack where JavaScript code is injected and executed in a server component. MongoDB specifically, is vulnerable to this attack when queries are run without proper sanitization.\n                        </p>\n\n                        <h5>$where operator</h5>\n                        <p>\n                            MongoDB's\n                            <code>$where</code> operator performs JavaScript expression evaluation on the MongoDB server. If the user is able to inject direct code into such queries then such an attack can take place\n                        </p>\n\n                        <p>\n                            Lets consider an example query:\n                        </p>\n                        <pre> db.allocationsCollection.find({ $where: \"this.userId == '\" + parsedUserId + \"' && \" + \"this.stocks > \" + \"'\" + threshold + \"'\" }); </pre>\n\n                        <p>\n                            The code will match all documents which have a\n                            <code>userId</code> field as specified by\n                            <code>parsedUserId</code> and a\n                            <code>stocks</code> field as specified by\n                            <code>threshold</code>. The problem is that these parameters are not validated, filtered, or sanitised, and vulnerable to SSJS Injection.\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        Here are some measures to prevent SQL / NoSQL injection attacks, or minimize impact if it happens:\n                        <ul>\n                            <li>Prepared Statements: For SQL calls, use prepared statements instead of building dynamic queries using string concatenation.</li>\n                            <li>Input Validation: Validate inputs to detect malicious values. For NoSQL databases, also validate input types against expected types</li>\n                            <li>Least Privilege: To minimize the potential damage of a successful injection attack, do not assign DBA or admin type access rights to your application accounts. Similarly minimize the privileges of the operating system account that the database process runs under.</li>\n                        </ul>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Example</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p><strong>Note: These vulnerabilities are not present when using an Atlas M0 cluster with NodeGoat.</strong></p>\n                        <p>The Allocations page of the demo application is vulnerable to NoSQL Injection. For example, set the stocks threshold filter to:</p>\n                        <pre>1'; return 1 == '1</pre>\n                        <p>This will retrieve allocations for all the users in the database.</p>\n                        <p>An attacker could also send the following input for the\n                            <code>threshold</code> field in the request's query, which will create a valid JavaScript expression and satisfy the\n                            <code> $where</code> query as well, resulting in a DoS attack on the MongoDB server:\n                        </p>\n                        <pre>http://localhost:4000/allocations/2?threshold=5';while(true){};' </pre>\n                        <p>\n                            You can also just drop the following into the Stocks Threshold input box:\n                        </p>\n                        <pre>';while(true){};'</pre>\n                        <p>For these vulnerabilities, bare minimum fixes can be found in\n                        <code>allocations.html</code> and\n                        <code>allocations-dao.js</code></p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <!-- /NoSQL Injection -->\n\n    <!-- Log Injection -->\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseThree\">\n                    <i class=\"fa fa-chevron-down\"></i> A1 - 3 Log Injection\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseThree\" class=\"panel-collapse\">\n            <div class=\"panel-body\">\n\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            Log injection vulnerabilities enable an attacker to forge and tamper with an application's logs.\n                        </p>\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>An attacker may craft a malicious request that may deliberately fail, which the application will log, and when attacker's user input is unsanitized, the payload is sent as-is to the logging facility. Vulnerabilities may vary depending on the logging facility:</p>\n                        <h5>1. Log Forging (CRLF) </h5>\n                        <p>Lets consider an example where an application logs a failed attempt to login to the system. A very common example for this is as follows:\n                        </p>\n                        <pre>\nvar userName = req.body.userName;\nconsole.log('Error: attempt to login with invalid user: ', userName);\n                        </pre>\n                        <p>When user input is unsanitized and the output mechanism is an ordinary terminal stdout facility then the application will be vulnerable to CRLF injection, where an attacker can create a malicious payload as follows:\n                        <pre>\ncurl http://localhost:4000/login -X POST --data 'userName=vyva%0aError: alex moldovan failed $1,000,000 transaction&password=Admin_123&_csrf='\n                        </pre>\n                        Where the <code>userName</code> parameter is encoding in the request the LF symbol which will result in a new line to begin. Resulting log output will look as follows:\n                        <pre>\nError: attempt to login with invalid user:  vyva\nError: alex moldovan failed $1,000,000 transaction\n                        </pre>\n                        <br/>\n                        <h5>2. Log Injection Escalation </h5>\n                        <p>\n                            An attacker may craft malicious input in hope of an escalated attack where the target isn't the logs themselves, but rather the actual logging system. For example, if an application has a back-office web app that manages viewing and tracking the logs, then an attacker may send an XSS payload into the log, which may not result in log forging on the log itself, but when viewed by a system administrator on the log viewing web app then it may compromise it and result in XSS injection that if the logs app is vulnerable.\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n\n                        As always when dealing with user input:\n                        <ul>\n                            <li>\n                                Do not allow user input into logs\n                            </li>\n                            <li>\n                                Encode to proper context, or sanitize user input\n                            </li>\n                        </ul>\n\n                        Encoding example:\n                        <pre>\n// Step 1: Require a module that supports encoding\nvar ESAPI = require('node-esapi');\n// - Step 2: Encode the user input that will be logged in the correct context\n// following are a few examples:\nconsole.log('Error: attempt to login with invalid user: %s', ESAPI.encoder().encodeForHTML(userName));\nconsole.log('Error: attempt to login with invalid user: %s', ESAPI.encoder().encodeForJavaScript(userName));\nconsole.log('Error: attempt to login with invalid user: %s', ESAPI.encoder().encodeForURL(userName));\n                        </pre>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Example</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>For the above Log Injection vulnerability, example and fix can be found at\n                        <code>routes/session.js</code></p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <!-- /Log Injection -->\n\n</div>\n<!-- end accordions -->\n\n        </div>\n        <!-- /#page-wrapper -->\n\n    </div>\n    <!-- /#wrapper -->\n\n    <script src=\"../vendor/jquery.min.js\"></script>",
+							"otherinfo": "No links have been found while there are scripts, which is an indication that this is a modern web application."
+						},
+						{
+							"id": "87",
+							"uri": "http://localhost:4000/tutorial/a2",
+							"nodeName": "http:\/\/localhost:4000\/tutorial\/a2",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<script src=\"../vendor/html5shiv.js\"><![endif]-->\n</head>\n\n<body>\n\n    <div id=\"wrapper\">\n\n        <!-- Sidebar -->\n        <nav class=\"navbar navbar-inverse navbar-fixed-top\" role=\"navigation\">\n            <!-- Brand and toggle get grouped for better mobile display -->\n            <div class=\"navbar-header\">\n                <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-ex1-collapse\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <a class=\"navbar-brand\" href=\"/tutorial\"><b>OWASP Node Goat Tutorial:</b> Fixing OWASP Top 10 </a>\n            </div>\n\n            <!-- Collect the nav links, forms, and other content for toggling -->\n            <div class=\"collapse navbar-collapse navbar-ex1-collapse\">\n                <ul class=\"nav navbar-nav side-nav\">\n                    <li><a href=\"/tutorial/a1\"><i class=\"fa fa-wrench\"></i> A1 Injection</a>\n                    </li>\n                    <li><a href=\"/tutorial/a2\"><i class=\"fa fa-wrench\"></i> A2 Broken Auth</a>\n                    </li>\n                    <li><a href=\"/tutorial/a3\"><i class=\"fa fa-wrench\"></i> A3 XSS</a>\n                    </li>\n                    <li><a href=\"/tutorial/a4\"><i class=\"fa fa-wrench\"></i> A4 Insecure DOR</a>\n                    </li>\n                    <li><a href=\"/tutorial/a5\"><i class=\"fa fa-wrench\"></i> A5 Misconfig</a>\n                    </li>\n                    <li><a href=\"/tutorial/a6\"><i class=\"fa fa-wrench\"></i> A6 Sensitive Data</a>\n                    </li>\n                    <li><a href=\"/tutorial/a7\"><i class=\"fa fa-wrench\"></i> A7 Access Controls</a>\n                    </li>\n                    <li><a href=\"/tutorial/a8\"><i class=\"fa fa-wrench\"></i> A8 CSRF</a>\n                    </li>\n                    <li><a href=\"/tutorial/a9\"><i class=\"fa fa-wrench\"></i> A9 Insecure Components</a>\n                    </li>\n                    <li><a href=\"/tutorial/a10\"><i class=\"fa fa-wrench\"></i> A10 Redirects</a>\n                    </li>\n                    <li><a href=\"/tutorial/redos\"><i class=\"fa\"></i> ReDoS Attacks</a>\n                    </li>\n                    <li><a href=\"/tutorial/ssrf\"><i class=\"fa\"></i> SSRF</a>\n                    </li>\n                </ul>\n\n                <ul class=\"nav navbar-nav navbar-right navbar-user\">\n                    <li><a href=\"/login\"><i class=\"fa fa-power-off\"></i> Exit</a>\n                    </li>\n                </ul>\n            </div>\n            <!-- /.navbar-collapse -->\n        </nav>\n\n        <div id=\"page-wrapper\">\n\n            <div class=\"row\">\n                <div class=\"col-lg-12\">\n                    <h1>A2-Broken Authentication and Session Management \n                        <small></small>\n                    </h1>\n                </div>\n            </div>\n            <!-- /.row -->\n            \n<div class=\"row\">\n    <div class=\"col-lg-12\">\n        <div class=\"bs-example\" style=\"margin-bottom: 40px;\">\n            <span class=\"label label-warning\">Exploitability: AVERAGE</span>\n            <span class=\"label label-danger\">Prevalence: WIDESPREAD</span>\n            <span class=\"label label-warning\">Detectability: AVERAGE</span>\n            <span class=\"label label-danger\">Technical Impact: SEVERE</span>\n        </div>\n    </div>\n</div>\n\n<div class=\"row\">\n    <div class=\"col-lg-12\">\n        <div class=\"panel panel-info\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">Description</h3>\n            </div>\n            <div class=\"panel-body\">\n                <p>\n                    In this attack, an attacker (who can be anonymous external attacker, a user with own account who may attempt to steal data from accounts, or an insider wanting to disguise his or her actions) uses leaks or flaws in the authentication or session management functions to impersonate other users. Application functions related to authentication and session management are often not implemented correctly, allowing attackers to compromise passwords, keys, or session tokens, or to exploit other implementation flaws to assume other users\u2019 identities.\n                </p>\n                <p>\n                    Developers frequently build custom authentication and session management schemes, but building these correctly is hard. As a result, these custom schemes frequently have flaws in areas such as logout, password management, timeouts, remember me, secret question, account update, etc. Finding such flaws can sometimes be difficult, as each implementation is unique.\n                </p>\n            </div>\n\n        </div>\n        <!--\n        <div class=\"panel panel-info\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">Real World Attack Incident Examples</h3>\n            </div>\n            <div class=\"panel-body\">\n                Screencast here ...\n            </div>\n        </div>\n-->\n    </div>\n</div>\n\n<!-- accordions -->\n<div class=\"panel-group\" id=\"accordion\">\n\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">\n                    <i class=\"fa fa-chevron-down\"></i> A2 - 1 Session Management\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseTwo\" class=\"panel-collapse collapse in\">\n            <div class=\"panel-body\">\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        Session management is a critical piece of application security. It is broader risk, and requires developers take care of protecting session id, user credential secure storage, session duration, and protecting critical session data in transit.\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p><b>Scenario #1:</b> Application timeouts aren't set properly. User uses a public computer to access site. Instead of selecting \u201Clogout\u201D the user simply closes the browser tab and walks away. Attacker uses the same browser an hour later, and that browser is still authenticated.</p>\n\n                        <p><b>Scenario #2: </b>Attacker acts as a man-in-middle and acquires user's session id from network traffic. Then uses this authenticated session id to connect to application without needing to enter user name and password.</p>\n\n                        <p><b>Scenario #3: </b>Insider or external attacker gains access to the system's password database. User passwords are not properly hashed, exposing every users' password to the attacker.</p>\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        Session management related security issues can be prevented by taking these measures:\n                        <ul>\n                            <li>User authentication credentials should be protected when stored using hashing or encryption.</li>\n                            <li>Session IDs should not be exposed in the URL (e.g., URL rewriting).</li>\n                            <li>Session IDs should timeout. User sessions or authentication tokens should get properly invalidated during logout.</li>\n                            <li>Session IDs should be recreated after successful login.</li>\n                            <li>Passwords, session IDs, and other credentials should not be sent over unencrypted connections.</li>\n                        </ul>\n                    </div>\n                </div>\n\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Examples</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>In the insecure demo app, following issues exists:</p>\n                        <h3>1. Protecting user credentials</h3>\n                        <p>password gets stored in database in plain text . Here is related code in\n                            <code>data/user-dao.js</code>\n                            <code>addUser()</code>method:\n                            <pre>\n// Create user document\nvar user = {\n    userName: userName,\n    firstName: firstName,\n    lastName: lastName,\n    password: password //received from request param\n};\n                        </pre> To secure it, handle password storage in a safer way by using one way encryption using salt hashing as below:</p>\n                        <pre>\n// Generate password hash\nvar salt = bcrypt.genSaltSync();\nvar passwordHash = bcrypt.hashSync(password, salt);\n\n// Create user document\nvar user = {\n    userName: userName,\n    firstName: firstName,\n    lastName: lastName,\n    password: passwordHash\n};\n                        </pre> This hash password can not be decrypted, hence more secure. To compare the password when user logs in, the user entered password gets converted to hash and compared with the hash in storage.\n\n                        <pre>\nif (bcrypt.compareSync(password, user.password)) {\n    callback(null, user);\n} else {\n    callback(invalidPasswordError, null);\n}\n                        </pre> Note: The bcrypt module also provides asynchronous methods for creating and comparing hash.\n                        <br/>\n                        <br/>\n                        <h3>2. Session timeout and protecting cookies in transit</h3>\n\n                        <p>The insecure demo application does not contain any provision to timeout user session. The session stays active until user explicitly logs out.</p>\n\n                        <p>In addition to that, the app does not prevent cookies being accessed in script, making application vulnerable to Cross Site Scripting (XSS) attacks. Also cookies are not prevented to get sent on insecure HTTP connection.</p>\n\n                        <p>To secure the application:</p>\n                        <p>1. Use session based timeouts, terminate session when browser closes.</p>\n                        <pre>\n// Enable session management using express middleware\napp.use(express.cookieParser());\n </pre>\n                        <p>2. In addition, sets\n                            <code>HTTPOnly</code>HTTP header preventing cookies being accessed by scripts. The application used HTTPS secure connections, and cookies are configured to be sent only on Secure HTTPS connections by setting\n                            <code>Secure</code>flag.\n                            <pre>\napp.use(express.session({\n    secret: \"s3Cur3\",\n    cookie: {\n        httpOnly: true,\n        secure: true\n    }\n}));\n                        </pre>\n                        </p>\n                        <p>\n                            3. When user clicks logout, destroy the session and session cookie\n                            <pre>\nreq.session.destroy(function() {\n    res.redirect(\"/\");\n});\n                        </pre> Note: The example code uses\n                            <code>MemoryStore</code>to manage session data, which is not designed for production environment, as it will leak memory, and will not scale past a single process. Use database based storage MongoStore or RedisStore for production. Alternatively, sessions can be managed using popular passport module.\n                        <br/>\n                        <br/>\n                        <h3>3. Session hijacking</h3>\n\n                        <p>The insecure demo application does not regenerate a new session id upon user's login, therefore rendering a vulnerability of session hijacking if an attacker is able to somehow steal the cookie with the session id and use it.\n\n                        <p>Upon login, a security best practice with regards to cookies session management would be to regenerate the session id so that if an id was already created for a user on an insecure medium (i.e: non-HTTPS website or otherwise), or if an attacker was able to get their hands on the cookie id before the user logged-in, then the old session id will render useless as the logged-in user with new privileges holds a new session id now.\n                    </p>\n\n                        <p>To secure the application:</p>\n                        <p>1. Re-generate a new session id upon login (and best practice is to keep regenerating them\nupon requests or at least upon sensitive actions like a user's password reset.\n\n                            Re-generate a session id as follows:\n                            By wrapping the below code as a function callback for the method req.session.regenerate()\n                            <pre>\nreq.session.regenerate(function() {\n\n  req.session.userId = user._id;\n\n  if (user.isAdmin) {\n    return res.redirect(\"/benefits\");\n  } else {\n    return res.redirect(\"/dashboard\");\n  }\n\n})\n                        </pre>\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Further Reading</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <ul>\n                            <li><a href=\"https://npmjs.org/package/helmet\">Helmet</a> Security header middleware collection for express</li>\n                            <li><a href=\"http://recxltd.blogspot.sg/2012/03/seven-web-server-http-headers-that.html\">Seven Web Server HTTP Headers that Improve Web Application Security for Free</a>\n                            </li>\n                            <li><a href=\"http://passportjs.org/guide/authenticate/\">Passport</a> authentication middleware</li>\n                            <li><a href=\"http://en.wikipedia.org/wiki/Session_fixation\">CWE-384: Session Fixation</a>\n                            </li>\n                        </ul>\n                    </div>\n                </div>\n\n            </div>\n        </div>\n    </div>\n    <!-- /Session Management -->\n\n    <div class=\"panel panel-info\">\n        <div class=\"panel-heading\">\n            <h4 class=\"panel-title\">\n                <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">\n                    <i class=\"fa fa-chevron-down\"></i> A2 - 2 Password Guessing Attacks\n                </a>\n            </h4>\n        </div>\n        <div id=\"collapseOne\" class=\"panel-collapse collapse in\">\n            <div class=\"panel-body\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Description</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        Implementing a robust minimum password criteria (minimum length and complexity) can make it difficult for attacker to guess password.\n                    </div>\n                </div>\n                <!--  \n                <div class=\"panel panel-info\"> \n                    <div class=\"panel-heading\"> \n                        <h3 class=\"panel-title\">Attack Scenario Demo</h3> \n                    </div> \n                    <div class=\"panel-body\"> \n                        Screencast showing how attack can manifest in the target application ... \n                    </div> \n                </div> \n                -->\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Attack Mechanics</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            The attacker can exploit this vulnerability by brute force password guessing, more likely using tools that generate random passwords.\n                        </p>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">How Do I Prevent It?</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p><b>Password length</b>\n                        </p>\n                        <p>Minimum passwords length should be at least eight (8) characters long. Combining this length with complexity makes a password difficult to guess and/or brute force.</p>\n                        <p><b>Password complexity</b>\n                        </p>\n                        <p>Password characters should be a combination of alphanumeric characters. Alphanumeric characters consist of letters, numbers, punctuation marks, mathematical and other conventional symbols.</p>\n                        <p><b>Username/Password Enumeration</b>\n                        </p>\n                        <p>Authentication failure responses should not indicate which part of the authentication data was incorrect. For example, instead of \"Invalid username\" or \"Invalid password\", just use \"Invalid username and/or password\" for both. Error responses must be truly identical in both display and source code</p>\n\n                        <p><b>Additional Measures</b>\n                        </p>\n                        <p>\n                            <ul>\n                                <li>For additional protection against brute forcing, enforce account disabling after an established number of invalid login attempts (e.g., five attempts is common). The account must be disabled for a period of time sufficient to discourage brute force guessing of credentials, but not so long as to allow for a denial-of-service attack to be performed.</li>\n                                <li>Only send non-temporary passwords over an encrypted connection or as encrypted data, such as in an encrypted email. Temporary passwords associated with email resets may be an exception. Enforce the changing of temporary passwords on the next use. Temporary passwords and links should have a short expiration time.</li>\n                            </ul>\n                    </div>\n                </div>\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"panel-title\">Source Code Example</h3>\n                    </div>\n                    <div class=\"panel-body\">\n                        <p>\n                            The demo application doesn't enforce strong password. In routes/session.js\n                            <code>validateSignup()</code>method, the regex for password enforcement is simply <pre>var PASS_RE = /^.{1,20}$/;</pre>\n                        </p>\n                        <p>\n                            A stronger password can be enforced using the regex below, which requires at least 8 character password with numbers and both lowercase and uppercase letters.\n                            <pre>var PASS_RE =/^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;</pre>\n                        </p>\n                        <p>\n                            Another issue, in routes/session.js, the\n                            <code>handleLoginRequest()</code>enumerated whether password was incorrect or user doesn't exist.This information can be valuable to an attacker with brute forcing attempts. This can be easily fixed using a generic error message such as \"Invalid username and/or password\".\n                        </p>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <!-- /Password Complexity -->\n\n\n</div>\n<!-- end accordions -->\n\n        </div>\n        <!-- /#page-wrapper -->\n\n    </div>\n    <!-- /#wrapper -->\n\n    <script src=\"../vendor/jquery.min.js\"></script>",
+							"otherinfo": "No links have been found while there are scripts, which is an indication that this is a modern web application."
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>This is an informational alert and so no changes are required.</p>",
+					"otherinfo": "<p>Links have been found that do not have traditional href attributes, which is an indication that this is a modern web application.</p>",
+					"reference": "",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-1",
+					"alert": "Non-Storable Content",
+					"name": "Non-Storable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are not storable by caching components such as proxy servers. If the response does not contain sensitive, personal or user-specific information, it may benefit from being stored and cached, to improve performance.</p>",
+					"instances":[ 
+						{
+							"id": "8",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "302",
+							"otherinfo": ""
+						},
+						{
+							"id": "80",
+							"uri": "http://localhost:4000/",
+							"nodeName": "http:\/\/localhost:4000\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "302",
+							"otherinfo": ""
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "<p>The content may be marked as storable by ensuring that the following conditions are satisfied:</p><p>The request method must be understood by the cache and defined as being cacheable (\"GET\", \"HEAD\", and \"POST\" are currently defined as cacheable)</p><p>The response status code must be understood by the cache (one of the 1XX, 2XX, 3XX, 4XX, or 5XX response classes are generally understood)</p><p>The \"no-store\" cache directive must not appear in the request or response header fields</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"private\" response directive must not appear in the response</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"Authorization\" header field must not appear in the request, unless the response explicitly allows it (using one of the \"must-revalidate\", \"public\", or \"s-maxage\" Cache-Control response directives)</p><p>In addition to the conditions above, at least one of the following conditions must also be satisfied by the response:</p><p>It must contain an \"Expires\" header field</p><p>It must contain a \"max-age\" response directive</p><p>For \"shared\" caches such as \"proxy\" caches, it must contain a \"s-maxage\" response directive</p><p>It must contain a \"Cache Control Extension\" that allows it to be cached</p><p>It must have a status code that is defined as cacheable by default (200, 203, 204, 206, 300, 301, 404, 405, 410, 414, 501).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "10112",
+					"alertRef": "10112",
+					"alert": "Session Management Response Identified",
+					"name": "Session Management Response Identified",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The given response has been identified as containing a session management token. The 'Other Info' field contains a set of header tokens that can be used in the Header Based Session Management Method. If the request is in a context which has a Session Management Method set to \"Auto-Detect\" then this rule will change the session management to use the tokens identified.</p>",
+					"instances":[ 
+						{
+							"id": "1",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "connect.sid",
+							"attack": "",
+							"evidence": "connect.sid",
+							"otherinfo": "cookie:connect.sid"
+						},
+						{
+							"id": "131",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup ()(_csrf,email,firstName,lastName,password,userName,verify)",
+							"method": "POST",
+							"param": "connect.sid",
+							"attack": "",
+							"evidence": "connect.sid",
+							"otherinfo": "cookie:connect.sid"
+						},
+						{
+							"id": "150",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap-tour.js",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap-tour.js",
+							"method": "GET",
+							"param": "connect.sid",
+							"attack": "",
+							"evidence": "connect.sid",
+							"otherinfo": "cookie:connect.sid"
+						}
+					],
+					"count": "3",
+					"systemic": false,
+					"solution": "<p>This is an informational alert rather than a vulnerability and so there is nothing to fix.</p>",
+					"otherinfo": "<p>cookie:connect.sid</p>",
+					"reference": "<p>https://www.zaproxy.org/docs/desktop/addons/authentication-helper/session-mgmt-id/</p>",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "6"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-3",
+					"alert": "Storable and Cacheable Content",
+					"name": "Storable and Cacheable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are storable by caching components such as proxy servers, and may be retrieved directly from the cache, rather than from the origin server by the caching servers, in response to similar requests from other users. If the response data is sensitive, personal or user-specific, this may result in sensitive information being leaked. In some cases, this may even result in a user gaining complete control of the session of another user, depending on the configuration of the caching components in use in their environment. This is primarily an issue where \"shared\" caching servers such as \"proxy\" caches are configured on the local network. This configuration is typically found in corporate or educational environments, for instance.</p>",
+					"instances":[ 
+						{
+							"id": "13",
+							"uri": "http://localhost:4000",
+							"nodeName": "http:\/\/localhost:4000",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "48",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "15",
+							"uri": "http://localhost:4000/robots.txt",
+							"nodeName": "http:\/\/localhost:4000\/robots.txt",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "33",
+							"uri": "http://localhost:4000/signup",
+							"nodeName": "http:\/\/localhost:4000\/signup",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						},
+						{
+							"id": "23",
+							"uri": "http://localhost:4000/sitemap.xml",
+							"nodeName": "http:\/\/localhost:4000\/sitemap.xml",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234."
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Validate that the response does not contain sensitive, personal or user-specific information. If it does, consider the use of the following HTTP response headers, to limit, or prevent the content being stored and retrieved from the cache by another user:</p><p>Cache-Control: no-cache, no-store, must-revalidate, private</p><p>Pragma: no-cache</p><p>Expires: 0</p><p>This configuration directs both HTTP 1.0 and HTTP 1.1 compliant caching servers to not store the response, and to not retrieve the response (without validation) from the cache, in response to a similar request.</p>",
+					"otherinfo": "<p>In the absence of an explicitly specified caching lifetime directive in the response, a liberal lifetime heuristic of 1 year was assumed. This is permitted by rfc7234.</p>",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "1"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-2",
+					"alert": "Storable but Non-Cacheable Content",
+					"name": "Storable but Non-Cacheable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are storable by caching components such as proxy servers, but will not be retrieved directly from the cache, without validating the request upstream, in response to similar requests from other users.</p>",
+					"instances":[ 
+						{
+							"id": "40",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap.css",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "max-age=0",
+							"otherinfo": ""
+						},
+						{
+							"id": "77",
+							"uri": "http://localhost:4000/vendor/bootstrap/bootstrap.js",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/bootstrap\/bootstrap.js",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "max-age=0",
+							"otherinfo": ""
+						},
+						{
+							"id": "73",
+							"uri": "http://localhost:4000/vendor/theme/font-awesome/css/font-awesome.min.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/theme\/font-awesome\/css\/font-awesome.min.css",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "max-age=0",
+							"otherinfo": ""
+						},
+						{
+							"id": "55",
+							"uri": "http://localhost:4000/vendor/theme/sb-admin.css",
+							"nodeName": "http:\/\/localhost:4000\/vendor\/theme\/sb-admin.css",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "max-age=0",
+							"otherinfo": ""
+						}
+					],
+					"count": "4",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "20"
+				},
+				{
+					"pluginid": "10031",
+					"alertRef": "10031",
+					"alert": "User Controllable HTML Element Attribute (Potential XSS)",
+					"name": "User Controllable HTML Element Attribute (Potential XSS)",
+					"riskcode": "0",
+					"confidence": "1",
+					"riskdesc": "Informational (Low)",
+					"desc": "<p>This check looks at user-supplied input in query string parameters and POST data to identify where certain HTML attribute values might be controlled. This provides hot-spot detection for XSS (cross-site scripting) that will require further review by a security analyst to determine exploitability.</p>",
+					"instances":[ 
+						{
+							"id": "133",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login ()(_csrf,password,userName)",
+							"method": "POST",
+							"param": "password",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "User-controlled HTML attribute values were found. Try injecting special characters to see if XSS might be possible. The page at the following URL:\n\nhttp://localhost:4000/login\n\nappears to include user input in:\na(n) [input] tag [value] attribute\n\nThe user input found was:\npassword=ZAP\n\nThe user-controlled value was:\nzap"
+						},
+						{
+							"id": "134",
+							"uri": "http://localhost:4000/login",
+							"nodeName": "http:\/\/localhost:4000\/login ()(_csrf,password,userName)",
+							"method": "POST",
+							"param": "userName",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": "User-controlled HTML attribute values were found. Try injecting special characters to see if XSS might be possible. The page at the following URL:\n\nhttp://localhost:4000/login\n\nappears to include user input in:\na(n) [input] tag [value] attribute\n\nThe user input found was:\nuserName=ZAP\n\nThe user-controlled value was:\nzap"
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "<p>Validate all input and sanitize output it before writing to any HTML attributes.</p>",
+					"otherinfo": "<p>User-controlled HTML attribute values were found. Try injecting special characters to see if XSS might be possible. The page at the following URL:</p><p></p><p>http://localhost:4000/login</p><p></p><p>appears to include user input in:</p><p>a(n) [input] tag [value] attribute</p><p></p><p>The user input found was:</p><p>password=ZAP</p><p></p><p>The user-controlled value was:</p><p>zap</p>",
+					"reference": "<p>https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html</p>",
+					"cweid": "20",
+					"wascid": "20",
+					"sourceid": "65"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}
