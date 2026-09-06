@@ -1,0 +1,18 @@
+conjunto,cves,primario,evidencia
+CWE-079|CWE-116,42,CWE-079,Descrições referem-se a cross-site scripting; CWE-116 designa o mecanismo
+CWE-078|CWE-088,25,CWE-078,As descrições do grupo referem-se a injeção de comando
+CWE-400|CWE-730,25,CWE-400,Negação de serviço por expressão regular. Exceção: CVE-2017-16023 e CVE-2018-7560 descrevem injeção de expressão regular (CWE-624 fora do conjunto declarado); recebem o primário do grupo pela regra de fechamento
+CWE-078|CWE-079|CWE-094|CWE-400|CWE-915,23,CWE-915,Poluição de protótipo; os demais são impactos potenciais
+CWE-022|CWE-023|CWE-036|CWE-073|CWE-099,21,CWE-022,Travessia de caminho; os demais são especializações
+CWE-079|CWE-094|CWE-116,8,CWE-094,Descrições referem-se a injeção de código
+CWE-020|CWE-116,7,CWE-116,Escape ou codificação incompletos
+CWE-079|CWE-116|CWE-601,3,CWE-601,Redirecionamento não validado
+CWE-312|CWE-315|CWE-359,3,CWE-312,Registro em claro de informação sensível
+CWE-020|CWE-079|CWE-116,1,CWE-079,Sanitização incompleta de atributo HTML
+CWE-020|CWE-094,1,CWE-094,Execução arbitrária de código
+CWE-074|CWE-094,1,CWE-094,Execução arbitrária de código
+CWE-404|CWE-730,1,CWE-404,Fluxo não encerrado
+CWE-125|CWE-126,1,CWE-125,Leitura além do limite do buffer
+CWE-290|CWE-807,1,CWE-807,Contorno de verificação de segurança
+CWE-020|CWE-668,1,CWE-020,Validação de entrada imprópria
+CWE-250|CWE-400,1,,pendente de exame do diff
