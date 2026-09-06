@@ -1,0 +1,37 @@
+{
+  "pack": "p/default",
+  "source_url": "https://semgrep.dev/c/p/default",
+  "obtained_at": "2026-09-06T02:13:52Z",
+  "sha256": "1ddc9b0bd5ad9ee31f4727648cfdd4279317627b859c44ef56d77438a0f8b87b",
+  "bytes": 2423491,
+  "rules_total": 1074,
+  "rules_js_ts": 163,
+  "rules_js_ts_criterion": "campo languages contendo js, javascript, ts ou typescript, case-insensitive",
+  "rules_id_sha256": "725482bbbcd8439ab473c0139bd114ef92658bada2243dc779e505518e0a14a0",
+  "rules_id_sha256_method": "sha256 da concatenação dos check_id ordenados, um por linha, com \n final",
+  "counting_note": "rules_total exige parser YAML. Um grep por '^- id: ' conta 1073: a regra terraform.aws.security.aws-provisioner-exec.aws-provisioner-exec declara 'patterns' antes de 'id'.",
+  "source_ordering_note": "O endpoint serve o YAML com ordem de regras não determinística. Duas obtenções em 2026-09-06T01:30:30Z e 2026-09-06T02:13:52Z produziram bytes distintos — sha256 d540bbcc4c46e37b7945bcd08c0d12eaf6a84af6a9c0a2db6c1116ebf08c6808 e 1ddc9b0bd5ad9ee31f4727648cfdd4279317627b859c44ef56d77438a0f8b87b — com 2423491 bytes, 1074 regras e conjunto de check_id idêntico nos dois; a diferença é um bloco de regras javascript.express.security.audit.xss.pug.* deslocado. Por isso rules_id_sha256 existe: é invariante à ordem e vale 725482bb… nos dois snapshots.",
+  "continuity_check": {
+    "productive_rules_campaign_v1": 145,
+    "present_in_this_snapshot": 145,
+    "source_of_check_ids": "datasets/v1-checkids.txt",
+    "verified_at": "2026-09-06T02:20:45Z"
+  },
+  "prefix_verification": {
+    "semgrep_version": "1.171.0",
+    "cases": [
+      {
+        "config_path": "/packs/default.yaml",
+        "resulting_prefix": "packs."
+      },
+      {
+        "config_path": "/rulesdir/js.yaml",
+        "resulting_prefix": "rulesdir."
+      },
+      {
+        "config_path": "/default.yaml",
+        "resulting_prefix": ""
+      }
+    ]
+  }
+}
