@@ -215,12 +215,28 @@ O gerador exige a flag `--force` para remover lotes existentes.
 
 ## Política de versionamento
 
-**Versionados:** `datasets/` (incluindo `cwe-primario.csv`), `tools/`
-(incluindo `tools/ground-truth/`), `results/*/treated/`, `logs/`,
-Dockerfiles, scripts, workflows.
+**Versionados:** `datasets/` (incluindo `cwe-primario.csv` e
+`v1-checkids.txt`), `tools/`, `results/*/treated/`, `results/zap/`,
+`logs/`, o pack vendorizado do Semgrep e seu descritor, Dockerfiles,
+scripts, workflows.
 
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
 databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`.
+
+`results/zap/` guarda os oito relatórios da campanha DAST de julho de 2026
+(JSON e HTML por aplicação e modo) mais o plano de automação. São os
+**únicos dados de detecção válidos do estudo** — a campanha SAST anterior
+foi invalidada. Existiam em cópia única fora de controle de versão.
+
+Os relatórios não trazem campo de modo de varredura. A correspondência
+está no README do diretório, estabelecida por contagem de alertas
+(10/14/23/29) e não por nomenclatura: `juice-shop-report.json` é o
+baseline, apesar do nome não dizer. **Não renomear** — os nomes são o
+artefato produzido pela execução.
+
+Ainda **não** trazidos para o repositório: os scripts de proveniência do
+ground truth (previstos em `tools/ground-truth/`) e o script de sondagem
+de disponibilidade dos repositórios.
 
 Motivo: o repositório precisa permitir verificar os números do estudo sem
 depender de artifacts do GitHub Actions, que expiram em 30 dias.
@@ -238,6 +254,71 @@ depender de artifacts do GitHub Actions, que expiram em 30 dias.
   `cve,repo,commit,status,mensagem,duracao_segundos`
 - Limpeza do código obtido — e do database, no CodeQL — ao final de cada
   iteração, inclusive nos caminhos de erro
+- **Escrita atômica da saída bruta**: escrever em nome temporário e
+  renomear para o definitivo só após validar. A idempotência olha o nome
+  definitivo, então interrupção abrupta (SIGKILL, OOM, limite de job) não
+  deixa arquivo truncado que a execução seguinte leia como análise
+  concluída. O nome temporário não pode casar com os globs do normalizador
+  (`*.json`, `*.sarif`, `CVE-*`), e resíduo de execução anterior é removido
+  antes de processar cada CVE
+- **Remover saída parcial antes de registrar erro.** Sem isso, um raw
+  truncado deixado por análise que falhou faz a idempotência pular aquele
+  CVE para sempre
+- **Assertar o commit analisado**: comparar `git rev-parse HEAD` com o
+  `PrePatchCommit` e gravar o valor efetivo no log. Sem a asserção, a
+  garantia repousa na semântica do `FETCH_HEAD` e nenhum artefato registra
+  qual commit foi submetido às ferramentas
+- Sinal de interrupção deve **encerrar** o script, não só limpar. Um
+  `trap ... INT TERM` que apenas chama a função de limpeza retorna e o
+  bash retoma no comando seguinte: o laço continua e o log ganha linhas de
+  erro para CVEs jamais tentados
+
+### Conjunto de status do log
+
+`OK`, `SEM_ACHADOS`, `PULADO`, `ERRO_LINHA`, `ERRO_FETCH`,
+`ERRO_CHECKOUT`, `ERRO_ANALISE`, mais `SEM_ARQUIVO_ANALISAVEL` **só no
+Snyk Code**.
+
+`SEM_ARQUIVO_ANALISAVEL` corresponde ao exit 3 do Snyk, "nenhum projeto
+suportado". É **resultado, não falha**: a análise não quebrou, e não há o
+que analisar. Registrar como `ERRO_ANALISE` faria a reexecução tentar
+indefinidamente e sumiria da leitura de cobertura — o defeito acessório
+que a campanha anterior cometeu. Consequência assumida: a idempotência não
+pula esse CVE, porque não há raw cuja existência o sinalizasse, e fabricar
+um SARIF que a ferramenta não emitiu seria pior.
+
+### Revisão antes da execução
+
+Todo script, Dockerfile ou normalizador passa pelo subagente
+`revisor-pipeline` antes de commit. O checklist dele deriva dos defeitos
+reais que invalidaram a campanha anterior. Revisão sem apontamentos é
+resultado válido.
+
+## Obtenção do código — comportamento medido
+
+Fetch raso por SHA, com fallback para clone completo. Medições de
+setembro de 2026:
+
+- O GitHub **aceita** fetch raso por SHA arbitrário, inclusive de commit
+  fora do branch padrão. O fallback deve disparar raramente
+- O clone de fallback usa `--no-single-branch` **explícito**. É redundante
+  ante o default do Git, mas a config `clone.defaultSingleBranch` o
+  inverteria em silêncio
+- Isso não é precaução abstrata: **4 dos 7 CVEs do bootstrap**
+  (`CVE-2018-14040`, `CVE-2018-14042`, `CVE-2018-20676`, `CVE-2018-20677`)
+  têm o commit alcançável apenas por `origin/v3-dev`, não pelo branch
+  padrão. Sob clone single-branch, os quatro dariam `ERRO_CHECKOUT`
+  dispersos entre lotes, sem causa comum aparente
+- Fora do alcance de ambos: commit só em `refs/pull/*`, em fork, ou em
+  branch removido — e são os mesmos casos em que o fetch raso também
+  falha, então ali o fallback paga o timeout sem resolver
+- **Contar** quantos CVEs usaram fallback, como métrica própria e não só
+  na coluna mensagem. O valor esperado é baixo; elevação súbita indica
+  mudança no servidor ou degradação do conjunto
+
+Sondar a disponibilidade dos 186 repositórios **imediatamente antes de
+cada campanha**, com saída datada e versionada. Sondagem é observação;
+script é procedimento.
 
 ## Defeitos conhecidos do conjunto de dados
 
@@ -263,6 +344,17 @@ depender de artifacts do GitHub Actions, que expiram em 30 dias.
 - O repositório do benchmark é importação achatada: 88 commits, o mais
   antigo sendo o release 1.0.0 de 22/09/2020. O processo de construção do
   dataset não é recuperável a partir dele
+- **`linxiaowu66/swagger-ui` não existe mais.** Sondagem de 06/09/2026:
+  185 dos 186 repositórios alcançáveis, um inacessível. Atinge
+  `CVE-2016-1000229`, que está no lote de teste e no `batch-aa` — a
+  primeira coisa que a Fase E roda contém um `ERRO_FETCH` **esperado**, em
+  1 dos 5. Não é defeito do script.
+  Não é falso negativo: nenhuma ferramenta foi confrontada com o código,
+  porque não houve código. Categoria própria, fora da matriz —
+  **denominador cai de 222 para 221 pares**, em ambas as modalidades.
+  Reconferir na hora da campanha: repositório pode voltar, outro pode cair.
+  Ironia registrada: é justamente um dos dois homônimos que motivaram a
+  regra de nomear saídas pelo CVE
 
 ## Arquitetura — normalização fora dos containers
 
@@ -279,7 +371,7 @@ Por isso a idempotência do laço de análise verifica a existência do **raw**,
 não do arquivo normalizado.
 
 Corolário prático: **a tabela de CWE primário não bloqueia a campanha**. O
-campo `gt_cwe_primario` é preenchido na normalização, que roda depois e é
+campo `gt_cwe_primary` é preenchido na normalização, que roda depois e é
 barata de refazer.
 
 ## Schema comum de saída
@@ -288,10 +380,42 @@ Bloco `metadata` por CVE, lista `findings`. Campos de ground truth
 prefixados por `gt_`, no bloco de metadados, não repetidos por achado:
 
 - `gt_cwes` — conjunto declarado pelo benchmark, normalizado
-- `gt_cwe_primario` — CWE selecionado pela tabela de mapeamento; nulo nos
-  CVEs sem CWE
+- `gt_cwe_primary` — CWE selecionado pela tabela de mapeamento; nulo nos
+  CVEs sem CWE e naquele cujo conjunto segue sem primário definido
 - `gt_file_path` — escalar
 - `gt_file_lines` — lista, podendo ter mais de um elemento em três CVEs
+
+**Identificadores do schema JSON em inglês.** Nomes de arquivo, valores de
+status do log e tabelas auxiliares (`cwe-primario.csv`) mantêm o
+português já adotado. `gt_cwe_primary`, nunca `gt_cwe_primario`.
+
+**`ruleset` é estrutura, não string em prosa** — o campo sustenta a
+reprodutibilidade e precisa ser comparável programaticamente:
+
+```json
+"ruleset": {
+  "name": "p/default",
+  "sha256": "…",
+  "obtained_at": "…",
+  "rules_total": 1074
+},
+"rules_loaded": 1074
+```
+
+Preenchimento por ferramenta:
+
+- **Semgrep** — completo; `rules_loaded` vem de `.time.rules[]`. A
+  comparação `rules_loaded` × `rules_total` detecta pack obsoleto
+- **CodeQL** — `name` = referência da suíte, `sha256` e `obtained_at`
+  nulos, `rules_total` 104, `rules_loaded` **nulo**: o `driver.rules[]` do
+  SARIF registra o que apareceu, não o que foi carregado
+- **Snyk Code** — `ruleset` nulo inteiro; não há conjunto declarável
+
+**Chave canônica na busca da tabela de primário.** Normalizar para três
+dígitos, ordenar, juntar. Nunca casar por string crua contra a grafia em
+prosa. Conjunto **ausente** da tabela → falha ruidosa. Conjunto
+**presente com primário vazio** (`CWE-250|CWE-400`) → grava nulo, conta,
+reporta. São erros diferentes.
 
 ## Configuração das ferramentas
 
@@ -305,11 +429,96 @@ falso positivo mediria a escolha de suíte, não a precisão da ferramenta.
 A troca é subtração limpa — `security-and-quality` contém tudo de
 `security-extended` mais as consultas de qualidade.
 
+Caminho de suíte verificado no bundle 2.25.4:
+`codeql/javascript-queries:codeql-suites/javascript-security-extended.qls`
+— resolve, 104 consultas, 100 com CWE.
+
+**`--build-mode=none` com `--language=javascript` verificado ponta a
+ponta** (set/2026), em CodeQL 2.26.4, não na 2.25.4 fixada. Confirmou
+quatro propriedades:
+
+- o modo é aceito e o database é criado
+- o caminho no SARIF sai **relativo e limpo** (`app.js`), sem prefixo do
+  diretório de trabalho — a propriedade de que todo o cruzamento depende,
+  e que vem de invocar a ferramenta com `--source-root=.` de dentro do
+  WORKDIR
+- 101 de 103 regras com CWE e as **mesmas** 101 com `security-severity`;
+  as duas sem CWE são consultas de Summary, que não produzem achado
+- `database analyze` sai **0 mesmo com achados**, então checar
+  `RC != 0` não rebaixa análise bem-sucedida
+
+Fica por verificar na imagem real: se `node:24` é runtime suportado pelo
+extrator TypeScript e se o asset do bundle existe na tag. Smoke test com
+`cves-sast-teste` antes do primeiro lote.
+
+O `--format=sarif-latest` é flutuante por definição; só está pinado porque
+o bundle está.
+
 ### Semgrep
 Nunca `--config=auto`. O conjunto de regras é vendorizado: o YAML resolvido
 é baixado uma vez, versionado no repositório com sha256 e data, e apontado
 por caminho local. Isso permite execução offline (`--network=none`,
 verificado) e torna o conjunto descritível na monografia.
+
+**Onde vive e como entra na imagem.** Arquivo em
+`ic-security-lab-semgrep/rules/semgrep-default.yaml`, com o descritor
+irmão `semgrep-default.meta.json`. Entra na imagem por **`COPY` para
+`/default.yaml`**, não por mount em `docker run`.
+
+O `COPY` não é o que resolve a armadilha do prefixo — um mount na raiz
+resolveria igual. O que ele faz é mover a garantia da invariante para
+dentro da imagem, onde ninguém a altera sem rebuild, e tornar a imagem
+autocontida. Custo nulo: o workflow reconstrói a imagem a cada execução.
+
+O caminho é dentro do diretório da ferramenta porque o build context é
+`ic-security-lab-<x>/` (verificado nos workflows da campanha anterior:
+todos fazem `cd` e depois `docker build .`, sem `-f`). Um `rules/` na raiz
+não seria alcançável pelo `COPY`.
+
+**Obtenção:** `curl -sS https://semgrep.dev/c/p/default`, do host. O
+Semgrep 1.171.0 não oferece mecanismo de dump — `show dump-config` produz
+AST OCaml de 94 MB e não há cache de regras em disco. O corpo servido é
+idêntico byte a byte dentro e fora do container, com ou sem o header
+`Accept: application/json` que o cliente envia.
+
+**Guarda de sha256 — duas comparações, ambas fatais.** O pack existe em
+dois lugares, repositório e imagem, e cada comparação pega um modo de
+falha distinto. Nenhuma cobre a outra.
+
+1. `/default.yaml` contra o `$PACK_SHA256` do `--build-arg`. Pega
+   `--build-arg` errado ou esquecido no build, e bind-mount sobre
+   `/default.yaml` em runtime. O script exige antes que `PACK_SHA256`
+   esteja presente e não vazio, e aborta se não estiver.
+2. `/default.yaml` contra
+   `$WORKSPACE/ic-security-lab-semgrep/rules/semgrep-default.yaml`, que
+   está montado. Pega o arquivo do repositório mudado sem rebuild — o caso
+   que a comparação (1) **não** alcança, porque `ARG` e `COPY` congelam no
+   mesmo build e os dois lados mudam juntos.
+
+Se o repositório não estiver montado, a comparação (2) emite aviso no
+stderr e a execução segue: abortar quebraria execução legítima em contexto
+sem o volume, e a comparação (1) continua valendo.
+
+**O endpoint serve o YAML com ordem não determinística.** Duas obtenções
+com uma hora de intervalo deram bytes distintos e conjunto de regras
+idêntico — zero removidas, zero acrescentadas, um bloco deslocado. O
+sha256 identifica o **arquivo**, não o **conjunto**. Por isso o descritor
+grava também `rules_id_sha256`: o sha256 da lista de `check_id` ordenada,
+um por linha, invariante à reordenação.
+
+**Contagem: 1074 regras, 163 JS/TS.** Contar com **parser YAML**, nunca
+`grep -c '^- id: '` — ao menos uma regra declara `patterns` antes de `id`,
+e o grep devolve 1073. Foi a origem da divergência 1073 vs 1074; o pack
+não cresceu, o método de contagem é que estava errado.
+O filtro de linguagem precisa cobrir grafias duplicadas: `javascript`
+(152) e `js` (1), `typescript` (150) e `ts` (5).
+
+**Continuidade com a v1.** Os 145 `check_id` que produziram achado na
+campanha anterior estão em `datasets/v1-checkids.txt`, e o descritor
+registra a interseção contra o snapshot vendorizado. Estabelece
+continuidade por identificador e afasta remoção de regra produtiva; **não**
+estabelece identidade de pack — regras acrescentadas e regras que não
+dispararam não deixam vestígio no cotejo.
 
 Flags: `--time` (grava o inventário de regras aplicadas em `.time.rules[]`
 dentro do próprio JSON, por CVE) e `--metrics=off` (com config local o
@@ -323,9 +532,13 @@ o nome do diretório que contém o YAML:
 --config=/default.yaml        →  javascript.lang.security...   ← correto
 ```
 
-O pack vendorizado **deve** ser montado na raiz do sistema de arquivos do
+O pack vendorizado **deve** ficar na raiz do sistema de arquivos do
 container. Caso contrário os identificadores de regra divergem dos do
 registry e da campanha anterior, quebrando a comparação em silêncio.
+Medido em Docker com a 1.171.0, nos três casos:
+`/packs/default.yaml` → prefixo `packs.`; `/rulesdir/js.yaml` →
+`rulesdir.`; `/default.yaml` → sem prefixo. O registro dessa medição está
+no descritor do pack, em `prefix_verification`.
 
 **Pack: `p/default`, sozinho.** Foi o que o `--config=auto` resolvia na
 campanha anterior (145/145 regras, cobertura total dos achados). Cobre 73%
@@ -412,6 +625,17 @@ Declaradas na monografia, não corrigíveis por código:
 - **Alcance do controle com o Semgrep.** Cotejo feito contra o catálogo
   atual, não o de 2020. O viés é conservador: catálogo menor daria
   correspondência ainda menor que a nula medida.
+- **A seleção do CWE primário herda a proveniência.** A evidência de
+  primeira ordem para escolher o primário é o `explanation`, que é o
+  `@name` de consulta do CodeQL em 83% dos casos. A modalidade por
+  primário acrescenta uma segunda camada da mesma proveniência; a
+  modalidade por conjunto não depende da escolha e serve de contraprova.
+- **Ordem não determinística do pack.** O sha256 não permite a terceiro
+  verificar se o pack vendorizado corresponde ao que o registry serve
+  noutro momento. Mitigado por `rules_id_sha256`; resta que o conjunto é
+  verificável por identidade de regras, não de arquivo.
+- **Verificação do CodeQL em versão adjacente.** O ensaio ponta a ponta
+  rodou na 2.26.4, não na 2.25.4 empregada.
 
 ## O que NÃO fazer
 
@@ -423,11 +647,21 @@ Declaradas na monografia, não corrigíveis por código:
 - **Não atribuir CWE primário fora do conjunto declarado pelo benchmark**
 - Não usar `|| true` em builds ou execuções de workflow — mascara falhas e
   faz o job passar como bem-sucedido com o container quebrado
-- Não redirecionar o stderr de `git clone`/`fetch` para `/dev/null` —
-  descarta a razão da falha
+- **Não descartar stderr de comando algum** (não só do git) — descarta a
+  razão da falha. Vale para as capturas de versão das ferramentas: falha
+  ali indica imagem quebrada, e deve aparecer no stderr além do log
 - Não regerar listas com execução em andamento
 - Não gravar campo com vírgula nas listas de entrada
 - Não usar `--config=auto` no Semgrep
-- Não montar o pack vendorizado do Semgrep em subdiretório
+- Não deixar o pack vendorizado do Semgrep fora da raiz do container
+- **Não contar regras do pack com `grep`** — exige parser YAML
+- **Não tratar o exit 3 do Snyk como `ERRO_ANALISE`** — é
+  `SEM_ARQUIVO_ANALISAVEL`
+- **Não deixar a lista de entrada no fd 0 do laço** (`done < "$LISTA"`):
+  toda ferramenta e todo git herdam a lista em stdin, e um filho que leia
+  stdin engole linhas do lote — CVEs somem sem linha de log. Usar fd
+  alternativo, ou `< /dev/null` nas chamadas
+- **Não usar `set -e`** nos scripts de análise: falha em um CVE deve pular
+  aquele item, não derrubar o laço. Conferir exit codes explicitamente
 - Não passar `--json-file-output` ao Snyk
 - Não usar `latest` ou `stable` para o CLI do Snyk
