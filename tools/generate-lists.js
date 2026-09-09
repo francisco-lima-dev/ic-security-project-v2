@@ -215,7 +215,8 @@ if (header.join(',') !== EXPECTED_HEADER.join(',')) {
 
 const dataRows = rows.slice(1);
 const errors   = [];
-const warnings = [];   // não-bloqueantes (ver PostPatchCommit abaixo)
+const warnings = [];       // não-bloqueantes (ver PostPatchCommit abaixo)
+const pathWarnings = [];   // não-bloqueantes (ver FilePath anômalo abaixo)
 const records  = [];
 const seenCve  = new Map();
 
@@ -275,6 +276,33 @@ dataRows.forEach((cols, idx) => {
     errors.push(`${cve}: FilePath vazio (ground truth de localização ausente)`);
   }
 
+  // FilePath anômalo é AVISO, não erro: o caminho é usado como veio, e a
+  // normalização é do normalizer (tools/normalize.py), não daqui. O aviso
+  // existe para que a anomalia apareça NA GERAÇÃO, e não três etapas adiante
+  // — mesmo tratamento dado ao PostPatchCommit malformado.
+  //
+  // Hoje dispara em 1 dos 223: CVE-2019-12041 declara "/index.js", com barra
+  // inicial, no próprio benchmark da OpenSSF. Sem normalizar, o caminho não
+  // casa com saída de ferramenta alguma e o CVE vira falso negativo garantido.
+  if (filePath) {
+    const anomalias = [];
+    if (filePath.startsWith('/'))            anomalias.push('barra inicial');
+    if (filePath.startsWith('./'))           anomalias.push('./ inicial');
+    if (filePath.split('/').includes('..'))  anomalias.push('.. no caminho');
+    if (filePath.includes('\\'))             anomalias.push('barra invertida');
+    if (filePath.includes('://'))            anomalias.push('esquema de URI');
+    if (filePath.includes('//'))             anomalias.push('barra dupla');
+    if (filePath.endsWith('/'))              anomalias.push('barra final');
+    if (filePath !== filePath.trim())        anomalias.push('espaço inicial ou final');
+    if (filePath.startsWith('~'))            anomalias.push('~ inicial');
+    if (/^[A-Za-z]:/.test(filePath))         anomalias.push('letra de unidade');
+    // eslint-disable-next-line no-control-regex
+    if (/[\x00-\x1f]/.test(filePath))        anomalias.push('caractere de controle');
+    if (anomalias.length) {
+      pathWarnings.push({ cve, value: filePath, why: anomalias.join(', ') });
+    }
+  }
+
   // FileLine: uma ou mais linhas separadas por '|', ou vazio.
   //
   // Multivalorado porque 3 CVEs têm várias weaknesses — vários pontos da MESMA
@@ -316,6 +344,16 @@ if (warnings.length) {
   }
   console.warn('   Defeito presente no benchmark original da OpenSSF, não introduzido aqui.');
   console.warn('   O campo não é usado pelo pipeline SAST — a geração continua normalmente.');
+}
+
+if (pathWarnings.length) {
+  console.warn(`\n⚠️  AVISO (não-bloqueante): ${pathWarnings.length} FilePath anômalo`);
+  for (const w of pathWarnings) {
+    console.warn(`   • ${w.cve}: "${w.value}" (${w.why})`);
+  }
+  console.warn('   Defeito presente no benchmark original da OpenSSF, não introduzido aqui.');
+  console.warn('   O caminho entra na lista COMO VEIO; quem normaliza é tools/normalize.py,');
+  console.warn('   que grava o valor original em gt_file_path_original. A geração continua.');
 }
 
 // ─────────────────────────────────────────────────────────────

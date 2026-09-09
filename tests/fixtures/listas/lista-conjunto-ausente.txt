@@ -1,0 +1,1 @@
+CVE-2050-00001,https://example.invalid/repo.git,0123456789abcdef0123456789abcdef01234567,CWE-111|CWE-222,src/x.js,1

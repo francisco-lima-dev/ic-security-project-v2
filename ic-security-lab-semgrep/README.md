@@ -27,11 +27,26 @@ distintos com o mesmo conjunto de 1074 `check_id`. O `sha256` sozinho não
 permite verificar, no futuro, se o pack vendorizado corresponde ao que o
 registry serve; o `rules_id_sha256` permite.
 
+**Os dois campos vão para o `ruleset` de cada treated do Semgrep**, e não só
+para o descritor: quem lê um `results/semgrep/treated/<CVE>.json` isolado tem
+de conseguir verificar identidade de conjunto sem voltar ao repositório.
+
 ### Contagem de regras exige parser YAML
 
 `rules_total` é **1074**. Um `grep -c '^- id: '` conta 1073, porque a regra
 `terraform.aws.security.aws-provisioner-exec.aws-provisioner-exec` declara
 `patterns` antes de `id`. Nunca conte regras com grep.
+
+O mesmo vale para as **severidades**. Com parser YAML: `WARNING` 722,
+`ERROR` 310, `INFO` 31, `MEDIUM` 11 — soma 1074, uma por regra. Um `grep` por
+`severity:` conta **1075**, porque
+`generic.secrets.security.google-maps-apikeyleak.google-maps-apikeyleak`
+declara `severity: WARNING` no topo **e** `metadata.severity: MEDIUM`. O
+normalizador lê `results[].extra.severity`, que vem do topo.
+
+Vocabulário fechado em quatro valores, todos mapeados pelo normalizador.
+Como o pack é vendorizado e fixo, `extra.severity` não pode trazer token fora
+deles.
 
 ## Build
 
@@ -73,12 +88,36 @@ pulada com aviso no stderr, em vez de falhar.
 ## Execução
 
 ```bash
-docker run --rm -v "$PWD":/workspace ic-security-lab-semgrep \
-    datasets/listas/cves-sast-batch-aa
+docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    -e HOME=/tmp -e XDG_CACHE_HOME=/tmp \
+    -v "$PWD":/workspace \
+    ic-security-lab-semgrep datasets/listas/cves-sast-batch-aa
 ```
 
 O argumento é o lote, relativo ao workspace montado. Sem argumento, roda a
 lista completa (`datasets/listas/cves-sast.txt`).
+
+### Por que `--user` e `HOME` — aqui o `HOME` é obrigatório
+
+Sem `--user`, o container roda como root e os artefatos saem com dono root no
+volume montado; o usuário do hospedeiro não os reescreve, e o git roda como
+usuário. Resolver na origem é melhor que `chown` pós-lote.
+
+Mas o `--user` **sozinho** quebra esta imagem. `python:3.12-slim` não tem
+usuário de uid 1000, `HOME` vira `/`, e o Semgrep tenta criar `/.semgrep` no
+arranque. Medido em 08/09/2026:
+
+```
+$ docker run --rm --user 1000:1000 --entrypoint semgrep <img> --version
+PermissionError: [Errno 13] Permission denied: '/.semgrep'
+
+$ docker run --rm --user 1000:1000 -e HOME=/tmp --entrypoint semgrep <img> --version
+1.171.0
+```
+
+`WORKDIR` vive em `/tmp`, fora do volume, e `/tmp` permanece gravável sob
+`--user`, verificado.
 
 Saída bruta em `results/semgrep/raw/<CVE>.json`, log em
 `logs/execution-log-semgrep.csv`. O laço é idempotente: CVE cujo raw já

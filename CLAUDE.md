@@ -287,12 +287,59 @@ que a campanha anterior cometeu. Consequência assumida: a idempotência não
 pula esse CVE, porque não há raw cuja existência o sinalizasse, e fabricar
 um SARIF que a ferramenta não emitiu seria pior.
 
+### Permissões dos artefatos produzidos em container
+
+Os três containers rodam como root; sem intervenção, `results/*/raw/` e
+`logs/*.csv` saem com dono root no volume montado e o usuário do hospedeiro
+não os reescreve.
+
+**Decisão, por medição (08/09/2026): `--user` com `HOME` explícito.**
+
+```bash
+docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    -e HOME=/tmp -e XDG_CACHE_HOME=/tmp \
+    -v "$PWD":/workspace \
+    ic-security-lab-<x> datasets/listas/cves-sast-batch-aa
+```
+
+Resolve na origem, em vez de `chown` pós-lote, que só desfaz o atrito depois
+de criado. O `-e HOME=/tmp` **não é opcional**: sob uid ausente do
+`/etc/passwd` da imagem, `HOME` fica `/`, que não é gravável.
+
+| Imagem | `--user` só | `--user` + `HOME=/tmp` |
+|---|---|---|
+| `semgrep` (python:3.12-slim) | **quebra**: `PermissionError: '/.semgrep'` | OK |
+| `snyk-code` (debian:bookworm-slim) | `--version` passa, **`config set` falha** (`SNYK-CLI-0000`) | OK — grava em `/tmp/.config/configstore/` |
+| `codeql` (node:24-bookworm) | passa | OK |
+
+O CodeQL passar **é coincidência do uid deste hospedeiro**: `node:24-bookworm`
+já tem um usuário 1000 (`node`), e `HOME` resolve para `/home/node`. Sob uid
+1001 — o do runner do GitHub Actions — `HOME` vira `/` como nas outras. Por
+isso a invocação é a mesma nas três, e não condicionada à ferramenta.
+
+Verificado ainda, sob `--user` nas três imagens: `/tmp` continua gravável
+(onde vivem `WORKDIR` e `DBDIR`), o volume montado recebe escrita, e os
+arquivos saem com o uid/gid do hospedeiro.
+
+O `--version` é sonda fraca para as ferramentas que gravam estado de usuário:
+o Snyk passa nele e falha ao escrever configuração. Sondar com um comando que
+**escreva**.
+
 ### Revisão antes da execução
 
 Todo script, Dockerfile ou normalizador passa pelo subagente
 `revisor-pipeline` antes de commit. O checklist dele deriva dos defeitos
 reais que invalidaram a campanha anterior. Revisão sem apontamentos é
 resultado válido.
+
+**Limitação declarada, não corrigida.** A revisão incide sobre a versão
+*anterior* às correções que ela mesma motiva. As verificações mecânicas são
+refeitas sobre a versão final — na Fase D, a suíte de fixtures passou de 113
+para 143 asserções, cobrindo cada correção —, mas **não há segunda revisão
+completa**. Vale para a Fase C (declarado na Seção 8.5 da metodologia) e
+reaparece na Fase D pelo mesmo motivo: uma segunda revisão motivaria novas
+correções, e a recursão não tem ponto de parada natural.
 
 ## Obtenção do código — comportamento medido
 
@@ -330,9 +377,28 @@ script é procedimento.
 - Sete CVEs de "Zip Slip" contêm aspas no campo `Explanation`. O
   `cve-metadata.csv` é RFC 4180 válido: aspas internas são escapadas por
   duplicação
+- **`CVE-2019-12041` declara `FilePath` absoluto**: `/index.js`, com barra
+  inicial, no próprio benchmark da OpenSSF (conferido em
+  `datasets/cve-metadata.csv`, não é defeito do gerador). É o único dos 223.
+  O arquivo é `index.js` na raiz do repositório. O normalizador remove a
+  barra, preserva o valor original em `gt_file_path_original` e avisa no
+  stderr. Sem isso, `gt_file_scanned` daria `false` por comparação contra um
+  caminho que ferramenta alguma emite, e o CVE viraria falso negativo
+  garantido no cruzamento — sem erro visível.
+  A remoção vale **só para o ground truth**: caminho do benchmark é relativo
+  ao repositório por definição, ao passo que caminho absoluto vindo de uma
+  **ferramenta** sinaliza que a premissa do WORKDIR quebrou, e é preservado
+  e reportado, nunca comido em silêncio
 - **14 CVEs trazem CWE sem zero à esquerda** (`CWE-79`) no próprio ground
   truth. A normalização de três dígitos aplica-se ao ground truth **e** às
   saídas das ferramentas, não só a estas
+
+  Este e o `/index.js` acima são **o mesmo tipo de defeito**: o benchmark
+  grava um valor fora de forma canônica, e comparar sem normalizar produz
+  divergência silenciosa. Logo a regra é geral — **o ground truth é
+  normalizado antes de qualquer comparação, em CWE e em caminho.** Ambos são
+  detectados na geração (aviso não-bloqueante do `generate-lists.js`) e
+  corrigidos na normalização, nunca editados na lista
 - `CVE-2017-16114` e `CVE-2017-17461` incidem sobre o mesmo repositório e
   arquivo, em linhas adjacentes (459 e 460). Sem colisão na execução, já que
   cada um roda em seu commit; relevante apenas se resultados forem agregados
@@ -374,6 +440,24 @@ Corolário prático: **a tabela de CWE primário não bloqueia a campanha**. O
 campo `gt_cwe_primary` é preenchido na normalização, que roda depois e é
 barata de refazer.
 
+`tools/normalize.py` **não lê, não importa e não invoca o log de execução**.
+A separação entre coleta e normalização existe para que a etapa barata não
+herde as dependências da cara: log ausente ou parcial não pode derrubar a
+normalização. As conferências que precisam do log vivem em
+`tools/check-log.py`, script próprio, e os dois não se referenciam.
+
+Pelo mesmo motivo o `metadata.commit` vem **da lista de entrada**, não do log.
+A asserção do commit é fatal no script de análise — divergência entre
+`git rev-parse HEAD` e o `PrePatchCommit` dá `ERRO_CHECKOUT` e o CVE não é
+analisado —, logo, para todo CVE que tem raw, o commit pretendido e o efetivo
+coincidem por construção. A evidência está no log, que é versionado, e não se
+replica no tratado.
+
+O relatório de cada execução vai para `logs/normalize-report-<ferramenta>.json`,
+versionado, irmão do `execution-log-*.csv`. As fixtures sintéticas ficam em
+`tests/fixtures/`, **fora** de `results/*/raw/` — aquele diretório é ignorado
+e os nomes casariam com os globs do normalizador.
+
 ## Schema comum de saída
 
 Bloco `metadata` por CVE, lista `findings`. Campos de ground truth
@@ -396,6 +480,7 @@ reprodutibilidade e precisa ser comparável programaticamente:
 "ruleset": {
   "name": "p/default",
   "sha256": "…",
+  "rules_id_sha256": "…",
   "obtained_at": "…",
   "rules_total": 1074
 },
@@ -405,11 +490,36 @@ reprodutibilidade e precisa ser comparável programaticamente:
 Preenchimento por ferramenta:
 
 - **Semgrep** — completo; `rules_loaded` vem de `.time.rules[]`. A
-  comparação `rules_loaded` × `rules_total` detecta pack obsoleto
-- **CodeQL** — `name` = referência da suíte, `sha256` e `obtained_at`
-  nulos, `rules_total` 104, `rules_loaded` **nulo**: o `driver.rules[]` do
+  comparação `rules_loaded` × `rules_total` detecta pack obsoleto.
+  `rules_id_sha256` vem do descritor e é **obrigatório**: o `sha256`
+  identifica o *arquivo*, e só ele não permite a um terceiro verificar
+  identidade de *conjunto*, porque o registry serve o YAML em ordem não
+  determinística. Sem o campo no tratado, quem lê um treated isolado teria de
+  ir ao descritor
+- **CodeQL** — `name` = referência da suíte, `sha256`, `rules_id_sha256` e
+  `obtained_at` nulos, `rules_total` 104, `rules_loaded` **nulo**: o `driver.rules[]` do
   SARIF registra o que apareceu, não o que foi carregado
-- **Snyk Code** — `ruleset` nulo inteiro; não há conjunto declarável
+- **Snyk Code** — `ruleset` nulo inteiro, `rules_id_sha256` incluso; não há
+  conjunto declarável
+
+**`severity_normalized` tem cinco valores, não quatro.** Além de `high`,
+`medium`, `low` e `unknown`, existe `unresolved`: regra que o `ruleId` **não
+resolveu** na tabela de regras do SARIF. É defeito de junção do normalizador,
+e colapsá-lo em `unknown` — que é ausência legítima de nível numa regra
+resolvida — esconderia um bug atrás de uma categoria prevista. Os dois vão
+separados ao relatório. Ocorrência de qualquer um dos dois é sinal a
+investigar: nenhum achado da campanha anterior caiu neles.
+
+**`gt_file_path_original`** aparece só quando o `gt_file_path` do benchmark
+precisou ser normalizado — hoje um único CVE, `CVE-2019-12041`, que declara
+`/index.js` com barra inicial. Guarda o valor como veio, para que o tratado
+seja cotejável com o benchmark sem consultar o relatório.
+
+**`gt_file_scanned_reason`** acompanha o `gt_file_scanned` quando ele é
+`null`, dizendo por quê. O `null` tem mais de uma causa — o SARIF do CodeQL
+não traz inventário de arquivos varridos; o Semgrep pode vir sem
+`paths.scanned`; a `coverage` do Snyk pode vir agregada por linguagem, sem
+caminhos — e sem o motivo as três viram a mesma coisa na leitura.
 
 **Chave canônica na busca da tabela de primário.** Normalizar para três
 dígitos, ordenar, juntar. Nunca casar por string crua contra a grafia em
@@ -519,6 +629,28 @@ registra a interseção contra o snapshot vendorizado. Estabelece
 continuidade por identificador e afasta remoção de regra produtiva; **não**
 estabelece identidade de pack — regras acrescentadas e regras que não
 dispararam não deixam vestígio no cotejo.
+
+**Item do smoke test da Fase E, com consequência definida.** Verificar se
+`.time.rules[]` lista as **1074 regras carregadas** ou apenas as **aplicadas
+às linguagens presentes** no repositório. Se for por linguagem, renomear o
+campo do schema para `rules_applied`: campo chamado `rules_loaded` que
+significa outra coisa é pior que campo ausente.
+
+O risco é de segunda ordem — a integridade do pack dentro do container já
+está garantida pelas duas comparações de sha256, que são fatais. A comparação
+`rules_loaded` × `rules_total` é segunda linha de defesa, não a primeira.
+
+**Vocabulário de severidade: quatro valores, fechado.** Contado com parser
+YAML (`ruamel.yaml`, dentro da própria imagem) sobre o pack vendorizado:
+`WARNING` 722, `ERROR` 310, `INFO` 31, `MEDIUM` 11 — soma **1074**, uma por
+regra, nenhuma regra sem `severity` no topo.
+
+Um `grep` por `severity:` conta **1075**. A regra a mais é
+`generic.secrets.security.google-maps-apikeyleak.google-maps-apikeyleak`, que
+declara `severity: WARNING` no topo **e** `metadata.severity: MEDIUM` — o
+regex conta as duas. O normalizador lê `results[].extra.severity`, que vem do
+topo; o `metadata.severity` não é lido. É o mesmo tipo de erro de método que
+produziu o episódio 1073 × 1074: **contar com parser, nunca com grep.**
 
 Flags: `--time` (grava o inventário de regras aplicadas em `.time.rules[]`
 dentro do próprio JSON, por CVE) e `--metrics=off` (com config local o
@@ -665,3 +797,16 @@ Declaradas na monografia, não corrigíveis por código:
   aquele item, não derrubar o laço. Conferir exit codes explicitamente
 - Não passar `--json-file-output` ao Snyk
 - Não usar `latest` ou `stable` para o CLI do Snyk
+- **Não rodar os containers sem `--user` e sem `-e HOME=/tmp`** — sem o
+  primeiro os artefatos saem com dono root; sem o segundo, Semgrep e Snyk
+  quebram sob uid ausente do `/etc/passwd` da imagem
+- **Não sondar tolerância a `--user` com `--version`** — o Snyk passa nele e
+  falha ao gravar configuração. Sondar com comando que escreva
+- **Não acoplar `normalize.py` ao log de execução** — nem importar, nem ler,
+  nem invocar
+- **Não produzir `findings: []` a partir de raw ilegível**
+- **Não colapsar "regra não resolvida" em `unknown`**
+- **Não consultar a tabela de primário para conjunto vazio ou unitário**
+- **Não excluir CVE de denominador por `gt_file_scanned: false`** — a causa
+  ali é interna à ferramenta, ao contrário do repositório que não existe
+- Não gravar fixtures em `results/*/raw/`
