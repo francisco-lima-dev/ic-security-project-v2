@@ -1,0 +1,102 @@
+{
+  "ferramenta": "semgrep",
+  "schema_version": "1.1",
+  "gerado_em": "2026-09-10T13:27:52.480459Z",
+  "cves": {
+    "processados": 4,
+    "pulados_por_idempotencia": 0,
+    "com_falha": [],
+    "linhas_da_lista_sem_raw": 219,
+    "raws_sem_linha_na_lista": [],
+    "arquivos_inesperados_no_raw_dir": []
+  },
+  "achados": {
+    "total": 153,
+    "sem_cwe": 0
+  },
+  "caminho": {
+    "achados_com_caminho_transformado": 0,
+    "motivos_aplicados": 0,
+    "achados_transformados": [],
+    "caminhos_scanned_transformados": 0,
+    "exemplos_scanned": [],
+    "ground_truth_normalizado": [
+      {
+        "cve": "CVE-2019-12041",
+        "antes": "/index.js",
+        "depois": "index.js",
+        "motivos": [
+          "barra inicial (defeito do ground truth)"
+        ]
+      }
+    ],
+    "caminhos_absolutos_nao_reconhecidos": [],
+    "nota": "NENHUM caminho de achado foi transformado: as 153 saidas ja vieram relativas e limpas."
+  },
+  "severidade": {
+    "por_valor_normalizado": {
+      "medium": 151,
+      "high": 2
+    },
+    "regra_resolvida_sem_nivel": [],
+    "regra_nao_resolvida": [],
+    "origem_resultado": 153,
+    "origem_regra": 0
+  },
+  "cwe": {
+    "achados_sem_cwe": 0,
+    "semgrep_cadeia_nua": [],
+    "semgrep_tipo_inesperado": []
+  },
+  "gt_cwe_primary": {
+    "nulo_conjunto_vazio": [],
+    "nulo_primario_indefinido": [],
+    "conjuntos_ausentes_da_tabela": []
+  },
+  "gt_file_scanned": {
+    "true": 4,
+    "false": 0,
+    "null": 0,
+    "lista_false": [],
+    "motivos_null": {}
+  },
+  "tool_diagnostics": {
+    "cves_com_erro": [
+      "CVE-2018-14040",
+      "CVE-2018-14041"
+    ],
+    "cves_com_caminho_descartado": [],
+    "cves_com_notificacao": [],
+    "cves_com_gt_file_affected": []
+  },
+  "colisoes_chave_ordenacao": {
+    "total": 11,
+    "por_cve": [
+      {
+        "cve": "CVE-2018-14040",
+        "colisoes": 7
+      },
+      {
+        "cve": "CVE-2019-10744",
+        "colisoes": 4
+      }
+    ]
+  },
+  "raws_ilegiveis": [],
+  "resultados_descartados": 0,
+  "sarif_runs_ignorados": [],
+  "tratados_obsoletos_apos_falha": [],
+  "analysis_date_fallback_mtime": [],
+  "semgrep_rules_applied_anomalo": [],
+  "codeql_versao_inesperada": [],
+  "security_severity_ilegivel": [],
+  "duracao_segundos": {
+    "total": 0.1019,
+    "por_cve_mediana": 0.0222,
+    "por_cve_maximo": 0.0564,
+    "por_cve_maximo_cve": "CVE-2018-14040"
+  },
+  "lista": "/home/francisco_sales/ic_security_project_v2/datasets/listas/cves-sast.txt",
+  "raw_dir": "/home/francisco_sales/ic_security_project_v2/results/semgrep/raw",
+  "treated_dir": "/home/francisco_sales/ic_security_project_v2/results/semgrep/treated"
+}

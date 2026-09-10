@@ -339,6 +339,38 @@ O `--version` é sonda fraca para as ferramentas que gravam estado de usuário:
 o Snyk passa nele e falha ao escrever configuração. Sondar com um comando que
 **escreva**.
 
+#### O `--user` também alcança o que a imagem só LÊ (Fase E, 10/09/2026)
+
+A tabela acima mede escrita. Há um segundo efeito, medido só ao rodar um lote
+inteiro: o bundle do CodeQL 2.25.4 traz **3.151 arquivos `.qlx` precompilados,
+todos com dono uid 1001**, e **462 deles com modo `600`**. Sob `--user` com
+uid diferente de 1001 o CodeQL não consegue lê-los, cai em
+`AccessDeniedException` por consulta e **recompila o plano de consulta**, a
+cerca de 1 min 20 s cada.
+
+Medido nesta máquina (uid 1000), mesma imagem, mesmo lote, só variando a
+legibilidade do bundle:
+
+| | AccessDenied | consultas recompiladas | progresso em ~9 min |
+|---|---:|---:|---|
+| imagem como está | 8 | 7 | 7 de 104 |
+| `+ chmod -R a+rX /opt/codeql` | 0 | 0 | 104 de 104 em ~40 s |
+
+**É a mesma classe de defeito do `HOME`, com o sinal invertido.** No `HOME` o
+uid 1000 deste hospedeiro é que salvava o CodeQL, e o uid 1001 do runner é que
+quebraria; aqui o uid 1001 do runner é que salva, e o 1000 é que quebra. Nos
+dois casos o comportamento depende de uma coincidência de uid, que é
+exatamente o que não se deve deixar de pé.
+
+Nada disso **falha**: o resultado é idêntico, só mais lento. Mas o custo cai
+inteiro dentro do `analyze` do **primeiro** CVE do lote — os seguintes reusam
+`$HOME/.codeql/compile-cache`, que vive no `/tmp` do container e dura o
+`docker run` — e pode encostar no `TIMEOUT_ANALYZE` de 3600 s, virando
+`ERRO_ANALISE` sem causa aparente.
+
+Correção proposta, não aplicada: `RUN chmod -R a+rX /opt/codeql` no Dockerfile
+do CodeQL, logo após desempacotar o bundle.
+
 ### Revisão antes da execução
 
 Todo script, Dockerfile ou normalizador passa pelo subagente
@@ -482,11 +514,14 @@ código não nulo se houve ao menos um.
 É o que pega SARIF vazio ou malformado do Snyk, a única das três cujo raw o
 laço de análise não valida.
 
-**Fronteira a resolver no smoke test:** `results` é opcional no SARIF. Se o
-Snyk **omitir** a chave em varredura sem achados, toda análise limpa vira
-falha dura. Nesse caso a regra passa a ser "ausência de `results` com
-`coverage[]` presente = zero achados". É o item de maior risco de bloqueio
-da Fase E.
+**Fronteira fechada no smoke test da Fase E (10/09/2026).** `results` é
+opcional no SARIF, e o risco era o Snyk **omitir** a chave em varredura sem
+achados, transformando toda análise limpa em falha dura. Medido em varredura
+real sem achados (`CVE-2017-16042`, `snyk exit 0`): a chave **está presente,
+como lista vazia**, e o `runs[0]` traz `automationDetails`, `properties`,
+`results` e `tool`. A guarda fica como está, e a regra alternativa
+("ausência de `results` com `coverage[]` presente = zero achados") **não** é
+necessária.
 
 ### `tools/check-log.py` — conferências do registro
 
@@ -526,10 +561,16 @@ prefixados por `gt_`, no bloco de metadados, não repetidos por achado:
 - `gt_file_lines` — lista, podendo ter mais de um elemento em três CVEs
 
 - `gt_file_scanned` — tri-estado: a ferramenta considerou o arquivo do
-  ground truth? `true`/`false` no Semgrep (`paths.scanned`) e no Snyk
-  (`coverage[]`); **`null` no CodeQL**, cujo SARIF não traz inventário de
-  arquivos varridos. O `null` é assimetria declarada, não omissão —
-  acompanha sempre `gt_file_scanned_reason`.
+  ground truth? `true`/`false` no Semgrep (`paths.scanned`, verificado);
+  **`null` no CodeQL e no Snyk**. O `null` acompanha sempre
+  `gt_file_scanned_reason`.
+  **Corrigido pela Fase E:** o motivo do `null` é diferente nas duas, e só
+  numa delas é impossibilidade. No **Snyk** a `coverage[]` vem agregada por
+  linguagem, sem inventário de caminhos — não há como decidir sobre um
+  arquivo. No **CodeQL** o inventário **existe** (`runs[0].artifacts[]` e as
+  notificações `js/diagnostics/successfully-extracted-files`), e o `null` é
+  escolha do normalizador, não limitação do formato. A assimetria alcança
+  hoje **duas** ferramentas, e no CodeQL ela é revisável.
   Aplicado aos 223, não só aos cinco CVEs cujo arquivo não tem extensão
   (`bin/public`: CVE-2018-16480, CVE-2018-3731, CVE-2018-3747;
   `bin/http-live`: CVE-2018-16479, CVE-2019-5423). Custa o mesmo e dá o
@@ -578,21 +619,24 @@ reprodutibilidade e precisa ser comparável programaticamente:
   "obtained_at": "…",
   "rules_total": 1074
 },
-"rules_loaded": 1074
+"rules_applied": 297
 ```
 
 Preenchimento por ferramenta:
 
-- **Semgrep** — completo; `rules_loaded` vem de `.time.rules[]`. A
-  comparação `rules_loaded` × `rules_total` detecta pack obsoleto.
+- **Semgrep** — completo; `rules_applied` vem de `.time.rules[]`, que conta
+  as regras **aplicadas às linguagens presentes**, não as 1074 carregadas
+  (medido na Fase E; ver a subseção do Semgrep). A relação verdadeira é
+  `rules_applied` ≤ `rules_total`, e só a **violação** desse limite é
+  anomalia — desigualdade estrita é o caso comum.
   `rules_id_sha256` vem do descritor e é **obrigatório**: o `sha256`
   identifica o *arquivo*, e só ele não permite a um terceiro verificar
   identidade de *conjunto*, porque o registry serve o YAML em ordem não
   determinística. Sem o campo no tratado, quem lê um treated isolado teria de
   ir ao descritor
 - **CodeQL** — `name` = referência da suíte, `sha256`, `rules_id_sha256` e
-  `obtained_at` nulos, `rules_total` 104, `rules_loaded` **nulo**: o `driver.rules[]` do
-  SARIF registra o que apareceu, não o que foi carregado
+  `obtained_at` nulos, `rules_total` 104, `rules_applied` **nulo**: o `driver.rules[]` do
+  SARIF registra o que apareceu no resultado, não o que foi aplicado
 - **Snyk Code** — `ruleset` nulo inteiro, `rules_id_sha256` incluso; não há
   conjunto declarável
 
@@ -724,15 +768,27 @@ continuidade por identificador e afasta remoção de regra produtiva; **não**
 estabelece identidade de pack — regras acrescentadas e regras que não
 dispararam não deixam vestígio no cotejo.
 
-**Item do smoke test da Fase E, com consequência definida.** Verificar se
-`.time.rules[]` lista as **1074 regras carregadas** ou apenas as **aplicadas
-às linguagens presentes** no repositório. Se for por linguagem, renomear o
-campo do schema para `rules_applied`: campo chamado `rules_loaded` que
-significa outra coisa é pior que campo ausente.
+**Resolvido no smoke test da Fase E (10/09/2026): `.time.rules[]` conta as
+regras APLICADAS, não as carregadas.** Nos quatro CVEs analisados deu 256
+(`tj/node-growl`, 5 arquivos), 297 (`twbs/bootstrap` 4.1 e `lodash`) e 370
+(`twbs/bootstrap` 3), e as 256 do menor são **subconjunto próprio** das 370
+do maior — varia com os tipos de arquivo presentes, que é a definição de
+"aplicadas".
 
-O risco é de segunda ordem — a integridade do pack dentro do container já
-está garantida pelas duas comparações de sha256, que são fatais. A comparação
-`rules_loaded` × `rules_total` é segunda linha de defesa, não a primeira.
+O número de carregadas existe, mas **só como texto de console**
+(`Scanning N files tracked by git with 1074 Code rules`); o JSON não o traz.
+Logo o schema não tem como gravar `rules_loaded`, e o campo passou a chamar-se
+`rules_applied` — a consequência já estava definida antes da medição.
+
+O campo continua sendo segunda linha de defesa, agora com outra pergunta:
+`rules_applied` ≤ `rules_total` é a relação verdadeira, e **só a violação do
+limite** é sinal — significaria que o config em uso não é o pack vendorizado.
+Desigualdade estrita é o caso comum e não se reporta, sob pena de afogar o
+relatório. A integridade do pack dentro do container continua garantida pelas
+duas comparações de sha256, que são fatais e são a primeira linha.
+
+Consequência para o `.time.rules[]` ausente: continua sendo **falha** do CVE,
+não `rules_applied` nulo. Sem o campo não há sequer o limite superior.
 
 **Vocabulário de severidade: quatro valores, fechado.** Contado com parser
 YAML (`ruamel.yaml`, dentro da própria imagem) sobre o pack vendorizado:
@@ -817,20 +873,80 @@ mensagem clara se ausente, e nunca o grava em log nem o expõe via `set -x`.
 Referência apurada sobre os resultados reais. Todas emitem caminho de
 arquivo **relativo e limpo**, sem prefixo de diretório de trabalho.
 
+**Confrontada campo a campo contra saída real em 10/09/2026** (Fase E, lote
+`cves-sast-teste`, 4 CVEs por ferramenta, 285 achados). As linhas abaixo
+marcadas com ✓ foram confirmadas; as divergências encontradas estão logo
+após a tabela. Antes disso a tabela vinha da documentação e da campanha
+preliminar, e era a origem das fixtures — ver a ameaça à validade
+correspondente.
+
+Confirmado sem ressalva: **os 285 achados das três ferramentas saíram com
+caminho relativo e limpo; nenhum exigiu transformação.** É a propriedade de
+que todo o cruzamento depende.
+
 | | CodeQL | Semgrep | Snyk Code |
 |---|---|---|---|
 | Formato | SARIF 2.1.0 | JSON próprio | SARIF 2.1.0 |
 | CWE | `tool.driver.rules[].properties.tags[]`, prefixo `external/cwe/` | `results[].extra.metadata.cwe` | `tool.driver.rules[].properties.cwe[]` |
 | Formato do CWE | `external/cwe/cwe-079`, minúsculo | `"CWE-829: descrição"` | `"CWE-94"`, padding inconsistente |
 | Caminho | `results[].locations[0].physicalLocation.artifactLocation.uri` | `results[].path` | igual ao CodeQL |
-| Linhas | `region.startLine`; `endLine` ausente em 96,7% | `start.line` / `end.line`, sempre ambos | `region.startLine` / `endLine`, sempre ambos |
-| Severidade | apenas na regra (`defaultConfiguration.level`) — exige join | `results[].extra.severity` | `results[].level` |
-| Valores | `error` / `warning` / `note` | `ERROR` / `WARNING` / `INFO` / `MEDIUM` | `error` / `warning` / `note` |
-| Regra | `results[].ruleId` | `results[].check_id` | `results[].ruleId` |
-| Versão | `tool.driver.semanticVersion` | `.version` no topo | `tool.driver.semanticVersion` |
+| Linhas | `region.startLine`; `endLine` ausente em 96,7% (100% na amostra da Fase E) ✓ | `start.line` / `end.line`, sempre ambos ✓ | `region.startLine` / `endLine`, sempre ambos ✓ |
+| Severidade | apenas na regra (`defaultConfiguration.level`) — exige join ✓ (`level` ausente em **104 de 104** achados) | `results[].extra.severity` ✓ | `results[].level` ✓ |
+| Valores | `error` / `warning` / `note` ✓ | `ERROR` / `WARNING` / `INFO` / `MEDIUM` ✓ | `error` / `warning` / `note` ✓ |
+| Regra | `results[].ruleId` ✓ | `results[].check_id` ✓, **sem prefixo** de diretório | `results[].ruleId` ✓ |
+| Versão | `tool.driver.semanticVersion` ✓ | `.version` no topo ✓ | `tool.driver.semanticVersion` ✓ |
+| Data da análise | **`invocations[0].endTimeUtc` NÃO existe** → cai no mtime | não tem carimbo ✓ → mtime | `automationDetails.id` ✓ |
+| Inventário de arquivos | **existe**: `runs[0].artifacts[]` e `toolExecutionNotifications` | `paths.scanned[]` ✓ | `coverage[]` **agregada por linguagem**, sem caminhos |
+| Notificações | `toolExecutionNotifications` presente, sempre `level: "none"` | não emite ✓ | **não emite** (`invocations` ausente) |
+
+### Divergências encontradas na confrontação da Fase E
+
+**CodeQL — `invocations[0].endTimeUtc` não existe.** O `invocations[0]` real
+traz **apenas** `executionSuccessful` e `toolExecutionNotifications`. Os
+quatro CVEs caíram em `analysis_date_source: "file_mtime"`, e o relatório os
+listou em `analysis_date_fallback_mtime` — o campo existe justamente para
+que isso apareça em vez de passar por carimbo da ferramenta.
+
+**CodeQL — o SARIF TRAZ inventário de arquivos varridos.** Em duas formas:
+`runs[0].artifacts[]`, com `uri` relativo e `uriBaseId` `%SRCROOT%`; e
+`toolExecutionNotifications` com descritor
+`js/diagnostics/successfully-extracted-files`, uma entrada por arquivo
+extraído. A afirmação contrária, que sustenta `gt_file_scanned: null` no
+CodeQL, é **falsa como fato** — o `null` é escolha, não impossibilidade.
+
+**CodeQL — `versionControlProvenance` ausente.** Não há registro do commit
+analisado dentro do próprio raw; o log de execução segue sendo a única
+evidência, e por isso é versionado.
+
+**Snyk — `coverage[]` é agregada por linguagem**, na forma
+`{files, isSupported, lang, type}`, sem inventário de caminhos. Não decide
+sobre um arquivo, e `gt_file_scanned` fica `null` nos 223. Traz, porém,
+entradas `type: "FAILED_PARSING"` com a contagem de arquivos que a
+ferramenta não conseguiu ler — sinal de diagnóstico que o tratado preserva
+em `metadata.coverage`.
+
+**Snyk — varredura sem achados emite `"results": []`**, chave presente e
+lista vazia. Era a fronteira aberta de maior risco da fase; está fechada, e
+a guarda de raw ilegível fica como está.
+
+**Semgrep — `paths.skipped` não existe** sem `--verbose`: `.paths` traz
+somente `scanned`. `tool_diagnostics.skipped_paths` sai `null`, que é o
+comportamento previsto para campo ausente.
+
+**Semgrep — `errors[].type` muda de tipo**, pela mesma razão que
+`extra.metadata.cwe`: cadeia nua numa minoria (`"Other syntax error"`) e
+**união etiquetada** na maioria — `["PartialParsing", [{path, start, end}]]`.
+Só a etiqueta interessa ao diagnóstico.
+
+**Todas — `level: "none"` nunca aparece em `results[]`.** Aparece só nas
+`toolExecutionNotifications` do CodeQL, que não são achados. A tabela de
+severidade não é afetada.
 
 Pontos de atenção do normalizador:
 
+- **`errors[].type` do Semgrep também muda de tipo** — cadeia nua ou união
+  etiquetada `[etiqueta, carga]`. Mesma armadilha do `cwe` abaixo, em outro
+  campo: os dois exigem despacho por tipo, nunca acesso direto.
 - **`extra.metadata.cwe` do Semgrep muda de tipo** — array na maioria dos
   casos, string nua numa minoria. Iterar uma string nua percorre
   caracteres.
@@ -883,12 +999,18 @@ Declaradas na monografia, não corrigíveis por código:
 - **Verificação do CodeQL em versão adjacente.** O ensaio ponta a ponta
   rodou na 2.26.4, não na 2.25.4 empregada.
 - **O schema de normalização foi construído contra a documentação das
-  saídas, não contra saída real.** As 18 fixtures sintéticas derivam da
-  tabela "Formato das saídas das ferramentas" acima, que por sua vez vem da
+  saídas, não contra saída real.** As fixtures sintéticas derivam da tabela
+  "Formato das saídas das ferramentas" acima, que por sua vez vinha da
   documentação e das saídas da campanha preliminar. Erro nessa tabela é
-  reproduzido pela fixture, e a asserção passa. A suíte prova conformidade
-  ao formato **suposto**, não que o suposto corresponda ao emitido. Só o
-  smoke test resolve, e é por isso que ele antecede o primeiro lote
+  reproduzido pela fixture, e a asserção passa: a suíte prova conformidade
+  ao formato **suposto**, não que o suposto corresponda ao emitido.
+  **Atenuado, não eliminado, pela Fase E (10/09/2026):** a tabela foi
+  confrontada campo a campo contra saída real e seis divergências
+  apareceram, todas registradas acima; as fixtures divergentes foram
+  corrigidas contra o real. O que resta é que a amostra são **4 CVEs e 4
+  repositórios**, todos JavaScript — nenhum TypeScript, nenhum monorepo,
+  nenhum `SEM_ARQUIVO_ANALISAVEL`. Forma que não ocorreu nesses quatro
+  continua descrita por suposição
 
 ## O que NÃO fazer
 

@@ -41,15 +41,15 @@ apontando para diretório temporário. Nada é escrito em `results/` nem em
 
 | Arquivo | Cobre |
 |---|---|
-| `CVE-2018-14040.json` | `extra.metadata.cwe` como **lista** e como **cadeia nua**; achado sem `cwe`; `ERROR`/`WARNING`/`MEDIUM`/`INFO`; `paths.scanned` contendo o `gt_file_path` (→ `true`), com `./` a normalizar; `paths.skipped` mencionando-o (→ `gt_file_affected`); `.time.rules` com **1074** entradas, batendo com `rules_total` |
-| `CVE-2018-16480.json` | `gt_file_path` **ausente** de `paths.scanned` → `gt_file_scanned: false`; `.time.rules` com 12 entradas → **divergência** contra `rules_total`, que é como se detecta pack obsoleto |
-| `CVE-2018-1000096.json` | bloco `paths` ausente → `gt_file_scanned: null` **com motivo declarado**; `errors` ausente → `null`, nunca falha |
+| `CVE-2018-14040.json` | `extra.metadata.cwe` como **lista** e como **cadeia nua**; achado sem `cwe`; `ERROR`/`WARNING`/`MEDIUM`/`INFO`; `paths.scanned` contendo o `gt_file_path` (→ `true`), com `./` a normalizar; `paths.skipped` mencionando-o (→ `gt_file_affected`); `.time.rules` com **370** entradas — o valor real medido na Fase E sobre `twbs/bootstrap` |
+| `CVE-2018-16480.json` | `gt_file_path` **ausente** de `paths.scanned` → `gt_file_scanned: false`; `.time.rules` com 12 entradas, subconjunto legítimo de `rules_total` → **nenhuma** anomalia; `errors[].type` nas **duas formas** que a saída real emite: cadeia nua e união etiquetada `["PartialParsing", [...]]` |
+| `CVE-2018-1000096.json` | bloco `paths` ausente → `gt_file_scanned: null` **com motivo declarado**; `errors` ausente → `null`, nunca falha; `.time.rules` com **1075** entradas → `rules_applied > rules_total`, única anomalia possível depois que a Fase E mostrou que o campo conta regras *aplicadas* |
 
 ### `semgrep-erros/` — saída não nula
 
 | Arquivo | Cobre |
 |---|---|
-| `CVE-2017-16011.json` | **sem `.time`** → falha, não `rules_loaded: null` |
+| `CVE-2017-16011.json` | **sem `.time`** → falha, não `rules_applied: null` |
 | `CVE-2018-16472.json` | severidade `CRITICAL`, **fora da tabela** → falha nomeando valor e CVE |
 
 ### `conjunto-ausente/` + `listas/lista-conjunto-ausente.txt`

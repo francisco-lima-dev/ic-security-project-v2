@@ -64,7 +64,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 RAIZ = Path(__file__).resolve().parent.parent
 
 FERRAMENTAS = ("codeql", "semgrep", "snyk-code")
@@ -690,8 +690,8 @@ def processar_codeql(dados, caminho_raw, gt, relatorio):
     return {
         "tool_version": versao,
         # name = referência da suíte; sha256 e obtained_at nulos por não haver
-        # o que declarar. rules_loaded é NULO por decisão: driver.rules[]
-        # registra o que compareceu no resultado, não o que foi carregado.
+        # o que declarar. rules_applied é NULO por decisão: driver.rules[]
+        # registra o que compareceu no resultado, não o que foi aplicado.
         "ruleset": {
             "name": CODEQL_SUITE,
             "sha256": None,
@@ -699,7 +699,7 @@ def processar_codeql(dados, caminho_raw, gt, relatorio):
             "obtained_at": None,
             "rules_total": CODEQL_RULES_TOTAL,
         },
-        "rules_loaded": None,
+        "rules_applied": None,
         "analysis_date": analysis_date,
         "analysis_date_source": origem,
         "gt_file_scanned": None,  # o SARIF não traz inventário de arquivos varridos
@@ -770,6 +770,23 @@ def _cwes_semgrep(bruto, cve, relatorio):
     return cwes
 
 
+def _etiqueta_erro_semgrep(valor):
+    """errors[].type MUDA DE TIPO, como extra.metadata.cwe: cadeia nua numa
+    minoria ("Other syntax error") e união etiquetada na maioria —
+    ["PartialParsing", [ {path, start, end}, ... ]]. Medido na Fase E, sobre
+    twbs/bootstrap: 20 erros, 1 cadeia e 19 etiquetados.
+
+    Só a etiqueta interessa ao diagnóstico; a carga é a lista de posições, que
+    o `message` já resume. Sem este tratamento a forma etiquetada não é uma
+    cadeia, o laço a ignora, e o detalhe sai SEM dizer que erro foi —
+    silencioso, porque as demais partes continuam preenchidas."""
+    if isinstance(valor, str):
+        return valor
+    if isinstance(valor, list) and valor and isinstance(valor[0], str):
+        return valor[0]
+    return None
+
+
 def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
     if not isinstance(dados, dict):
         raise RawIlegivel("raw nao e um objeto JSON no topo")
@@ -777,19 +794,37 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
     if not isinstance(resultados, list):
         raise RawIlegivel("JSON do semgrep sem results[]")
 
-    # Ausência de .time é FALHA, não rules_loaded null: a comparação
-    # rules_loaded x rules_total é o que detecta pack obsoleto, e sem ela o
-    # campo perde a função. O --time está no run_semgrep.sh justamente por isso.
+    # MEDIDO NA FASE E, 10/09/2026: .time.rules[] NÃO lista as 1074 regras
+    # carregadas, e sim as aplicadas às linguagens presentes no repositório.
+    # Nos quatro CVEs do lote de teste deu 256, 297, 297 e 370, e as 256 do
+    # menor são subconjunto próprio das 370 do maior. O console do Semgrep
+    # informa as carregadas ("with 1074 Code rules"), mas isso é texto de
+    # console: o JSON não traz o número.
+    #
+    # Daí o nome rules_applied. Campo chamado rules_loaded que significa
+    # outra coisa é pior que campo ausente — a consequência estava fechada
+    # no CLAUDE.md antes da medição, e é esta.
+    #
+    # Ausência de .time continua sendo FALHA, não rules_applied null: sem o
+    # campo não há sequer o limite superior abaixo, e o --time está no
+    # run_semgrep.sh justamente para produzi-lo.
     tempo = dados.get("time")
     if not isinstance(tempo, dict) or not isinstance(tempo.get("rules"), list):
         raise FalhaCVE(
             "JSON do semgrep sem .time.rules[] — o raw foi produzido sem --time? "
-            "rules_loaded x rules_total e o que detecta pack obsoleto"
+            "rules_applied e o inventario de regras efetivamente aplicadas"
         )
-    rules_loaded = len(tempo["rules"])
-    if rules_loaded != ruleset["rules_total"]:
-        relatorio["semgrep_rules_loaded_divergente"].append(
-            {"cve": gt["cve_id"], "rules_loaded": rules_loaded, "rules_total": ruleset["rules_total"]}
+    rules_applied = len(tempo["rules"])
+    # rules_applied <= rules_total é a relação verdadeira: aplicadas são um
+    # subconjunto das carregadas. Só a VIOLAÇÃO do limite é anomalia, e ela
+    # só ocorre se o config em uso não for o pack vendorizado — que é o que
+    # a comparação herdou de útil da versão anterior. Desigualdade estrita
+    # NÃO é sinal: é o caso comum, e reportá-la afogaria o relatório.
+    if rules_applied > ruleset["rules_total"]:
+        relatorio["semgrep_rules_applied_anomalo"].append(
+            {"cve": gt["cve_id"], "rules_applied": rules_applied,
+             "rules_total": ruleset["rules_total"],
+             "nota": "mais regras aplicadas que o pack declara; o config em uso nao e o pack vendorizado"}
         )
 
     achados = []
@@ -850,6 +885,8 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
             partes = []
             for campo in ("level", "type", "message", "path"):
                 valor = (erro or {}).get(campo) if isinstance(erro, dict) else None
+                if campo == "type":
+                    valor = _etiqueta_erro_semgrep(valor)
                 if isinstance(valor, str):
                     partes.append(valor)
             detalhes.append(" | ".join(partes) if partes else json.dumps(erro)[:LIMITE_TEXTO_DETALHE])
@@ -872,7 +909,7 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
     return {
         "tool_version": versao if isinstance(versao, str) else None,
         "ruleset": dict(ruleset),
-        "rules_loaded": rules_loaded,
+        "rules_applied": rules_applied,
         # O JSON do Semgrep não traz carimbo de tempo. O mtime é proveniência
         # mais fraca — não sobrevive a download de artifact nem a git clone —
         # e por isso a origem é declarada em vez de uniformizada por aparência.
@@ -1006,7 +1043,7 @@ def processar_snyk(dados, caminho_raw, gt, relatorio):
     return {
         "tool_version": versao,
         "ruleset": None,   # não há conjunto declarável
-        "rules_loaded": None,
+        "rules_applied": None,
         "analysis_date": analysis_date,
         "analysis_date_source": origem,
         "gt_file_scanned": gt_file_scanned,
@@ -1132,7 +1169,7 @@ def relatorio_vazio(ferramenta):
         "sarif_runs_ignorados": [],
         "tratados_obsoletos_apos_falha": [],
         "analysis_date_fallback_mtime": [],
-        "semgrep_rules_loaded_divergente": [],
+        "semgrep_rules_applied_anomalo": [],
         "codeql_versao_inesperada": [],
         "security_severity_ilegivel": [],
         "duracao_segundos": {"total": 0.0, "por_cve_mediana": None, "por_cve_maximo": None,
@@ -1154,7 +1191,7 @@ def montar_tratado(ferramenta, gt, parcial, primario, relatorio):
         "tool": ferramenta,
         "tool_version": parcial["tool_version"],
         "ruleset": parcial["ruleset"],
-        "rules_loaded": parcial["rules_loaded"],
+        "rules_applied": parcial["rules_applied"],
         "analysis_date": parcial["analysis_date"],
         "analysis_date_source": parcial["analysis_date_source"],
         "gt_cwes": list(gt["gt_cwes"]),
@@ -1484,6 +1521,19 @@ def resumir(relatorio, caminho):
     if relatorio["resultados_descartados"]:
         print("    %d entrada(s) de results[] descartada(s) por nao ser objeto"
               % relatorio["resultados_descartados"])
+    # Estas três anomalias existiam apenas no JSON do relatório e não
+    # apareciam no console. Anomalia que só a leitura posterior alcança é
+    # anomalia que passa: quem acompanha a execução tem de ver na hora.
+    if relatorio["semgrep_rules_applied_anomalo"]:
+        print("    ATENCAO: %d CVE(s) com rules_applied > rules_total — o config "
+              "em uso pode nao ser o pack vendorizado"
+              % len(relatorio["semgrep_rules_applied_anomalo"]))
+    if relatorio["codeql_versao_inesperada"]:
+        print("    ATENCAO: %d CVE(s) com versao do CodeQL diferente da esperada"
+              % len(relatorio["codeql_versao_inesperada"]))
+    if relatorio["security_severity_ilegivel"]:
+        print("    ATENCAO: %d achado(s) com security-severity ilegivel como float"
+              % len(relatorio["security_severity_ilegivel"]))
     print("  cadeia nua de CWE (semgrep): %d | colisoes de chave: %d"
           % (len(relatorio["cwe"]["semgrep_cadeia_nua"]),
              relatorio["colisoes_chave_ordenacao"]["total"]))

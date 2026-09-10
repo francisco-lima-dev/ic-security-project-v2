@@ -155,11 +155,11 @@ def main():
            "gt_file_affected true: notificacao menciona js/collapse.js")
 
     # metadata
-    checar(m["schema_version"] == "1.0" and m["tool"] == "codeql", "metadata basico")
+    checar(m["schema_version"] == "1.1" and m["tool"] == "codeql", "metadata basico")
     checar(m["commit"] == "13bf8aeae3db71e28af69782328c22215795c169",
            "commit vem da LISTA de entrada", m["commit"])
-    checar(m["ruleset"]["rules_total"] == 104 and m["rules_loaded"] is None,
-           "CodeQL: rules_total 104, rules_loaded NULO")
+    checar(m["ruleset"]["rules_total"] == 104 and m["rules_applied"] is None,
+           "CodeQL: rules_total 104, rules_applied NULO")
     checar(m["ruleset"]["rules_id_sha256"] is None,
            "rules_id_sha256 nulo fora do Semgrep — nao ha pack de arquivo")
     # 2.3: o campo e indicio, e o artefato tem de dize-lo
@@ -292,8 +292,15 @@ def main():
     checar(sem_cwe["cwe"] == [] and sem_cwe["severity_normalized"] == "low",
            "metadata sem cwe → []; INFO → low")
 
-    checar(m["rules_loaded"] == 1074 and m["ruleset"]["rules_total"] == 1074,
-           "rules_loaded de .time.rules[]; ruleset do descritor vendorizado")
+    # MEDIDO NA FASE E: .time.rules[] traz as regras APLICADAS as linguagens
+    # presentes, nao as 1074 carregadas — 256/297/297/370 nos quatro CVEs do
+    # lote de teste, com as 256 do menor contidas nas 370 do maior. O fixture
+    # usa 370, que e o valor real de twbs/bootstrap, e nao mais 1074.
+    checar(m["rules_applied"] == 370 and m["ruleset"]["rules_total"] == 1074,
+           "rules_applied de .time.rules[]; ruleset do descritor vendorizado",
+           m.get("rules_applied"))
+    checar("rules_loaded" not in m,
+           "o campo antigo rules_loaded NAO sobrevive ao lado do novo")
     checar(m["ruleset"]["name"] == "p/default" and m["ruleset"]["sha256"],
            "ruleset e ESTRUTURA, com sha256 e obtained_at do descritor")
     checar(m["ruleset"]["rules_id_sha256"]
@@ -319,13 +326,32 @@ def main():
     falso = ler(tratado_sg / "CVE-2018-16480.json")["metadata"]
     checar(falso["gt_file_scanned"] is False,
            "gt_file_scanned false quando o arquivo nao foi varrido")
+    # errors[].type MUDA DE TIPO, como extra.metadata.cwe: cadeia nua numa
+    # minoria e ["PartialParsing", [...]] na maioria. A segunda forma so
+    # apareceu na saida real da Fase E; nenhum fixture a tinha.
+    det = falso["tool_diagnostics"]["details"]
+    checar(falso["tool_diagnostics"]["errors"] == 2,
+           "os dois errors[] contados", falso["tool_diagnostics"]["errors"])
+    checar(any("SourceParseError" in x for x in det),
+           "errors[].type como CADEIA NUA vai para o detalhe", det)
+    checar(any("PartialParsing" in x for x in det),
+           "errors[].type como UNIAO ETIQUETADA tem a etiqueta extraida; "
+           "sem isso o detalhe sai sem dizer que erro foi", det)
     checar(rel_sg["gt_file_scanned"] == {"true": 1, "false": 1, "null": 1,
                                          "lista_false": ["CVE-2018-16480"],
                                          "motivos_null": rel_sg["gt_file_scanned"]["motivos_null"]},
            "contagem true/false/null com a lista dos false",
            rel_sg["gt_file_scanned"])
-    checar(len(rel_sg["semgrep_rules_loaded_divergente"]) == 1,
-           "rules_loaded != rules_total detectado (pack obsoleto)")
+    # rules_applied < rules_total e o caso COMUM, nao anomalia: 370 e 12 nao
+    # podem ser reportados. So a violacao do limite superior e sinal, e vem do
+    # CVE-2018-1000096, com 1075 > 1074.
+    anomalos = rel_sg["semgrep_rules_applied_anomalo"]
+    checar([x["cve"] for x in anomalos] == ["CVE-2018-1000096"],
+           "so rules_applied > rules_total e anomalia; 370 e 12 NAO sao",
+           anomalos)
+    checar("ATENCAO" in p.stdout and "rules_applied > rules_total" in p.stdout,
+           "a anomalia aparece no console, nao so no JSON do relatorio",
+           p.stdout[-400:])
     nulo = ler(tratado_sg / "CVE-2018-1000096.json")["metadata"]
     checar(nulo["gt_file_scanned"] is None and "gt_file_scanned_reason" in nulo,
            "sem paths.scanned → null COM motivo declarado")
@@ -337,7 +363,7 @@ def main():
     checar(p.returncode != 0, "semgrep com defeitos → saida nao nula")
     rel3 = ler(rel_sge)
     motivos = " ".join(x["motivo"] for x in rel3["cves"]["com_falha"])
-    checar("time.rules" in motivos, "ausencia de .time e FALHA, nao rules_loaded null")
+    checar("time.rules" in motivos, "ausencia de .time e FALHA, nao rules_applied null")
     checar("CRITICAL" in motivos and "CVE-2018-16472" in motivos,
            "severidade fora da tabela falha nomeando valor e CVE", motivos)
     checar(list(tratado_sge.glob("*.json")) == [],
@@ -418,8 +444,8 @@ def main():
     rel_sn = ler(rel_sn_path)
     t = ler(tratado_sn / "CVE-2018-14040.json")
     m, f = t["metadata"], t["findings"]
-    checar(m["ruleset"] is None and m["rules_loaded"] is None,
-           "Snyk: ruleset nulo inteiro e rules_loaded nulo")
+    checar(m["ruleset"] is None and m["rules_applied"] is None,
+           "Snyk: ruleset nulo inteiro e rules_applied nulo")
     checar(m["analysis_date"] == "2026-09-07T16:11:02Z"
            and m["analysis_date_source"] == "tool",
            "analysis_date extraido de automationDetails.id", m["analysis_date"])
@@ -484,7 +510,7 @@ def main():
     checar("0.9" in p.stderr, "a divergencia de schema aparece no stderr", p.stderr[-300:])
     p = normalizar("codeql", FIXTURES / "codeql", tratado_dir, rel_idem,
                    extra=["--overwrite", "--cve", "CVE-2017-16011"])
-    checar(p.returncode == 0 and ler(alvo)["metadata"]["schema_version"] == "1.0",
+    checar(p.returncode == 0 and ler(alvo)["metadata"]["schema_version"] == "1.1",
            "--overwrite reprocessa o tratado de schema antigo")
 
     # =================================== estabilidade da ordem (D.9)
