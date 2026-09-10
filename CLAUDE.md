@@ -167,6 +167,11 @@ CVE,URL,PrePatchCommit,CWEs,FilePath,FileLine
   truth
 - **FileLine** — uma ou mais linhas separadas por `|`, ou vazio
 
+O gerador emite **aviso não bloqueante** para as anomalias que são do
+próprio benchmark e cujo tratamento cabe à normalização: `PostPatchCommit`
+malformado e `FilePath` fora de forma canônica. A lista sai byte-idêntica —
+o aviso torna a anomalia visível na geração, e não três etapas adiante.
+
 Todo arquivo termina com quebra de linha final. A ausência dela fez o
 pipeline anterior descartar silenciosamente a última linha de vários lotes.
 
@@ -216,9 +221,10 @@ O gerador exige a flag `--force` para remover lotes existentes.
 ## Política de versionamento
 
 **Versionados:** `datasets/` (incluindo `cwe-primario.csv` e
-`v1-checkids.txt`), `tools/`, `results/*/treated/`, `results/zap/`,
-`logs/`, o pack vendorizado do Semgrep e seu descritor, Dockerfiles,
-scripts, workflows.
+`v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
+`results/*/treated/`, `results/zap/`, `logs/` (incluindo
+`normalize-report-<ferramenta>.json`), o pack vendorizado do Semgrep e seu
+descritor, Dockerfiles, scripts, workflows.
 
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
 databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`.
@@ -240,6 +246,13 @@ de disponibilidade dos repositórios.
 
 Motivo: o repositório precisa permitir verificar os números do estudo sem
 depender de artifacts do GitHub Actions, que expiram em 30 dias.
+
+**Verificar versionabilidade com `git add --dry-run`, nunca com
+`git check-ignore -v`.** O `-v` reporta *casamento de padrão*, não veredito,
+e devolve 0 tanto para padrão de ignore quanto para negação: para
+`logs/normalize-report-semgrep.json` ele imprime `!logs/**` e sai 0, e para
+`results/semgrep/raw/*.json` imprime `results/*/raw/` e também sai 0. Só o
+`add --dry-run` distingue os dois casos.
 
 ## Convenções de execução
 
@@ -458,6 +471,49 @@ versionado, irmão do `execution-log-*.csv`. As fixtures sintéticas ficam em
 `tests/fixtures/`, **fora** de `results/*/raw/` — aquele diretório é ignorado
 e os nomes casariam com os globs do normalizador.
 
+**Raw ilegível é falha, nunca `findings: []`.** JSON ou SARIF que não
+parseia, ou sem a estrutura mínima (`runs[]`, `runs[0]` objeto, `results[]`
+lista), interrompe aquele CVE com erro e **não** grava tratado. O critério é
+**tipo de exceção**, jamais casamento de texto de mensagem — mensagem de
+parser muda com a versão da biblioteca, e a contagem de raws ilegíveis é
+dado da monografia. O laço segue para o próximo CVE e a execução termina com
+código não nulo se houve ao menos um.
+
+É o que pega SARIF vazio ou malformado do Snyk, a única das três cujo raw o
+laço de análise não valida.
+
+**Fronteira a resolver no smoke test:** `results` é opcional no SARIF. Se o
+Snyk **omitir** a chave em varredura sem achados, toda análise limpa vira
+falha dura. Nesse caso a regra passa a ser "ausência de `results` com
+`coverage[]` presente = zero achados". É o item de maior risco de bloqueio
+da Fase E.
+
+### `tools/check-log.py` — conferências do registro
+
+```
+python3 tools/check-log.py --tool <ferramenta> [--lista-lote <arquivo>]
+```
+
+Deduplica por CVE mantendo a **última** linha: reexecução acrescenta uma
+linha `PULADO` por CVE já feito, e o log não tem timestamp nem id de
+execução.
+
+| Conferência | Significado |
+|---|---|
+| status de erro **com** raw | incoerência — houve saída para item registrado como falho |
+| `OK`/`SEM_ACHADOS` **sem** raw | incoerência — a saída sumiu ou nunca foi promovida |
+| `PULADO` **sem** raw | incoerência — a idempotência se apoiou em arquivo inexistente |
+| `SEM_ARQUIVO_ANALISAVEL` sem raw | **esperado**, só contado |
+
+A quarta, opcional, exige `--lista-lote`: CVE sem raw **e** sem linha de log
+é a assinatura observável do defeito do fd 0, que não produz erro visível.
+
+**`--lista-lote` recebe a lista do lote, nunca a completa** — contra a
+completa, todo CVE de lote ainda não rodado apareceria como sumido. O script
+avisa se a lista passada exceder o tamanho de lote.
+Atenção ao nome: o `normalize.py` tem `--lista`, que é a lista **completa**.
+Semânticas opostas, por isso nomes distintos.
+
 ## Schema comum de saída
 
 Bloco `metadata` por CVE, lista `findings`. Campos de ground truth
@@ -468,6 +524,44 @@ prefixados por `gt_`, no bloco de metadados, não repetidos por achado:
   CVEs sem CWE e naquele cujo conjunto segue sem primário definido
 - `gt_file_path` — escalar
 - `gt_file_lines` — lista, podendo ter mais de um elemento em três CVEs
+
+- `gt_file_scanned` — tri-estado: a ferramenta considerou o arquivo do
+  ground truth? `true`/`false` no Semgrep (`paths.scanned`) e no Snyk
+  (`coverage[]`); **`null` no CodeQL**, cujo SARIF não traz inventário de
+  arquivos varridos. O `null` é assimetria declarada, não omissão —
+  acompanha sempre `gt_file_scanned_reason`.
+  Aplicado aos 223, não só aos cinco CVEs cujo arquivo não tem extensão
+  (`bin/public`: CVE-2018-16480, CVE-2018-3731, CVE-2018-3747;
+  `bin/http-live`: CVE-2018-16479, CVE-2019-5423). Custa o mesmo e dá o
+  denominador de arquivos varridos por ferramenta.
+  **`false` não exclui de denominador algum** — ver "O que NÃO fazer"
+
+- `tool_diagnostics` — o que a ferramenta reporta sobre a própria execução:
+  `errors` e `skipped_paths` (Semgrep), `notifications`
+  (`invocations[].toolExecutionNotifications`, CodeQL e Snyk),
+  `gt_file_affected` e `details`. Captura **condicional**: campo ausente
+  grava `null` e segue; ausência nunca é falha, porque a emissão não está
+  assegurada — no Snyk, o SARIF admite `toolExecutionNotifications` mas não
+  se verificou que emite.
+  Motivo de existir: arquivo cuja análise falhou não produz achado, e o
+  resultado é indistinguível de análise limpa. Mesmo modo de falha que o
+  `gt_file_scanned` pega, por outro caminho.
+  `gt_file_affected` é **heurística por subcadeia sobre texto truncado**, e
+  o próprio tratado declara isso em `gt_file_affected_method`. Não entra em
+  contagem alguma da matriz
+
+- `schema_version` — literal. Tratado com versão divergente da corrente
+  **não** é pulado pela idempotência: reprocessa, ou falha se faltar
+  `--overwrite`. Sem isso, evolução do schema produz conjunto heterogêneo
+  sem sinal
+
+- `analysis_date_source` — `tool` ou `file_mtime`. CodeQL usa
+  `invocations[0].endTimeUtc`; Snyk, `automationDetails.id`; o Semgrep **não
+  tem carimbo de tempo no JSON**, e cai no mtime do raw.
+  O campo existe porque o mtime é proveniência mais fraca: não sobrevive a
+  download de artifact nem a `git clone` — e o tratado é versionado, então o
+  mtime de qualquer cópia obtida do repositório é o do checkout. Declarar a
+  origem é melhor que uniformizar por aparência
 
 **Identificadores do schema JSON em inglês.** Nomes de arquivo, valores de
 status do log e tabelas auxiliares (`cwe-primario.csv`) mantêm o
@@ -688,6 +782,26 @@ custo de um segundo snapshot para versionar.
 
 Os packs `p/*` do registry respondem sem autenticação — exigem apenas rede.
 
+#### Regra geral de contagem
+
+Três episódios do projeto têm a mesma estrutura — objeto medido certo,
+método de medição errado:
+
+| Episódio | Método falho | Causa |
+|---|---|---|
+| 1073 em vez de 1074 regras | `grep -c '^- id: '` | uma regra declara `patterns` antes de `id` |
+| 1075 em vez de 1074 severidades | `grep -c 'severity:'` | uma regra declara `severity` no topo **e** em `metadata` |
+| "versionável" lido errado | `git check-ignore -v` | reporta casamento de padrão, não veredito |
+
+A verificação por regex sobre formato estruturado falha por causas
+**independentes** — ordem de campos e profundidade de aninhamento —, então
+descartar uma não garante a ausência da outra.
+
+Daí: **toda contagem que vá para a monografia sai de parser do formato**, e
+**divergência entre dois métodos é reconciliada antes de qualquer dos
+números ser aceito**, ainda que a conclusão sobreviva à reconciliação — como
+sobreviveu nos três casos.
+
 ### Snyk Code
 Somente `--sarif-file-output`. O `--json-file-output` produz arquivo
 byte-idêntico ao SARIF; passar os dois duplica dados sem ganho.
@@ -768,6 +882,13 @@ Declaradas na monografia, não corrigíveis por código:
   verificável por identidade de regras, não de arquivo.
 - **Verificação do CodeQL em versão adjacente.** O ensaio ponta a ponta
   rodou na 2.26.4, não na 2.25.4 empregada.
+- **O schema de normalização foi construído contra a documentação das
+  saídas, não contra saída real.** As 18 fixtures sintéticas derivam da
+  tabela "Formato das saídas das ferramentas" acima, que por sua vez vem da
+  documentação e das saídas da campanha preliminar. Erro nessa tabela é
+  reproduzido pela fixture, e a asserção passa. A suíte prova conformidade
+  ao formato **suposto**, não que o suposto corresponda ao emitido. Só o
+  smoke test resolve, e é por isso que ele antecede o primeiro lote
 
 ## O que NÃO fazer
 
