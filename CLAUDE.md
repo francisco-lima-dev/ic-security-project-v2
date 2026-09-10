@@ -368,8 +368,15 @@ inteiro dentro do `analyze` do **primeiro** CVE do lote — os seguintes reusam
 `docker run` — e pode encostar no `TIMEOUT_ANALYZE` de 3600 s, virando
 `ERRO_ANALISE` sem causa aparente.
 
-Correção proposta, não aplicada: `RUN chmod -R a+rX /opt/codeql` no Dockerfile
-do CodeQL, logo após desempacotar o bundle.
+**Correção adotada:** `RUN chmod -R a+rX /opt/codeql` no Dockerfile do CodeQL,
+logo após desempacotar o bundle. Verificada na imagem da campanha
+reconstruída, sob `--user` com o uid 1000 deste hospedeiro: os 3.151 `.qlx`
+passam a modo 644, `AccessDeniedException` cai a **zero**, **nenhuma** consulta
+é recompilada e as 104 carregam do precompilado.
+
+Com ela, a medição de duração do CodeQL passou a sair da **imagem da
+campanha**, não de uma imagem de diagnóstico — era a maior fragilidade da
+medição da Fase E.
 
 ### Revisão antes da execução
 
@@ -377,6 +384,16 @@ Todo script, Dockerfile ou normalizador passa pelo subagente
 `revisor-pipeline` antes de commit. O checklist dele deriva dos defeitos
 reais que invalidaram a campanha anterior. Revisão sem apontamentos é
 resultado válido.
+
+**Um caso em que a revisão não foi sequer prévia (Fase E).** O
+`tools/normalize.py` foi commitado em **10/09/2026** sem revisão: o subagente
+morreu no limite de sessão da API antes de produzir apontamento, e a
+alteração não era cosmética — mudança de schema, função nova de despacho por
+tipo, inversão de uma guarda e três avisos de console. A revisão rodou
+**depois**, em 10/09/2026, sobre o diff já commitado, e apontou seis itens,
+todos corrigidos em commit próprio. Fica no registro: ali a revisão deixou de
+ser prévia, o que é uma perda a mais do que a limitação estrutural descrita
+no parágrafo seguinte.
 
 **Limitação declarada, não corrigida.** A revisão incide sobre a versão
 *anterior* às correções que ela mesma motiva. As verificações mecânicas são
@@ -560,6 +577,26 @@ prefixados por `gt_`, no bloco de metadados, não repetidos por achado:
 - `gt_file_path` — escalar
 - `gt_file_lines` — lista, podendo ter mais de um elemento em três CVEs
 
+**Colunas nos achados, desde o schema 1.2.** `column_start` e `column_end`,
+anuláveis, com a mesma disciplina do `line_end`. As três ferramentas as
+emitem em 100% dos achados (`region.startColumn`/`endColumn` no SARIF,
+`start.col`/`end.col` no Semgrep) — no CodeQL a coluna vem **mesmo quando o
+`endLine` não vem**.
+
+Entraram por medição, não por completude: na Fase E, **11 achados do Semgrep
+empataram** em (arquivo, linha, regra, mensagem) e diferiam **só na coluna** —
+duas chamadas a `path.join` na mesma linha, em `lib/fp/build-modules.js:122`,
+colunas 24-30 e 32-40. Sem a coluna a chave de ordenação não era total contra
+saída real, e um empate deixava de ser informação: passava a significar
+"idênticos em tudo que o schema grava" quando os achados eram distintos no
+raw. Também inflava qualquer contagem de precisão sobre `findings`, contando
+o mesmo par (regra, linha) mais de uma vez sem deixar rastro por achado.
+Com as colunas na chave, as 11 colisões foram a **zero** nos mesmos raws.
+
+A ordem da chave é: `file_path`, `line_start`, `line_end`, `column_start`,
+`column_end`, `rule_id`, `message`, e o índice de entrada só como desempate
+final.
+
 - `gt_file_scanned` — tri-estado: a ferramenta considerou o arquivo do
   ground truth? `true`/`false` no Semgrep (`paths.scanned`, verificado);
   **`null` no CodeQL e no Snyk**. O `null` acompanha sempre
@@ -580,16 +617,27 @@ prefixados por `gt_`, no bloco de metadados, não repetidos por achado:
 - `tool_diagnostics` — o que a ferramenta reporta sobre a própria execução:
   `errors` e `skipped_paths` (Semgrep), `notifications`
   (`invocations[].toolExecutionNotifications`, CodeQL e Snyk),
-  `gt_file_affected` e `details`. Captura **condicional**: campo ausente
+  e `details`. Captura **condicional**: campo ausente
   grava `null` e segue; ausência nunca é falha, porque a emissão não está
   assegurada — no Snyk, o SARIF admite `toolExecutionNotifications` mas não
   se verificou que emite.
   Motivo de existir: arquivo cuja análise falhou não produz achado, e o
   resultado é indistinguível de análise limpa. Mesmo modo de falha que o
   `gt_file_scanned` pega, por outro caminho.
-  `gt_file_affected` é **heurística por subcadeia sobre texto truncado**, e
-  o próprio tratado declara isso em `gt_file_affected_method`. Não entra em
-  contagem alguma da matriz
+  **`gt_file_affected` foi removido no schema 1.2**, e o motivo é
+  instrutivo: a polaridade do campo **invertia entre ferramentas**. No
+  Semgrep os detalhes vinham de `errors[]` e `paths.skipped[]` — problemas —,
+  então `true` queria dizer "houve problema com o arquivo"; no CodeQL vinham
+  das `toolExecutionNotifications`, que são quase todas de extração
+  **bem-sucedida** (174 de 176 num CVE), então `true` queria dizer o oposto.
+  Pior: o booleano era calculado sobre a lista inteira, enquanto `details`
+  guarda só as 20 primeiras entradas — num CVE com 224 notificações o campo
+  saía `true` por causa de uma entrada que o tratado não grava, e quem lê não
+  tinha como conferir nem refutar. Campo cujo sentido depende da ferramenta,
+  e cuja evidência não está no registro, é pior que campo ausente.
+  No CodeQL a pergunta verdadeira — "a ferramenta considerou este arquivo" —
+  é a do `gt_file_scanned`, e o inventário para respondê-la está no mesmo
+  SARIF
 
 - `schema_version` — literal. Tratado com versão divergente da corrente
   **não** é pulado pela idempotência: reprocessa, ou falha se faltar
@@ -654,10 +702,19 @@ precisou ser normalizado — hoje um único CVE, `CVE-2019-12041`, que declara
 seja cotejável com o benchmark sem consultar o relatório.
 
 **`gt_file_scanned_reason`** acompanha o `gt_file_scanned` quando ele é
-`null`, dizendo por quê. O `null` tem mais de uma causa — o SARIF do CodeQL
-não traz inventário de arquivos varridos; o Semgrep pode vir sem
-`paths.scanned`; a `coverage` do Snyk pode vir agregada por linguagem, sem
-caminhos — e sem o motivo as três viram a mesma coisa na leitura.
+`null`, dizendo por quê. O `null` tem mais de uma causa — e as causas **não
+são do mesmo tipo**, que é justamente o que o campo existe para não deixar
+virar a mesma coisa na leitura:
+
+- **Snyk:** impossibilidade real. A `coverage[]` vem agregada por linguagem
+  (`{files, isSupported, lang, type}`, com `files` sempre **contagem**), e não
+  há como decidir sobre um arquivo.
+- **CodeQL:** **decisão, não impossibilidade.** O SARIF **traz** inventário de
+  arquivos extraídos — ver "Divergências encontradas" adiante. O motivo
+  gravado diz isso com todas as letras, para que quem lê o corpus não conclua
+  limitação de formato e deixe de reabrir a decisão.
+- **Semgrep:** só se o JSON vier sem `paths.scanned`, o que não ocorreu na
+  Fase E.
 
 **Chave canônica na busca da tabela de primário.** Normalizar para três
 dígitos, ordenar, juntar. Nunca casar por string crua contra a grafia em
@@ -919,11 +976,25 @@ analisado dentro do próprio raw; o log de execução segue sendo a única
 evidência, e por isso é versionado.
 
 **Snyk — `coverage[]` é agregada por linguagem**, na forma
-`{files, isSupported, lang, type}`, sem inventário de caminhos. Não decide
-sobre um arquivo, e `gt_file_scanned` fica `null` nos 223. Traz, porém,
-entradas `type: "FAILED_PARSING"` com a contagem de arquivos que a
-ferramenta não conseguiu ler — sinal de diagnóstico que o tratado preserva
-em `metadata.coverage`.
+`{files, isSupported, lang, type}` — exatamente quatro chaves, e `files` é
+**sempre contagem**, nunca lista de caminhos (11 entradas em 4 raws, todas
+numéricas). Não decide sobre um arquivo, e `gt_file_scanned` fica `null` nos
+223.
+
+Traz, porém, entradas `type: "FAILED_PARSING"` com a contagem de arquivos que
+a ferramenta não conseguiu ler. **Desde o schema 1.2 elas são promovidas a
+`tool_diagnostics.errors`**, e o `details` declara que a contagem *não
+discrimina caminhos* — sem essa declaração, quem lê `errors: 8` suporia saber
+quais arquivos. Arquivo cuja análise falhou não produz achado, e o resultado é
+indistinguível de análise limpa: é o sinal que o `tool_diagnostics` existe
+para capturar, e deixá-lo só em `metadata.coverage` era preservá-lo onde
+ninguém procura.
+
+Corolário defensivo: ao procurar inventário de caminhos na `coverage[]`, o
+normalizador **ignora entradas não suportadas**. Hoje o ramo é inalcançável,
+porque `files` é contagem; se o Snyk passar a enumerar caminhos, um arquivo
+listado sob `FAILED_PARSING` seria contado como varrido e `gt_file_scanned`
+sairia `true` para arquivo que a ferramenta não conseguiu ler.
 
 **Snyk — varredura sem achados emite `"results": []`**, chave presente e
 lista vazia. Era a fronteira aberta de maior risco da fase; está fechada, e
@@ -1007,10 +1078,18 @@ Declaradas na monografia, não corrigíveis por código:
   **Atenuado, não eliminado, pela Fase E (10/09/2026):** a tabela foi
   confrontada campo a campo contra saída real e seis divergências
   apareceram, todas registradas acima; as fixtures divergentes foram
-  corrigidas contra o real. O que resta é que a amostra são **4 CVEs e 4
-  repositórios**, todos JavaScript — nenhum TypeScript, nenhum monorepo,
-  nenhum `SEM_ARQUIVO_ANALISAVEL`. Forma que não ocorreu nesses quatro
-  continua descrita por suposição
+  corrigidas contra o real, incluindo a do CodeQL, que modelava a
+  notificação como **falha** de extração quando a saída real é de extração
+  bem-sucedida.
+- **A amostra da confrontação são 4 CVEs e 4 repositórios, todos
+  JavaScript.** Nenhum TypeScript no laço, nenhum monorepo, e nenhum
+  `SEM_ARQUIVO_ANALISAVEL` — o único status do log que a Fase E não
+  exercitou. O extrator de TypeScript foi fechado por **sondagem dedicada**,
+  fora do laço (`database create --build-mode=none` sobre um `.ts`, extração
+  e exit 0 em `node:24`), o que é evidência de que o extrator funciona, não
+  de que o laço o atravessa. Forma que não ocorreu nesses quatro continua
+  descrita por suposição, e é o que o ensaio de fumaça no Actions precisa
+  cobrir
 
 ## O que NÃO fazer
 

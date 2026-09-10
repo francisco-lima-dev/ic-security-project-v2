@@ -23,7 +23,7 @@ apontando para diretório temporário. Nada é escrito em `results/` nem em
 
 | Arquivo | Cobre |
 |---|---|
-| `CVE-2018-14040.sarif` | o caso rico: CWE por `external/cwe/`, regra **sem** `defaultConfiguration.level` (→ `unknown`), `ruleId` **ausente** de `driver.rules[]` (→ `unresolved`), regra resolvida por `tool.extensions[].rules[]`, `security-severity` como `"6.1"` e como `5`, `line_end` nulo, caminho com `./` e com `file://` + prefixo do WORKDIR, achado duplicado (colisão de chave), ordem de entrada fora da ordem da chave total, `toolExecutionNotifications` mencionando o `gt_file_path` |
+| `CVE-2018-14040.sarif` | o caso rico: CWE por `external/cwe/`, regra **sem** `defaultConfiguration.level` (→ `unknown`), `ruleId` **ausente** de `driver.rules[]` (→ `unresolved`), regra resolvida por `tool.extensions[].rules[]`, `security-severity` como `"6.1"` e como `5`, `line_end` nulo, caminho com `./` e com `file://` + prefixo do WORKDIR, achado duplicado (colisão de chave), ordem de entrada fora da ordem da chave total, `toolExecutionNotifications` na **forma real medida na Fase E** — `level: "none"`, `message.text` vazia, `descriptor.id` `js/diagnostics/successfully-extracted-files` e o caminho só em `locations[0]`. Antes modelava uma **falha** de extração, que a saída real contradiz |
 | `CVE-2018-1000096.sarif` | CVE **sem CWE** no ground truth; `results: []`; sem `invocations` → `analysis_date` por mtime e `tool_diagnostics` todo nulo → `gt_file_affected: null` |
 | `CVE-2018-16472.sarif` | conjunto `CWE-250\|CWE-400`, **presente na tabela com primário vazio** → `gt_cwe_primary: null`; `toolExecutionNotifications: []` → `0`, distinto de `null` |
 | `CVE-2017-16011.sarif` | conjunto **unitário** → primário é o próprio, sem consultar a tabela |
@@ -62,8 +62,8 @@ sintética: nenhum dos 223 CVEs reais tem conjunto fora dos 17 mapeados.
 
 | Arquivo | Cobre |
 |---|---|
-| `CVE-2018-14040.sarif` | `properties.cwe` como lista (`"CWE-79"` → `CWE-079`) e como cadeia nua; `results[].level`; `ruleId` ausente de `driver.rules[]`; `automationDetails.id` com carimbo ISO → `analysis_date_source: "tool"`; **`coverage` agregada por linguagem** → `gt_file_scanned: null` com motivo; `toolExecutionNotifications` ausente → `null` |
-| `CVE-2018-16480.sarif` | `coverage` com **inventário de caminhos** → `gt_file_scanned: true`; sem `automationDetails` → mtime; `toolExecutionNotifications` presente e mencionando o `gt_file_path` |
+| `CVE-2018-14040.sarif` | `properties.cwe` como lista (`"CWE-79"` → `CWE-079`) e como cadeia nua; `results[].level`; `ruleId` ausente de `driver.rules[]`; `automationDetails.id` com carimbo ISO → `analysis_date_source: "tool"`; **`coverage` agregada por linguagem na forma real** (`lang` = extensão, `files` = contagem) → `gt_file_scanned: null` com motivo; duas entradas **`FAILED_PARSING`** → `tool_diagnostics.errors: 8`; `toolExecutionNotifications` ausente → `null` |
+| `CVE-2018-16480.sarif` | `coverage` com **inventário de caminhos** → `gt_file_scanned: true` — forma **não observada** na saída real, mantida como ramo defensivo; mais uma entrada `FAILED_PARSING` **com caminho**, para assegurar que caminho sob entrada não suportada não conta como varrido; sem `automationDetails` → mtime; `toolExecutionNotifications` presente e mencionando o `gt_file_path` |
 
 ### `gt-barra-inicial/` — defeito do ground truth
 

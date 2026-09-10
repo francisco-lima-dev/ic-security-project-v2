@@ -1,7 +1,7 @@
 {
   "ferramenta": "codeql",
-  "schema_version": "1.1",
-  "gerado_em": "2026-09-10T13:46:43.259125Z",
+  "schema_version": "1.2",
+  "gerado_em": "2026-09-10T18:32:06.262606Z",
   "cves": {
     "processados": 4,
     "pulados_por_idempotencia": 0,
@@ -59,19 +59,13 @@
     "null": 4,
     "lista_false": [],
     "motivos_null": {
-      "SARIF do CodeQL nao traz inventario de arquivos varridos": 4
+      "decisao pendente: o SARIF do CodeQL TRAZ inventario de arquivos extraidos (runs[0].artifacts[] e js/diagnostics/successfully-extracted-files); o null e escolha, nao limitacao do formato": 4
     }
   },
   "tool_diagnostics": {
     "cves_com_erro": [],
     "cves_com_caminho_descartado": [],
     "cves_com_notificacao": [
-      "CVE-2017-16042",
-      "CVE-2018-14040",
-      "CVE-2018-14041",
-      "CVE-2019-10744"
-    ],
-    "cves_com_gt_file_affected": [
       "CVE-2017-16042",
       "CVE-2018-14040",
       "CVE-2018-14041",
@@ -92,13 +86,14 @@
     "CVE-2018-14041",
     "CVE-2019-10744"
   ],
+  "semgrep_rules_applied": [],
   "semgrep_rules_applied_anomalo": [],
   "codeql_versao_inesperada": [],
   "security_severity_ilegivel": [],
   "duracao_segundos": {
-    "total": 0.0199,
-    "por_cve_mediana": 0.0042,
-    "por_cve_maximo": 0.0082,
+    "total": 0.019,
+    "por_cve_mediana": 0.0038,
+    "por_cve_maximo": 0.0078,
     "por_cve_maximo_cve": "CVE-2018-14041"
   },
   "lista": "/home/francisco_sales/ic_security_project_v2/datasets/listas/cves-sast.txt",

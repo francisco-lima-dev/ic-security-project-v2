@@ -64,7 +64,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-SCHEMA_VERSION = "1.1"
+SCHEMA_VERSION = "1.2"
 RAIZ = Path(__file__).resolve().parent.parent
 
 FERRAMENTAS = ("codeql", "semgrep", "snyk-code")
@@ -470,13 +470,21 @@ def _indice_regras(run):
 
 
 def _localizacao(resultado):
+    """(uri, line_start, line_end, column_start, column_end).
+
+    As colunas entram no schema desde 1.2. Medido na Fase E: as três
+    ferramentas as emitem em 100% dos achados — `region.startColumn`/`endColumn`
+    no SARIF, `start.col`/`end.col` no Semgrep —, e são o ÚNICO campo que
+    distingue achados que empatam na chave de ordenação. No CodeQL a coluna
+    vem mesmo quando `endLine` não vem."""
     locais = resultado.get("locations")
     if not isinstance(locais, list) or not locais:
-        return None, None, None
+        return None, None, None, None, None
     fisica = (locais[0] or {}).get("physicalLocation") or {}
     artefato = fisica.get("artifactLocation") or {}
     regiao = fisica.get("region") or {}
-    return artefato.get("uri"), regiao.get("startLine"), regiao.get("endLine")
+    return (artefato.get("uri"), regiao.get("startLine"), regiao.get("endLine"),
+            regiao.get("startColumn"), regiao.get("endColumn"))
 
 
 def _texto_mensagem(objeto):
@@ -564,32 +572,38 @@ def _truncar(texto):
     return texto if len(texto) <= LIMITE_TEXTO_DETALHE else texto[:LIMITE_TEXTO_DETALHE] + "…"
 
 
-def montar_diagnosticos(erros, caminhos_descartados, notificacoes, detalhes, gt_file_path):
-    """gt_file_affected é None quando NÃO HÁ FONTE — as três contagens nulas.
+def montar_diagnosticos(erros, caminhos_descartados, notificacoes, detalhes):
+    """O que a ferramenta reporta sobre a própria execução.
 
-    Com pelo menos uma fonte, é o booleano de o gt_file_path comparecer em
-    alguma entrada. `details` guarda as entradas correspondentes, truncadas a
-    LIMITE_DETALHES entradas de LIMITE_TEXTO_DETALHE caracteres.
+    `gt_file_affected` e `gt_file_affected_method` foram REMOVIDOS no schema
+    1.2, por três razões medidas na Fase E, em ordem de peso:
+
+    1. **A polaridade invertia entre ferramentas.** No Semgrep `detalhes` vem
+       de `errors[]` e `paths.skipped[]` — problemas —, então `true` queria
+       dizer "houve problema com o arquivo". No CodeQL vem das
+       `toolExecutionNotifications`, que são quase todas de extração
+       BEM-SUCEDIDA (174 de 176 num CVE), então `true` queria dizer "o arquivo
+       foi extraído" — o oposto. Campo cujo sentido depende da ferramenta é
+       pior que campo ausente.
+    2. **O registro não sustentava a própria afirmação.** O booleano era
+       calculado sobre a lista INTEIRA de detalhes, enquanto `details` guarda
+       só as primeiras LIMITE_DETALHES entradas. Num CVE com 224 notificações
+       o campo saía `true` por causa de uma entrada que o tratado não grava:
+       quem lê não tem como conferir nem refutar.
+    3. **No CodeQL a pergunta verdadeira é outra.** "A ferramenta considerou
+       este arquivo" é exatamente o que `gt_file_scanned` responde, e o
+       inventário para respondê-lo existe no mesmo SARIF. Manter um indício
+       por substring ao lado de um inventário direto seria responder mal uma
+       pergunta que se pode responder bem.
+
+    O que resta é factual: as três contagens e o texto bruto, cada uma
+    dizendo de que fonte veio. `details` segue truncado, e segue sendo indício
+    — mas indício não é mais apresentado como conclusão.
     """
-    sem_fonte = erros is None and caminhos_descartados is None and notificacoes is None
-    if sem_fonte:
-        afetado = None
-    else:
-        afetado = any(gt_file_path and gt_file_path in _truncar(d) for d in detalhes)
     return {
         "errors": erros,
         "skipped_paths": caminhos_descartados,
         "notifications": notificacoes,
-        "gt_file_affected": afetado,
-        # O campo não é afirmação, é indício, e o artefato tem de dizê-lo:
-        # a busca é por substring sobre texto que pode ter sido truncado em
-        # LIMITE_TEXTO_DETALHE, então erra nos dois sentidos — falso negativo
-        # se a menção caiu fora do truncamento, falso positivo quando o
-        # caminho é curto ("index.js" casa com qualquer .../index.js citado).
-        "gt_file_affected_method": (
-            "heuristica: substring de gt_file_path sobre details[], truncados "
-            "a %d caracteres" % LIMITE_TEXTO_DETALHE
-        ),
         "details": [_truncar(d) for d in detalhes[:LIMITE_DETALHES]],
     }
 
@@ -671,7 +685,7 @@ def processar_codeql(dados, caminho_raw, gt, relatorio):
                     {"cve": gt["cve_id"], "rule_id": rule_id, "valor": _truncar(bruto)}
                 )
 
-        uri, inicio, fim = _localizacao(resultado)
+        uri, inicio, fim, col_inicio, col_fim = _localizacao(resultado)
         achados.append({
             "rule_id": rule_id,
             "cwe": cwes,
@@ -681,11 +695,13 @@ def processar_codeql(dados, caminho_raw, gt, relatorio):
             "_uri_bruta": uri,
             "line_start": inicio,
             "line_end": fim,
+            "column_start": col_inicio,
+            "column_end": col_fim,
             "message": _texto_mensagem(resultado),
         })
 
     quantidade, textos = _notificacoes(run)
-    diagnosticos = montar_diagnosticos(None, None, quantidade, textos, gt["gt_file_path"])
+    diagnosticos = montar_diagnosticos(None, None, quantidade, textos)
 
     return {
         "tool_version": versao,
@@ -702,8 +718,19 @@ def processar_codeql(dados, caminho_raw, gt, relatorio):
         "rules_applied": None,
         "analysis_date": analysis_date,
         "analysis_date_source": origem,
-        "gt_file_scanned": None,  # o SARIF não traz inventário de arquivos varridos
-        "gt_file_scanned_motivo": "SARIF do CodeQL nao traz inventario de arquivos varridos",
+        # NÃO é impossibilidade do formato: medido na Fase E (10/09/2026), o
+        # SARIF TRAZ inventário de arquivos extraídos, em duas formas —
+        # `runs[0].artifacts[]` e as notificações
+        # `js/diagnostics/successfully-extracted-files`, uma por arquivo, com
+        # o caminho em `locations[0]`. O `null` é DECISÃO metodológica ainda
+        # não tomada, e o motivo tem de dizer isso: gravar "o formato não traz"
+        # faria quem lê o corpus concluir limitação e não reabrir a decisão.
+        "gt_file_scanned": None,
+        "gt_file_scanned_motivo": (
+            "decisao pendente: o SARIF do CodeQL TRAZ inventario de arquivos "
+            "extraidos (runs[0].artifacts[] e js/diagnostics/successfully-"
+            "extracted-files); o null e escolha, nao limitacao do formato"
+        ),
         "tool_diagnostics": diagnosticos,
         "achados": achados,
         "extra_metadata": {},
@@ -727,6 +754,16 @@ def carregar_descritor_semgrep():
     if faltando:
         raise SystemExit(
             "ERRO: %s sem os campos %s" % (DESCRITOR_SEMGREP, ", ".join(faltando))
+        )
+    # Presença não basta: `rules_total` entra numa COMPARAÇÃO NUMÉRICA por CVE.
+    # Com null ou "1074" no descritor, o `>` levantaria TypeError — que não é
+    # FalhaCVE, não é capturado pelo laço, e derrubaria a execução INTEIRA sem
+    # escrever relatório. Falhar aqui, uma vez e com mensagem, custa o mesmo e
+    # perde um arquivo em vez de um lote.
+    if isinstance(meta["rules_total"], bool) or not isinstance(meta["rules_total"], int):
+        raise SystemExit(
+            "ERRO: %s tem rules_total %r (%s); esperado inteiro"
+            % (DESCRITOR_SEMGREP, meta["rules_total"], type(meta["rules_total"]).__name__)
         )
     return {
         "name": meta["pack"],
@@ -770,7 +807,7 @@ def _cwes_semgrep(bruto, cve, relatorio):
     return cwes
 
 
-def _etiqueta_erro_semgrep(valor):
+def _etiqueta_erro_semgrep(valor, cve=None, relatorio=None):
     """errors[].type MUDA DE TIPO, como extra.metadata.cwe: cadeia nua numa
     minoria ("Other syntax error") e união etiquetada na maioria —
     ["PartialParsing", [ {path, start, end}, ... ]]. Medido na Fase E, sobre
@@ -780,10 +817,23 @@ def _etiqueta_erro_semgrep(valor):
     o `message` já resume. Sem este tratamento a forma etiquetada não é uma
     cadeia, o laço a ignora, e o detalhe sai SEM dizer que erro foi —
     silencioso, porque as demais partes continuam preenchidas."""
+    if valor is None:
+        return None
     if isinstance(valor, str):
         return valor
     if isinstance(valor, list) and valor and isinstance(valor[0], str):
         return valor[0]
+    # Terceira forma. Sem contador ela sumiria: `partes` continua não-vazia
+    # por causa de level/message/path, então o fallback json.dumps não
+    # dispara e o detalhe sai PARECENDO completo, sem dizer que erro foi —
+    # o próprio sintoma que esta função existe para eliminar. Simétrico ao
+    # `semgrep_tipo_inesperado` do CWE, que trata o mesmo problema no outro
+    # campo que muda de tipo.
+    if relatorio is not None:
+        relatorio["cwe"]["semgrep_tipo_inesperado"].append(
+            {"cve": cve, "campo": "errors[].type",
+             "tipo": type(valor).__name__, "valor": _truncar(valor)}
+        )
     return None
 
 
@@ -815,16 +865,36 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
             "rules_applied e o inventario de regras efetivamente aplicadas"
         )
     rules_applied = len(tempo["rules"])
-    # rules_applied <= rules_total é a relação verdadeira: aplicadas são um
-    # subconjunto das carregadas. Só a VIOLAÇÃO do limite é anomalia, e ela
-    # só ocorre se o config em uso não for o pack vendorizado — que é o que
-    # a comparação herdou de útil da versão anterior. Desigualdade estrita
-    # NÃO é sinal: é o caso comum, e reportá-la afogaria o relatório.
+    # O valor de CADA CVE é registrado, sempre. A guarda antiga (`!=`) era
+    # ruidosa mas mantinha os números à vista; trocá-la por uma condição quase
+    # inalcançável, sem registrar nada, deixaria o relatório sem qualquer
+    # rastro agregado de rules_applied — e os tratados não são versionados.
+    relatorio["semgrep_rules_applied"].append(
+        {"cve": gt["cve_id"], "rules_applied": rules_applied,
+         "rules_total": ruleset["rules_total"]}
+    )
+    # DOIS limites, porque a relação verdadeira é 0 < rules_applied <= total.
+    #
+    # Superior: mais regras aplicadas do que o pack declara só ocorre se o
+    # config em uso não for o pack vendorizado. Desigualdade estrita NÃO é
+    # sinal — é o caso comum (256, 297, 297 e 370 contra 1074 na Fase E) e
+    # reportá-la afogaria o relatório.
+    #
+    # Inferior: zero regras aplicadas produz `findings: []` indistinguível de
+    # "analisou e não achou". A guarda anterior pegava esse caso de graça, por
+    # ser `!=`; ao inverter para `>` ele ficaria sem vigia algum. É o modo de
+    # falha mais barato de perder e o mais caro de descobrir depois.
     if rules_applied > ruleset["rules_total"]:
         relatorio["semgrep_rules_applied_anomalo"].append(
             {"cve": gt["cve_id"], "rules_applied": rules_applied,
              "rules_total": ruleset["rules_total"],
              "nota": "mais regras aplicadas que o pack declara; o config em uso nao e o pack vendorizado"}
+        )
+    elif rules_applied == 0:
+        relatorio["semgrep_rules_applied_anomalo"].append(
+            {"cve": gt["cve_id"], "rules_applied": 0,
+             "rules_total": ruleset["rules_total"],
+             "nota": "nenhuma regra aplicada; findings vazio nao significa ausencia de achados"}
         )
 
     achados = []
@@ -840,6 +910,8 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
         severidade = normalizar_severidade(bruta, gt["cve_id"], resultado.get("check_id"))
         inicio = (resultado.get("start") or {}).get("line")
         fim = (resultado.get("end") or {}).get("line")
+        col_inicio = (resultado.get("start") or {}).get("col")
+        col_fim = (resultado.get("end") or {}).get("col")
         mensagem = extra.get("message")
         achados.append({
             "rule_id": resultado.get("check_id"),
@@ -850,6 +922,8 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
             "_uri_bruta": resultado.get("path"),
             "line_start": inicio,
             "line_end": fim,
+            "column_start": col_inicio,
+            "column_end": col_fim,
             "message": mensagem if isinstance(mensagem, str) else None,
         })
 
@@ -886,7 +960,7 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
             for campo in ("level", "type", "message", "path"):
                 valor = (erro or {}).get(campo) if isinstance(erro, dict) else None
                 if campo == "type":
-                    valor = _etiqueta_erro_semgrep(valor)
+                    valor = _etiqueta_erro_semgrep(valor, gt["cve_id"], relatorio)
                 if isinstance(valor, str):
                     partes.append(valor)
             detalhes.append(" | ".join(partes) if partes else json.dumps(erro)[:LIMITE_TEXTO_DETALHE])
@@ -902,7 +976,7 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
                 detalhes.append("skipped: %s" % item)
 
     diagnosticos = montar_diagnosticos(
-        quantidade_erros, quantidade_descartados, None, detalhes, gt["gt_file_path"]
+        quantidade_erros, quantidade_descartados, None, detalhes
     )
 
     versao = dados.get("version")
@@ -947,6 +1021,14 @@ def derivar_gt_file_scanned_snyk(cobertura, gt_file_path):
     caminhos = set()
     for entrada in cobertura:
         if not isinstance(entrada, dict):
+            continue
+        # Entrada NÃO suportada não é "varrida": se o Snyk um dia passar a
+        # enumerar caminhos, um arquivo listado sob FAILED_PARSING seria
+        # contado como varrido e gt_file_scanned sairia `true` para um arquivo
+        # que a ferramenta não conseguiu ler — falso "varrido", silencioso.
+        # Hoje `files` é sempre contagem e este ramo não é alcançado; a guarda
+        # é para quando for.
+        if entrada.get("type") == "FAILED_PARSING" or entrada.get("isSupported") is False:
             continue
         for campo in ("files", "paths", "file", "path"):
             valor = entrada.get(campo)
@@ -1021,7 +1103,7 @@ def processar_snyk(dados, caminho_raw, gt, relatorio):
                 )
             severidade = normalizar_severidade(nivel, gt["cve_id"], rule_id)
 
-        uri, inicio, fim = _localizacao(resultado)
+        uri, inicio, fim, col_inicio, col_fim = _localizacao(resultado)
         achados.append({
             "rule_id": rule_id,
             "cwe": cwes,
@@ -1031,14 +1113,57 @@ def processar_snyk(dados, caminho_raw, gt, relatorio):
             "_uri_bruta": uri,
             "line_start": inicio,
             "line_end": fim,
+            "column_start": col_inicio,
+            "column_end": col_fim,
             "message": _texto_mensagem(resultado),
         })
 
     cobertura = (run.get("properties") or {}).get("coverage")
     gt_file_scanned, motivo = derivar_gt_file_scanned_snyk(cobertura, gt["gt_file_path"])
 
+    # FAILED_PARSING promovido a tool_diagnostics.errors (schema 1.2).
+    # Arquivo cuja análise falhou não produz achado, e o resultado é
+    # indistinguível de análise limpa — é exatamente o sinal que o
+    # tool_diagnostics existe para capturar. Deixá-lo só em
+    # metadata.coverage era preservá-lo onde ninguém procura.
+    #
+    # Medido na Fase E: a entrada tem QUATRO chaves — files, isSupported,
+    # lang, type — e `files` é SEMPRE uma CONTAGEM, nunca lista de caminhos
+    # (11 entradas em 4 raws, todas numéricas). Logo a promoção é da
+    # contagem, e o detalhe declara que não discrimina caminhos: sem isso,
+    # quem lê "errors: 8" suporia saber quais arquivos.
+    erros_cobertura = None
+    detalhes_cobertura = []
+    if isinstance(cobertura, list):
+        erros_cobertura = 0
+        for entrada in cobertura:
+            if not isinstance(entrada, dict):
+                continue
+            if entrada.get("type") == "FAILED_PARSING" or entrada.get("isSupported") is False:
+                # `files` e CONTAGEM na saida real medida (11 entradas em 4
+                # raws, todas numericas). Lista de caminhos e o formato que o
+                # Snyk NAO emite hoje; tratado aqui para que a promocao nao
+                # devolva zero em silencio caso passe a emitir.
+                bruto_files = entrada.get("files")
+                if isinstance(bruto_files, bool):
+                    quantos = 0
+                elif isinstance(bruto_files, int):
+                    quantos = bruto_files
+                elif isinstance(bruto_files, list):
+                    quantos = len(bruto_files)
+                else:
+                    quantos = 0
+                erros_cobertura += quantos
+                detalhes_cobertura.append(
+                    "coverage: %s | %s | %s arquivo(s) — contagem por linguagem; "
+                    "nao discrimina caminhos"
+                    % (entrada.get("type"), entrada.get("lang"), quantos)
+                )
+
     quantidade, textos = _notificacoes(run)
-    diagnosticos = montar_diagnosticos(None, None, quantidade, textos, gt["gt_file_path"])
+    diagnosticos = montar_diagnosticos(
+        erros_cobertura, None, quantidade, detalhes_cobertura + textos
+    )
 
     return {
         "tool_version": versao,
@@ -1060,11 +1185,19 @@ def processar_snyk(dados, caminho_raw, gt, relatorio):
 # Ordenação e finding_id (D.9)
 # ---------------------------------------------------------------------------
 def _chave_ordenacao(achado):
-    """Chave TOTAL: (file_path, line_start, line_end, rule_id, message).
+    """Chave TOTAL: (file_path, line_start, line_end, column_start,
+    column_end, rule_id, message).
 
     A estabilidade do sorted() não basta — ela preserva a ordem de ENTRADA nos
     empates, e a ordem de entrada é justamente o que pode variar entre
     execuções. Nulos vão para o fim, explicitamente.
+
+    As colunas entraram no schema 1.2 e nesta chave por medição: na Fase E,
+    11 achados do Semgrep empataram em (arquivo, linha, regra, mensagem) e
+    diferiam SÓ na coluna — duas chamadas a `path.join` na mesma linha. Sem
+    elas a chave não era total contra saída real, e um empate deixava de ser
+    informação: passava a significar "idênticos em tudo que o schema grava"
+    quando os achados eram distintos no raw.
     """
     def texto(valor):
         return (1, "") if not isinstance(valor, str) else (0, valor)
@@ -1076,6 +1209,8 @@ def _chave_ordenacao(achado):
         texto(achado.get("file_path")),
         inteiro(achado.get("line_start")),
         inteiro(achado.get("line_end")),
+        inteiro(achado.get("column_start")),
+        inteiro(achado.get("column_end")),
         texto(achado.get("rule_id")),
         texto(achado.get("message")),
     )
@@ -1102,7 +1237,8 @@ def ordenar_e_numerar(achados, ferramenta, cve, relatorio):
         registro = {"finding_id": "%s:%s:%04d" % (ferramenta, cve, numero)}
         for campo in ("rule_id", "cwe", "has_cwe", "severity_original",
                       "severity_normalized", "security_severity",
-                      "file_path", "line_start", "line_end", "message"):
+                      "file_path", "line_start", "line_end",
+                      "column_start", "column_end", "message"):
             registro[campo] = achado.get(campo)
         saida.append(registro)
     return saida
@@ -1161,7 +1297,6 @@ def relatorio_vazio(ferramenta):
             "cves_com_erro": [],
             "cves_com_caminho_descartado": [],
             "cves_com_notificacao": [],
-            "cves_com_gt_file_affected": [],
         },
         "colisoes_chave_ordenacao": {"total": 0, "por_cve": []},
         "raws_ilegiveis": [],
@@ -1169,6 +1304,7 @@ def relatorio_vazio(ferramenta):
         "sarif_runs_ignorados": [],
         "tratados_obsoletos_apos_falha": [],
         "analysis_date_fallback_mtime": [],
+        "semgrep_rules_applied": [],
         "semgrep_rules_applied_anomalo": [],
         "codeql_versao_inesperada": [],
         "security_severity_ilegivel": [],
@@ -1275,8 +1411,6 @@ def processar_um(ferramenta, caminho_raw, gt, tabela, relatorio, ruleset_semgrep
         relatorio["tool_diagnostics"]["cves_com_caminho_descartado"].append(gt["cve_id"])
     if diagnosticos["notifications"]:
         relatorio["tool_diagnostics"]["cves_com_notificacao"].append(gt["cve_id"])
-    if diagnosticos["gt_file_affected"]:
-        relatorio["tool_diagnostics"]["cves_com_gt_file_affected"].append(gt["cve_id"])
 
     varrido = parcial["gt_file_scanned"]
     if varrido is True:
@@ -1534,6 +1668,12 @@ def resumir(relatorio, caminho):
     if relatorio["security_severity_ilegivel"]:
         print("    ATENCAO: %d achado(s) com security-severity ilegivel como float"
               % len(relatorio["security_severity_ilegivel"]))
+    aplicadas = relatorio["semgrep_rules_applied"]
+    if aplicadas:
+        valores = sorted(x["rules_applied"] for x in aplicadas)
+        print("  rules_applied: min=%d max=%d de rules_total=%d (aplicadas por linguagem "
+              "presente, nao carregadas)"
+              % (valores[0], valores[-1], aplicadas[0]["rules_total"]))
     print("  cadeia nua de CWE (semgrep): %d | colisoes de chave: %d"
           % (len(relatorio["cwe"]["semgrep_cadeia_nua"]),
              relatorio["colisoes_chave_ordenacao"]["total"]))

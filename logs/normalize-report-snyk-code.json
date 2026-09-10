@@ -1,10 +1,10 @@
 {
   "ferramenta": "snyk-code",
-  "schema_version": "1.1",
-  "gerado_em": "2026-09-10T13:49:59.142092Z",
+  "schema_version": "1.2",
+  "gerado_em": "2026-09-10T18:32:06.494613Z",
   "cves": {
-    "processados": 3,
-    "pulados_por_idempotencia": 1,
+    "processados": 4,
+    "pulados_por_idempotencia": 0,
     "com_falha": [],
     "linhas_da_lista_sem_raw": 219,
     "raws_sem_linha_na_lista": [],
@@ -57,17 +57,19 @@
   "gt_file_scanned": {
     "true": 0,
     "false": 0,
-    "null": 3,
+    "null": 4,
     "lista_false": [],
     "motivos_null": {
-      "coverage[] agregada, sem inventario de caminhos: nao decide sobre um arquivo": 3
+      "coverage[] agregada, sem inventario de caminhos: nao decide sobre um arquivo": 4
     }
   },
   "tool_diagnostics": {
-    "cves_com_erro": [],
+    "cves_com_erro": [
+      "CVE-2018-14040",
+      "CVE-2018-14041"
+    ],
     "cves_com_caminho_descartado": [],
-    "cves_com_notificacao": [],
-    "cves_com_gt_file_affected": []
+    "cves_com_notificacao": []
   },
   "colisoes_chave_ordenacao": {
     "total": 0,
@@ -78,16 +80,17 @@
   "sarif_runs_ignorados": [],
   "tratados_obsoletos_apos_falha": [],
   "analysis_date_fallback_mtime": [],
+  "semgrep_rules_applied": [],
   "semgrep_rules_applied_anomalo": [],
   "codeql_versao_inesperada": [],
   "security_severity_ilegivel": [],
   "duracao_segundos": {
-    "total": 0.0029,
-    "por_cve_mediana": 0.001,
-    "por_cve_maximo": 0.0013,
+    "total": 0.0035,
+    "por_cve_mediana": 0.0008,
+    "por_cve_maximo": 0.0015,
     "por_cve_maximo_cve": "CVE-2018-14040"
   },
   "lista": "/home/francisco_sales/ic_security_project_v2/datasets/listas/cves-sast.txt",
-  "raw_dir": "/home/francisco_sales/ic_security_project_v2/results/snyk-code/raw",
+  "raw_dir": "/tmp/claude-1000/-home-francisco-sales-ic-security-project-v2/6dcdd11f-0af7-4ab2-8656-aa71c72f7e62/scratchpad/iso/results/snyk-code/raw",
   "treated_dir": "/home/francisco_sales/ic_security_project_v2/results/snyk-code/treated"
 }

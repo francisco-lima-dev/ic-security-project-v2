@@ -3,7 +3,7 @@
 ## Configuração avaliada
 
 Padrão da ferramenta. Não há conjunto de regras declarável: o bloco `ruleset`
-do schema comum é **nulo inteiro** para esta ferramenta, e `rules_loaded`
+do schema comum é **nulo inteiro** para esta ferramenta, e `rules_applied`
 também.
 
 Somente `--sarif-file-output`. O `--json-file-output` produz arquivo

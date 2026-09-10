@@ -1,7 +1,7 @@
 {
   "ferramenta": "semgrep",
-  "schema_version": "1.1",
-  "gerado_em": "2026-09-10T13:27:52.480459Z",
+  "schema_version": "1.2",
+  "gerado_em": "2026-09-10T18:32:06.336850Z",
   "cves": {
     "processados": 4,
     "pulados_por_idempotencia": 0,
@@ -66,37 +66,49 @@
       "CVE-2018-14041"
     ],
     "cves_com_caminho_descartado": [],
-    "cves_com_notificacao": [],
-    "cves_com_gt_file_affected": []
+    "cves_com_notificacao": []
   },
   "colisoes_chave_ordenacao": {
-    "total": 11,
-    "por_cve": [
-      {
-        "cve": "CVE-2018-14040",
-        "colisoes": 7
-      },
-      {
-        "cve": "CVE-2019-10744",
-        "colisoes": 4
-      }
-    ]
+    "total": 0,
+    "por_cve": []
   },
   "raws_ilegiveis": [],
   "resultados_descartados": 0,
   "sarif_runs_ignorados": [],
   "tratados_obsoletos_apos_falha": [],
   "analysis_date_fallback_mtime": [],
+  "semgrep_rules_applied": [
+    {
+      "cve": "CVE-2017-16042",
+      "rules_applied": 256,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2018-14040",
+      "rules_applied": 370,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2018-14041",
+      "rules_applied": 297,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-10744",
+      "rules_applied": 297,
+      "rules_total": 1074
+    }
+  ],
   "semgrep_rules_applied_anomalo": [],
   "codeql_versao_inesperada": [],
   "security_severity_ilegivel": [],
   "duracao_segundos": {
-    "total": 0.1019,
-    "por_cve_mediana": 0.0222,
-    "por_cve_maximo": 0.0564,
+    "total": 0.102,
+    "por_cve_mediana": 0.0217,
+    "por_cve_maximo": 0.0571,
     "por_cve_maximo_cve": "CVE-2018-14040"
   },
   "lista": "/home/francisco_sales/ic_security_project_v2/datasets/listas/cves-sast.txt",
-  "raw_dir": "/home/francisco_sales/ic_security_project_v2/results/semgrep/raw",
+  "raw_dir": "/tmp/claude-1000/-home-francisco-sales-ic-security-project-v2/6dcdd11f-0af7-4ab2-8656-aa71c72f7e62/scratchpad/iso/results/semgrep/raw",
   "treated_dir": "/home/francisco_sales/ic_security_project_v2/results/semgrep/treated"
 }

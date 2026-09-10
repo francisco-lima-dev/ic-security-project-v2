@@ -1,6 +1,6 @@
 cve,repo,commit,status,mensagem,duracao_segundos
-CVE-2017-16042,https://github.com/tj/node-growl.git,dc8aae046df328edd32dd69f3cd2d6b114d7018e,OK,codeql 2.25.4; suite codeql/javascript-queries:codeql-suites/javascript-security-extended.qls; 24 achados; HEAD conferido,60
-CVE-2016-1000229,https://github.com/linxiaowu66/swagger-ui.git,14fad2b4c76efe249db515c98432eb609aa77691,ERRO_FETCH,fetch raso e clone completo falharam,1
-CVE-2018-14041,https://github.com/twbs/bootstrap.git,149096016f70fd815540d62c0989fd99cdc809e0,OK,49 achados; HEAD conferido,79
-CVE-2018-14040,https://github.com/twbs/bootstrap.git,13bf8aeae3db71e28af69782328c22215795c169,OK,12 achados; HEAD conferido,110
-CVE-2019-10744,https://github.com/lodash/lodash.git,1f8ea07746963a535385a5befc19fa687a627d2b,OK,19 achados; HEAD conferido,170
+CVE-2017-16042,https://github.com/tj/node-growl.git,dc8aae046df328edd32dd69f3cd2d6b114d7018e,OK,codeql 2.25.4; suite codeql/javascript-queries:codeql-suites/javascript-security-extended.qls; 24 achados; HEAD conferido,63
+CVE-2016-1000229,https://github.com/linxiaowu66/swagger-ui.git,14fad2b4c76efe249db515c98432eb609aa77691,ERRO_FETCH,fetch raso e clone completo falharam,0
+CVE-2018-14041,https://github.com/twbs/bootstrap.git,149096016f70fd815540d62c0989fd99cdc809e0,OK,49 achados; HEAD conferido,78
+CVE-2018-14040,https://github.com/twbs/bootstrap.git,13bf8aeae3db71e28af69782328c22215795c169,OK,12 achados; HEAD conferido,127
+CVE-2019-10744,https://github.com/lodash/lodash.git,1f8ea07746963a535385a5befc19fa687a627d2b,OK,19 achados; HEAD conferido,146

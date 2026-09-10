@@ -151,21 +151,33 @@ def main():
     checar(m["tool_diagnostics"]["errors"] is None
            and m["tool_diagnostics"]["skipped_paths"] is None,
            "campos sem fonte no CodeQL ficam null, nao zero")
-    checar(m["tool_diagnostics"]["gt_file_affected"] is True,
-           "gt_file_affected true: notificacao menciona js/collapse.js")
+    # gt_file_affected foi REMOVIDO no schema 1.2: a polaridade invertia entre
+    # ferramentas (no CodeQL as notificacoes sao de extracao BEM-SUCEDIDA) e o
+    # booleano era calculado sobre a lista inteira enquanto details guarda so
+    # as 20 primeiras — o registro nao sustentava a propria afirmacao.
+    checar("gt_file_affected" not in m["tool_diagnostics"]
+           and "gt_file_affected_method" not in m["tool_diagnostics"],
+           "gt_file_affected e gt_file_affected_method NAO sobrevivem ao 1.2",
+           sorted(m["tool_diagnostics"]))
+    checar(any("js/collapse.js" in d for d in m["tool_diagnostics"]["details"]),
+           "o caminho continua legivel em details[], sem virar conclusao",
+           m["tool_diagnostics"]["details"])
 
     # metadata
-    checar(m["schema_version"] == "1.1" and m["tool"] == "codeql", "metadata basico")
+    checar(m["schema_version"] == "1.2" and m["tool"] == "codeql", "metadata basico")
     checar(m["commit"] == "13bf8aeae3db71e28af69782328c22215795c169",
            "commit vem da LISTA de entrada", m["commit"])
     checar(m["ruleset"]["rules_total"] == 104 and m["rules_applied"] is None,
            "CodeQL: rules_total 104, rules_applied NULO")
     checar(m["ruleset"]["rules_id_sha256"] is None,
            "rules_id_sha256 nulo fora do Semgrep — nao ha pack de arquivo")
-    # 2.3: o campo e indicio, e o artefato tem de dize-lo
-    checar("heuristica" in m["tool_diagnostics"]["gt_file_affected_method"],
-           "gt_file_affected vem acompanhado do metodo, declarado heuristico",
-           m["tool_diagnostics"].get("gt_file_affected_method"))
+    # O motivo do null do CodeQL descreve a DECISAO, nao uma impossibilidade:
+    # medido na Fase E, o SARIF traz inventario de arquivos extraidos.
+    checar("decisao pendente" in m["gt_file_scanned_reason"]
+           and "TRAZ inventario" in m["gt_file_scanned_reason"],
+           "o motivo do null do CodeQL nao afirma mais que o formato nao traz "
+           "inventario — afirmacao que a Fase E mediu como falsa",
+           m.get("gt_file_scanned_reason"))
     checar(m["analysis_date"] == "2026-09-07T14:32:11Z"
            and m["analysis_date_source"] == "tool",
            "analysis_date de invocations[0].endTimeUtc, origem 'tool'")
@@ -181,8 +193,10 @@ def main():
            "conjunto vazio contado no relatorio")
     checar(vazio["analysis_date_source"] == "file_mtime",
            "sem invocations → analysis_date por mtime, origem declarada")
-    checar(vazio["tool_diagnostics"]["gt_file_affected"] is None,
-           "sem fonte alguma de diagnostico → gt_file_affected null")
+    checar(vazio["tool_diagnostics"]["notifications"] is None
+           and vazio["tool_diagnostics"]["details"] == [],
+           "sem fonte alguma de diagnostico → contagens null e details vazio",
+           vazio["tool_diagnostics"])
     checar(ler(tratado_dir / "CVE-2018-1000096.json")["findings"] == [],
            "raw sem achados produz tratado com findings: []")
 
@@ -318,8 +332,9 @@ def main():
            m["tool_diagnostics"])
     checar(m["tool_diagnostics"]["notifications"] is None,
            "Semgrep nao tem toolExecutionNotifications → null, nunca falha")
-    checar(m["tool_diagnostics"]["gt_file_affected"] is True,
-           "paths.skipped mencionando o gt_file_path → gt_file_affected true")
+    checar(any("js/collapse.js" in d for d in m["tool_diagnostics"]["details"]),
+           "no Semgrep o details[] segue trazendo o caminho mencionado",
+           m["tool_diagnostics"]["details"])
     checar(rel_sg["caminho"]["caminhos_scanned_transformados"] >= 1,
            "paths.scanned passa pela MESMA normalizacao de caminho")
 
@@ -457,6 +472,17 @@ def main():
            "motivo do null declarado", m.get("gt_file_scanned_reason"))
     checar(m["tool_diagnostics"]["notifications"] is None,
            "toolExecutionNotifications ausente → null, NUNCA falha")
+    # 3.4: FAILED_PARSING promovido a tool_diagnostics.errors. A entrada real
+    # traz CONTAGEM, nunca caminhos, e o detalhe tem de declarar isso — senao
+    # quem le "errors: 8" supoe saber quais arquivos.
+    checar(m["tool_diagnostics"]["errors"] == 8,
+           "FAILED_PARSING promovido a errors: 7 .html + 1 .xml",
+           m["tool_diagnostics"]["errors"])
+    checar(any("nao discrimina caminhos" in d for d in m["tool_diagnostics"]["details"]),
+           "o detalhe declara que a contagem nao discrimina caminhos",
+           m["tool_diagnostics"]["details"])
+    checar(t["metadata"]["cve_id"] in rel_sn["tool_diagnostics"]["cves_com_erro"],
+           "o CVE entra em cves_com_erro pela cobertura, nao so por notificacao")
     xss = [x for x in f if x["rule_id"] == "javascript%2fXss"][0]
     checar(xss["cwe"] == ["CWE-079"], "CWE do Snyk: 'CWE-79' → CWE-079", xss["cwe"])
     checar(xss["severity_normalized"] == "high" and xss["security_severity"] is None,
@@ -468,12 +494,19 @@ def main():
            "ruleId ausente de driver.rules[] no Snyk tambem nao vira unknown")
 
     varrido = ler(tratado_sn / "CVE-2018-16480.json")["metadata"]
+    # Guarda nova: caminho listado sob entrada NAO suportada nao e "varrido".
+    # Hoje o Snyk so emite contagem, entao o ramo e defensivo — mas se um dia
+    # enumerar caminhos, contar um arquivo que ele nao conseguiu ler daria
+    # gt_file_scanned true para arquivo nunca analisado.
+    checar(varrido["tool_diagnostics"]["errors"] == 1,
+           "entrada FAILED_PARSING com caminho tambem conta como erro",
+           varrido["tool_diagnostics"]["errors"])
     checar(varrido["gt_file_scanned"] is True,
            "coverage com inventario de caminhos → gt_file_scanned true")
     checar(varrido["analysis_date_source"] == "file_mtime",
            "sem automationDetails → mtime")
     checar(varrido["tool_diagnostics"]["notifications"] == 1
-           and varrido["tool_diagnostics"]["gt_file_affected"] is True,
+           and any("bin/public" in d for d in varrido["tool_diagnostics"]["details"]),
            "notificacao do Snyk contada e cruzada com o gt_file_path")
     achado = ler(tratado_sn / "CVE-2018-16480.json")["findings"][0]
     checar(achado["file_path"] == "bin/public", "./bin/public → bin/public",
@@ -510,7 +543,7 @@ def main():
     checar("0.9" in p.stderr, "a divergencia de schema aparece no stderr", p.stderr[-300:])
     p = normalizar("codeql", FIXTURES / "codeql", tratado_dir, rel_idem,
                    extra=["--overwrite", "--cve", "CVE-2017-16011"])
-    checar(p.returncode == 0 and ler(alvo)["metadata"]["schema_version"] == "1.1",
+    checar(p.returncode == 0 and ler(alvo)["metadata"]["schema_version"] == "1.2",
            "--overwrite reprocessa o tratado de schema antigo")
 
     # =================================== estabilidade da ordem (D.9)
@@ -527,6 +560,76 @@ def main():
     b = ler(saida_b / "CVE-2018-14040.json")["findings"]
     checar([x for x in a] == [x for x in b],
            "reordenar o raw NAO muda o tratado (ordem por chave total, nao de entrada)")
+
+    # O embaralhamento acima so exercitava o CodeQL, cujo fixture tem 1
+    # colisao. As 11 colisoes REAIS da Fase E foram todas do Semgrep, e sao
+    # elas que a coluna no schema 1.2 passou a distinguir — logo e no Semgrep
+    # que a estabilidade precisa ser exercitada.
+    bar_sg = tmp / "semgrep-baralhado"; bar_sg.mkdir()
+    origem_sg = ler(FIXTURES / "semgrep" / "CVE-2018-14040.json")
+    origem_sg["results"].reverse()
+    with open(bar_sg / "CVE-2018-14040.json", "w", encoding="utf-8") as arquivo:
+        json.dump(origem_sg, arquivo)
+    saida_sg = tmp / "tratado-baralhado-sg"
+    normalizar("semgrep", bar_sg, saida_sg, tmp / "rel-bsg.json")
+    checar(ler(tratado_sg / "CVE-2018-14040.json")["findings"]
+           == ler(saida_sg / "CVE-2018-14040.json")["findings"],
+           "reordenar o raw do SEMGREP tambem nao muda o tratado")
+
+    # =================================== colunas no schema (1.2)
+    print("\n== Colunas no schema e na chave de ordenacao ==")
+    for ferramenta, tratado in (("codeql", tratado_dir), ("semgrep", tratado_sg),
+                                ("snyk-code", tratado_sn)):
+        achados = ler(tratado / "CVE-2018-14040.json")["findings"]
+        checar(all("column_start" in x and "column_end" in x for x in achados),
+               "%s: todo achado tem column_start e column_end" % ferramenta)
+    col = [x for x in ler(tratado_sg / "CVE-2018-14040.json")["findings"]
+           if x["column_start"] is not None]
+    checar(col, "o Semgrep grava coluna de fato, nao so a chave nula")
+    # Dois achados que so diferem na coluna tem de sair em ordem estavel e
+    # DISTINGUIVEL: antes do 1.2 eles empatavam na chave total.
+    import itertools as _it
+    achados_sg = ler(tratado_sg / "CVE-2018-14040.json")["findings"]
+    chaves = [(x["file_path"], x["line_start"], x["line_end"],
+               x["column_start"], x["column_end"], x["rule_id"], x["message"])
+              for x in achados_sg]
+    checar(len(chaves) == len(set(chaves)),
+           "com a coluna na chave, nenhum achado do fixture empata em TODOS os "
+           "campos que o schema grava")
+
+    # =================================== limite inferior de rules_applied
+    print("\n== rules_applied: os dois limites ==")
+    raw_zero = tmp / "raw-rules-zero"; raw_zero.mkdir()
+    base_zero = ler(FIXTURES / "semgrep" / "CVE-2018-14040.json")
+    base_zero["time"]["rules"] = []
+    (raw_zero / "CVE-2018-14040.json").write_text(json.dumps(base_zero), encoding="utf-8")
+    rel_zero = tmp / "rel-zero.json"
+    pz = normalizar("semgrep", raw_zero, tmp / "tr-zero", rel_zero)
+    anom = ler(rel_zero)["semgrep_rules_applied_anomalo"]
+    checar([x["rules_applied"] for x in anom] == [0],
+           "rules_applied == 0 e anomalia: findings vazio nao significa ausencia "
+           "de achados. A guarda `!=` antiga pegava isso de graca; a `>` sozinha "
+           "deixaria sem vigia", anom)
+    checar("ATENCAO" in pz.stdout, "o limite inferior tambem grita no console",
+           pz.stdout[-300:])
+    checar([x["rules_applied"] for x in ler(rel_sg_path)["semgrep_rules_applied"]] == [1075, 370, 12],
+           "o valor de rules_applied de CADA CVE fica registrado no relatorio, "
+           "nao so as anomalias",
+           ler(rel_sg_path)["semgrep_rules_applied"])
+
+    # =================================== terceira forma de errors[].type
+    raw_t3 = tmp / "raw-tipo3"; raw_t3.mkdir()
+    base_t3 = ler(FIXTURES / "semgrep" / "CVE-2018-14040.json")
+    base_t3["errors"] = [{"level": "warn", "type": {"inesperado": 1},
+                          "message": "algo", "path": "js/collapse.js"}]
+    (raw_t3 / "CVE-2018-14040.json").write_text(json.dumps(base_t3), encoding="utf-8")
+    rel_t3 = tmp / "rel-t3.json"
+    normalizar("semgrep", raw_t3, tmp / "tr-t3", rel_t3)
+    inesperados = ler(rel_t3)["cwe"]["semgrep_tipo_inesperado"]
+    checar([x.get("campo") for x in inesperados] == ["errors[].type"],
+           "terceira forma de errors[].type e CONTADA, nao silenciada: sem isso "
+           "o detalhe sai parecendo completo e sem dizer que erro foi",
+           inesperados)
 
     # ============================================================ check-log
     print("\n== check-log.py ==")
