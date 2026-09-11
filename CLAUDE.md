@@ -81,9 +81,17 @@ Isso invalida qualquer tratamento que assuma um CWE por defeito.
 
 ### Reprodução
 
-Scripts versionados em `tools/ground-truth/`. O CWE pretendido pelo
-benchmark para qualquer CVE do núcleo é recuperável consultando as tags da
-consulta correspondente no CodeQL em dez/2020.
+**Os scripts de proveniência ainda NÃO estão no repositório.** Estão
+previstos em `tools/ground-truth/`, diretório que hoje não existe — conferido
+em 10/09/2026. Enquanto isso valer, este é **o único achado do estudo que um
+terceiro não reproduz**, e é o mais forte deles: a constatação de que 83% do
+ground truth herdou `explanation` e `CWEs` da consulta do CodeQL que
+identificou o caso.
+
+O procedimento, porém, está descrito: o CWE pretendido pelo benchmark para
+qualquer CVE do núcleo é recuperável consultando as tags
+`external/cwe/` da consulta correspondente no CodeQL no estado de
+**9 de dezembro de 2020**.
 
 ## Caracterização estrutural do ground truth
 
@@ -240,9 +248,13 @@ está no README do diretório, estabelecida por contagem de alertas
 baseline, apesar do nome não dizer. **Não renomear** — os nomes são o
 artefato produzido pela execução.
 
-Ainda **não** trazidos para o repositório: os scripts de proveniência do
-ground truth (previstos em `tools/ground-truth/`) e o script de sondagem
-de disponibilidade dos repositórios.
+O script de sondagem de disponibilidade **foi trazido na Fase E**:
+`tools/probe-repos.sh`, com a saída datada em
+`datasets/sondagens/sondagem-repos-<AAAA-MM-DD>.csv`.
+
+Ainda **não** trazidos: os scripts de proveniência do ground truth,
+previstos em `tools/ground-truth/`, diretório que **não existe** no
+repositório.
 
 Motivo: o repositório precisa permitir verificar os números do estudo sem
 depender de artifacts do GitHub Actions, que expiram em 30 dias.
@@ -285,6 +297,39 @@ e devolve 0 tanto para padrão de ignore quanto para negação: para
   `trap ... INT TERM` que apenas chama a função de limpeza retorna e o
   bash retoma no comando seguinte: o laço continua e o log ganha linhas de
   erro para CVEs jamais tentados
+
+**A asserção foi exercitada com divergência real (Fase E, 10/09/2026), e o
+caso que a fez disparar é mais amplo que o defeito que a motivou.**
+
+SHA bem formado porém inexistente no repositório **não** chega à asserção: o
+fetch raso é recusado (`upload-pack: not our ref`), o `git checkout` falha
+(`unable to read tree`) e sai `ERRO_CHECKOUT`. A guarda anterior basta.
+
+**SHA de tag anotada chega.** O objeto de tag atravessa o fetch e o checkout
+sem erro algum e o `FETCH_HEAD` resolve para o commit que a tag aponta —
+árvore distinta da esperada, análise deslocada em silêncio, nenhum erro
+registrado. Medido com o objeto de tag `4da165fd…` do `node-growl`, que
+descasca para o commit `68ec24dd…`; o log saiu
+`ERRO_CHECKOUT,HEAD 68ec24dd… nao e o PrePatchCommit`.
+
+O caso não é artificial. O benchmark declara 223 SHA-1 completos e bem
+formados (ver defeitos do conjunto), e **boa formação não distingue objeto de
+commit de objeto de tag**. A asserção é o único ponto do protocolo que
+intercepta essa condição.
+
+**Exit 137 não estabelece esgotamento de memória.** É `SIGKILL`, e o
+`docker stop` o envia ao fim do prazo de graça — assinatura idêntica à do
+OOM-killer, causa oposta. Ocorreu na Fase E ao interromper deliberadamente
+uma execução prolongada, em máquina de 8 GB, onde o esgotamento era
+plausível: aceitar a assinatura teria produzido registro falso.
+
+Some-se que o `trap ... INT TERM` **não** interrompe ferramenta em primeiro
+plano — o bash só roda o handler quando o comando retorna —, de modo que a
+interrupção externa chega como código de encerramento do container, não como
+sinal tratado pelo script.
+
+Atribuir causa a interrupção exige evidência independente da assinatura.
+Registre o exit code bruto e o contexto; não nomeie memória sem outra prova.
 
 ### Conjunto de status do log
 
@@ -397,9 +442,13 @@ no parágrafo seguinte.
 
 **Limitação declarada, não corrigida.** A revisão incide sobre a versão
 *anterior* às correções que ela mesma motiva. As verificações mecânicas são
-refeitas sobre a versão final — na Fase D, a suíte de fixtures passou de 113
-para 143 asserções, cobrindo cada correção —, mas **não há segunda revisão
-completa**. Vale para a Fase C (declarado na Seção 8.5 da metodologia) e
+refeitas sobre a versão final: a suíte de fixtures cresce a cada correção que
+uma revisão motiva, e **cada correção ganha asserção própria** — foi assim na
+Fase D e de novo em cada rodada da Fase E. O número corrente sai de
+`python3 tests/run-fixtures.py`, não daqui, justamente para não envelhecer a
+cada acréscimo.
+
+Mas **não há segunda revisão completa**. Vale para a Fase C (declarado na Seção 8.5 da metodologia) e
 reaparece na Fase D pelo mesmo motivo: uma segunda revisão motivaria novas
 correções, e a recursão não tem ponto de parada natural.
 
@@ -429,13 +478,26 @@ Sondar a disponibilidade dos 186 repositórios **imediatamente antes de
 cada campanha**, com saída datada e versionada. Sondagem é observação;
 script é procedimento.
 
+**A sondagem deve ser anônima.** O `git ls-remote` usa, por padrão, o
+credential helper configurado no hospedeiro — com o `gh` autenticado, a
+sondagem mede o acesso **do operador**, não o acesso anônimo que a campanha
+terá. Repositório privado sairia `ACESSIVEL` na sondagem e `ERRO_FETCH` na
+execução, que é exatamente a divergência que a sondagem existe para
+antecipar. O script neutraliza a configuração global e o helper antes de
+sondar.
+
 ## Defeitos conhecidos do conjunto de dados
 
 - `CVE-2018-1000096` não tem CWE atribuído. É analisado normalmente, mas
   fica fora das contagens da matriz de confusão
 - `CVE-2017-18352` e `CVE-2018-11093` têm `PostPatchCommit` malformado no
   benchmark original da OpenSSF — truncado e abreviado, respectivamente.
-  Não afeta o pipeline SAST, que usa apenas `PrePatchCommit`
+  Não afeta o pipeline SAST, que usa apenas `PrePatchCommit`.
+  Os 223 `PrePatchCommit`, esses, são SHA-1 completos e bem formados — e o
+  gerador valida 40 hex. **Boa formação não implica que o objeto referido
+  seja um commit:** um objeto de tag anotada tem a mesma forma, atravessa
+  fetch e checkout sem erro e desloca a árvore analisada em silêncio. Só a
+  asserção de `git rev-parse HEAD` intercepta; ver as convenções de execução
 - Sete CVEs de "Zip Slip" contêm aspas no campo `Explanation`. O
   `cve-metadata.csv` é RFC 4180 válido: aspas internas são escapadas por
   duplicação
@@ -568,6 +630,13 @@ Semânticas opostas, por isso nomes distintos.
 
 ## Schema comum de saída
 
+**Versão corrente: `1.3`.** O valor vive em `SCHEMA_VERSION`, no
+`tools/normalize.py`, e é gravado em `metadata.schema_version` de todo
+tratado e no cabeçalho de todo relatório de normalização. Tratado com versão
+divergente da corrente **não** é pulado pela idempotência: reprocessa, ou
+falha pedindo `--overwrite`. Sem isso, evolução do schema produziria conjunto
+heterogêneo sem sinal.
+
 Bloco `metadata` por CVE, lista `findings`. Campos de ground truth
 prefixados por `gt_`, no bloco de metadados, não repetidos por achado:
 
@@ -633,9 +702,13 @@ final.
   | Snyk Code | não ocorre: o estado é `null`, indeterminado |
 
   Os dois universos respondem à pergunta que o campo faz — o arquivo foi
-  olhado, ou a ausência de achado é artefato? Arquivo não extraído não foi
-  olhado, pelo mesmo efeito que arquivo não varrido, por causa diferente. O
-  que não se pode é deixar um booleano fingir uniformidade que não existe.
+  olhado, ou a ausência de achado é artefato? Mas respondem **por aproximação
+  declarada, não por equivalência**. O `false` do CodeQL é mais ruidoso: parte
+  dos arquivos não extraídos simplesmente **não é da linguagem analisada**, e
+  não ter sido extraído nada diz sobre cobertura. Não afeta o uso, porque o
+  `gt_file_path` é JS/TS por construção do benchmark — mas a distinção não é
+  decorativa, e é o que impede simplificar o `gt_file_scanned_reason` adiante.
+  O que não se pode é deixar um booleano fingir uniformidade que não existe.
 
   **Conferência do teto, sem compensação.** Não se sabe se a notificação
   enumera *todos* os arquivos extraídos ou até um limite. O relatório grava,
@@ -646,19 +719,25 @@ final.
   e conservador — havendo teto, o arquivo acima dele sai `false`, nunca
   `true`, e `false` não fabrica varredura que não houve.
   Medido nos 4 CVEs da Fase E: **bateu em 4 de 4** (3, 174, 126 e 58).
-  Aplicado aos 223, não só aos cinco CVEs cujo arquivo não tem extensão
-  (`bin/public`: CVE-2018-16480, CVE-2018-3731, CVE-2018-3747;
-  `bin/http-live`: CVE-2018-16479, CVE-2019-5423). Custa o mesmo e dá o
-  denominador de arquivos varridos por ferramenta.
+
+  **Motivação original do campo**, que é assunto distinto da conferência
+  acima: ele é apurado nos 223, e não só nos cinco CVEs cujo arquivo do
+  ground truth não tem extensão (`bin/public`: CVE-2018-16480, CVE-2018-3731,
+  CVE-2018-3747; `bin/http-live`: CVE-2018-16479, CVE-2019-5423) — aqueles em
+  que a dúvida "a ferramenta olhou este arquivo?" salta à vista. Custa o mesmo
+  apurar em todos, e dá o denominador de arquivos considerados por ferramenta.
   **`false` não exclui de denominador algum** — ver "O que NÃO fazer"
 
 - `tool_diagnostics` — o que a ferramenta reporta sobre a própria execução:
-  `errors` e `skipped_paths` (Semgrep), `notifications`
-  (`invocations[].toolExecutionNotifications`, CodeQL e Snyk),
-  e `details`. Captura **condicional**: campo ausente
-  grava `null` e segue; ausência nunca é falha, porque a emissão não está
-  assegurada — no Snyk, o SARIF admite `toolExecutionNotifications` mas não
-  se verificou que emite.
+  `errors` (Semgrep, de `errors[]`; Snyk, da contagem de `FAILED_PARSING` da
+  `coverage[]`), `skipped_paths` (Semgrep), `notifications`
+  (`invocations[].toolExecutionNotifications`, **só o CodeQL**) e `details`.
+  Captura **condicional**: campo ausente grava `null` e segue; ausência nunca
+  é falha, porque a emissão não está assegurada.
+  **Medido na Fase E:** o Snyk **não emite** `toolExecutionNotifications` —
+  `invocations` está ausente por inteiro do SARIF dele —, e o Semgrep não
+  emite `paths.skipped` sem `--verbose`. Nos dois casos o `null` é o
+  comportamento previsto para campo ausente, e foi o observado.
   Motivo de existir: arquivo cuja análise falhou não produz achado, e o
   resultado é indistinguível de análise limpa. Mesmo modo de falha que o
   `gt_file_scanned` pega, por outro caminho.
@@ -682,9 +761,16 @@ final.
   `--overwrite`. Sem isso, evolução do schema produz conjunto heterogêneo
   sem sinal
 
-- `analysis_date_source` — `tool` ou `file_mtime`. CodeQL usa
-  `invocations[0].endTimeUtc`; Snyk, `automationDetails.id`; o Semgrep **não
-  tem carimbo de tempo no JSON**, e cai no mtime do raw.
+- `analysis_date_source` — `tool` ou `file_mtime`. **Só o Snyk Code usa
+  carimbo da ferramenta**, de `automationDetails.id`. CodeQL e Semgrep caem
+  no mtime do raw, por motivos diferentes: o Semgrep **não emite carimbo
+  algum** no JSON; o CodeQL emite bloco de invocação **sem data de
+  conclusão** — `invocations[0].endTimeUtc` não existe na 2.25.4, e os quatro
+  CVEs da Fase E caíram no mtime. Ver "Divergências encontradas na
+  confrontação da Fase E".
+  O ramo `analysis_date_source: "tool"` do CodeQL ficou, portanto,
+  **inalcançável** na versão fixada. O tratamento permanece como salvaguarda
+  e descreve forma não observada.
   O campo existe porque o mtime é proveniência mais fraca: não sobrevive a
   download de artifact nem a `git clone` — e o tratado é versionado, então o
   mtime de qualquer cópia obtida do repositório é o do checkout. Declarar a
@@ -773,8 +859,12 @@ Caminho de suíte verificado no bundle 2.25.4:
 — resolve, 104 consultas, 100 com CWE.
 
 **`--build-mode=none` com `--language=javascript` verificado ponta a
-ponta** (set/2026), em CodeQL 2.26.4, não na 2.25.4 fixada. Confirmou
-quatro propriedades:
+ponta.** O primeiro ensaio (set/2026) rodou na 2.26.4; a **Fase E
+(10/09/2026) repetiu na 2.25.4 fixada**, sobre o lote `cves-sast-teste`, e
+confirmou as mesmas propriedades: `database create` e `database analyze`
+saíram 0 nos quatro CVEs, o `tool.driver.semanticVersion` do SARIF é
+`2.25.4`, e os 104 achados vieram com caminho relativo e limpo. As quatro
+propriedades originalmente confirmadas eram:
 
 - o modo é aceito e o database é criado
 - o caminho no SARIF sai **relativo e limpo** (`app.js`), sem prefixo do
@@ -786,9 +876,17 @@ quatro propriedades:
 - `database analyze` sai **0 mesmo com achados**, então checar
   `RC != 0` não rebaixa análise bem-sucedida
 
-Fica por verificar na imagem real: se `node:24` é runtime suportado pelo
-extrator TypeScript e se o asset do bundle existe na tag. Smoke test com
-`cves-sast-teste` antes do primeiro lote.
+Verificado na Fase E (10/09/2026): o asset do bundle existe na tag, a imagem
+constrói, a suíte resolve 104 consultas e o lote `cves-sast-teste` rodou
+ponta a ponta. O extrator de TypeScript aceita `.ts` sob `--build-mode=none`
+em `node:24` — `database create` extraiu e saiu 0.
+
+**O que resta é mais específico:** o extrator de TypeScript **atravessando o
+laço**, sobre CVE de TypeScript real, no ambiente da campanha. A verificação
+acima foi **sondagem dedicada, fora do laço**, e estabelece que o extrator
+funciona — não que o laço o exercite. Os 4 CVEs do lote de teste são todos
+JavaScript. Item do ensaio de fumaça no Actions; ver também as ameaças à
+validade.
 
 O `--format=sarif-latest` é flutuante por definição; só está pinado porque
 o bundle está.
@@ -939,6 +1037,7 @@ método de medição errado:
 | 1073 em vez de 1074 regras | `grep -c '^- id: '` | uma regra declara `patterns` antes de `id` |
 | 1075 em vez de 1074 severidades | `grep -c 'severity:'` | uma regra declara `severity` no topo **e** em `metadata` |
 | "versionável" lido errado | `git check-ignore -v` | reporta casamento de padrão, não veredito |
+| exit 137 lido como memória | código de encerramento tomado por assinatura de OOM | `docker stop` envia `SIGKILL`; a assinatura é compatível com a causa, mas não a estabelece |
 
 A verificação por regex sobre formato estruturado falha por causas
 **independentes** — ordem de campos e profundidade de aninhamento —, então
@@ -947,7 +1046,14 @@ descartar uma não garante a ausência da outra.
 Daí: **toda contagem que vá para a monografia sai de parser do formato**, e
 **divergência entre dois métodos é reconciliada antes de qualquer dos
 números ser aceito**, ainda que a conclusão sobreviva à reconciliação — como
-sobreviveu nos três casos.
+sobreviveu nos três primeiros casos.
+
+O quarto é de natureza distinta: não é contagem, é **atribuição de causa**.
+Nos três primeiros o método correto é o parser do formato, ou o comando que
+realiza de fato a operação em vez do que apenas casa padrão. No quarto não há
+parser que sirva — o método correto é **corroborar por evidência independente
+antes de atribuir**, porque a assinatura é compatível com a causa e não a
+estabelece.
 
 ### Snyk Code
 Somente `--sarif-file-output`. O `--json-file-output` produz arquivo
@@ -1104,8 +1210,10 @@ Declaradas na monografia, não corrigíveis por código:
   verificar se o pack vendorizado corresponde ao que o registry serve
   noutro momento. Mitigado por `rules_id_sha256`; resta que o conjunto é
   verificável por identidade de regras, não de arquivo.
-- **Verificação do CodeQL em versão adjacente.** O ensaio ponta a ponta
-  rodou na 2.26.4, não na 2.25.4 empregada.
+- ~~**Verificação do CodeQL em versão adjacente.**~~ **Fechada na Fase E:**
+  o ensaio original rodou na 2.26.4, mas o lote de teste rodou na **2.25.4
+  empregada**, com `semanticVersion` `2.25.4` no próprio SARIF. Deixou de ser
+  ameaça.
 - **O schema de normalização foi construído contra a documentação das
   saídas, não contra saída real.** As fixtures sintéticas derivam da tabela
   "Formato das saídas das ferramentas" acima, que por sua vez vinha da
@@ -1182,4 +1290,6 @@ Declaradas na monografia, não corrigíveis por código:
   `js/diagnostics/successfully-extracted-files`
 - **Não tratar ausência da notificação de extraídos como `false`** — é `null`,
   pelo mesmo princípio que separa `unknown` de `unresolved`
+- **Não sondar disponibilidade de repositório com credencial do hospedeiro** —
+  mede o acesso do operador, não o anônimo que a campanha terá
 - Não gravar fixtures em `results/*/raw/`
