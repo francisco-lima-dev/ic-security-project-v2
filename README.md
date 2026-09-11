@@ -92,6 +92,8 @@ application source code is cloned at this stage.
 │       ├── cves-sast.txt          # full list — 223 lines
 │       ├── cves-sast-teste        # smoke test — 5 CVEs
 │       └── cves-sast-batch-aa..ah # sliced execution — 30 lines/batch
+├── docs/
+│   └── metodologia-V7.md          # experimental protocol (VERSIONED)
 ├── tools/
 │   ├── extract-urls.js            # benchmark JSON → cve-metadata.{csv,json}
 │   ├── generate-lists.js          # cve-metadata.csv → listas/
