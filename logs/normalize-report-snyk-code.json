@@ -1,7 +1,7 @@
 {
   "ferramenta": "snyk-code",
-  "schema_version": "1.2",
-  "gerado_em": "2026-09-10T18:32:06.494613Z",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-11T00:36:46.653518Z",
   "cves": {
     "processados": 4,
     "pulados_por_idempotencia": 0,
@@ -61,8 +61,14 @@
     "lista_false": [],
     "motivos_null": {
       "coverage[] agregada, sem inventario de caminhos: nao decide sobre um arquivo": 4
+    },
+    "motivos_por_estado": {
+      "null": {
+        "coverage[] agregada, sem inventario de caminhos: nao decide sobre um arquivo": 4
+      }
     }
   },
+  "codeql_inventario": [],
   "tool_diagnostics": {
     "cves_com_erro": [
       "CVE-2018-14040",
@@ -85,9 +91,9 @@
   "codeql_versao_inesperada": [],
   "security_severity_ilegivel": [],
   "duracao_segundos": {
-    "total": 0.0035,
-    "por_cve_mediana": 0.0008,
-    "por_cve_maximo": 0.0015,
+    "total": 0.0028,
+    "por_cve_mediana": 0.0006,
+    "por_cve_maximo": 0.0013,
     "por_cve_maximo_cve": "CVE-2018-14040"
   },
   "lista": "/home/francisco_sales/ic_security_project_v2/datasets/listas/cves-sast.txt",

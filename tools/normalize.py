@@ -64,7 +64,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-SCHEMA_VERSION = "1.2"
+SCHEMA_VERSION = "1.3"
 RAIZ = Path(__file__).resolve().parent.parent
 
 FERRAMENTAS = ("codeql", "semgrep", "snyk-code")
@@ -469,6 +469,112 @@ def _indice_regras(run):
     return indice
 
 
+NOTIF_EXTRAIDOS = "js/diagnostics/successfully-extracted-files"
+
+
+def _uris_de_notificacao(run, filtro_id):
+    """URIs citadas pelas notificações cujo descriptor.id satisfaz `filtro_id`.
+
+    O caminho vive SÓ em `locations[0].physicalLocation.artifactLocation.uri`:
+    medido na Fase E, `message.text` dessas notificações é cadeia vazia.
+    """
+    uris = []
+    invocacoes = run.get("invocations")
+    if not isinstance(invocacoes, list):
+        return uris
+    for invocacao in invocacoes:
+        if not isinstance(invocacao, dict):
+            continue
+        notificacoes = invocacao.get("toolExecutionNotifications")
+        if not isinstance(notificacoes, list):
+            continue
+        for notificacao in notificacoes:
+            if not isinstance(notificacao, dict):
+                continue
+            identificador = (notificacao.get("descriptor") or {}).get("id")
+            if not isinstance(identificador, str) or not filtro_id(identificador):
+                continue
+            for local in notificacao.get("locations") or []:
+                uri = (((local or {}).get("physicalLocation") or {})
+                       .get("artifactLocation") or {}).get("uri")
+                if isinstance(uri, str):
+                    uris.append(uri)
+    return uris
+
+
+def derivar_gt_file_scanned_codeql(run, gt_file_path, cve, relatorio):
+    """(true|false|None, motivo).
+
+    FONTE ÚNICA: as notificações `js/diagnostics/successfully-extracted-files`,
+    uma por arquivo extraído. Medido na Fase E (10/09/2026): enumeram caminho,
+    incluem arquivos SEM achado — `js/collapse.js` do CVE-2018-14040 aparece
+    com zero resultados —, e o caminho sai relativo e limpo.
+
+    **`runs[0].artifacts[]` foi DESCARTADO como fonte, deliberadamente.** É a
+    escolha óbvia e é a errada: o array é superconjunto contaminado por outras
+    linguagens. No CVE-2018-14040 traz 176 entradas contra 174 da notificação,
+    e as duas a mais — `docs/_plugins/bridge.rb` e `docs/_plugins/bugify.rb` —
+    entram por notificação de Ruby (`rb/baseline/...`). Usá-lo reportaria como
+    varrido o que o extrator de JavaScript não tocou, o que é PIOR que `null`:
+    afirma o contrário do verdadeiro. Não troque a fonte pela mais óbvia.
+
+    `js/baseline/expected-extracted-files` também não serve: é amostra de
+    baseline (45 contra 174 no mesmo CVE), não inventário.
+
+    Ausência da notificação → `None`, nunca `False`. Ausência de inventário e
+    ausência do arquivo no inventário são coisas distintas, pelo mesmo
+    princípio que separa `unknown` de `unresolved` na severidade.
+    """
+    brutos = _uris_de_notificacao(run, lambda i: i == NOTIF_EXTRAIDOS)
+    if not brutos:
+        return None, ("SARIF sem notificacao %s: nao ha inventario de arquivos "
+                      "extraidos neste raw" % NOTIF_EXTRAIDOS)
+
+    extraidos = set()
+    for caminho in brutos:
+        limpo, motivos = normalizar_caminho(caminho)
+        if motivos:
+            # Divergência entre a forma do inventário e a dos achados. Não é
+            # esperada — na Fase E nenhum caminho exigiu transformação — e por
+            # isso é contada em campo próprio em vez de corrigida em silêncio.
+            relatorio["caminho"]["caminhos_scanned_transformados"] += 1
+            if len(relatorio["caminho"]["exemplos_scanned"]) < 10:
+                relatorio["caminho"]["exemplos_scanned"].append(
+                    {"cve": cve, "antes": caminho, "depois": limpo,
+                     "motivos": motivos, "fonte": NOTIF_EXTRAIDOS}
+                )
+        extraidos.add(limpo)
+
+    # Conferência do teto, pedida pela decisão: a notificação enumera TODOS os
+    # arquivos extraídos, ou até um limite? `artifacts[]`, depurado das URIs
+    # que só aparecem por notificação de outra linguagem, é o segundo
+    # observável disponível. Se as duas contagens baterem em todos os CVEs,
+    # não há teto na faixa medida. NÃO se compensa nada aqui — conta-se e
+    # reporta-se, e a campanha decide com 223 CVEs em vez de 4.
+    artefatos = set()
+    for artefato in run.get("artifacts") or []:
+        uri = ((artefato or {}).get("location") or {}).get("uri")
+        if isinstance(uri, str):
+            artefatos.add(normalizar_caminho(uri)[0])
+    outras_linguagens = {
+        normalizar_caminho(u)[0]
+        for u in _uris_de_notificacao(run, lambda i: not i.startswith("js/"))
+    }
+    artefatos_js = artefatos - outras_linguagens
+    relatorio["codeql_inventario"].append({
+        "cve": cve,
+        "notificacao": len(extraidos),
+        "artifacts_depurado": len(artefatos_js),
+        "bate": len(extraidos) == len(artefatos_js),
+    })
+
+    return (gt_file_path in extraidos), (
+        "inventario de arquivos EXTRAIDOS, de %s. `false` significa que o "
+        "arquivo nao foi extraido para o banco de dados — universo distinto do "
+        "`paths.scanned` do Semgrep, que e de arquivos VARRIDOS" % NOTIF_EXTRAIDOS
+    )
+
+
 def _localizacao(resultado):
     """(uri, line_start, line_end, column_start, column_end).
 
@@ -702,6 +808,9 @@ def processar_codeql(dados, caminho_raw, gt, relatorio):
 
     quantidade, textos = _notificacoes(run)
     diagnosticos = montar_diagnosticos(None, None, quantidade, textos)
+    gt_file_scanned, motivo_scanned = derivar_gt_file_scanned_codeql(
+        run, gt["gt_file_path"], gt["cve_id"], relatorio
+    )
 
     return {
         "tool_version": versao,
@@ -718,19 +827,8 @@ def processar_codeql(dados, caminho_raw, gt, relatorio):
         "rules_applied": None,
         "analysis_date": analysis_date,
         "analysis_date_source": origem,
-        # NÃO é impossibilidade do formato: medido na Fase E (10/09/2026), o
-        # SARIF TRAZ inventário de arquivos extraídos, em duas formas —
-        # `runs[0].artifacts[]` e as notificações
-        # `js/diagnostics/successfully-extracted-files`, uma por arquivo, com
-        # o caminho em `locations[0]`. O `null` é DECISÃO metodológica ainda
-        # não tomada, e o motivo tem de dizer isso: gravar "o formato não traz"
-        # faria quem lê o corpus concluir limitação e não reabrir a decisão.
-        "gt_file_scanned": None,
-        "gt_file_scanned_motivo": (
-            "decisao pendente: o SARIF do CodeQL TRAZ inventario de arquivos "
-            "extraidos (runs[0].artifacts[] e js/diagnostics/successfully-"
-            "extracted-files); o null e escolha, nao limitacao do formato"
-        ),
+        "gt_file_scanned": gt_file_scanned,
+        "gt_file_scanned_motivo": motivo_scanned,
         "tool_diagnostics": diagnosticos,
         "achados": achados,
         "extra_metadata": {},
@@ -945,7 +1043,11 @@ def processar_semgrep(dados, caminho_raw, gt, relatorio, ruleset):
                     )
             normalizados.add(limpo)
         gt_file_scanned = gt["gt_file_path"] in normalizados
-        motivo_scanned = None
+        motivo_scanned = (
+            "inventario de arquivos VARRIDOS, de paths.scanned[]. `false` "
+            "significa que o arquivo ficou fora da varredura — universo "
+            "distinto do inventario do CodeQL, que e de arquivos EXTRAIDOS"
+        )
     else:
         gt_file_scanned = None
         motivo_scanned = "JSON do semgrep sem paths.scanned[]"
@@ -1042,7 +1144,10 @@ def derivar_gt_file_scanned_snyk(cobertura, gt_file_path):
                         caminhos.add(limpo)
     if not caminhos:
         return None, "coverage[] agregada, sem inventario de caminhos: nao decide sobre um arquivo"
-    return (gt_file_path in caminhos), None
+    return (gt_file_path in caminhos), (
+        "inventario de caminhos da coverage[], entradas suportadas. Forma NAO "
+        "observada na saida real da Fase E, onde `files` e sempre contagem"
+    )
 
 
 def processar_snyk(dados, caminho_raw, gt, relatorio):
@@ -1292,7 +1397,11 @@ def relatorio_vazio(ferramenta):
             "nulo_primario_indefinido": [],
             "conjuntos_ausentes_da_tabela": [],
         },
-        "gt_file_scanned": {"true": 0, "false": 0, "null": 0, "lista_false": [], "motivos_null": {}},
+        "gt_file_scanned": {"true": 0, "false": 0, "null": 0, "lista_false": [],
+                            "motivos_null": {}, "motivos_por_estado": {}},
+        # Conferência do teto da notificação do CodeQL: contagem por CVE, sem
+        # compensação. Vazio nas outras duas ferramentas.
+        "codeql_inventario": [],
         "tool_diagnostics": {
             "cves_com_erro": [],
             "cves_com_caminho_descartado": [],
@@ -1339,7 +1448,12 @@ def montar_tratado(ferramenta, gt, parcial, primario, relatorio):
     }
     if gt.get("gt_file_path_original"):
         metadata["gt_file_path_original"] = gt["gt_file_path_original"]
-    if parcial["gt_file_scanned"] is None and parcial.get("gt_file_scanned_motivo"):
+    # O motivo acompanha os TRÊS estados desde o schema 1.3, não só o `null`.
+    # Com duas ferramentas decidindo por mecanismos distintos — `paths.scanned`
+    # do Semgrep é de arquivos VARRIDOS, a notificação do CodeQL é de arquivos
+    # EXTRAÍDOS —, um `false` não quer dizer a mesma coisa nas duas, e o
+    # booleano sozinho fingiria uniformidade que não existe.
+    if parcial.get("gt_file_scanned_motivo"):
         metadata["gt_file_scanned_reason"] = parcial["gt_file_scanned_motivo"]
     # Guarda de colisão: chave de ferramenta jamais sobrescreve chave do
     # schema. Hoje só `coverage` entra por aqui; a guarda custa nada e o
@@ -1413,6 +1527,11 @@ def processar_um(ferramenta, caminho_raw, gt, tabela, relatorio, ruleset_semgrep
         relatorio["tool_diagnostics"]["cves_com_notificacao"].append(gt["cve_id"])
 
     varrido = parcial["gt_file_scanned"]
+    motivo_estado = parcial.get("gt_file_scanned_motivo")
+    if motivo_estado:
+        estado = {True: "true", False: "false"}.get(varrido, "null")
+        por_estado = relatorio["gt_file_scanned"]["motivos_por_estado"].setdefault(estado, {})
+        por_estado[motivo_estado] = por_estado.get(motivo_estado, 0) + 1
     if varrido is True:
         relatorio["gt_file_scanned"]["true"] += 1
     elif varrido is False:
@@ -1674,6 +1793,14 @@ def resumir(relatorio, caminho):
         print("  rules_applied: min=%d max=%d de rules_total=%d (aplicadas por linguagem "
               "presente, nao carregadas)"
               % (valores[0], valores[-1], aplicadas[0]["rules_total"]))
+    inventario = relatorio["codeql_inventario"]
+    if inventario:
+        divergentes = [x for x in inventario if not x["bate"]]
+        print("  inventario do CodeQL (notificacao x artifacts depurado): %d CVE(s), "
+              "%d divergente(s)" % (len(inventario), len(divergentes)))
+        for item in divergentes[:10]:
+            print("    ATENCAO: %s notificacao=%d artifacts_depurado=%d — possivel teto "
+                  "na notificacao" % (item["cve"], item["notificacao"], item["artifacts_depurado"]))
     print("  cadeia nua de CWE (semgrep): %d | colisoes de chave: %d"
           % (len(relatorio["cwe"]["semgrep_cadeia_nua"]),
              relatorio["colisoes_chave_ordenacao"]["total"]))

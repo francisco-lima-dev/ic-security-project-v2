@@ -1,7 +1,7 @@
 {
   "ferramenta": "codeql",
-  "schema_version": "1.2",
-  "gerado_em": "2026-09-10T18:32:06.262606Z",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-11T00:36:46.426634Z",
   "cves": {
     "processados": 4,
     "pulados_por_idempotencia": 0,
@@ -54,14 +54,43 @@
     "conjuntos_ausentes_da_tabela": []
   },
   "gt_file_scanned": {
-    "true": 0,
+    "true": 4,
     "false": 0,
-    "null": 4,
+    "null": 0,
     "lista_false": [],
-    "motivos_null": {
-      "decisao pendente: o SARIF do CodeQL TRAZ inventario de arquivos extraidos (runs[0].artifacts[] e js/diagnostics/successfully-extracted-files); o null e escolha, nao limitacao do formato": 4
+    "motivos_null": {},
+    "motivos_por_estado": {
+      "true": {
+        "inventario de arquivos EXTRAIDOS, de js/diagnostics/successfully-extracted-files. `false` significa que o arquivo nao foi extraido para o banco de dados — universo distinto do `paths.scanned` do Semgrep, que e de arquivos VARRIDOS": 4
+      }
     }
   },
+  "codeql_inventario": [
+    {
+      "cve": "CVE-2017-16042",
+      "notificacao": 3,
+      "artifacts_depurado": 3,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-14040",
+      "notificacao": 174,
+      "artifacts_depurado": 174,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-14041",
+      "notificacao": 126,
+      "artifacts_depurado": 126,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10744",
+      "notificacao": 58,
+      "artifacts_depurado": 58,
+      "bate": true
+    }
+  ],
   "tool_diagnostics": {
     "cves_com_erro": [],
     "cves_com_caminho_descartado": [],
@@ -91,12 +120,12 @@
   "codeql_versao_inesperada": [],
   "security_severity_ilegivel": [],
   "duracao_segundos": {
-    "total": 0.019,
-    "por_cve_mediana": 0.0038,
-    "por_cve_maximo": 0.0078,
+    "total": 0.0175,
+    "por_cve_mediana": 0.0037,
+    "por_cve_maximo": 0.0072,
     "por_cve_maximo_cve": "CVE-2018-14041"
   },
   "lista": "/home/francisco_sales/ic_security_project_v2/datasets/listas/cves-sast.txt",
-  "raw_dir": "/home/francisco_sales/ic_security_project_v2/results/codeql/raw",
+  "raw_dir": "/tmp/claude-1000/-home-francisco-sales-ic-security-project-v2/6dcdd11f-0af7-4ab2-8656-aa71c72f7e62/scratchpad/rev/results/codeql/raw",
   "treated_dir": "/home/francisco_sales/ic_security_project_v2/results/codeql/treated"
 }

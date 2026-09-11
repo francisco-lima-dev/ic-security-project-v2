@@ -1,7 +1,7 @@
 {
   "ferramenta": "semgrep",
-  "schema_version": "1.2",
-  "gerado_em": "2026-09-10T18:32:06.336850Z",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-11T00:36:46.501128Z",
   "cves": {
     "processados": 4,
     "pulados_por_idempotencia": 0,
@@ -58,8 +58,14 @@
     "false": 0,
     "null": 0,
     "lista_false": [],
-    "motivos_null": {}
+    "motivos_null": {},
+    "motivos_por_estado": {
+      "true": {
+        "inventario de arquivos VARRIDOS, de paths.scanned[]. `false` significa que o arquivo ficou fora da varredura — universo distinto do inventario do CodeQL, que e de arquivos EXTRAIDOS": 4
+      }
+    }
   },
+  "codeql_inventario": [],
   "tool_diagnostics": {
     "cves_com_erro": [
       "CVE-2018-14040",
@@ -103,9 +109,9 @@
   "codeql_versao_inesperada": [],
   "security_severity_ilegivel": [],
   "duracao_segundos": {
-    "total": 0.102,
-    "por_cve_mediana": 0.0217,
-    "por_cve_maximo": 0.0571,
+    "total": 0.0971,
+    "por_cve_mediana": 0.0212,
+    "por_cve_maximo": 0.0536,
     "por_cve_maximo_cve": "CVE-2018-14040"
   },
   "lista": "/home/francisco_sales/ic_security_project_v2/datasets/listas/cves-sast.txt",

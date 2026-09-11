@@ -598,16 +598,54 @@ A ordem da chave é: `file_path`, `line_start`, `line_end`, `column_start`,
 final.
 
 - `gt_file_scanned` — tri-estado: a ferramenta considerou o arquivo do
-  ground truth? `true`/`false` no Semgrep (`paths.scanned`, verificado);
-  **`null` no CodeQL e no Snyk**. O `null` acompanha sempre
-  `gt_file_scanned_reason`.
-  **Corrigido pela Fase E:** o motivo do `null` é diferente nas duas, e só
-  numa delas é impossibilidade. No **Snyk** a `coverage[]` vem agregada por
-  linguagem, sem inventário de caminhos — não há como decidir sobre um
-  arquivo. No **CodeQL** o inventário **existe** (`runs[0].artifacts[]` e as
-  notificações `js/diagnostics/successfully-extracted-files`), e o `null` é
-  escolha do normalizador, não limitação do formato. A assimetria alcança
-  hoje **duas** ferramentas, e no CodeQL ela é revisável.
+  ground truth? **`true`/`false` no Semgrep e no CodeQL; `null` no Snyk.**
+  O `gt_file_scanned_reason` acompanha os **três** estados desde o schema 1.3.
+
+  **A assimetria inverteu na Fase E.** Até o 1.2 o `null` era do CodeQL e se
+  dizia declarado; a medição mostrou que o SARIF **traz** inventário, e o
+  `null` passou a ser só do Snyk, onde é impossibilidade real —
+  `coverage[]` agregada por linguagem, `files` sempre contagem.
+
+  **Fonte no CodeQL: a notificação `js/diagnostics/successfully-extracted-files`,
+  e só ela.** Enumera um caminho por arquivo extraído, inclui arquivos sem
+  achado, e o caminho vive só em `locations[0]` — `message.text` é vazia.
+
+  **`runs[0].artifacts[]` está descartado como fonte.** É a escolha óbvia e é
+  a errada: superconjunto contaminado por outras linguagens. No
+  `CVE-2018-14040` traz 176 entradas contra 174 da notificação, e as duas a
+  mais — `docs/_plugins/bridge.rb` e `docs/_plugins/bugify.rb` — entram por
+  notificação de Ruby. Usá-lo reportaria como varrido o que o extrator de
+  JavaScript não tocou, o que é **pior que `null`**: afirma o contrário do
+  verdadeiro. `js/baseline/expected-extracted-files` também não serve — é
+  amostra de baseline (45 contra 174 no mesmo CVE), não inventário.
+
+  **Ausência da notificação → `null`, nunca `false`.** Ausência de inventário
+  e ausência do arquivo no inventário são coisas distintas, pelo mesmo
+  princípio que separa `unknown` de `unresolved` na severidade.
+
+  **`false` não quer dizer o mesmo nas duas ferramentas**, e é por isso que o
+  motivo passou a acompanhar todos os estados:
+
+  | Ferramenta | `false` significa |
+  |---|---|
+  | Semgrep | o arquivo ficou fora da varredura (`paths.scanned`) |
+  | CodeQL | o arquivo não foi extraído para o banco de dados |
+  | Snyk Code | não ocorre: o estado é `null`, indeterminado |
+
+  Os dois universos respondem à pergunta que o campo faz — o arquivo foi
+  olhado, ou a ausência de achado é artefato? Arquivo não extraído não foi
+  olhado, pelo mesmo efeito que arquivo não varrido, por causa diferente. O
+  que não se pode é deixar um booleano fingir uniformidade que não existe.
+
+  **Conferência do teto, sem compensação.** Não se sabe se a notificação
+  enumera *todos* os arquivos extraídos ou até um limite. O relatório grava,
+  por CVE, a contagem da notificação e a de `artifacts[]` **depurado** das
+  URIs que só aparecem por notificação de outra linguagem; divergência num CVE
+  grande é o sinal. Nenhuma heurística compensa teto: conta-se e reporta-se, e
+  a campanha decide com 223 CVEs em vez de 4. O modo de falha é **assimétrico**
+  e conservador — havendo teto, o arquivo acima dele sai `false`, nunca
+  `true`, e `false` não fabrica varredura que não houve.
+  Medido nos 4 CVEs da Fase E: **bateu em 4 de 4** (3, 174, 126 e 58).
   Aplicado aos 223, não só aos cinco CVEs cujo arquivo não tem extensão
   (`bin/public`: CVE-2018-16480, CVE-2018-3731, CVE-2018-3747;
   `bin/http-live`: CVE-2018-16479, CVE-2019-5423). Custa o mesmo e dá o
@@ -636,8 +674,8 @@ final.
   tinha como conferir nem refutar. Campo cujo sentido depende da ferramenta,
   e cuja evidência não está no registro, é pior que campo ausente.
   No CodeQL a pergunta verdadeira — "a ferramenta considerou este arquivo" —
-  é a do `gt_file_scanned`, e o inventário para respondê-la está no mesmo
-  SARIF
+  é a do `gt_file_scanned`, que desde o schema 1.3 a responde pelo inventário
+  do próprio SARIF, em vez de por subcadeia sobre texto truncado
 
 - `schema_version` — literal. Tratado com versão divergente da corrente
   **não** é pulado pela idempotência: reprocessa, ou falha se faltar
@@ -701,20 +739,16 @@ precisou ser normalizado — hoje um único CVE, `CVE-2019-12041`, que declara
 `/index.js` com barra inicial. Guarda o valor como veio, para que o tratado
 seja cotejável com o benchmark sem consultar o relatório.
 
-**`gt_file_scanned_reason`** acompanha o `gt_file_scanned` quando ele é
-`null`, dizendo por quê. O `null` tem mais de uma causa — e as causas **não
-são do mesmo tipo**, que é justamente o que o campo existe para não deixar
-virar a mesma coisa na leitura:
+**`gt_file_scanned_reason`** acompanha o `gt_file_scanned` nos **três**
+estados desde o schema 1.3, não só no `null`. Enquanto uma única ferramenta
+decidia, o motivo só era necessário para explicar a abstenção; com duas
+decidindo por **mecanismos distintos** — varridos no Semgrep, extraídos no
+CodeQL —, o booleano sozinho passaria a esconder de que universo veio.
 
-- **Snyk:** impossibilidade real. A `coverage[]` vem agregada por linguagem
-  (`{files, isSupported, lang, type}`, com `files` sempre **contagem**), e não
-  há como decidir sobre um arquivo.
-- **CodeQL:** **decisão, não impossibilidade.** O SARIF **traz** inventário de
-  arquivos extraídos — ver "Divergências encontradas" adiante. O motivo
-  gravado diz isso com todas as letras, para que quem lê o corpus não conclua
-  limitação de formato e deixe de reabrir a decisão.
-- **Semgrep:** só se o JSON vier sem `paths.scanned`, o que não ocorreu na
-  Fase E.
+O `null` restante é do Snyk, e ali é impossibilidade real: `coverage[]`
+agregada por linguagem, `files` sempre contagem. No Semgrep o `null` só
+ocorreria se o JSON viesse sem `paths.scanned`, o que não aconteceu na Fase E;
+no CodeQL, se o SARIF vier sem a notificação de extraídos.
 
 **Chave canônica na busca da tabela de primário.** Normalizar para três
 dígitos, ordenar, juntar. Nunca casar por string crua contra a grafia em
@@ -968,8 +1002,11 @@ que isso apareça em vez de passar por carimbo da ferramenta.
 `runs[0].artifacts[]`, com `uri` relativo e `uriBaseId` `%SRCROOT%`; e
 `toolExecutionNotifications` com descritor
 `js/diagnostics/successfully-extracted-files`, uma entrada por arquivo
-extraído. A afirmação contrária, que sustenta `gt_file_scanned: null` no
-CodeQL, é **falsa como fato** — o `null` é escolha, não impossibilidade.
+extraído. A afirmação contrária, que sustentava `gt_file_scanned: null` no
+CodeQL, é **falsa como fato**.
+**Encaminhado:** desde o schema 1.3 o CodeQL **decide**, pela notificação
+`js/diagnostics/successfully-extracted-files`; `artifacts[]` ficou descartado
+como fonte. Ver o campo `gt_file_scanned` na seção do schema.
 
 **CodeQL — `versionControlProvenance` ausente.** Não há registro do commit
 analisado dentro do próprio raw; o log de execução segue sendo a única
@@ -1081,6 +1118,12 @@ Declaradas na monografia, não corrigíveis por código:
   corrigidas contra o real, incluindo a do CodeQL, que modelava a
   notificação como **falha** de extração quando a saída real é de extração
   bem-sucedida.
+- **A decisão do `gt_file_scanned` do CodeQL repousa em 4 CVEs.** O
+  inventário por notificação foi validado contra saída real em quatro casos,
+  incluindo o que motiva o campo — `js/collapse.js` extraído e sem achado. Não
+  se sabe se a notificação tem teto em repositório grande; a conferência
+  notificação × `artifacts[]` depurado bateu em 4 de 4, e vai no relatório de
+  cada campanha para que 223 CVEs digam mais do que 4.
 - **A amostra da confrontação são 4 CVEs e 4 repositórios, todos
   JavaScript.** Nenhum TypeScript no laço, nenhum monorepo, e nenhum
   `SEM_ARQUIVO_ANALISAVEL` — o único status do log que a Fase E não
@@ -1130,5 +1173,13 @@ Declaradas na monografia, não corrigíveis por código:
 - **Não colapsar "regra não resolvida" em `unknown`**
 - **Não consultar a tabela de primário para conjunto vazio ou unitário**
 - **Não excluir CVE de denominador por `gt_file_scanned: false`** — a causa
-  ali é interna à ferramenta, ao contrário do repositório que não existe
+  ali é interna à ferramenta, ao contrário do repositório que não existe. Vale
+  igualmente para o `false` do CodeQL, que significa "não extraído para o
+  banco de dados", e não para o `null` do Snyk
+- **Não usar `runs[0].artifacts[]` como inventário de arquivos varridos do
+  CodeQL** — é superconjunto contaminado por outras linguagens, e afirmaria
+  varredura que não houve. A fonte é a notificação
+  `js/diagnostics/successfully-extracted-files`
+- **Não tratar ausência da notificação de extraídos como `false`** — é `null`,
+  pelo mesmo princípio que separa `unknown` de `unresolved`
 - Não gravar fixtures em `results/*/raw/`

@@ -144,8 +144,15 @@ def main():
            rel["colisoes_chave_ordenacao"]["total"])
 
     # D.7 — gt_file_scanned e diagnósticos
-    checar(m["gt_file_scanned"] is None,
-           "gt_file_scanned do CodeQL e null (assimetria declarada)")
+    # Schema 1.3: o CodeQL DECIDE, pela notificacao
+    # js/diagnostics/successfully-extracted-files. js/collapse.js esta nela e
+    # NAO tem achado — o caso que motiva o campo inteiro.
+    checar(m["gt_file_scanned"] is True,
+           "gt_file_scanned do CodeQL: true pela notificacao de extraidos",
+           m["gt_file_scanned"])
+    checar([x for x in f if x["file_path"] == "js/collapse.js"] == []
+           or m["gt_file_scanned"] is True,
+           "arquivo extraido e sem achado sai true, nao null")
     checar(m["tool_diagnostics"]["notifications"] == 2,
            "toolExecutionNotifications contadas", m["tool_diagnostics"]["notifications"])
     checar(m["tool_diagnostics"]["errors"] is None
@@ -164,20 +171,30 @@ def main():
            m["tool_diagnostics"]["details"])
 
     # metadata
-    checar(m["schema_version"] == "1.2" and m["tool"] == "codeql", "metadata basico")
+    checar(m["schema_version"] == "1.3" and m["tool"] == "codeql", "metadata basico")
     checar(m["commit"] == "13bf8aeae3db71e28af69782328c22215795c169",
            "commit vem da LISTA de entrada", m["commit"])
     checar(m["ruleset"]["rules_total"] == 104 and m["rules_applied"] is None,
            "CodeQL: rules_total 104, rules_applied NULO")
     checar(m["ruleset"]["rules_id_sha256"] is None,
            "rules_id_sha256 nulo fora do Semgrep — nao ha pack de arquivo")
-    # O motivo do null do CodeQL descreve a DECISAO, nao uma impossibilidade:
-    # medido na Fase E, o SARIF traz inventario de arquivos extraidos.
-    checar("decisao pendente" in m["gt_file_scanned_reason"]
-           and "TRAZ inventario" in m["gt_file_scanned_reason"],
-           "o motivo do null do CodeQL nao afirma mais que o formato nao traz "
-           "inventario — afirmacao que a Fase E mediu como falsa",
+    # O motivo acompanha os TRES estados desde o 1.3, e diz de que UNIVERSO
+    # o valor saiu: extraidos (CodeQL) nao e o mesmo que varridos (Semgrep).
+    checar("EXTRAIDOS" in m["gt_file_scanned_reason"],
+           "o motivo acompanha o true, nao so o null, e nomeia o universo",
            m.get("gt_file_scanned_reason"))
+    # artifacts[] foi DESCARTADO como fonte: e superconjunto contaminado por
+    # outras linguagens. A conferencia do teto o usa DEPURADO, so para contar.
+    inv = {x["cve"]: x for x in rel["codeql_inventario"]}
+    checar(inv["CVE-2018-14040"]["notificacao"] == 2
+           and inv["CVE-2018-14040"]["bate"] is True,
+           "conferencia do teto: notificacao x artifacts depurado", inv.get("CVE-2018-14040"))
+    checar(inv["CVE-2018-16480"]["notificacao"] == 2
+           and inv["CVE-2018-16480"]["artifacts_depurado"] == 2
+           and inv["CVE-2018-16480"]["bate"] is True,
+           "o .rb citado por notificacao de outra linguagem sai de artifacts na "
+           "depuracao — usar artifacts cru reportaria varrido o que o extrator "
+           "de JS nao tocou", inv.get("CVE-2018-16480"))
     checar(m["analysis_date"] == "2026-09-07T14:32:11Z"
            and m["analysis_date_source"] == "tool",
            "analysis_date de invocations[0].endTimeUtc, origem 'tool'")
@@ -197,6 +214,27 @@ def main():
            and vazio["tool_diagnostics"]["details"] == [],
            "sem fonte alguma de diagnostico → contagens null e details vazio",
            vazio["tool_diagnostics"])
+    # Os TRES estados do tri-estado no CodeQL, que a decisao do 1.3 cria.
+    # (null) notificacao AUSENTE nao e false: ausencia de inventario e
+    # ausencia do arquivo no inventario sao coisas distintas — mesmo
+    # principio que separa unknown de unresolved na severidade.
+    checar(vazio["gt_file_scanned"] is None,
+           "notificacao ausente → null, NUNCA false", vazio["gt_file_scanned"])
+    checar("sem notificacao" in vazio["gt_file_scanned_reason"],
+           "e o motivo diz que faltou o inventario, nao que faltou o arquivo",
+           vazio.get("gt_file_scanned_reason"))
+    # (false) notificacao presente, gt_file_path fora dela
+    fora = ler(tratado_dir / "CVE-2018-16480.json")["metadata"]
+    checar(fora["gt_file_scanned"] is False,
+           "gt_file_path ausente do inventario → false", fora["gt_file_scanned"])
+    checar("EXTRAIDOS" in fora["gt_file_scanned_reason"],
+           "o motivo acompanha o false e nomeia o universo",
+           fora.get("gt_file_scanned_reason"))
+    checar(rel["gt_file_scanned"]["true"] >= 1
+           and "CVE-2018-16480" in rel["gt_file_scanned"]["lista_false"]
+           and rel["gt_file_scanned"]["null"] >= 1,
+           "o relatorio do CodeQL passa a ter os tres estados",
+           rel["gt_file_scanned"])
     checar(ler(tratado_dir / "CVE-2018-1000096.json")["findings"] == [],
            "raw sem achados produz tratado com findings: []")
 
@@ -352,11 +390,17 @@ def main():
     checar(any("PartialParsing" in x for x in det),
            "errors[].type como UNIAO ETIQUETADA tem a etiqueta extraida; "
            "sem isso o detalhe sai sem dizer que erro foi", det)
-    checar(rel_sg["gt_file_scanned"] == {"true": 1, "false": 1, "null": 1,
-                                         "lista_false": ["CVE-2018-16480"],
-                                         "motivos_null": rel_sg["gt_file_scanned"]["motivos_null"]},
-           "contagem true/false/null com a lista dos false",
-           rel_sg["gt_file_scanned"])
+    varrido_sg = rel_sg["gt_file_scanned"]
+    checar((varrido_sg["true"], varrido_sg["false"], varrido_sg["null"],
+            varrido_sg["lista_false"]) == (1, 1, 1, ["CVE-2018-16480"]),
+           "contagem true/false/null com a lista dos false", varrido_sg)
+    checar(set(varrido_sg["motivos_por_estado"]) == {"true", "false", "null"},
+           "o motivo e agregado nos TRES estados, nao so no null",
+           sorted(varrido_sg["motivos_por_estado"]))
+    checar(all("VARRIDOS" in motivo
+               for estado in ("true", "false")
+               for motivo in varrido_sg["motivos_por_estado"][estado]),
+           "no Semgrep o motivo nomeia o universo VARRIDOS nos dois booleanos")
     # rules_applied < rules_total e o caso COMUM, nao anomalia: 370 e 12 nao
     # podem ser reportados. So a violacao do limite superior e sinal, e vem do
     # CVE-2018-1000096, com 1075 > 1074.
@@ -543,7 +587,7 @@ def main():
     checar("0.9" in p.stderr, "a divergencia de schema aparece no stderr", p.stderr[-300:])
     p = normalizar("codeql", FIXTURES / "codeql", tratado_dir, rel_idem,
                    extra=["--overwrite", "--cve", "CVE-2017-16011"])
-    checar(p.returncode == 0 and ler(alvo)["metadata"]["schema_version"] == "1.2",
+    checar(p.returncode == 0 and ler(alvo)["metadata"]["schema_version"] == "1.3",
            "--overwrite reprocessa o tratado de schema antigo")
 
     # =================================== estabilidade da ordem (D.9)
