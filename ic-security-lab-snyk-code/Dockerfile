@@ -23,8 +23,9 @@ FROM debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe6
 ARG SNYK_CLI_VERSION
 ARG SNYK_CLI_SHA256
 # Gravado na imagem para tornar possível a SEGUNDA comparação — imagem
-# contra o descritor do repositório, em runtime. Ela ainda NÃO existe:
-# viveria no script de análise, fora do escopo da fase que criou este ENV.
+# contra o descritor do repositório, em runtime. Ela EXISTE desde a Fase G-2c,
+# no script de análise, e é fatal; a ressalva de alcance está em
+# snyk-cli.meta.json.
 ENV SNYK_CLI_SHA256=${SNYK_CLI_SHA256}
 
 # jq não é conveniência: é dependência de validação. Sem ele o Snyk seria a

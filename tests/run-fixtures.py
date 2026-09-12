@@ -829,6 +829,11 @@ def main():
         env["WORKSPACE"] = str(ws)
         env["STUB_RC_FETCH"] = str(rc_fetch)
         env["STUB_RC_CLONE"] = str(rc_clone)
+        # A guarda de integridade do bundle roda ANTES do laco e exige o
+        # ENV que a imagem grava no build. Aqui se roda o script fora da
+        # imagem, entao o ENV e suprido: sem ele o script aborta — e essa
+        # fatalidade e asseverada em secao propria adiante, nao aqui.
+        env["CODEQL_BUNDLE_SHA256"] = "a" * 64
         r = subprocess.run(["bash", str(RUN_CODEQL), str(lista_obt)],
                            env=env, capture_output=True, text=True)
         # Log ausente e RESULTADO da verificacao — o script nao chegou a
@@ -970,6 +975,138 @@ def main():
            "nenhum segmento das linhas reais do script escapa ao vocabulario "
            "declarado: e a conferencia de que as constantes nao divergiram",
            p_obt.stdout[-600:])
+
+    # ============ guarda de integridade do bundle e do CLI, em runtime
+    # Fase G-2c. E a SEGUNDA comparacao de sha256, analoga a do pack do
+    # Semgrep: a primeira vive no build (Dockerfile confere o download
+    # contra o --build-arg); esta pega o modo de falha que aquela nao
+    # alcanca — o descritor versionado mudou e ninguem reconstruiu.
+    #
+    # ASSIMETRIA: a do Semgrep termina em BYTES dos dois lados; esta
+    # compara DOIS VALORES DECLARADOS, o ENV da imagem contra o campo do
+    # descritor. Nao estabelece que /opt/codeql corresponde ao hash.
+    print("\n== Guarda de integridade em runtime (segunda comparacao) ==")
+    gi = tmp / "guarda"
+    (gi / "ic-security-lab-codeql").mkdir(parents=True)
+    lista_gi = gi / "lista"
+    lista_gi.write_text("", encoding="utf-8")
+    DESCRITOR_GI = gi / "ic-security-lab-codeql" / "codeql-bundle.meta.json"
+
+    def rodar_guarda(env_sha, descritor_sha):
+        """descritor_sha None = repositorio NAO montado (descritor ausente)."""
+        if descritor_sha is None:
+            if DESCRITOR_GI.exists():
+                DESCRITOR_GI.unlink()
+        else:
+            DESCRITOR_GI.write_text(
+                json.dumps({"sha256": descritor_sha}), encoding="utf-8")
+        env = dict(os.environ)
+        env["WORKSPACE"] = str(gi)
+        env["PATH"] = "%s:%s" % (stub, env.get("PATH", ""))
+        env["STUB_RC_FETCH"] = "124"
+        env["STUB_RC_CLONE"] = "124"
+        if env_sha is None:
+            env.pop("CODEQL_BUNDLE_SHA256", None)
+        else:
+            env["CODEQL_BUNDLE_SHA256"] = env_sha
+        return subprocess.run(["bash", str(RUN_CODEQL), str(lista_gi)],
+                              env=env, capture_output=True, text=True)
+
+    SHA_A, SHA_B = "a" * 64, "b" * 64
+
+    r = rodar_guarda(SHA_A, SHA_A)
+    checar(r.returncode == 0 and "obsoleta" not in r.stderr,
+           "guarda: ENV coincide com o descritor -> execucao segue",
+           "rc=%d %s" % (r.returncode, r.stderr[-200:]))
+    # `rc == 0` sozinho e observacao fraca: prova que nao abortou, nao que
+    # chegou adiante. O log so nasce nas PRE-CONDICOES, depois da guarda.
+    checar((gi / "logs" / "execution-log-codeql.csv").is_file(),
+           "guarda: com ENV coincidente a execucao passa das PRE-CONDICOES, "
+           "nao apenas da guarda — o log foi criado")
+
+    r = rodar_guarda(SHA_A, SHA_B)
+    checar(r.returncode == 1 and "obsoleta em relacao ao descritor" in r.stderr,
+           "guarda: ENV DIVERGE do descritor -> aborta. E o modo de falha "
+           "visado: descritor mudou e ninguem reconstruiu a imagem",
+           "rc=%d %s" % (r.returncode, r.stderr[-300:]))
+
+    r = rodar_guarda(SHA_A, None)
+    # `returncode == 0` e a forma FORTE: a anterior era
+    # `rc != 1 or "ausente" in stderr`, que o aviso sozinho ja satisfazia —
+    # trocar o else por `exit 1` a deixava passar, e a propriedade nomeada
+    # na descricao (NAO aborta) nao era verificada.
+    checar(r.returncode == 0,
+           "guarda: descritor ausente NAO aborta — abortar quebraria "
+           "execucao legitima sem o volume montado",
+           "rc=%d %s" % (r.returncode, r.stderr[-300:]))
+    # Texto ESPECIFICO da guarda, nao a palavra "AVISO": o script emite
+    # outro aviso — "nao foi possivel capturar a versao do codeql" — quando
+    # o hospedeiro nao tem codeql no PATH, e casar so "AVISO" faria esta
+    # assercao passar por motivo alheio, em maquina sem a ferramenta.
+    checar("nao foi possivel conferir a imagem" in r.stderr
+           and "obsoleta" not in r.stderr,
+           "guarda: o caso 'sem volume' sai com o aviso PROPRIO dela, nunca "
+           "como divergencia — sao coisas distintas", r.stderr[-300:])
+
+    r = rodar_guarda(None, SHA_A)
+    checar(r.returncode == 1 and "nao definido na imagem" in r.stderr,
+           "guarda: ENV ausente aborta — imagem construida sem --build-arg "
+           "nao pode rodar lote",
+           "rc=%d %s" % (r.returncode, r.stderr[-300:]))
+
+    r = rodar_guarda(SHA_A, "nao-e-um-sha256")
+    checar(r.returncode == 1 and "malformado" in r.stderr,
+           "guarda: descritor malformado sai como MALFORMADO, nao como "
+           "imagem obsoleta — a mensagem tem de nomear a causa certa",
+           "rc=%d %s" % (r.returncode, r.stderr[-300:]))
+
+    # A guarda do Snyk e EXERCITADA, nao apenas procurada na fonte: as duas
+    # guardas nao sao identicas byte a byte (node x jq, nomes e caminhos
+    # distintos), entao o argumento de extensao por identidade — usado na
+    # secao de obtencao deste mesmo arquivo — nao esta disponivel aqui, e
+    # checagem de substring passaria com o `if` invertido ou o `exit 1`
+    # removido.
+    RUN_SNYK = RAIZ / "ic-security-lab-snyk-code" / "scripts" / "run_snyk-code.sh"
+    gs = tmp / "guarda-snyk"
+    (gs / "ic-security-lab-snyk-code").mkdir(parents=True)
+    DESCRITOR_GS = gs / "ic-security-lab-snyk-code" / "snyk-cli.meta.json"
+
+    def rodar_guarda_snyk(env_sha, descritor_sha):
+        if descritor_sha is None:
+            if DESCRITOR_GS.exists():
+                DESCRITOR_GS.unlink()
+        else:
+            DESCRITOR_GS.write_text(
+                json.dumps({"sha256": descritor_sha}), encoding="utf-8")
+        env = dict(os.environ)
+        env["WORKSPACE"] = str(gs)
+        env["SNYK_TOKEN"] = "irrelevante-para-a-guarda"
+        if env_sha is None:
+            env.pop("SNYK_CLI_SHA256", None)
+        else:
+            env["SNYK_CLI_SHA256"] = env_sha
+        return subprocess.run(["bash", str(RUN_SNYK), str(lista_gi)],
+                              env=env, capture_output=True, text=True)
+
+    rs = rodar_guarda_snyk(SHA_A, SHA_B)
+    checar(rs.returncode == 1 and "obsoleta em relacao ao descritor" in rs.stderr,
+           "guarda do Snyk: ENV DIVERGE do descritor -> aborta",
+           "rc=%d %s" % (rs.returncode, rs.stderr[-300:]))
+    rs = rodar_guarda_snyk(SHA_A, SHA_A)
+    checar(rs.returncode == 0,
+           "guarda do Snyk: ENV coincide -> execucao segue",
+           "rc=%d %s" % (rs.returncode, rs.stderr[-300:]))
+    rs = rodar_guarda_snyk(SHA_A, None)
+    checar(rs.returncode == 0
+           and "nao foi possivel conferir a imagem" in rs.stderr,
+           "guarda do Snyk: descritor ausente avisa e NAO aborta",
+           "rc=%d %s" % (rs.returncode, rs.stderr[-300:]))
+    rs = rodar_guarda_snyk(None, SHA_A)
+    checar(rs.returncode == 1 and "nao definido na imagem" in rs.stderr,
+           "guarda do Snyk: ENV ausente aborta",
+           "rc=%d %s" % (rs.returncode, rs.stderr[-300:]))
+    checar("snyk-cli.meta.json" in RUN_SNYK.read_text(encoding="utf-8"),
+           "a guarda do Snyk aponta para o descritor versionado dele")
 
     # --------------- (5) do check-log.py: contagem de fallback e de estouro
     # Metrica de vigilancia que o protocolo exige e que nao existia em

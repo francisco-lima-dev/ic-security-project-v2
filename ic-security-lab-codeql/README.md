@@ -45,6 +45,32 @@ a comparação é fatal.
 Nunca `latest`: o bundle carrega as consultas, e trocá-lo em silêncio troca
 o conjunto avaliado.
 
+## Para que serve a guarda — e o que cada metade pega
+
+O sha256 do artefato é conferido em **dois** momentos, e cada um pega um modo
+de falha que o outro não alcança.
+
+**Primeira, no build.** O Dockerfile confere o download contra o
+`--build-arg`, antes de usá-lo, e o `ARG` não tem default: build sem ele
+falha. Pega download corrompido, asset trocado na origem e `--build-arg`
+esquecido.
+
+**Segunda, em runtime** (desde a Fase G-2c). O script compara o
+`ENV CODEQL_BUNDLE_SHA256` gravado na imagem contra o campo `sha256` de
+`codeql-bundle.meta.json`, versionado. Pega o caso que a primeira **não**
+alcança: o descritor mudou no repositório e ninguém reconstruiu a imagem —
+`ARG` e `ENV` congelam no mesmo build e sempre batem entre si.
+
+Divergência é **fatal**. Repositório não montado emite **aviso** no stderr e a
+execução **segue**: abortar quebraria execução legítima em contexto sem o
+volume. É a mesma disciplina da comparação (2) do pack do Semgrep.
+
+**Alcance, declarado.** A comparação (2) do Semgrep termina em *bytes* dos dois
+lados. Esta compara **dois valores declarados**, e não estabelece que `/opt/codeql`
+ainda corresponde ao hash. Aqui a comparação em bytes é **impossibilidade real**: o valor declarado é o do
+*tarball*, que o Dockerfile remove depois de desempacotar, e `/opt/codeql` é a
+árvore extraída — rehashá-la não reproduziria o valor.
+
 ## Execução
 
 ```bash

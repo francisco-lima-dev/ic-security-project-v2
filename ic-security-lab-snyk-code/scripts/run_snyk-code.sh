@@ -107,6 +107,82 @@ if [ -z "${SNYK_TOKEN:-}" ]; then
     exit 1
 fi
 
+# --- guarda de integridade do CLI do Snyk ---------------------------
+# SEGUNDA comparação, análoga à do pack vendorizado do Semgrep. A PRIMEIRA
+# vive no build: o Dockerfile confere o sha256 do binario baixado contra o
+# `--build-arg`, antes de torna-lo executavel, e falha se divergir.
+#
+# Esta pega o modo de falha que a primeira NÃO alcança: o descritor
+# versionado mudou no repositório e ninguém reconstruiu a imagem. O `ARG` e
+# o `ENV` congelam no mesmo build e sempre batem entre si, logo a
+# comparação do build sozinha não detecta esse caso.
+#
+# ASSIMETRIA DECLARADA. A comparação (2) do Semgrep termina em BYTES dos
+# dois lados: confere o `/default.yaml` da imagem contra o YAML do
+# repositório montado. Esta compara DOIS VALORES DECLARADOS — o `ENV`
+# assado no build contra o campo do descritor hoje.
+# Ela NÃO estabelece que /usr/local/bin/snyk ainda corresponde ao hash.
+#
+# E AQUI, ao contrário do CodeQL, essa comparação ESTÁ DISPONÍVEL e apenas
+# não foi feita: o binário conferido no build continua na imagem, e
+# `sha256sum /usr/local/bin/snyk` reproduz este ENV — verificado em
+# 12/09/2026. Custaria hashear 178 MiB uma vez por lote, e pegaria
+# bind-mount sobre o CLI em runtime, que é o modo de falha que a comparação
+# (1) do Semgrep pega e que aqui não tem guarda alguma.
+#
+# É PENDÊNCIA, não impossibilidade, e a distinção importa: no CodeQL é
+# impossibilidade real, porque lá o valor declarado é o do tarball, que o
+# Dockerfile remove. Não foi feita porque o escopo da Fase G-2c era a
+# comparação contra o descritor.
+#
+# Quem chega aqui com a expectativa formada pelo Semgrep tem de ler esta
+# ressalva; ela está também no campo `why_no_second_comparison` do
+# descritor.
+#
+# Repositório não montado emite AVISO no stderr e a execução SEGUE:
+# abortar quebraria execução legítima em contexto sem o volume. Mesma
+# disciplina da comparação (2) do Semgrep.
+DESCRITOR="$WORKSPACE/ic-security-lab-snyk-code/snyk-cli.meta.json"
+if [ -z "${SNYK_CLI_SHA256:-}" ]; then
+    echo "ERRO: SNYK_CLI_SHA256 nao definido na imagem." >&2
+    echo "  Reconstrua com --build-arg SNYK_CLI_SHA256=<sha256 do CLI do Snyk>" >&2
+    exit 1
+fi
+if [ -f "$DESCRITOR" ]; then
+    # Parser do formato, nunca regex sobre o JSON.
+    if ! SHA_DESCRITOR=$(jq -r '.sha256 // ""' "$DESCRITOR"); then
+        echo "ERRO: nao foi possivel ler o sha256 de $DESCRITOR" >&2
+        exit 1
+    fi
+    # Campo ausente devolve string vazia, que compararia contra o ENV e
+    # divergiria — mas com mensagem errada. A validacao de forma separa
+    # "descritor malformado" de "imagem obsoleta".
+    if ! [[ "$SHA_DESCRITOR" =~ ^[0-9a-f]{64}$ ]]; then
+        echo "ERRO: campo sha256 ausente ou malformado em $DESCRITOR" >&2
+        echo "  obtido: '$SHA_DESCRITOR'" >&2
+        exit 1
+    fi
+    # O lado do ENV também é validado quanto à forma. Sem isso, um
+    # --build-arg com hex maiúsculo ou espaço em volta sairia como "imagem
+    # obsoleta", nomeando a causa errada — que é o defeito que a validação
+    # existe para evitar do outro lado.
+    if ! [[ "$SNYK_CLI_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
+        echo "ERRO: SNYK_CLI_SHA256 da imagem nao e um sha256 canonico" >&2
+        echo "  obtido: '$SNYK_CLI_SHA256'" >&2
+        exit 1
+    fi
+    if [ "$SHA_DESCRITOR" != "$SNYK_CLI_SHA256" ]; then
+        echo "ERRO: a imagem esta obsoleta em relacao ao descritor do repositorio" >&2
+        echo "  na imagem:      $SNYK_CLI_SHA256" >&2
+        echo "  no descritor:   $SHA_DESCRITOR" >&2
+        echo "  Reconstrua a imagem com --build-arg SNYK_CLI_SHA256=<sha256 do descritor>" >&2
+        exit 1
+    fi
+else
+    echo "AVISO: $DESCRITOR ausente; nao foi possivel conferir a imagem" >&2
+    echo "  contra o descritor do repositorio. O workspace esta montado?" >&2
+fi
+
 # --- pré-condições --------------------------------------------------------
 if [ ! -f "$LISTA" ]; then
     echo "ERRO: lista nao encontrada: $LISTA" >&2

@@ -56,6 +56,17 @@
 # inventário publicado aqui é observação datada: para sobreviver ao prazo,
 # tem de ser commitado em datasets/sondagens/, o que é decisão do operador
 # e não escrita deste workflow, que só tem `contents: read`.
+#
+# O que se commita é o CONSOLIDADO — `sondagem-imagens-runner-<data>.txt`
+# —, não a árvore. A árvore é o dado bruto; o consolidado sai na MESMA
+# FORMA do `sondagem-imagens-local-<data>.txt` já versionado, e é essa
+# identidade de forma que torna os dois diffáveis. Sem ela, a frase
+# "divergência entre as duas medições é a medida do que ficou solto" não é
+# verificável: duas formas distintas produzem diff de ruído, não de dado.
+#
+# O discriminador `-local-` × `-runner-` fica no NOME, não só no cabeçalho:
+# quem abre a pasta daqui a seis meses vê a diferença sem abrir arquivo. É
+# a convenção que o `sondagem-ambiente-runner-<data>.txt` já usa.
 
 name: Build e publicacao das imagens da campanha
 
@@ -128,7 +139,8 @@ jobs:
               printf 'construido_em: %s\n' "$AGORA"
               printf 'workflow_run_id: %s\n' "$RUN_ID"
               printf 'commit: %s\n' "${GITHUB_SHA:-NAO_DEFINIDO}"
-              printf 'runner_image: %s / %s\n' "${ImageOS:-NAO_DEFINIDO}" "${ImageVersion:-NAO_DEFINIDO}"
+              printf 'runner_image_os: %s\n' "${ImageOS:-NAO_DEFINIDO}"
+              printf 'runner_image_version: %s\n' "${ImageVersion:-NAO_DEFINIDO}"
               printf 'uid_gid_do_runner: %s:%s\n\n' "$(id -u)" "$(id -g)"
           } > "$REL"
 
@@ -224,6 +236,80 @@ jobs:
               --build-arg "SNYK_CLI_VERSION=$VER_SNYK" \
               --build-arg "SNYK_CLI_SHA256=$SHA_SNYK"
 
+          # --- consolidado, na MESMA FORMA do inventario local -----------
+          # Espelha datasets/sondagens/sondagem-imagens-local-<data>.txt:
+          # mesmo cabecalho, mesma ordem de secoes, mesmo formato de linha.
+          # Sai AO LADO da arvore, nao no lugar dela — a arvore e o dado
+          # bruto, o consolidado e o que o operador commita.
+          CONS="$SAIDA/sondagem-imagens-runner-$DATA.txt"
+          # Substituicao de comando como ARGUMENTO de printf engole a falha:
+          # o printf sai 0 e o campo grava vazio. Em ATRIBUICAO, o `-e`
+          # aborta. Por isso todo campo derivado de comando e atribuido
+          # antes de impresso.
+          VERSAO_DOCKER="$(docker version --format '{{.Server.Version}}')"
+          {
+              printf '# Inventario do que NAO se fixa nas imagens da campanha SAST\n'
+              printf '# Observacao datada. O procedimento sao os tres Dockerfiles.\n#\n'
+              printf '# O QUE ESTE ARQUIVO E, E O QUE NAO E.\n'
+              printf '#\n'
+              printf '# E o inventario das IMAGENS DA CAMPANHA: as que este workflow\n'
+              printf '# construiu no runner do GitHub Actions e publicou no GHCR, e que\n'
+              printf '# os jobs de lote referenciam pelos digests listados abaixo. E este\n'
+              printf '# arquivo que sustenta a monografia.\n'
+              printf '#\n'
+              printf '# NAO e o inventario do build local. Aquele esta em\n'
+              printf '# sondagem-imagens-local-<data>.txt, foi feito no hospedeiro do\n'
+              printf '# operador, e serve de linha de base comparavel — nada mais.\n'
+              printf '#\n'
+              printf '# As duas medicoes podem divergir legitimamente: sao hospedeiros\n'
+              printf '# distintos, em momentos distintos, e o que este arquivo registra e\n'
+              printf '# justamente o que resolve no momento do build. Divergencia entre elas\n'
+              printf '# nao e erro: e a medida do que ficou solto.\n'
+              printf '#\n'
+              printf 'sondado_em: %s\n' "$AGORA"
+              printf 'commit_dos_dockerfiles: %s\n' "${GITHUB_SHA:-NAO_DEFINIDO}"
+              printf 'workflow_run_id: %s\n' "$RUN_ID"
+              printf 'runner_image_os: %s\n' "${ImageOS:-NAO_DEFINIDO}"
+              printf 'runner_image_version: %s\n' "${ImageVersion:-NAO_DEFINIDO}"
+              printf 'hospedeiro_uid_gid: %s:%s\n' "$(id -u)" "$(id -g)"
+              printf 'hospedeiro_kernel: %s\n' "$(uname -sr)"
+              printf 'docker: %s\n' "$VERSAO_DOCKER"
+              printf 'metodo: docker run --entrypoint sh <imagem> -c "cd /inventario && tar cf - ." | tar x, e cat dos extraidos\n'
+              printf '\nimagens publicadas (o digest e o contrato):\n'
+              grep '@sha256:' "$REL" | sed 's|^|  |'
+              printf '\nbases fixadas por digest do indice multi-arquitetura:\n'
+              printf '  node:24-bookworm@sha256:6dac556d980b7f0e5498d08f08cee0ca67798b4ad6c23964a9214920e67758d0\n'
+              printf '  python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea\n'
+              printf '  debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171\n'
+              for nome in ic-security-lab-codeql ic-security-lab-semgrep ic-security-lab-snyk-code; do
+                  printf '\n================================================================\n'
+                  printf '%s\n' "$nome"
+                  printf '================================================================\n'
+                  IMG_ID="$(docker image inspect --format '{{.Id}}' "ghcr.io/$NS/$nome:campanha")"
+                  printf 'image_id: %s\n' "$IMG_ID"
+                  # Glob, nao `$(ls)`: a substituicao sofre word splitting
+                  # (nome com espaco vira duas palavras) e globbing (nome com
+                  # `*` e expandido), e sua FALHA e descartada na lista de
+                  # palavras do `for` — nem o `-e` nem o `pipefail` alcancam
+                  # ali, e a secao sairia so com o cabecalho. E o mesmo
+                  # resultado falso plausivel que os Dockerfiles interceptam
+                  # com `test -s`. O glob ja sai ordenado, como o `ls`.
+                  ARQS=("$SAIDA/inventarios/$nome"/*)
+                  if [ ! -e "${ARQS[0]}" ]; then
+                      echo "ERRO: inventario de $nome vazio ou ausente" >&2
+                      exit 1
+                  fi
+                  for caminho in "${ARQS[@]}"; do
+                      N_LINHAS="$(wc -l < "$caminho")"
+                      printf '\n--- /inventario/%s (%s linhas)\n' \
+                          "$(basename "$caminho")" "$N_LINHAS"
+                      cat "$caminho"
+                  done
+              done
+              printf '\n'
+          } > "$CONS"
+          echo "consolidado: $CONS ($(wc -l < "$CONS") linhas)"
+
           # --- resumo legivel ------------------------------------------
           {
               printf '## Imagens publicadas — %s\n\n' "$AGORA"
@@ -254,9 +340,15 @@ jobs:
               printf 'Os pacotes nascem **privados**. Para torna-los publicos, em cada um:\n'
               printf 'Package settings > Danger Zone > Change visibility > Public.\n'
               printf '**Irreversivel.**\n\n'
-              printf '### Retencao\n\n'
+              printf '### Retencao — o que commitar\n\n'
               printf 'O artifact expira em 90 dias. Para o inventario sobreviver a monografia,\n'
-              printf 'commite `imagens-%s/` em `datasets/sondagens/`.\n' "$DATA"
+              printf 'commite em `datasets/sondagens/` o CONSOLIDADO, nao a arvore:\n\n'
+              printf '```\n'
+              printf 'sondagem-imagens-runner-%s.txt\n' "$DATA"
+              printf '```\n\n'
+              printf 'Ele sai na MESMA FORMA do `sondagem-imagens-local-<data>.txt` ja\n'
+              printf 'versionado, e e essa identidade de forma que torna os dois diffaveis.\n'
+              printf 'A arvore `inventarios/` e o dado bruto e fica so no artifact.\n'
           } >> "$GITHUB_STEP_SUMMARY"
 
           cat "$REL"

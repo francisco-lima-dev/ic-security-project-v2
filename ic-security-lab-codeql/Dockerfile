@@ -28,8 +28,9 @@ ARG CODEQL_BUNDLE_SHA256
 ENV CODEQL_BUNDLE_VERSION=${CODEQL_BUNDLE_VERSION}
 # Gravado na imagem para tornar possível a SEGUNDA comparação — imagem
 # contra o descritor do repositório, em runtime —, que pega o descritor
-# alterado sem rebuild. Ela ainda NÃO existe: viveria no script de
-# análise, fora do escopo da fase que criou este ENV.
+# alterado sem rebuild. Ela EXISTE desde a Fase G-2c,
+# no script de análise, e é fatal; a ressalva de alcance está em
+# codeql-bundle.meta.json.
 ENV CODEQL_BUNDLE_SHA256=${CODEQL_BUNDLE_SHA256}
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
