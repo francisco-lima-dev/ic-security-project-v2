@@ -1,0 +1,348 @@
+# Sondagem do ambiente de execucao da campanha SAST
+# Observacao datada. O procedimento e .github/workflows/sondagem-ambiente.yml
+#
+sondado_em: 2026-09-12T11:05:32Z
+repositorio: francisco-lima-dev/ic-security-project-v2
+workflow_run_id: 34690128714
+workflow_run_attempt: 1
+runner_label_pedido: ubuntu-latest
+runner_os: Linux
+runner_arch: X64
+runner_image_os: ubuntu24
+runner_image_version: 20260907.300.1
+commit_sondado: aacdf7ccc070b82bd57236212be3ab7aff5ca694
+
+================================================================
+2.1 IDENTIDADE — uid e gid em campos SEPARADOS
+================================================================
+uid: 1001
+gid: 1001
+relacao: uid == gid (coincidencia neste runner; NADA no pipeline pode supo-la)
+premissa "uid do runner == 1001": CONFIRMADA: uid 1001, como a documentacao afirmava. Os .qlx do bundle do CodeQL (dono 1001) sao legiveis pelo dono mesmo em modo 600, logo o defeito dos .qlx NAO se manifesta aqui.
+
+--- id completo
+$ id
+uid=1001(runner) gid=1001(runner) groups=1001(runner),4(adm),100(users),118(docker),999(systemd-journal)
+[rc=0]
+
+--- grupos
+$ groups
+runner adm users docker systemd-journal
+[rc=0]
+
+--- o uid do runner esta em /etc/passwd do HOSPEDEIRO?
+$ getent passwd 1001
+runner:x:1001:1001::/home/runner:/bin/bash
+[rc=0]
+
+================================================================
+2.2 MAQUINA
+================================================================
+
+--- nucleos
+$ nproc
+4
+[rc=0]
+
+--- memoria (MiB)
+$ free -m
+               total        used        free      shared  buff/cache   available
+Mem:           15989         964       12882          40        2501       15025
+Swap:           3071           0        3071
+[rc=0]
+
+--- disco da raiz
+$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   59G   87G  41% /
+[rc=0]
+
+/mnt existe: sim
+
+--- disco de /mnt
+$ df -h /mnt
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   59G   87G  41% /
+[rc=0]
+
+--- todos os sistemas de arquivos
+$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   59G   87G  41% /
+tmpfs           7.9G   84K  7.9G   1% /dev/shm
+tmpfs           3.2G 1012K  3.2G   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+efivarfs        128M   32K  128M   1% /sys/firmware/efi/efivars
+/dev/sda16      881M   64M  756M   8% /boot
+/dev/sda15      105M  6.2M   99M   6% /boot/efi
+tmpfs           1.6G   12K  1.6G   1% /run/user/1001
+[rc=0]
+
+--- kernel
+$ uname -a
+Linux runnervmlun5p 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+[rc=0]
+
+--- versao do sistema
+$ cat /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+[rc=0]
+
+================================================================
+2.3 DOCKER
+================================================================
+
+--- docker version
+$ docker version
+Client: Docker Engine - Community
+ Version:           28.0.4
+ API version:       1.48
+ Go version:        go1.23.7
+ Git commit:        b8034c0
+ Built:             Tue Mar 25 15:07:16 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          28.0.4
+  API version:      1.48 (minimum version 1.24)
+  Go version:       go1.23.7
+  Git commit:       6430e49
+  Built:            Tue Mar 25 15:07:16 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          v2.3.4
+  GitCommit:        db8809540e1a7a9da5d518876894933ff55692ab
+ runc:
+  Version:          1.5.1
+  GitCommit:        v1.5.1-0-g8f2685a4
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+[rc=0]
+
+--- docker info (saida completa)
+$ docker info
+Client: Docker Engine - Community
+ Version:    28.0.4
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+    Version:  v0.37.0
+    Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+  compose: Docker Compose (Docker Inc.)
+    Version:  v2.38.2
+    Path:     /usr/libexec/docker/cli-plugins/docker-compose
+
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0
+ Images: 6
+ Server Version: 28.0.4
+ Storage Driver: overlay2
+  Backing Filesystem: extfs
+  Supports d_type: true
+  Using metacopy: false
+  Native Overlay Diff: false
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: systemd
+ Cgroup Version: 2
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: db8809540e1a7a9da5d518876894933ff55692ab
+ runc version: v1.5.1-0-g8f2685a4
+ init version: de40ad0
+ Security Options:
+  apparmor
+  seccomp
+   Profile: builtin
+  cgroupns
+ Kernel Version: 6.17.0-1022-azure
+ Operating System: Ubuntu 24.04.5 LTS
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 4
+ Total Memory: 15.61GiB
+ Name: runnervmlun5p
+ ID: a4efb8b6-20f9-46f4-b827-91ac0547be3a
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Username: githubactions
+ Experimental: false
+ Insecure Registries:
+  ::1/128
+  127.0.0.0/8
+ Live Restore Enabled: false
+
+[rc=0]
+
+--- docker info: linhas de storage driver e root dir (por grep, sobre a saida acima)
+ Storage Driver: overlay2
+ Docker Root Dir: /var/lib/docker
+[grep rc=0]
+A leitura que DECIDE e a por template, abaixo.
+
+--- docker info por template (leitura estruturada)
+$ docker info --format StorageDriver={{.Driver}} | DockerRootDir={{.DockerRootDir}} | ServerVersion={{.ServerVersion}} | NCPU={{.NCPU}} | MemTotal={{.MemTotal}} | CgroupDriver={{.CgroupDriver}} | CgroupVersion={{.CgroupVersion}}
+StorageDriver=overlay2 | DockerRootDir=/var/lib/docker | ServerVersion=28.0.4 | NCPU=4 | MemTotal=16766414848 | CgroupDriver=systemd | CgroupVersion=2
+[rc=0]
+
+DockerRootDir: /var/lib/docker
+
+--- espaco livre no diretorio de dados do Docker
+$ df -h /var/lib/docker
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   59G   87G  41% /
+[rc=0]
+espaco livre (resumo): 87G
+
+================================================================
+IMAGEM DE SONDA — alpine:3, publica, descartavel
+================================================================
+A tag e flutuante. A regra do projeto de fixar por digest vale para as
+imagens da campanha, que precisam ser reconstruiveis; esta e uma sonda
+descartavel. Em compensacao o digest RESOLVIDO fica registrado abaixo,
+para que se saiba exatamente o que rodou.
+
+--- pull da imagem de sonda
+$ timeout 120 docker pull alpine:3
+3: Pulling from library/alpine
+55afa1ecc21d: Already exists
+Digest: sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+Status: Downloaded newer image for alpine:3
+docker.io/library/alpine:3
+[rc=0]
+
+--- digest resolvido da imagem de sonda
+$ docker image inspect --format {{index .RepoDigests 0}} alpine:3
+alpine@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+[rc=0]
+
+================================================================
+2.4 ISOLAMENTO DE REDE — com caso positivo de controle
+================================================================
+Um wget que falha NAO estabelece isolamento: estabelece que aquele wget
+falhou. DNS indisponivel, binario ausente e URL errada produzem o mesmo
+resultado. Por isso o mesmo comando roda duas vezes, na mesma imagem,
+variando SO a rede, e cada lado tem TRES estados, nao dois: container
+que nao rodou nao e container que nao alcancou a rede.
+
+--- CONTROLE — mesmo container, mesmo comando, COM rede
+$ timeout 120 docker run --rm alpine:3 sh -c ip addr; if wget -T3 -O /dev/null https://example.com; then echo "VEREDITO_REDE=ALCANCAVEL"; else echo "VEREDITO_REDE=INALCANCAVEL rc=$?"; fi
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0@if5: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP 
+    link/ether 56:d5:9b:f7:a7:69 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+Connecting to example.com (172.66.147.243:443)
+saving to '/dev/null'
+null                 100% |********************************|   559  0:00:00 ETA
+'/dev/null' saved
+VEREDITO_REDE=ALCANCAVEL
+[rc=0]
+
+--- SONDA — mesmo container, mesmo comando, com --network=none
+$ timeout 120 docker run --rm --network=none alpine:3 sh -c ip addr; if wget -T3 -O /dev/null https://example.com; then echo "VEREDITO_REDE=ALCANCAVEL"; else echo "VEREDITO_REDE=INALCANCAVEL rc=$?"; fi
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+wget: bad address 'example.com'
+VEREDITO_REDE=INALCANCAVEL rc=1
+[rc=0]
+
+controle (com rede): ALCANCOU
+sonda (--network=none): NAO_ALCANCOU
+VEREDITO: ISOLAMENTO CONFIRMADO — o controle alcancou a rede e a sonda, que RODOU e respondeu, nao alcancou.
+
+================================================================
+2.5 ESCRITA SOB --user — sondada com comando que ESCREVE
+================================================================
+O `--version` e sonda fraca: o Snyk passa nele e falha ao gravar
+configuracao. A sonda abaixo escreve em $HOME e no volume montado, que
+sao os dois lugares onde as ferramentas da campanha efetivamente gravam,
+e os DOIS sao apurados.
+
+ALCANCE, declarado: isto roda em alpine:3, nao nas imagens da campanha.
+A precondicao do defeito do HOME — uid ausente do /etc/passwd — e
+propriedade DE CADA IMAGEM (node:24-bookworm tem um usuario uid 1000; as
+outras duas nao tem nem 1000 nem 1001), e observa-la aqui NAO a
+estabelece para as imagens da campanha. Alem disso a invocacao passa
+-e HOME=/tmp, que e a MITIGACAO: o que se mede e a mitigacao operando e
+a precondicao presente, nunca o defeito se manifestando.
+
+--- container sob --user, escrevendo em HOME e no volume montado
+$ timeout 120 docker run --rm --user 1001:1001 -e HOME=/tmp -e XDG_CACHE_HOME=/tmp -v /home/runner/work/ic-security-project-v2/ic-security-project-v2:/workspace -w /workspace alpine:3 sh -c echo "SONDA_USER_RODOU=1"; echo "container_uid=$(id -u)"; echo "container_gid=$(id -g)"; echo "container_HOME=$HOME"; if whoami; then echo "whoami_rc=0 — o uid ESTA no /etc/passwd da imagem"; else echo "whoami_rc=$? — o uid esta AUSENTE do /etc/passwd da imagem, que e a precondicao do defeito do HOME"; fi; echo sonda > "$HOME/sonda-home.txt"; echo "escrita_em_HOME_rc=$?"; echo sonda > /workspace/sonda-user/sonda-escrita.txt; echo "escrita_no_volume_rc=$?"; ls -ln /workspace/sonda-user/
+SONDA_USER_RODOU=1
+container_uid=1001
+container_gid=1001
+container_HOME=/tmp
+whoami: unknown uid 1001
+whoami_rc=1 — o uid esta AUSENTE do /etc/passwd da imagem, que e a precondicao do defeito do HOME
+escrita_em_HOME_rc=0
+escrita_no_volume_rc=0
+total 4
+-rw-r--r--    1 1001     1001             6 Sep 12 11:05 sonda-escrita.txt
+[rc=0]
+
+escrita em $HOME (=/tmp), rc: 0
+escrita no volume montado, rc: 0
+
+--- uid/gid do arquivo, visto do HOSPEDEIRO
+$ stat -c uid=%u gid=%g dono=%U grupo=%G modo=%a arquivo=%n /home/runner/work/ic-security-project-v2/ic-security-project-v2/sonda-user/sonda-escrita.txt
+uid=1001 gid=1001 dono=runner grupo=runner modo=644 arquivo=/home/runner/work/ic-security-project-v2/ic-security-project-v2/sonda-user/sonda-escrita.txt
+[rc=0]
+
+VEREDITO: escrita em $HOME: OK. Dono do arquivo: uid=1001 gid=1001, iguais aos do runner. Reescrita pelo hospedeiro: OK.
+
+================================================================
+FECHAMENTO
+================================================================
+encerrado_em: 2026-09-12T11:05:40Z
+sondagens_que_nao_responderam: 0
+vereditos_negativos_ou_inconclusivos: 0
+
+O QUE ESTA SONDAGEM NAO MEDE, e continua pendente:
+  - duracao por CVE no runner, e a razao runner/hospedeiro local. So o
+    ensaio de fumaca com o lote de teste responde, e ele e outra fase.
+  - se o produto entre tamanho de lote (30) e limite por invocacao cabe
+    no teto de 6 h do job. Depende da duracao acima.
+  - o extrator de TypeScript ATRAVESSANDO o laco. Os 4 CVEs do lote de
+    teste sao todos JavaScript.
+  - o defeito do HOME NAS IMAGENS DA CAMPANHA. A secao 2.5 roda em
+    alpine:3; a precondicao e propriedade de cada imagem, e as tres da
+    campanha nao foram sondadas aqui.
+  - o defeito dos .qlx sob uid diferente do dono do bundle, se o uid
+    deste runner for 1001: ali ele nao se manifesta, por coincidencia de
+    uid, e so a medicao local (uid 1000) o cobre.
