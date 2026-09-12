@@ -947,6 +947,173 @@ def main():
            "check-log.py continua classificando ERRO_FETCH como status de erro",
            p_obt.stdout[-300:])
 
+    # Estas duas linhas NAO sao escritas a mao: sairam da execucao real do
+    # run_codeql.sh acima. Assertar a (5) sobre elas e o que amarra as
+    # constantes do check-log.py ao texto que o script emite. Fixture escrita
+    # a mao a partir da mesma fonte que as constantes seria tautologia: um
+    # erro de copia estaria nos dois lados e passaria pela suite inteira.
+    checar("fallback de clone completo: 2\n" in p_obt.stdout,
+           "(5) reconhece o fallback em linha PRODUZIDA PELO SCRIPT, nao em "
+           "fixture escrita a mao", p_obt.stdout[-600:])
+    checar("novo 2 | antigo 0  (" in p_obt.stdout,
+           "(5) classifica a linha real do script como vocabulario novo",
+           p_obt.stdout[-600:])
+    checar("causa do fetch:   estouro do limite 1 | outro codigo 1 | "
+           "indeterminada 0\n" in p_obt.stdout,
+           "(5) discrimina a causa nas linhas reais: uma por estouro e uma "
+           "por outro codigo", p_obt.stdout[-600:])
+    checar("causa do clone:   estouro do limite 1 | outro codigo 1 | "
+           "indeterminada 0\n" in p_obt.stdout,
+           "(5) discrimina a causa do clone nas linhas reais",
+           p_obt.stdout[-600:])
+    checar("NAO RECONHECIDO" not in p_obt.stdout,
+           "nenhum segmento das linhas reais do script escapa ao vocabulario "
+           "declarado: e a conferencia de que as constantes nao divergiram",
+           p_obt.stdout[-600:])
+
+    # --------------- (5) do check-log.py: contagem de fallback e de estouro
+    # Metrica de vigilancia que o protocolo exige e que nao existia em
+    # codigo. So e defensavel manter o lote em 30 apoiado no comportamento
+    # medido — fallback raro — se houver quem conte o fallback.
+    print("\n== check-log.py (5): fallback e estouro ==")
+
+    def rodar_check5(nome, linhas_log):
+        alvo = obt / nome
+        alvo.write_text(
+            "cve,repo,commit,status,mensagem,duracao_segundos\n" + linhas_log,
+            encoding="utf-8")
+        return subprocess.run(
+            [sys.executable, str(CHECK_LOG), "--tool", "codeql",
+             "--log", str(alvo), "--raw-dir", str(raw_vazio)],
+            capture_output=True, text=True)
+
+    VERSAO = "codeql 2.25.4; suite qualquer"
+    p5 = rodar_check5("cinco.csv", "".join([
+        # vocabulario novo, estouro do limite de fetch, clone deu certo
+        "CVE-N1,r,c,OK,%s; 3 achados; HEAD conferido; "
+        "fallback de clone completo; fetch raso excedeu 300s,10\n" % VERSAO,
+        # vocabulario novo, outro codigo de retorno no fetch
+        "CVE-N2,r,c,OK,2 achados; HEAD conferido; "
+        "fallback de clone completo; fetch raso saiu com 128,11\n",
+        # vocabulario novo, clone de contingencia TAMBEM estourou. Esta linha
+        # nao repete o segmento "fallback de clone completo" — e o caso que o
+        # classificador perderia se nao inferisse o fallback da causa.
+        "CVE-N3,r,c,ERRO_FETCH,clone completo excedeu 900s; "
+        "fetch raso excedeu 300s,12\n",
+        # vocabulario novo, clone falhou com outro codigo
+        "CVE-N4,r,c,ERRO_FETCH,clone completo saiu com 128; "
+        "fetch raso saiu com 128,13\n",
+        # vocabulario ANTIGO (Fase E): conta no total, causa indeterminada
+        "CVE-A1,r,c,ERRO_FETCH,fetch raso e clone completo falharam,14\n",
+        # mensagem com cara de obtencao que nao casa o vocabulario
+        "CVE-U1,r,c,ERRO_FETCH,fallback de clone incompleto,15\n",
+        # sem fallback algum
+        "CVE-Z1,r,c,ERRO_FETCH,checkout de FETCH_HEAD falhou,16\n",
+    ]))
+    s5 = p5.stdout
+    checar("fallback de clone completo: 5\n" in s5,
+           "(5) conta os CVEs que usaram fallback — inclusive aquele cuja "
+           "linha so traz a causa e nao repete o rotulo; o nao reconhecido "
+           "NAO entra no total, porque nao se sabe que ele e fallback", s5)
+    checar("novo 4 | antigo 1  (" in s5,
+           "(5) separa os dois vocabularios em vez de uniformiza-los: parte do "
+           "corpus NAO discrimina causa e isso tem de ficar visivel", s5)
+    checar("causa do fetch:   estouro do limite 2 | outro codigo 2 | "
+           "indeterminada 1\n" in s5,
+           "(5) discrimina estouro de outro codigo no fetch — junta-los "
+           "desfaria a correcao da G-1b", s5)
+    checar("clone de contingencia tambem falhou: 3\n" in s5,
+           "(5) conta os CVEs em que o clone de contingencia tambem falhou", s5)
+    checar("causa do clone:   estouro do limite 1 | outro codigo 1 | "
+           "indeterminada 1\n" in s5,
+           "(5) discrimina estouro de outro codigo tambem no clone", s5)
+    checar("NAO RECONHECIDO" in s5 and "fallback de clone incompleto" in s5,
+           "(5) reporta o que PARECE obtencao e nao casou: silenciar seria "
+           "dizer zero por nao ter perguntado", s5)
+    def secao5(saida):
+        # Ausencia da secao e RESULTADO — o script nao a produz —, e tem de
+        # sair como falha legivel. `saida.split("(5)")[1]` estouraria com
+        # IndexError e derrubaria a suite, suprimindo as assercoes seguintes.
+        # A (5) e o ULTIMO bloco da saida, depois dos ANOMALO, de modo que
+        # a fatia ate o fim contem so ela. Se a ordem mudar, esta fatia passa
+        # a engolir os blocos seguintes e a assercao adiante falha por motivo
+        # alheio ao que ela nomeia.
+        marca = "(5) obtencao do codigo"
+        return saida.split(marca, 1)[1] if marca in saida else ""
+
+    checar(secao5(s5) and "CVE-Z1" not in secao5(s5),
+           "(5) nao conta como fallback um CVE que nao o usou", s5)
+    # O log acima sai com rc 1 pela conferencia (2) — CVE-N1 e CVE-N2 estao
+    # OK sem raw —, que e anomalia PRE-EXISTENTE e nada tem com a (5). Para
+    # isolar a (5), um log so de ERRO_FETCH: erro sem raw e o caso normal.
+    p5b = rodar_check5("so-fallback.csv", "".join([
+        "CVE-M1,r,c,ERRO_FETCH,clone completo excedeu 900s; "
+        "fetch raso excedeu 300s,1\n",
+        "CVE-M2,r,c,ERRO_FETCH,fetch raso e clone completo falharam,2\n",
+    ]))
+    checar("fallback de clone completo: 2\n" in p5b.stdout
+           and p5b.returncode == 0,
+           "(5) e METRICA: fallback contado NAO entra na conta de problemas e "
+           "nao muda o codigo de saida",
+           "rc=%d %s" % (p5b.returncode, p5b.stdout[-200:]))
+
+    # Contagem zero LEGITIMA: nenhum fallback, nenhum nao reconhecido.
+    p0 = rodar_check5("zero.csv",
+                      "CVE-Q1,r,c,ERRO_FETCH,checkout de FETCH_HEAD falhou,1\n"
+                      "CVE-Q2,r,c,ERRO_ANALISE,semgrep excedeu 1800s,2\n")
+    checar("fallback de clone completo: 0\n" in p0.stdout,
+           "(5) diz ZERO quando nao houve fallback — e um zero que foi "
+           "perguntado, com as demais contagens tambem em zero", p0.stdout)
+    checar("NAO RECONHECIDO" not in p0.stdout,
+           "(5) nao inventa nao-reconhecido: 'semgrep excedeu 1800s' e "
+           "mensagem de ANALISE e nao tem cara de obtencao", p0.stdout)
+    checar("base: 2 CVEs apos deduplicacao" in p0.stdout,
+           "(5) declara que a base e o resultado da deduplicacao, nao o "
+           "arquivo bruto", p0.stdout)
+
+    # D1: a redacao ANTERIOR a G-1b tinha DUAS formas. A forma (A) — clone
+    # deu certo — usa o rotulo SOZINHO, byte-identico ao da redacao nova, e
+    # so se distingue pela ausencia da causa. Sem a inferencia ela sairia
+    # como "novo" (atribuicao por suposicao) e cairia fora dos tres baldes,
+    # fazendo a soma das causas ser menor que o total em silencio.
+    pa = rodar_check5("forma-a.csv", "".join([
+        "CVE-FA,r,c,ERRO_CHECKOUT,3 achados; fallback de clone completo,9\n",
+        "CVE-FB,r,c,ERRO_FETCH,fetch raso e clone completo falharam,1\n",
+    ]))
+    checar("novo 0 | antigo 2  (" in pa.stdout,
+           "(5) reconhece a forma (A) do vocabulario antigo — o rotulo sozinho "
+           "— em vez de atribui-la a 'novo' por suposicao", pa.stdout)
+    checar("causa do fetch:   estouro do limite 0 | outro codigo 0 | "
+           "indeterminada 2\n" in pa.stdout,
+           "(5) poe a forma (A) em causa INDETERMINADA: sem ela o CVE sumiria "
+           "dos tres baldes e as causas somariam menos que o total", pa.stdout)
+    checar("INCOERENTE" not in pa.stdout,
+           "(5) confere a identidade aritmetica e ela fecha: toda causa tem "
+           "balde", pa.stdout)
+
+    # O4: o ramo de nao-reconhecido, isolado das demais conferencias, tambem
+    # nao pode mexer no codigo de saida.
+    pu = rodar_check5("so-nao-reconhecido.csv",
+                      "CVE-U9,r,c,ERRO_FETCH,fallback de clone incompleto,1\n")
+    checar("NAO RECONHECIDO" in pu.stdout and pu.returncode == 0,
+           "(5) reporta o nao reconhecido SEM transformar em problema: "
+           "metrica nao muda codigo de saida",
+           "rc=%d %s" % (pu.returncode, pu.stdout[-200:]))
+
+    # R3: a deduplicacao nao infla a metrica — DEFLACIONA. Para vigilancia a
+    # direcao perigosa e essa, e o total tem de se declarar piso.
+    pd = rodar_check5("dedup.csv",
+                      "CVE-D9,r,c,OK,fallback de clone completo; "
+                      "fetch raso excedeu 300s,1\n"
+                      "CVE-D9,r,c,PULADO,saida bruta ja existe,0\n")
+    checar("fallback de clone completo: 0\n" in pd.stdout,
+           "(5) opera sobre a ULTIMA linha de cada CVE: a reexecucao PULADO "
+           "substitui a linha de fallback, e o fallback que houve passa a "
+           "contar ZERO — deflacao, nao inflacao", pd.stdout)
+    checar("sao PISO" in pd.stdout and "1 CVEs tem PULADO" in pd.stdout,
+           "(5) avisa que a contagem e PISO quando ha PULADO: sem isso a "
+           "metrica de vigilancia cairia a zero sem sinal", pd.stdout)
+
     print("\n%d verificacoes, %d falha(s)" % (verificacoes, len(falhas)))
     for descricao in falhas:
         print("  FALHOU: %s" % descricao)
