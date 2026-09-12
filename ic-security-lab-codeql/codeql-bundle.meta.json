@@ -1,0 +1,14 @@
+{
+  "bundle": "codeql-bundle-v2.25.4",
+  "asset": "codeql-bundle-linux64.tar.gz",
+  "source_url": "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.25.4/codeql-bundle-linux64.tar.gz",
+  "obtained_at": "2026-09-12T16:44:37Z",
+  "sha256": "5a68ac6f65cc4c10e04974ae7bd022fca68128f1eaa4d2c59e4f7d8f5893d881",
+  "bytes": 808019271,
+  "sha256_source": "API de releases do GitHub, campo assets[].digest em /repos/github/codeql-action/releases/tags/codeql-bundle-v2.25.4",
+  "sha256_verification": "Baixado DUAS vezes em 2026-09-12 (114s e 110s, ~7 MB/s). As duas cópias deram sha256 idêntico entre si e idêntico ao digest declarado pela API. Controle do método: acrescentar um byte a uma das cópias mudou o hash, logo a igualdade não é artefato do sha256sum.",
+  "trust_note": "O digest vem da API do GitHub e o asset de release-assets.githubusercontent.com. São serviços distintos, mas o mesmo domínio de confiança: um comprometimento na origem serviria os dois. Esta verificação protege contra corrupção em trânsito e troca acidental de asset, NÃO contra substituição na origem. O que move a confiança do host para o repositório é este arquivo: o valor está vendorizado aqui, versionado, e é contra ele que o build compara.",
+  "asset_immutability_note": "created_at 2026-05-05T10:50:20Z e updated_at 2026-05-05T10:51:24Z — um minuto de diferença, no upload, numa release de maio de 2026. Consistente com asset imutável desde então.",
+  "why_no_second_comparison": "O pack do Semgrep tem DUAS comparações de sha256 porque existe em dois lugares: repositório e imagem. O bundle não: com 808 MB, versioná-lo não é opção, e a assimetria é ESTRUTURAL, não lacuna a preencher. A imagem grava o valor esperado em ENV CODEQL_BUNDLE_SHA256 justamente para tornar a segunda comparação possível em runtime — imagem contra este descritor — sem manter o tarball. ASSIMETRIA DECLARADA: a comparacao (2) do Semgrep termina em BYTES dos dois lados — /default.yaml na imagem contra o YAML montado. A que este ENV permite compara dois VALORES DECLARADOS: o hash assado no build contra o hash deste descritor hoje. Pega deriva do descritor sem rebuild, que e o modo de falha visado, mas NAO estabelece que /opt/codeql ainda corresponde ao hash. Quem chega aqui com a expectativa formada pelo Semgrep tem de ler esta frase. Essa comparação NÃO está implementada: ela viveria no script de análise, cuja alteração está fora do escopo da Fase G-2b.",
+  "build_arg": "CODEQL_BUNDLE_SHA256, sem default. Build sem --build-arg falha."
+}

@@ -23,12 +23,27 @@ tratado é o da versão empregada.
 
 ```bash
 cd ic-security-lab-codeql
-docker build -t ic-security-lab-codeql .
+docker build -t ic-security-lab-codeql \
+    --build-arg CODEQL_BUNDLE_VERSION="$(jq -r '.bundle | sub("^codeql-bundle-";"")' codeql-bundle.meta.json)" \
+    --build-arg CODEQL_BUNDLE_SHA256="$(jq -r .sha256 codeql-bundle.meta.json)" .
 ```
 
-Build context é este diretório, sem `-f`. A versão do bundle é `ARG`
-`CODEQL_BUNDLE_VERSION`, fixada em `v2.25.4`; nunca `latest`, porque o bundle
-carrega as consultas e trocá-lo em silêncio troca o conjunto avaliado.
+Build context é este diretório, sem `-f`.
+
+**Os dois `--build-arg` são obrigatórios.** Desde a Fase G-2b os `ARG` não
+têm default e o build falha sem eles, por desenho: com default, um
+`--build-arg` errado ou esquecido passava em silêncio e a imagem saía com
+conteúdo diferente do que o descritor declara. É a disciplina que o
+`PACK_SHA256` do Semgrep já tinha.
+
+A fonte dos dois valores é `codeql-bundle.meta.json`, versionado. É essa
+leitura que move a confiança do host de origem para o repositório: o build
+compara contra o que está versionado aqui, não contra o que a release
+disser no dia. O `sha256` é conferido **antes** de desempacotar os 808 MB, e
+a comparação é fatal.
+
+Nunca `latest`: o bundle carrega as consultas, e trocá-lo em silêncio troca
+o conjunto avaliado.
 
 ## Execução
 

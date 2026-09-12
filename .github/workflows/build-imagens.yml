@@ -1,0 +1,275 @@
+# build-imagens.yml — constrói as três imagens da campanha UMA vez e as
+# publica no GHCR, registrando o DIGEST de cada uma.
+#
+# É o digest, não a tag, que os jobs de lote vão referenciar: ele é o que
+# garante que os oito lotes rodem sobre os mesmos bytes. As tags que este
+# workflow empurra são conveniência humana, e `campanha` inclusive se move
+# a cada execução — nada depende dela.
+#
+# O QUE ESTE WORKFLOW GARANTE, E O QUE NÃO GARANTE.
+#
+#   Garante: os oito lotes usam bytes idênticos, porque referenciam digest.
+#   Garante: a base de cada imagem é a mesma em qualquer reconstrução NA
+#            MESMA ARQUITETURA, porque está fixada por digest do índice
+#            multi-arquitetura. O digest de índice congela o CONJUNTO de
+#            manifestos; a base efetiva continua sendo função da
+#            arquitetura do runner — que aqui é sempre amd64.
+#   Garante: o bundle do CodeQL, o CLI do Snyk e o pack do Semgrep são os
+#            que os descritores versionados declaram — a comparação de
+#            sha256 é FATAL no build, e o ARG não tem default, de modo que
+#            build sem --build-arg falha em vez de passar em silêncio.
+#
+#   NÃO garante build reproduzível. São 413 .deb no CodeQL, 118 .deb mais
+#   67 pacotes pip no Semgrep (dos quais o `semgrep==1.171.0` pina UM) e
+#   119 .deb no Snyk, todos resolvidos no momento do build. Fixar a base
+#   congela o substrato e deixa 650 .deb mais 66 dependências pip
+#   transitivas — 716 artefatos soltos —, e chamar isso de
+#   "build reproduzível" seria afirmação falsa — meia-garantia que parece
+#   completa é pior que a ausência dela.
+#
+#   O que torna a garantia honesta é REGISTRAR o que flutuou: cada imagem
+#   grava em /inventario o `dpkg-query` e, onde houver, o `pip freeze`
+#   resolvidos, e este workflow os extrai e publica.
+#
+#   NÃO garante reconstrutibilidade futura. Nada aqui PRESERVA os bytes de
+#   que a reconstrução depende: versões de .deb saem do pool do Debian a
+#   cada point release, static.snyk.io pode podar uma versão, o asset da
+#   release do CodeQL pode ser removido. O inventário torna a deriva
+#   LEGÍVEL, não corrigível — e a reconstrução segue dependente de
+#   disponibilidade upstream.
+#
+#   NÃO garante que os lotes usem o digest. Este workflow garante que o
+#   digest é PRODUZIDO e REGISTRADO; que os jobs de lote o referenciem é
+#   propriedade de código que ainda não existe.
+#
+#   A garantia de integridade vale para o caminho DESTE workflow, que lê os
+#   sha256 dos descritores versionados. Num build local os valores são
+#   digitados à mão, e aí a garantia é a do operador.
+#
+# VISIBILIDADE. O pacote no GHCR nasce PRIVADO, mesmo em repositório
+# público — a herança de visibilidade vale para pacotes vinculados, não
+# para o escopo de conta pessoal do GHCR. Torná-lo público é passo MANUAL
+# e IRREVERSÍVEL do operador: página do pacote > Package settings >
+# Danger Zone > Change visibility > Public. Este workflow não o executa.
+#
+# RETENÇÃO. Os artifacts expiram em 90 dias e a monografia dura mais. O
+# inventário publicado aqui é observação datada: para sobreviver ao prazo,
+# tem de ser commitado em datasets/sondagens/, o que é decisão do operador
+# e não escrita deste workflow, que só tem `contents: read`.
+
+name: Build e publicacao das imagens da campanha
+
+# workflow_dispatch APENAS. Sem push, sem schedule, sem pull_request.
+on:
+  workflow_dispatch:
+
+# O mínimo: ler o repositório e escrever pacotes. Nada além.
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+
+    # Dimensionado, não chutado. Medido localmente em 2026-09-12:
+    # build codeql 275s, semgrep 94s, snyk 58s — 7 min somados, já
+    # incluindo os 770 MiB do bundle e os 178 MiB do CLI do Snyk. O push
+    # acrescenta 5,7 GB (codeql 4,25 GB, semgrep 813 MB, snyk 644 MB).
+    # O push não foi medido — depende da banda do runner —, então o teto
+    # não é derivado dos 7 min: é folga deliberada sobre um build de 7 min
+    # mais um push de 5,7 GB de duração desconhecida. Fica muito abaixo do
+    # teto de 6 h do job, que já interrompeu execução deste projeto.
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # O workspace não é montado em container aqui, mas o token no
+          # .git/config não tem por que existir neste job.
+          persist-credentials: false
+
+      - name: Construir, publicar e registrar os digests
+        id: publicar
+        # Fail-fast, ao contrário do workflow de sondagem: ali um comando
+        # que falha é dado, aqui é build quebrado, e build quebrado não
+        # pode seguir para o push.
+        shell: bash --noprofile --norc -euo pipefail {0}
+        env:
+          GHCR_USUARIO: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DONO: ${{ github.repository_owner }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          AGORA="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          DATA="$(date -u '+%Y-%m-%d')"
+          DIR="imagens-$DATA"
+          SAIDA="$GITHUB_WORKSPACE/$DIR"
+          mkdir -p "$SAIDA/inventarios"
+          REL="$SAIDA/digests.txt"
+
+          # O OUTPUT SAI ANTES DE QUALQUER BUILD, e o relatorio nasce aqui.
+          # Sob `-e`, uma falha no terceiro build encerraria o step; se o
+          # output saisse no fim, o `path` do upload cairia no literal de
+          # fallback, o `if-no-files-found: error` acusaria "no files found"
+          # — mensagem alheia a causa — e, o que importa, os digests JA
+          # PUBLICADOS e os inventarios ja extraidos nao subiriam. Imagem no
+          # registro e nenhum registro de qual digest foi publicado e a
+          # mesma perda de julho de 2026, com outra roupa.
+          printf 'saida=%s\n' "$DIR" >> "$GITHUB_OUTPUT"
+
+          # GHCR exige namespace em minúsculas.
+          NS="$(printf '%s' "$DONO" | tr '[:upper:]' '[:lower:]')"
+
+          {
+              printf '# Imagens da campanha SAST — build unico\n'
+              printf '# O DIGEST e o contrato; a tag e conveniencia humana.\n#\n'
+              printf 'construido_em: %s\n' "$AGORA"
+              printf 'workflow_run_id: %s\n' "$RUN_ID"
+              printf 'commit: %s\n' "${GITHUB_SHA:-NAO_DEFINIDO}"
+              printf 'runner_image: %s / %s\n' "${ImageOS:-NAO_DEFINIDO}" "${ImageVersion:-NAO_DEFINIDO}"
+              printf 'uid_gid_do_runner: %s:%s\n\n' "$(id -u)" "$(id -g)"
+          } > "$REL"
+
+          # Login no GHCR com o GITHUB_TOKEN. A senha vem pelo stdin, nunca
+          # como argumento: argumento aparece na lista de processos.
+          # O logout no trap EXIT alcanca tambem o caminho de erro, onde o
+          # `-e` pularia a linha final. Medido: trap EXIT que falha NAO
+          # altera o codigo de saida do script, entao isto nao mascara nada.
+          trap 'docker logout ghcr.io' EXIT
+          printf '%s' "$GHCR_TOKEN" \
+              | docker login ghcr.io --username "$GHCR_USUARIO" --password-stdin
+
+          # sha256 esperados LIDOS DOS DESCRITORES VERSIONADOS. É esta
+          # leitura que move a confianca do host de origem para o
+          # repositorio: o build compara contra o que esta versionado aqui,
+          # nao contra o que o host disser no dia.
+          ler() { python3 -c "import json,sys;print(json.load(open(sys.argv[1]))[sys.argv[2]])" "$1" "$2"; }
+          SHA_BUNDLE="$(ler ic-security-lab-codeql/codeql-bundle.meta.json sha256)"
+          VER_BUNDLE="$(ler ic-security-lab-codeql/codeql-bundle.meta.json bundle)"
+          SHA_PACK="$(ler ic-security-lab-semgrep/rules/semgrep-default.meta.json sha256)"
+          SHA_SNYK="$(ler ic-security-lab-snyk-code/snyk-cli.meta.json sha256)"
+          VER_SNYK="$(ler ic-security-lab-snyk-code/snyk-cli.meta.json version)"
+          # O "codeql-bundle-v2.25.4" do descritor vira o "v2.25.4" do ARG.
+          VER_BUNDLE="${VER_BUNDLE#codeql-bundle-}"
+
+          publicar() {
+              # publicar <diretorio> <nome-da-imagem> [--build-arg ...]
+              local dir="$1" nome="$2"; shift 2
+              local img="ghcr.io/$NS/$nome"
+
+              # Sem --build-arg de sha256 o build FALHA por desenho: o ARG
+              # nao tem default e o `test -n` aborta. Falhar ali e o
+              # comportamento desejado, nao defeito.
+              #
+              # O label vincula o pacote ao repositorio no GHCR. Sem ele o
+              # pacote fica solto do repositorio que o produziu.
+              #
+              # Sem `::group::`: grupo aberto que o erro nao fecha esconde a
+              # razao da falha um clique abaixo, e a regra do projeto e que
+              # ela apareca.
+              docker build \
+                  -t "$img:campanha" -t "$img:$RUN_ID" \
+                  --label "org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+                  --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
+                  "$@" "$dir"
+
+              docker push "$img:campanha"
+
+              # O digest e capturado e REGISTRADO antes do segundo push: a
+              # janela entre publicar a imagem e registrar qual digest saiu
+              # tem de ser a menor possivel. Imagem no registro sem digest
+              # anotado obriga a reexecutar sem saber o que ficou para tras.
+              #
+              # Casa o RepoDigest CONTRA O REPOSITORIO ESPERADO, por `case`
+              # com padrao literal — nao `index .RepoDigests 0`, que pega o
+              # primeiro da lista sem garantir que seja deste repositorio, e
+              # que estoura no template quando a lista vem vazia, antes de a
+              # guarda poder dizer o que houve.
+              local rd="" linha digest
+              while IFS= read -r linha; do
+                  case "$linha" in
+                      "$img"@sha256:*) rd="$linha"; break ;;
+                  esac
+              done < <(docker image inspect \
+                  --format '{{range .RepoDigests}}{{println .}}{{end}}' "$img:campanha")
+              if [ -z "$rd" ]; then
+                  echo "ERRO: nenhum RepoDigest de $img apos o push. Lista recebida:" >&2
+                  docker image inspect --format '{{json .RepoDigests}}' "$img:campanha" >&2
+                  return 1
+              fi
+              digest="${rd##*@}"
+              printf '%s@%s\n' "$img" "$digest" >> "$REL"
+
+              docker push "$img:$RUN_ID"
+
+              # Inventario do que NAO se fixa, extraido da imagem recem
+              # construida.
+              local inv="$SAIDA/inventarios/$nome"
+              mkdir -p "$inv"
+              docker run --rm --entrypoint sh "$img:campanha" \
+                  -c 'cd /inventario && tar cf - .' | tar xf - -C "$inv"
+              echo "  inventario de $nome: $(ls "$inv" | tr '\n' ' ')"
+          }
+
+          publicar ic-security-lab-codeql ic-security-lab-codeql \
+              --build-arg "CODEQL_BUNDLE_VERSION=$VER_BUNDLE" \
+              --build-arg "CODEQL_BUNDLE_SHA256=$SHA_BUNDLE"
+
+          publicar ic-security-lab-semgrep ic-security-lab-semgrep \
+              --build-arg "PACK_SHA256=$SHA_PACK"
+
+          publicar ic-security-lab-snyk-code ic-security-lab-snyk-code \
+              --build-arg "SNYK_CLI_VERSION=$VER_SNYK" \
+              --build-arg "SNYK_CLI_SHA256=$SHA_SNYK"
+
+          # --- resumo legivel ------------------------------------------
+          {
+              printf '## Imagens publicadas — %s\n\n' "$AGORA"
+              printf 'O **digest** e o contrato. A tag `campanha` se move e nada depende dela.\n\n'
+              printf '```\n'
+              grep '@sha256:' "$REL"
+              printf '```\n\n'
+              printf '### Integridade verificada no build (fatal)\n\n'
+              printf '| artefato | sha256 esperado, do descritor versionado |\n|---|---|\n'
+              printf '| bundle CodeQL %s | `%s` |\n' "$VER_BUNDLE" "$SHA_BUNDLE"
+              printf '| pack Semgrep p/default | `%s` |\n' "$SHA_PACK"
+              printf '| CLI Snyk %s | `%s` |\n' "$VER_SNYK" "$SHA_SNYK"
+              printf '\n### O que NAO esta fixado\n\n'
+              printf 'Bases fixadas por digest; 716 pacotes resolvidos no build seguem soltos\n'
+              printf '(650 .deb e 66 dependencias pip transitivas).\n'
+              printf 'Isto NAO e build reproduzivel — e base congelada com inventario registrado:\n\n'
+              printf '| imagem | .deb | pip |\n|---|---:|---:|\n'
+              for n in ic-security-lab-codeql ic-security-lab-semgrep ic-security-lab-snyk-code; do
+                  d="$(wc -l < "$SAIDA/inventarios/$n/deb.txt")"
+                  if [ -f "$SAIDA/inventarios/$n/pip.txt" ]; then
+                      p="$(wc -l < "$SAIDA/inventarios/$n/pip.txt")"
+                  else
+                      p="—"
+                  fi
+                  printf '| %s | %s | %s |\n' "$n" "$d" "$p"
+              done
+              printf '\n### Passo MANUAL do operador\n\n'
+              printf 'Os pacotes nascem **privados**. Para torna-los publicos, em cada um:\n'
+              printf 'Package settings > Danger Zone > Change visibility > Public.\n'
+              printf '**Irreversivel.**\n\n'
+              printf '### Retencao\n\n'
+              printf 'O artifact expira em 90 dias. Para o inventario sobreviver a monografia,\n'
+              printf 'commite `imagens-%s/` em `datasets/sondagens/`.\n' "$DATA"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          cat "$REL"
+
+      - name: Publicar digests e inventarios
+        # if: always() — a perda de julho de 2026 apareceu como AVISO de
+        # caminho nao encontrado no upload, nao como erro. Aqui o upload
+        # roda mesmo com o passo anterior falho, e if-no-files-found:error
+        # transforma o aviso em falha do job.
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: imagens-${{ github.run_id }}
+          path: ${{ steps.publicar.outputs.saida || 'imagens-nao-produzido' }}
+          if-no-files-found: error
+          retention-days: 90

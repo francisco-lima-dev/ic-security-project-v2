@@ -13,12 +13,25 @@ byte-idêntico ao SARIF; passar os dois duplica dados sem ganho.
 
 ```bash
 cd ic-security-lab-snyk-code
-docker build -t ic-security-lab-snyk-code .
+docker build -t ic-security-lab-snyk-code \
+    --build-arg SNYK_CLI_VERSION="$(jq -r .version snyk-cli.meta.json)" \
+    --build-arg SNYK_CLI_SHA256="$(jq -r .sha256 snyk-cli.meta.json)" .
 ```
+
+**Os dois `--build-arg` são obrigatórios.** Desde a Fase G-2b os `ARG` não
+têm default e o build falha sem eles, por desenho: com default, um
+`--build-arg` errado ou esquecido passava em silêncio.
 
 CLI baixado de URL versionada (`https://static.snyk.io/cli/v<versão>/snyk-linux`),
 fixada em `v1.1306.1`. Nunca `latest` nem `stable`: ambos já se moveram desde
 a campanha anterior.
+
+O `sha256` vem de `snyk-cli.meta.json`, versionado, e é conferido **antes**
+de o binário virar executável; a comparação é fatal. O descritor declara a
+limitação: o checksum publicado pela Snyk vem do **mesmo host** que serve o
+binário, então a conferência protege contra corrupção em trânsito e troca
+acidental de versão, não contra substituição na origem. É o valor
+vendorizado no repositório que move a confiança do host para cá.
 
 `jq` não é conveniência, é dependência de validação. Sem ele o Snyk seria a
 única das três cujo raw não é conferido, e SARIF malformado ou vazio viraria
