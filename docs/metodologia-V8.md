@@ -1,4 +1,4 @@
-# Metodologia — V7
+# Metodologia — V8
 
 **Comparação de abordagens SAST e DAST na detecção de vulnerabilidades em aplicações JavaScript/TypeScript**
 
@@ -23,11 +23,29 @@ O ensaio local não produz dado de detecção aproveitável: seu propósito é v
 
 Os relatórios da campanha DAST integram o repositório do estudo, o que torna as contagens da Seção 6.1 verificáveis a partir dos próprios arquivos.
 
+O repositório do estudo foi publicado em acesso público em setembro de 2026, conforme a Seção 5.5, o que satisfaz o pré-requisito operacional da infraestrutura descrita na Seção 3.1. Este documento integra o repositório.
+
 Nenhum resultado de detecção é apresentado aqui. Este é um documento de método. Constituem exceção os números da caracterização do ground truth (Seção 2.2), que descrevem o instrumento de medida e não o desempenho das ferramentas.
 
 ---
 
 ## Registro de alterações
+
+### Versão 8
+
+Esta versão incorpora o exame de execuções anteriores no serviço de integração contínua, realizadas em julho de 2026 em série exploratória anterior à reconstrução do pipeline, e registra três decisões tomadas com o orientador. O teto de tempo por job, até aqui tratado como restrição prospectiva, passa a constar como restrição já observada, com o modo de falha que a produziu identificado. A correspondência entre séries pendente na versão anterior é computada a partir das fontes versionadas.
+
+| Seção | Tipo | Alteração |
+|---|---|---|
+| Nota, 5.5, 11 | Correção | O repositório do estudo foi publicado em acesso público; a limitação de cópia local única deixa de subsistir. |
+| 4.4 | Acréscimo | O teto agregado do job já interrompeu execuções deste estudo; modo de falha identificado como item individual que não termina, e fronteira do que a observação estabelece. |
+| 5.5 | Precisão | Retenção dos artefatos temporários do serviço de integração contínua. |
+| 6.1, 9.3 | Correção | A correspondência entre relatório e modo da campanha DAST passa a constar de documento próprio, estabelecida em duas unidades de contagem e confirmada por evidência independente da contagem. |
+| 8.6 | Correção | A correspondência entre as duas séries do ensaio local é computada a partir das fontes versionadas; os quatro pares ficam determinados. |
+| 9.4 | Correção | A mitigação por alvo comum é descartada por ausência de gabarito nas aplicações da campanha DAST; a limitação permanece declarada e não mitigada. |
+| 9.5 | Acréscimo | Registro de nova reincidência do padrão entre documentos, e generalização: resultado vazio exige distinguir ausência de pergunta mal formulada. |
+| 10 | Acréscimo | Decisões 65 a 68. |
+| 11 | Correção | Três pendências resolvidas e retiradas: manutenção do NodeGoat, execução de SAST sobre as aplicações DAST e espelhamento do repositório. Acrescida a verificação do alcance do limite de tempo sobre a obtenção do código. |
 
 ### Versão 7
 
@@ -392,6 +410,18 @@ Adotou-se o tamanho de 30 CVEs por lote. O ensaio local (Seção 8.6) mediu dura
 A concordância com a duração da campanha preliminar não é tomada como corroboração: aquela campanha analisou outros commits sob suíte mais ampla, e a coincidência de ordem de grandeza não decorre de propriedade comum às duas.
 
 **Limite por invocação e teto do job não são comensuráveis.** O limite de tempo é por invocação; o teto de seis horas é por job. A folga de um não implica a do outro: um pequeno número de CVEs que atinjam o limite consome, somado, parcela substancial do teto antes de qualquer trabalho regular do lote. O job encerrado pelo teto é interrompido **sem executar a etapa de preservação de resultados**, de modo que se perdem o registro de execução e as saídas brutas já promovidas — precisamente a evidência de que o ocorrido foi esgotamento de tempo, e não falha das ferramentas.
+
+**O teto não é restrição prospectiva: já interrompeu execuções deste estudo.** Em julho de 2026, em série exploratória anterior à reconstrução do pipeline, a análise pelo CodeQL atingiu o teto primeiro sobre o conjunto inteiro e, depois, **ainda em regime de lotes**, em dois lotes de uma mesma partição de cinco — enquanto os três restantes concluíram entre 52 minutos e 1 hora e 9 minutos.
+
+**O degrau é o dado.** Três lotes da mesma partição concluindo com mais de quatro horas de folga, e dois consumindo o teto integral, não constitui perfil de custo agregado excessivo: constitui perfil de **item individual que não termina**. Reduzir o lote à metade apenas dividiria o mesmo travamento entre dois jobs; o que intercepta esse modo de falha é o limite de tempo por invocação.
+
+Em um dos dois lotes o travamento está identificado: a execução não ultrapassou a obtenção do código-fonte do primeiro repositório, feita por clone completo, sem profundidade e sem limite de tempo, sobre repositório de histórico extenso. No outro a causa **não foi determinada** — o primeiro repositório era de pequeno porte, e não se apurou em que ponto a execução deixou de progredir.
+
+Uma dessas execuções transcorreu seis horas e **não produziu arquivo algum**. O script já promovia a saída por item diretamente ao diretório definitivo, de modo que a ausência de resultado não decorre de promoção tardia. A perda apresentou-se, na etapa de preservação de resultados, como aviso de caminho inexistente, entre avisos de dependência obsoleta — e não como erro.
+
+Daí três exigências do protocolo atual, ausentes daquela série: obtenção do código por fetch raso (Seção 4.3), limite de tempo por invocação, e registro estruturado por item (Seção 4.6), que tornaria o travamento visível em minutos em lugar de seis horas.
+
+**Fronteira do que essa observação estabelece.** A série de julho era exploratória, tinha o repositório por unidade de iteração, empregava suíte mais ampla e analisava o HEAD. Estabelece que o teto interrompe, e que a perda pode apresentar-se como aviso. **Não** estabelece duração por CVE, tamanho de lote seguro, nem a razão entre as durações dos dois ambientes.
 
 A condição que torna a garantia aritmética, e não dependente de comportamento, é que o produto entre o tamanho do lote e o limite por invocação caiba no teto do job. O valor corrente do limite não satisfaz essa condição: foi fixado contra os máximos observados no ensaio local, que é critério distinto e mais frouxo. É, portanto, provisório, e sua revisão depende de duas grandezas ainda não medidas — a razão entre as durações do ambiente da campanha e as do hospedeiro local, e a manutenção do tamanho de lote corrente. Não havendo valor confortável, o parâmetro a revisar é o tamanho do lote, e não o limite.
 
@@ -809,7 +839,7 @@ O repositório do estudo adota a seguinte política, de modo que a verificação
 | Saídas brutas das ferramentas | Não versionadas |
 | Clones temporários e bancos de dados do CodeQL | Não versionados |
 
-A decisão de versionar os resultados normalizados e os registros de execução responde a uma limitação da campanha preliminar, na qual todos os resultados residiam exclusivamente em artefatos do GitHub Actions, sujeitos a expiração — o que impedia a verificação posterior dos números apresentados.
+A decisão de versionar os resultados normalizados e os registros de execução responde a uma limitação da campanha preliminar, na qual todos os resultados residiam exclusivamente em artefatos do GitHub Actions, sujeitos a expiração — cuja retenção padrão é de noventa dias, configurável entre um e noventa em repositório público —, o que impedia a verificação posterior dos números apresentados.
 
 As saídas brutas permanecem fora do controle de versão por serem volumosas e integralmente deriváveis: os resultados normalizados são gerados a partir delas, e a reexecução as reproduz. Essa decisão é o que confere caráter terminativo à normalização, conforme a Seção 5.1.
 
@@ -817,7 +847,7 @@ Os scripts de caracterização do ground truth referidos nas Seções 2.2.1 e 2.
 
 Documenta-se ainda, em arquivo próprio na raiz do repositório, o conjunto de regras e convenções do projeto — unidade de análise, formato das listas, obrigatoriedade do checkout do commit vulnerável, política de versionamento e defeitos conhecidos do conjunto de dados.
 
-Registra-se, como limitação operacional a resolver antes da campanha, que o repositório mantém-se até o momento em cópia local única, sem espelhamento remoto. A situação é a mesma que a versionamento dos relatórios da campanha DAST veio corrigir (Seção 6.1), e a política acima só cumpre seu propósito quando o repositório é acessível a terceiros.
+O repositório do estudo foi publicado em acesso público em setembro de 2026, resolvendo a limitação operacional registrada nas versões anteriores deste documento — até então mantinha-se em cópia local única, sem espelhamento remoto, condição que a política acima não podia cumprir, pela mesma razão que o versionamento dos relatórios da campanha DAST veio corrigir (Seção 6.1). A publicação é decisão metodológica antes de operacional: o protocolo descrito aqui existe para ser reexecutado por terceiro, e o repositório integra o resultado tanto quanto os números que ele sustenta.
 
 ### 5.6 Verificação da normalização
 
@@ -865,7 +895,12 @@ Registra-se que documentação preliminar do projeto apresentava contagens infer
 
 **Versionamento dos relatórios.** Os oito relatórios — JSON e HTML por aplicação e modo — e o plano de automação empregado integram o repositório do estudo. A campanha DAST produziu os únicos dados de detecção válidos até o momento, e existiam em cópia única fora de controle de versão. As quatro contagens da tabela acima são, em consequência, reproduzíveis a partir dos arquivos versionados, e não apenas afirmadas.
 
-**Correspondência entre arquivo e modo.** Conforme a Seção 9.3, os relatórios em JSON não registram o modo de execução, e a associação apoiava-se na nomenclatura dos arquivos — insuficiente em um dos quatro casos, cujo nome não distingue o modo. A associação foi estabelecida por contagem: o arquivo em questão apresenta dez alertas, correspondentes ao modo baseline do Juice Shop, e os demais reproduzem exatamente os valores da tabela. Os nomes originais foram preservados, por serem o artefato efetivamente produzido pela execução; a correspondência é registrada em documento próprio junto aos relatórios.
+**Correspondência entre arquivo e modo.** Os relatórios em JSON não registram o modo de execução, e a associação apoiava-se na nomenclatura dos arquivos — insuficiente em um dos quatro casos, cujo nome não distingue o modo. A associação foi estabelecida por contagem: o arquivo em questão apresenta dez alertas, correspondentes ao modo baseline do Juice Shop, e os demais reproduzem exatamente os valores da tabela. Os nomes originais foram preservados, por serem o artefato efetivamente produzido pela execução.
+
+A correspondência é registrada em documento próprio junto aos relatórios, criado em setembro de 2026. Até então as versões anteriores deste documento afirmavam que ela ali constava, e o documento não existia — ocorrência registrada na Seção 9.5. A associação foi, na ocasião, reestabelecida e ampliada:
+
+- **Em duas unidades de contagem.** Além dos tipos de alerta, que produzem os valores da tabela acima, contou-se a soma de instâncias por alerta. As duas séries discriminam igualmente os quatro arquivos, de modo que a atribuição não depende da unidade escolhida; declara-se qual delas corresponde aos números aqui apresentados.
+- **Por evidência independente da contagem.** Os dois relatórios de full scan registram alertas oriundos de regras de varredura ativa, e os dois de baseline não registram nenhum — critério que decide o modo sem recurso a contagem de totais. A aplicação-alvo é obtida do próprio relatório, e cada relatório em HTML é pareado ao seu JSON pelo conjunto de nomes de alerta, e não por semelhança de nome de arquivo.
 
 Observa-se que os únicos alertas de risco alto do estudo provêm do full scan do NodeGoat — Cross Site Scripting refletido e baseado em DOM (CWE-079) e SQL Injection (CWE-089) —, circunstância coerente com a exclusão documentada na Seção 6.2, que afeta o Juice Shop.
 
@@ -1155,7 +1190,20 @@ Uma divergência não prevista pela descrição emergiu do exame: o campo de err
 
 A medição do CodeQL foi refeita sobre a imagem corrigida conforme a Seção 4.5, de modo que não depende de imagem de diagnóstico. Permanece, contudo, a limitação de ambiente declarada na Seção 9.1.
 
-**Correspondência entre séries.** O relatório do ensaio apresenta, em tabelas distintas, a duração por CVE e o número de arquivos extraídos por CVE, sem que a correspondência entre elas esteja declarada — apenas dois dos quatro pares são determináveis por cruzamento com outras fontes. Qualquer análise de relação entre as duas grandezas exige que essa correspondência seja explicitada na origem (Seção 9.5).
+**Correspondência entre séries.** O relatório do ensaio apresentava, em tabelas distintas, a duração por CVE e o número de arquivos extraídos por CVE, sem que a correspondência entre elas estivesse declarada — omissão que produziu o erro registrado na Seção 9.5.
+
+A correspondência foi posteriormente computada, não do relatório e sim das fontes versionadas, ambas chaveadas pelo identificador do CVE: o registro de execução do CodeQL, que traz a duração por CVE, e o relatório de normalização da mesma ferramenta, cujo inventário associa a cada CVE a contagem de arquivos extraídos. Os quatro pares ficam determinados:
+
+| CVE | Duração | Arquivos extraídos |
+|---|---:|---:|
+| `CVE-2017-16042` | 63 s | 3 |
+| `CVE-2018-14041` | 78 s | 126 |
+| `CVE-2018-14040` | 127 s | 174 |
+| `CVE-2019-10744` | 146 s | 58 |
+
+A ordem das duas séries difere porque o registro de execução inclui também o CVE cujo repositório não está disponível, que produziu falha de obtenção com duração nula e não gera inventário. O cotejo por posição desloca os pares a partir dali e troca entre si os dois CVEs que compartilham repositório — que foi exatamente o erro cometido.
+
+**Nenhum coeficiente de correlação é computado sobre esses quatro pontos.** Quatro observações não permitem prever; o registro existe para tornar a correspondência explícita, não para relacionar as grandezas. A questão de que aquele exame partia permanece em aberto, conforme a Seção 9.5.
 
 **Cobertura do ensaio.** Quatro CVEs efetivamente analisados, em quatro repositórios, todos de JavaScript. O lote não contém arquivo TypeScript, monorepo, nem caso de ausência de material analisável. O extrator de TypeScript foi verificado por sondagem dedicada, o que estabelece que ele opera sobre o runtime da imagem, não que o laço o atravesse.
 
@@ -1217,13 +1265,15 @@ Acresce uma observação que a proveniência do ground truth impõe. A evidênci
 
 **Duração das varreduras.** Os registros de tempo dos relatórios indicam que a campanha dinâmica completa transcorreu em aproximadamente vinte minutos, com intervalo inferior a cinco minutos entre os dois full scans. Documentação preliminar do projeto indicava duração substancialmente superior por aplicação. A divergência sugere que a varredura ativa pode não ter percorrido integralmente as aplicações — circunstância agravada, no caso do Juice Shop, por tratar-se de aplicação de página única, cuja superfície é de difícil descoberta por rastreadores convencionais.
 
-**Registro do modo de varredura.** Os relatórios em JSON não contêm campo que identifique o modo de execução. A associação entre relatório e modo apoia-se na nomenclatura dos arquivos e foi estabelecida por contagem (Seção 6.1).
+**Registro do modo de varredura.** Os relatórios em JSON não contêm campo que identifique o modo de execução. A associação entre relatório e modo foi estabelecida por contagem e, posteriormente, confirmada por evidência independente da contagem — a presença de alertas de regra de varredura ativa apenas nos relatórios de full scan (Seção 6.1). A limitação residual é que nenhuma das duas evidências provém do próprio campo que a ferramenta deixou de emitir.
 
 ### 9.4 Alvos disjuntos entre abordagens
 
 As campanhas SAST e DAST incidem sobre conjuntos distintos de aplicações. Em consequência, a análise de sobreposição entre abordagens não pode ser estabelecida por medição direta sobre um alvo comum, restringindo-se à comparação de cobertura de categorias em agregado.
 
-A mitigação consiste em executar também as ferramentas SAST sobre o código-fonte das aplicações empregadas na campanha DAST, obtendo-se ao menos um alvo submetido a ambas as abordagens.
+**A mitigação por alvo comum foi examinada e descartada.** Considerou-se executar também as ferramentas SAST sobre o código-fonte das aplicações empregadas na campanha DAST, obtendo-se ao menos um alvo submetido a ambas as abordagens. Decidiu-se não executá-las, e a razão não é de escopo e sim de ausência de gabarito: o Juice Shop e o NodeGoat não declaram, por vulnerabilidade, arquivo, linha, identificador de CWE e commit anterior à correção — os quatro elementos de que a apuração das Seções 7.3 e 7.4 depende. Achados produzidos ali não seriam classificáveis em verdadeiro e falso positivo, e a contagem resultante mediria volume de alerta, não detecção.
+
+A limitação permanece, em consequência, **declarada e não mitigada**: as duas famílias não compartilham alvo algum, e a comparação entre elas se dá entre o que cada uma alcança em seus próprios termos, e não entre detecções sobre a mesma aplicação. Decidiu-se igualmente manter o OWASP NodeGoat no estudo, de modo que os quatro relatórios da Seção 6.1 constituem o conjunto DAST definitivo.
 
 ### 9.5 Confiabilidade dos métodos de medição empregados
 
@@ -1239,9 +1289,15 @@ Três ocorrências registradas ao longo da construção do pipeline compartilham
 
 Nos dois primeiros casos, o método correto é o processamento por analisador da linguagem em que o arquivo está escrito; no terceiro, o comando que efetivamente realiza a operação em modo simulado; no quarto, a corroboração por evidência independente antes da atribuição; no quinto, a exigência de que a correspondência entre séries esteja declarada na fonte, e não reconstituída pela ordem de transcrição.
 
-O quinto caso merece registro adicional por sua consequência. Examinava-se a relação entre o número de arquivos extraídos por CVE e a duração da análise, com vista a estimar o custo da campanha a partir de atributo barato do conjunto. O cotejo apoiou-se na ordem em que as duas séries figuravam no relatório do ensaio local, que não é a mesma; o coeficiente daí resultante não descreve relação alguma. Uma vez identificado o erro, apenas dois dos quatro pares permanecem determinados, e a questão — se o porte do repositório prediz a duração — fica **em aberto**, não respondida negativamente como se chegou a supor.
+O quinto caso merece registro adicional por sua consequência. Examinava-se a relação entre o número de arquivos extraídos por CVE e a duração da análise, com vista a estimar o custo da campanha a partir de atributo barato do conjunto. O cotejo apoiou-se na ordem em que as duas séries figuravam no relatório do ensaio local, que não é a mesma; o coeficiente daí resultante não descreve relação alguma. Uma vez identificado o erro, a correspondência foi computada a partir das fontes versionadas, e os quatro pares ficam determinados (Seção 8.6). A questão de que o exame partia — se o porte do repositório prediz a duração — permanece **em aberto**, não respondida negativamente como se chegou a supor: quatro observações não permitem prever, e nenhum coeficiente é computado sobre elas.
 
-Registra-se que o padrão reincidiu na própria revisão que o identificou, sob outra forma: presumiu-se que determinada passagem constasse dos três documentos do projeto por figurar em dois deles, sem que a terceira ocorrência fosse conferida — presunção que se mostrou falsa em um caso e verdadeira em outro. A correspondência inferida não era, ali, entre séries de medidas, e sim entre documentos; o método falho é o mesmo. A regra que daí se extrai é geral e simétrica: **correspondência não declarada é conferida antes de ser usada**, trate-se de séries, de listas ou de documentos.
+Registra-se que o padrão reincidiu na própria revisão que o identificou, sob outra forma: presumiu-se que determinada passagem constasse dos três documentos do projeto por figurar em dois deles, sem que a terceira ocorrência fosse conferida — presunção que se mostrou falsa em um caso e verdadeira em outro. A correspondência inferida não era, ali, entre séries de medidas, e sim entre documentos; o método falho é o mesmo. O padrão reincidiu ainda duas vezes, e as duas merecem registro por incidirem sobre o próprio material do estudo. A presunção acima veio a mostrar-se falsa também no terceiro documento: a passagem existia apenas no relatório do ensaio local, que não integra o repositório, e não em nenhum dos dois documentos versionados. E, sobre a campanha DAST, o conjunto de regras do projeto remetia a correspondência entre relatório e modo de varredura a documento que **não existia em versão alguma do repositório** — lacuna fechada em setembro de 2026 e registrada na Seção 6.1.
+
+A regra que daí se extrai é geral e simétrica: **correspondência não declarada é conferida antes de ser usada**, trate-se de séries, de listas ou de documentos. Não estando declarada, o primeiro passo é torná-la explícita na fonte, nunca estimá-la pela ordem; e remissão a documento é conferida quanto à existência do documento.
+
+**Generalização, e não um episódio adicional.** As ocorrências acima têm em comum que o resultado obtido era plausível. Decorre delas uma exigência sobre resultados vazios: **resultado nulo exige distinguir a ausência do objeto da formulação inadequada da pergunta.** Verificação que retorna zero só é aceita quando o método foi exercido contra caso reconhecidamente positivo, ou quando a saída de erro foi lida. Padrão que não corresponde, especificação de caminho inválida e argumento interpretado como opção produzem zero indistinguível de ausência — e assim ocorreu, no curso desta revisão, com uma consulta ao controle de versão cuja especificação de caminho não correspondia a arquivo algum, sugerindo ausência de arquivos existentes, e com uma busca por padrão cujo argumento foi interpretado como opção, com a saída de erro suprimida.
+
+A exigência tem alcance que excede a verificação de método. A varredura de segredos do histórico do repositório, conduzida antes da publicação, não localizou ocorrência alguma — mas cobria um repertório de formas, e o mecanismo de proteção do serviço de hospedagem, com repertório diverso, detectou forma que ela não procurava, posteriormente confirmada como valor de exemplo de documentação e não credencial. A conclusão que a varredura autoriza é, por isso, a de que não há ocorrência **nas formas procuradas**, e não a de que não há segredo no histórico.
 
 O quarto caso ocorreu no ensaio local e teria produzido registro incorreto se aceito: a interrupção deliberada de uma execução prolongada produziu o mesmo código que o esgotamento de memória produziria, em circunstância na qual o esgotamento era plausível pelas características do hospedeiro. A distinção decorreu do exame do mecanismo — o tratamento de sinal do script não interrompe ferramenta em primeiro plano —, e não da assinatura.
 
@@ -1317,6 +1373,10 @@ A observação tem alcance além deste estudo, e por isso é declarada em lugar 
 | 62 | Motivo do estado de varredura declarado nos três estados | 5.2 |
 | 63 | Eliminação do indicador heurístico de menção ao arquivo do ground truth | 5.2 |
 | 64 | Consultas precompiladas do bundle tornadas legíveis na construção da imagem | 4.5, 4.7 |
+| 65 | Não executar as ferramentas SAST sobre as aplicações da campanha DAST, por ausência de gabarito | 9.4 |
+| 66 | Manutenção do OWASP NodeGoat no estudo | 2.4, 9.4 |
+| 67 | Publicação do repositório do estudo em acesso público | 5.5 |
+| 68 | Correspondência entre relatório e modo da campanha DAST registrada em documento próprio, em duas unidades de contagem e por evidência independente | 6.1 |
 
 ---
 
@@ -1326,10 +1386,6 @@ Registram-se as questões ainda em aberto no momento desta redação.
 
 ### Decisões
 
-**Manutenção do OWASP NodeGoat no estudo.** O NodeGoat é a única fonte com mapeamento nativo para o OWASP Top 10, embora em formato não estruturado e em edição anterior à de 2021. Sua exclusão simplificaria o protocolo, ao custo de reduzir a campanha DAST a uma única aplicação e de descartar o alvo que produziu maior volume de alertas.
-
-**Execução de SAST sobre as aplicações DAST.** Conforme a Seção 9.4, a medição direta de sobreposição entre abordagens depende de ao menos um alvo comum. Caso o NodeGoat seja excluído, essa execução deixa de ser recomendável e torna-se necessária.
-
 **Universo de referência do verdadeiro negativo.** A Seção 7.3 define o verdadeiro negativo como o par (CWE, arquivo) que nem o ground truth nem a ferramenta assinalam. Resta delimitar o conjunto de pares que compõe esse universo, do que depende diretamente a interpretação da acurácia.
 
 **CWE primário do conjunto CWE-250 + CWE-400.** Único conjunto da tabela da Seção 7.4 ainda sem definição. A descrição registrada não corresponde a nenhum dos dois identificadores declarados, o que exige exame do diff de correção. Afeta um CVE. A normalização registra valor nulo e contabiliza a ocorrência, de modo que a pendência não bloqueia a campanha.
@@ -1338,7 +1394,9 @@ Registram-se as questões ainda em aberto no momento desta redação.
 
 **Verificação de dois avisos de execução.** Dois avisos previstos no programa de normalização não dispõem de fixture que os dispare, de modo que o acesso aos campos correspondentes é exercitado mas o texto das mensagens nunca é executado (Seção 5.6). Igualmente, o campo que declara a origem da data de análise admite valor que a versão fixada do CodeQL não produz, conforme a Seção 8.6 — o tratamento permanece como salvaguarda e descreve forma não observada.
 
-**Espelhamento do repositório.** Conforme a Seção 5.5, o repositório do estudo mantém-se em cópia local única. A condição deixa de ser apenas limitação da política de versionamento e passa a pré-requisito operacional: a infraestrutura de execução descrita na Seção 3.1 exige o repositório acessível ao serviço de integração contínua.
+**Alcance do limite de tempo sobre a obtenção do código.** Conforme a Seção 4.4, o travamento observado em julho de 2026 ocorreu na obtenção do código-fonte, etapa anterior à análise, onde o limite de tempo por invocação da análise não alcança. Resta conferir se o protocolo atual aplica limite também ao fetch raso e ao clone de contingência descritos na Seção 4.3. A verificação é de inspeção dos scripts, não de execução, e precede o ensaio de fumaça.
+
+**Nota sobre pendências resolvidas.** Três questões registradas nesta seção nas versões anteriores foram decididas e retiradas: a manutenção do OWASP NodeGoat no estudo e a execução de SAST sobre as aplicações da campanha DAST, ambas na Seção 9.4, e o espelhamento do repositório, resolvido pela publicação registrada na Seção 5.5.
 
 ### Verificações do ensaio de fumaça
 
