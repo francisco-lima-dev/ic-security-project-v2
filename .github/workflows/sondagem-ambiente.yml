@@ -1,0 +1,563 @@
+# sondagem-ambiente.yml — mede o ambiente de execução da campanha ANTES de
+# gastar tempo de build ou de análise.
+#
+# ESCOPO ESTRITO. Observa e registra. NÃO constrói imagem, NÃO publica
+# imagem, NÃO roda lote algum, NÃO toca em Dockerfile nem em script de
+# análise. A única imagem que este workflow executa é a `alpine:3` pública,
+# usada como sonda descartável.
+#
+# Sondagem é observação; workflow é procedimento. Este arquivo é versionado;
+# o arquivo datado que ele grava em datasets/sondagens/ é a observação, e
+# entra no repositório por commit do operador, não por escrita do workflow
+# (daí `permissions: contents: read`).
+#
+# O que só este ambiente responde, e por que cada item está aqui:
+#
+#   uid e gid do runner — o CLAUDE.md registra a premissa "o uid do runner é
+#   1001" como NÃO MEDIDA, vinda de documentação e de relato público. Dela
+#   dependem os dois defeitos de permissão já documentados, com sinais
+#   opostos: sob uid ausente do /etc/passwd da imagem o HOME vira `/` e
+#   Semgrep e Snyk quebram; sob uid diferente de 1001 os 3.151 .qlx do bundle
+#   do CodeQL ficam ilegíveis e as consultas são recompiladas. Nada no
+#   pipeline pode supor uid == gid, então os dois saem em campos separados.
+#
+#   isolamento de rede — `--network=none` é verificação pendente do ensaio de
+#   fumaça. Aqui ela é feita COM CASO POSITIVO DE CONTROLE, e com três
+#   estados por lado, não dois: um wget que falha não estabelece isolamento,
+#   e um container que NÃO RODOU não estabelece coisa alguma. Ver
+#   `ler_veredito_rede`.
+#
+#   escrita sob --user — sondada com comando que ESCREVE, nunca com
+#   `--version`: o Snyk passa no `--version` e falha ao gravar configuração.
+#   Os DOIS destinos de escrita são apurados, $HOME e o volume montado.
+#
+# Convenções observadas, todas do CLAUDE.md:
+#   - nenhum `|| true`: comando que pode falhar tem o código de saída
+#     CAPTURADO E REGISTRADO, que é o oposto de mascarado;
+#   - nenhum `set -x`: o script ecoa o comando que vai rodar, sem expor
+#     ambiente;
+#   - stderr nunca é descartado: vai para o relatório junto do stdout. É por
+#     isso que o `wget` da sonda de rede roda SEM `-q` — o `-q` descartaria
+#     a razão da falha, que é o que dá poder discriminante ao controle;
+#   - limite de tempo por invocação em tudo que toca a rede, e não só o teto
+#     do job: o travamento de julho de 2026 foi numa operação de rede sem
+#     limite próprio;
+#   - o shell é declarado SEM `-e` (o padrão do GitHub é `bash -e {0}`),
+#     porque sondagem cujo comando falha é dado, não acidente — o mesmo
+#     motivo pelo qual os scripts de análise não usam `set -e`.
+
+name: Sondagem do ambiente de execucao
+
+# workflow_dispatch APENAS. Sem push, sem schedule, sem pull_request: quem
+# dispara é o operador.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sondar:
+    # ubuntu-latest de propósito: o que interessa medir é o ambiente que a
+    # campanha vai encontrar. O relatório grava ImageOS e ImageVersion, de
+    # modo que a observação fica ancorada em uma imagem concreta. Se os jobs
+    # de lote da G-2 usarem outro label, ESTA MEDIÇÃO NÃO TRANSFERE.
+    runs-on: ubuntu-latest
+
+    # Teto baixo e explícito. A sondagem inteira é de segundos; 5 minutos é
+    # folga, não expectativa. O teto de 6 h do job já interrompeu execução
+    # deste projeto, e `timeout-minutes` explícito é a guarda contra isso.
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # A sondagem monta o workspace dentro de um container, e é assim
+          # que a campanha roda. Sem isto o token do Actions ficaria gravado
+          # em .git/config e seria montado junto.
+          persist-credentials: false
+
+      - name: Sondar o ambiente
+        id: sondagem
+        # Shell explícito, sem `-e`. Ver o cabeçalho.
+        shell: bash --noprofile --norc -uo pipefail {0}
+        # Menor que o teto do job, de propósito: assim o passo falha por si e
+        # o passo de upload roda com certeza. Cancelamento de JOB por
+        # timeout-minutes e falha de STEP não têm a mesma semântica, e o
+        # `if: always()` do upload só é garantido no segundo caso.
+        timeout-minutes: 4
+        run: |
+          DATA="$(date -u '+%Y-%m-%d')"
+          AGORA="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          SAIDA="datasets/sondagens/sondagem-ambiente-runner-$DATA.txt"
+
+          # Dois contadores, com sentidos distintos e deliberadamente NÃO
+          # somados num só: "a sondagem não respondeu" e "a sondagem
+          # respondeu e o veredito é negativo" são coisas diferentes.
+          # Colapsá-las faria o número da manchete significar duas coisas.
+          FALHAS=0      # sondagem que não respondeu
+          VEREDITOS=0   # adjudicação negativa ou inconclusiva
+
+          mkdir -p datasets/sondagens
+
+          # Os outputs saem ANTES de qualquer sondagem: se o passo morrer no
+          # meio, o passo de upload ainda sabe o caminho exato do arquivo.
+          printf 'data=%s\n' "$DATA" >> "$GITHUB_OUTPUT"
+          printf 'saida=%s\n' "$SAIDA" >> "$GITHUB_OUTPUT"
+
+          TRAB="$(mktemp -d)"
+          # `set -u` protege contra variável NÃO DEFINIDA, não contra
+          # variável VAZIA. Sem esta guarda, um mktemp falho faria ULTIMA
+          # virar /ultima.txt, todo redirecionamento falharia, e cada
+          # sondagem reportaria o rc do REDIRECIONAMENTO como se fosse o do
+          # comando — estado inválido, prosseguindo ruidosamente com todos os
+          # códigos atribuídos à causa errada.
+          if [ -z "$TRAB" ] || [ ! -d "$TRAB" ]; then
+              echo "ERRO: mktemp -d falhou; sem diretorio de trabalho nao ha sondagem confiavel." >&2
+              exit 1
+          fi
+          ULTIMA="$TRAB/ultima.txt"
+
+          linha() { printf '%s\n' "$*" | tee -a "$SAIDA"; }
+
+          # sondar — executa, grava stdout E stderr, e registra o código de
+          # saída SEMPRE, inclusive zero. É o registro do código que
+          # distingue "não há" de "não perguntei": saída vazia com rc=0 e
+          # saída vazia com rc=127 são observações opostas, e sem o código
+          # gravado as duas ficam idênticas no relatório.
+          #
+          # A saída do último comando fica em $ULTIMA. TODA leitura
+          # programática lê $ULTIMA, NUNCA $SAIDA: o relatório ecoa o comando
+          # invocado, então tokens como VEREDITO_REDE=ALCANCAVEL aparecem lá
+          # como parte do comando ecoado. Ler $SAIDA casaria o eco e não a
+          # resposta.
+          sondar() {
+              local rotulo="$1"; shift
+              linha ""
+              linha "--- $rotulo"
+              linha "\$ $*"
+              "$@" > "$ULTIMA" 2>&1
+              local rc=$?
+              tee -a "$SAIDA" < "$ULTIMA"
+              linha "[rc=$rc]"
+              return $rc
+          }
+
+          # Sondagem cuja falha compromete a leitura do ambiente: conta, e o
+          # passo termina com código não nulo. Não é mascaramento — é o
+          # contrário dele.
+          sondar_critica() {
+              sondar "$@"
+              local rc=$?
+              if [ "$rc" -ne 0 ]; then
+                  FALHAS=$((FALHAS + 1))
+                  linha "  ^ FALHA CRITICA: esta sondagem nao respondeu (rc=$rc)."
+              fi
+              return 0
+          }
+
+          # Sondagem cuja falha é ela mesma uma observação (o caminho não
+          # existe, o campo não é emitido). Registrada, não contada.
+          sondar_opcional() {
+              sondar "$@"
+              local rc=$?
+              if [ "$rc" -ne 0 ]; then
+                  linha "  ^ opcional: rc=$rc aqui e observacao, nao falha."
+              fi
+              return 0
+          }
+
+          veredito_negativo() {
+              VEREDITOS=$((VEREDITOS + 1))
+          }
+
+          # --- cabeçalho, escrito antes de qualquer sondagem ---------------
+          # Arquivo criado já no início: se o passo morrer no meio, o upload
+          # com `if: always()` ainda publica o que foi medido até ali.
+          # O `rm -f` antes é deliberado: o checkout pode ter restaurado um
+          # relatório de mesma data já commitado, e o artifact desta execução
+          # não pode conter observação de outra.
+          rm -f "$SAIDA"
+          : > "$SAIDA"
+          linha "# Sondagem do ambiente de execucao da campanha SAST"
+          linha "# Observacao datada. O procedimento e .github/workflows/sondagem-ambiente.yml"
+          linha "#"
+          linha "sondado_em: $AGORA"
+          linha "repositorio: ${GITHUB_REPOSITORY:-NAO_DEFINIDO}"
+          linha "workflow_run_id: ${GITHUB_RUN_ID:-NAO_DEFINIDO}"
+          linha "workflow_run_attempt: ${GITHUB_RUN_ATTEMPT:-NAO_DEFINIDO}"
+          linha "runner_label_pedido: ubuntu-latest"
+          linha "runner_os: ${RUNNER_OS:-NAO_DEFINIDO}"
+          linha "runner_arch: ${RUNNER_ARCH:-NAO_DEFINIDO}"
+          linha "runner_image_os: ${ImageOS:-NAO_DEFINIDO}"
+          linha "runner_image_version: ${ImageVersion:-NAO_DEFINIDO}"
+          linha "commit_sondado: ${GITHUB_SHA:-NAO_DEFINIDO}"
+
+          # --- 2.1 identidade ----------------------------------------------
+          linha ""
+          linha "================================================================"
+          linha "2.1 IDENTIDADE — uid e gid em campos SEPARADOS"
+          linha "================================================================"
+
+          HOST_UID="$(id -u)"; RC_UID=$?
+          HOST_GID="$(id -g)"; RC_GID=$?
+          if [ "$RC_UID" -ne 0 ] || [ "$RC_GID" -ne 0 ] || [ -z "$HOST_UID" ] || [ -z "$HOST_GID" ]; then
+              FALHAS=$((FALHAS + 1))
+              linha "FALHA CRITICA: nao foi possivel ler uid/gid do runner."
+              HOST_UID="INDETERMINADO"; HOST_GID="INDETERMINADO"
+          fi
+          linha "uid: $HOST_UID"
+          linha "gid: $HOST_GID"
+          if [ "$HOST_UID" = "INDETERMINADO" ]; then
+              IGUALDADE="INDETERMINADA — uid/gid nao foram lidos"
+          elif [ "$HOST_UID" = "$HOST_GID" ]; then
+              IGUALDADE="uid == gid (coincidencia neste runner; NADA no pipeline pode supo-la)"
+          else
+              IGUALDADE="uid != gid (e por isso que os dois saem em campos separados)"
+          fi
+          linha "relacao: $IGUALDADE"
+          if [ "$HOST_UID" = "INDETERMINADO" ]; then
+              PREMISSA="NAO APURADA: o uid do runner nao foi lido nesta execucao."
+          elif [ "$HOST_UID" = "1001" ]; then
+              PREMISSA="CONFIRMADA: uid 1001, como a documentacao afirmava."
+              PREMISSA="$PREMISSA Os .qlx do bundle do CodeQL (dono 1001) sao legiveis pelo dono"
+              PREMISSA="$PREMISSA mesmo em modo 600, logo o defeito dos .qlx NAO se manifesta aqui."
+          else
+              PREMISSA="REFUTADA: uid $HOST_UID, nao 1001."
+              PREMISSA="$PREMISSA O defeito dos .qlx VOLTA a se manifestar no runner, e o paragrafo do"
+              PREMISSA="$PREMISSA CLAUDE.md sobre ONDE cada defeito aparece se inverte. O \`chmod -R a+rX\`"
+              PREMISSA="$PREMISSA do Dockerfile do CodeQL deixa de ser redundante aqui e passa a ser exigido."
+          fi
+          linha "premissa \"uid do runner == 1001\": $PREMISSA"
+          sondar_critica "id completo" id
+          sondar_critica "grupos" groups
+          sondar_opcional "o uid do runner esta em /etc/passwd do HOSPEDEIRO?" getent passwd "$HOST_UID"
+
+          # --- 2.2 máquina --------------------------------------------------
+          linha ""
+          linha "================================================================"
+          linha "2.2 MAQUINA"
+          linha "================================================================"
+          # Medido UMA vez e reusado no resumo. Remedir no resumo devolveria
+          # celula vazia se o comando falhasse — vazio indistinguivel de "nao
+          # perguntei", que e a regra que o resto do arquivo respeita.
+          sondar_critica "nucleos" nproc
+          NUCLEOS="$(head -n 1 "$ULTIMA")"
+          if [ -z "$NUCLEOS" ]; then NUCLEOS="INDETERMINADO"; fi
+
+          sondar_critica "memoria (MiB)" free -m
+          MEM_TOTAL="$(awk '/^Mem:/ {print $2 " MiB"; exit}' "$ULTIMA")"
+          if [ -z "$MEM_TOTAL" ]; then MEM_TOTAL="INDETERMINADO"; fi
+
+          sondar_critica "disco da raiz" df -h /
+          # /mnt e o disco temporario do runner hospedado. Pode nao existir:
+          # a AUSENCIA e observacao, e por isso sao DUAS perguntas distintas
+          # — existe? e o que df diz? — em vez de uma so, cujo resultado
+          # vazio seria ambiguo.
+          if [ -d /mnt ]; then
+              linha ""
+              linha "/mnt existe: sim"
+              sondar_critica "disco de /mnt" df -h /mnt
+          else
+              linha ""
+              linha "/mnt existe: NAO — o df abaixo e esperado falhar, e a falha e a observacao."
+              sondar_opcional "disco de /mnt" df -h /mnt
+          fi
+          sondar_critica "todos os sistemas de arquivos" df -h
+          sondar_critica "kernel" uname -a
+          sondar_critica "versao do sistema" cat /etc/os-release
+
+          # --- 2.3 docker ---------------------------------------------------
+          linha ""
+          linha "================================================================"
+          linha "2.3 DOCKER"
+          linha "================================================================"
+          sondar_critica "docker version" docker version
+          sondar_critica "docker info (saida completa)" docker info
+
+          linha ""
+          linha "--- docker info: linhas de storage driver e root dir (por grep, sobre a saida acima)"
+          if cp "$ULTIMA" "$TRAB/docker-info.txt"; then
+              grep -i 'storage driver\|root dir' "$TRAB/docker-info.txt" | tee -a "$SAIDA"
+              RC_GREP=$?
+              linha "[grep rc=$RC_GREP]"
+              # rc 1 e rc 2 NAO sao a mesma coisa, e colapsa-los seria
+              # atribuir causa sem evidencia: 1 e "o texto nao casou", >=2 e
+              # "o arquivo nao pode ser lido".
+              if [ "$RC_GREP" -eq 1 ]; then
+                  linha "PADRAO NAO ENCONTRADO: o texto nao casou. NAO significa 'nao ha storage driver'."
+              elif [ "$RC_GREP" -gt 1 ]; then
+                  linha "ERRO DE LEITURA no grep (rc=$RC_GREP): nada se conclui sobre o conteudo."
+                  FALHAS=$((FALHAS + 1))
+              fi
+          else
+              linha "FALHA CRITICA: nao foi possivel copiar a saida de docker info para leitura."
+              FALHAS=$((FALHAS + 1))
+          fi
+          linha "A leitura que DECIDE e a por template, abaixo."
+
+          # Leitura por template, nao por regex sobre prosa. E a mesma regra
+          # que o CLAUDE.md fixa para contagem: parser do formato, nunca
+          # casamento de padrao. O grep acima fica porque foi pedido e porque
+          # a prosa tem contexto que o template nao traz.
+          sondar_critica "docker info por template (leitura estruturada)" \
+              docker info --format 'StorageDriver={{.Driver}} | DockerRootDir={{.DockerRootDir}} | ServerVersion={{.ServerVersion}} | NCPU={{.NCPU}} | MemTotal={{.MemTotal}} | CgroupDriver={{.CgroupDriver}} | CgroupVersion={{.CgroupVersion}}'
+
+          DOCKER_ROOT="$(docker info --format '{{.DockerRootDir}}' 2> "$TRAB/err-root.txt")"
+          RC_DOCKER_ROOT=$?
+          if [ "$RC_DOCKER_ROOT" -ne 0 ] || [ -z "$DOCKER_ROOT" ]; then
+              FALHAS=$((FALHAS + 1))
+              linha ""
+              linha "FALHA CRITICA: nao foi possivel obter DockerRootDir (rc=$RC_DOCKER_ROOT). stderr:"
+              tee -a "$SAIDA" < "$TRAB/err-root.txt"
+              DOCKER_ROOT="INDETERMINADO"
+              ESPACO_DOCKER="INDETERMINADO"
+          else
+              linha ""
+              linha "DockerRootDir: $DOCKER_ROOT"
+              sondar_critica "espaco livre no diretorio de dados do Docker" df -h "$DOCKER_ROOT"
+              ESPACO_DOCKER="$(df -h --output=avail "$DOCKER_ROOT" 2>> "$SAIDA" | tail -n 1 | tr -d ' ')"
+              if [ -z "$ESPACO_DOCKER" ]; then
+                  ESPACO_DOCKER="INDETERMINADO"
+              fi
+              linha "espaco livre (resumo): $ESPACO_DOCKER"
+          fi
+
+          # --- imagem de sonda ----------------------------------------------
+          linha ""
+          linha "================================================================"
+          linha "IMAGEM DE SONDA — alpine:3, publica, descartavel"
+          linha "================================================================"
+          linha "A tag e flutuante. A regra do projeto de fixar por digest vale para as"
+          linha "imagens da campanha, que precisam ser reconstruiveis; esta e uma sonda"
+          linha "descartavel. Em compensacao o digest RESOLVIDO fica registrado abaixo,"
+          linha "para que se saiba exatamente o que rodou."
+          # Limite por invocacao, e nao so o teto do passo: o travamento de
+          # julho de 2026 foi numa operacao de rede sem limite proprio, e
+          # `docker pull` e exatamente isso.
+          sondar_critica "pull da imagem de sonda" timeout 120 docker pull alpine:3
+          sondar_critica "digest resolvido da imagem de sonda" \
+              docker image inspect --format '{{index .RepoDigests 0}}' alpine:3
+          DIGESTE_ALPINE="$(head -n 1 "$ULTIMA")"
+          case "$DIGESTE_ALPINE" in
+              *@sha256:*) : ;;
+              *) DIGESTE_ALPINE="INDETERMINADO" ;;
+          esac
+
+          # --- 2.4 isolamento de rede ---------------------------------------
+          linha ""
+          linha "================================================================"
+          linha "2.4 ISOLAMENTO DE REDE — com caso positivo de controle"
+          linha "================================================================"
+          linha "Um wget que falha NAO estabelece isolamento: estabelece que aquele wget"
+          linha "falhou. DNS indisponivel, binario ausente e URL errada produzem o mesmo"
+          linha "resultado. Por isso o mesmo comando roda duas vezes, na mesma imagem,"
+          linha "variando SO a rede, e cada lado tem TRES estados, nao dois: container"
+          linha "que nao rodou nao e container que nao alcancou a rede."
+
+          # O container que roda emite SEMPRE uma linha VEREDITO_REDE=.
+          # Ausencia do token significa que o wget nao chegou a ser
+          # executado — docker run recusado, imagem sumida, --network=none
+          # nao suportado pelo driver — e isso NAO e evidencia de isolamento.
+          ler_veredito_rede() {
+              if ! grep -q 'VEREDITO_REDE=' "$ULTIMA"; then
+                  printf 'NAO_RESPONDEU\n'
+              elif grep -q 'VEREDITO_REDE=ALCANCAVEL' "$ULTIMA"; then
+                  printf 'ALCANCOU\n'
+              else
+                  printf 'NAO_ALCANCOU\n'
+              fi
+          }
+
+          sondar_critica "CONTROLE — mesmo container, mesmo comando, COM rede" \
+              timeout 120 docker run --rm alpine:3 sh -c 'ip addr; if wget -T3 -O /dev/null https://example.com; then echo "VEREDITO_REDE=ALCANCAVEL"; else echo "VEREDITO_REDE=INALCANCAVEL rc=$?"; fi'
+          CONTROLE="$(ler_veredito_rede)"
+
+          sondar_critica "SONDA — mesmo container, mesmo comando, com --network=none" \
+              timeout 120 docker run --rm --network=none alpine:3 sh -c 'ip addr; if wget -T3 -O /dev/null https://example.com; then echo "VEREDITO_REDE=ALCANCAVEL"; else echo "VEREDITO_REDE=INALCANCAVEL rc=$?"; fi'
+          SONDA="$(ler_veredito_rede)"
+
+          if [ "$CONTROLE" != "ALCANCOU" ]; then
+              VEREDITO_REDE="INCONCLUSIVO — o controle COM rede nao alcancou (estado: $CONTROLE). O metodo nao foi validado contra caso positivo, e o resultado da sonda nada estabelece sobre --network=none."
+              veredito_negativo
+          elif [ "$SONDA" = "NAO_RESPONDEU" ]; then
+              VEREDITO_REDE="INCONCLUSIVO — a sonda com --network=none nao emitiu veredito algum: o container nao rodou. Ausencia de resposta nao e evidencia de isolamento."
+              veredito_negativo
+          elif [ "$SONDA" = "ALCANCOU" ]; then
+              VEREDITO_REDE="ISOLAMENTO NAO OPERA — a sonda alcancou a rede mesmo sob --network=none. O Semgrep nao pode ser declarado offline neste ambiente."
+              veredito_negativo
+          else
+              VEREDITO_REDE="ISOLAMENTO CONFIRMADO — o controle alcancou a rede e a sonda, que RODOU e respondeu, nao alcancou."
+          fi
+          linha ""
+          linha "controle (com rede): $CONTROLE"
+          linha "sonda (--network=none): $SONDA"
+          linha "VEREDITO: $VEREDITO_REDE"
+
+          # --- 2.5 escrita sob --user ---------------------------------------
+          linha ""
+          linha "================================================================"
+          linha "2.5 ESCRITA SOB --user — sondada com comando que ESCREVE"
+          linha "================================================================"
+          linha "O \`--version\` e sonda fraca: o Snyk passa nele e falha ao gravar"
+          linha "configuracao. A sonda abaixo escreve em \$HOME e no volume montado, que"
+          linha "sao os dois lugares onde as ferramentas da campanha efetivamente gravam,"
+          linha "e os DOIS sao apurados."
+          linha ""
+          linha "ALCANCE, declarado: isto roda em alpine:3, nao nas imagens da campanha."
+          linha "A precondicao do defeito do HOME — uid ausente do /etc/passwd — e"
+          linha "propriedade DE CADA IMAGEM (node:24-bookworm tem um usuario uid 1000; as"
+          linha "outras duas nao tem nem 1000 nem 1001), e observa-la aqui NAO a"
+          linha "estabelece para as imagens da campanha. Alem disso a invocacao passa"
+          linha "-e HOME=/tmp, que e a MITIGACAO: o que se mede e a mitigacao operando e"
+          linha "a precondicao presente, nunca o defeito se manifestando."
+
+          SONDA_DIR="$GITHUB_WORKSPACE/sonda-user"
+          rm -rf "$SONDA_DIR"
+          mkdir -p "$SONDA_DIR"
+
+          # Invocação idêntica à documentada para a campanha: --user com uid e
+          # gid do hospedeiro, HOME e XDG_CACHE_HOME explícitos, workspace
+          # montado em /workspace.
+          sondar_critica "container sob --user, escrevendo em HOME e no volume montado" \
+              timeout 120 docker run --rm \
+                  --user "$HOST_UID:$HOST_GID" \
+                  -e HOME=/tmp \
+                  -e XDG_CACHE_HOME=/tmp \
+                  -v "$GITHUB_WORKSPACE":/workspace \
+                  -w /workspace \
+                  alpine:3 sh -c 'echo "SONDA_USER_RODOU=1"; echo "container_uid=$(id -u)"; echo "container_gid=$(id -g)"; echo "container_HOME=$HOME"; if whoami; then echo "whoami_rc=0 — o uid ESTA no /etc/passwd da imagem"; else echo "whoami_rc=$? — o uid esta AUSENTE do /etc/passwd da imagem, que e a precondicao do defeito do HOME"; fi; echo sonda > "$HOME/sonda-home.txt"; echo "escrita_em_HOME_rc=$?"; echo sonda > /workspace/sonda-user/sonda-escrita.txt; echo "escrita_no_volume_rc=$?"; ls -ln /workspace/sonda-user/'
+
+          linha ""
+          if ! grep -q '^SONDA_USER_RODOU=1' "$ULTIMA"; then
+              VEREDITO_USER="INCONCLUSIVO — o container sob --user nao chegou a rodar; nada se estabelece sobre escrita."
+              veredito_negativo
+          else
+              # Escrita em $HOME: e o destino cuja falha motiva a secao
+              # inteira, e ficava sepultada no corpo do relatorio.
+              HOME_RC="$(sed -n 's/^escrita_em_HOME_rc=\([0-9][0-9]*\)$/\1/p' "$ULTIMA" | head -n 1)"
+              VOL_RC="$(sed -n 's/^escrita_no_volume_rc=\([0-9][0-9]*\)$/\1/p' "$ULTIMA" | head -n 1)"
+              if [ -z "$HOME_RC" ]; then HOME_RC="INDETERMINADO"; fi
+              if [ -z "$VOL_RC" ]; then VOL_RC="INDETERMINADO"; fi
+              linha "escrita em \$HOME (=/tmp), rc: $HOME_RC"
+              linha "escrita no volume montado, rc: $VOL_RC"
+
+              VEREDITO_USER=""
+              if [ "$HOME_RC" = "0" ]; then
+                  VEREDITO_USER="escrita em \$HOME: OK."
+              else
+                  VEREDITO_USER="escrita em \$HOME: FALHOU (rc=$HOME_RC) — e o defeito que -e HOME=/tmp existe para evitar."
+                  veredito_negativo
+              fi
+
+              if [ -f "$SONDA_DIR/sonda-escrita.txt" ]; then
+                  sondar_critica "uid/gid do arquivo, visto do HOSPEDEIRO" \
+                      stat -c 'uid=%u gid=%g dono=%U grupo=%G modo=%a arquivo=%n' "$SONDA_DIR/sonda-escrita.txt"
+                  ARQ_UID="$(stat -c '%u' "$SONDA_DIR/sonda-escrita.txt" 2>> "$SAIDA")"
+                  RC_STAT_U=$?
+                  ARQ_GID="$(stat -c '%g' "$SONDA_DIR/sonda-escrita.txt" 2>> "$SAIDA")"
+                  RC_STAT_G=$?
+                  if [ "$RC_STAT_U" -ne 0 ] || [ "$RC_STAT_G" -ne 0 ] || [ -z "$ARQ_UID" ] || [ -z "$ARQ_GID" ]; then
+                      # stat que falha NAO estabelece divergencia de dono:
+                      # estabelece que nao se leu o dono.
+                      VEREDITO_USER="$VEREDITO_USER Dono do arquivo: INDETERMINADO (stat nao respondeu); nada se conclui sobre uid/gid."
+                      veredito_negativo
+                  elif [ "$ARQ_UID" = "$HOST_UID" ] && [ "$ARQ_GID" = "$HOST_GID" ]; then
+                      VEREDITO_USER="$VEREDITO_USER Dono do arquivo: uid=$ARQ_UID gid=$ARQ_GID, iguais aos do runner."
+                  else
+                      VEREDITO_USER="$VEREDITO_USER Dono do arquivo: uid=$ARQ_UID gid=$ARQ_GID contra runner uid=$HOST_UID gid=$HOST_GID — os artefatos da campanha sairiam com dono errado."
+                      veredito_negativo
+                  fi
+                  # A reescrita pelo hospedeiro e o atrito concreto que o
+                  # --user existe para evitar. A conclusao sai DEPOIS da
+                  # medicao, nunca antes dela.
+                  if printf 'reescrito pelo hospedeiro\n' >> "$SONDA_DIR/sonda-escrita.txt"; then
+                      VEREDITO_USER="$VEREDITO_USER Reescrita pelo hospedeiro: OK."
+                  else
+                      VEREDITO_USER="$VEREDITO_USER Reescrita pelo hospedeiro: FALHOU."
+                      veredito_negativo
+                  fi
+              else
+                  VEREDITO_USER="$VEREDITO_USER O arquivo nao apareceu no volume montado, visto do hospedeiro."
+                  veredito_negativo
+              fi
+          fi
+          linha ""
+          linha "VEREDITO: $VEREDITO_USER"
+
+          rm -rf "$SONDA_DIR"
+
+          # --- fechamento ---------------------------------------------------
+          linha ""
+          linha "================================================================"
+          linha "FECHAMENTO"
+          linha "================================================================"
+          linha "encerrado_em: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          linha "sondagens_que_nao_responderam: $FALHAS"
+          linha "vereditos_negativos_ou_inconclusivos: $VEREDITOS"
+          linha ""
+          linha "O QUE ESTA SONDAGEM NAO MEDE, e continua pendente:"
+          linha "  - duracao por CVE no runner, e a razao runner/hospedeiro local. So o"
+          linha "    ensaio de fumaca com o lote de teste responde, e ele e outra fase."
+          linha "  - se o produto entre tamanho de lote (30) e limite por invocacao cabe"
+          linha "    no teto de 6 h do job. Depende da duracao acima."
+          linha "  - o extrator de TypeScript ATRAVESSANDO o laco. Os 4 CVEs do lote de"
+          linha "    teste sao todos JavaScript."
+          linha "  - o defeito do HOME NAS IMAGENS DA CAMPANHA. A secao 2.5 roda em"
+          linha "    alpine:3; a precondicao e propriedade de cada imagem, e as tres da"
+          linha "    campanha nao foram sondadas aqui."
+          linha "  - o defeito dos .qlx sob uid diferente do dono do bundle, se o uid"
+          linha "    deste runner for 1001: ali ele nao se manifesta, por coincidencia de"
+          linha "    uid, e so a medicao local (uid 1000) o cobre."
+
+          # --- resumo legível ------------------------------------------------
+          {
+              printf '## Sondagem do ambiente — %s\n\n' "$AGORA"
+              printf '| Grandeza | Valor |\n|---|---|\n'
+              printf '| uid do runner | `%s` |\n' "$HOST_UID"
+              printf '| gid do runner | `%s` |\n' "$HOST_GID"
+              printf '| relacao uid/gid | %s |\n' "$IGUALDADE"
+              printf '| imagem do runner | `%s` / `%s` |\n' "${ImageOS:-NAO_DEFINIDO}" "${ImageVersion:-NAO_DEFINIDO}"
+              printf '| nucleos | `%s` |\n' "$NUCLEOS"
+              printf '| memoria total | `%s` |\n' "$MEM_TOTAL"
+              printf '| DockerRootDir | `%s` |\n' "$DOCKER_ROOT"
+              printf '| espaco livre no DockerRootDir | `%s` |\n' "$ESPACO_DOCKER"
+              printf '| imagem de sonda | `%s` |\n' "$DIGESTE_ALPINE"
+              printf '| sondagens que nao responderam | **%s** |\n' "$FALHAS"
+              printf '| vereditos negativos ou inconclusivos | **%s** |\n' "$VEREDITOS"
+              printf '\n### Premissa do uid\n\n%s\n' "$PREMISSA"
+              printf '\n### Isolamento de rede\n\n'
+              printf -- '- controle **com** rede: `%s`\n' "$CONTROLE"
+              printf -- '- sonda com `--network=none`: `%s`\n' "$SONDA"
+              printf -- '- **%s**\n' "$VEREDITO_REDE"
+              printf '\n### Escrita sob `--user` (em `alpine:3`, nao nas imagens da campanha)\n\n%s\n' "$VEREDITO_USER"
+              printf '\nRelatorio completo no artifact, arquivo `%s`.\n' "$SAIDA"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$FALHAS" -gt 0 ] || [ "$VEREDITOS" -gt 0 ]; then
+              echo "ERRO: $FALHAS sondagem(ns) sem resposta, $VEREDITOS veredito(s) negativo(s). Ver o relatorio." >&2
+              exit 1
+          fi
+          exit 0
+
+      - name: Publicar a sondagem
+        # if: always() — a perda de julho de 2026 apareceu como AVISO de
+        # caminho nao encontrado no step de upload, entre avisos de
+        # dependencia deprecada, e nao como erro. Daqui em diante o upload
+        # roda mesmo com o passo anterior falho, e `if-no-files-found: error`
+        # transforma o aviso em falha do job.
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          # run_id no nome: duas execucoes no mesmo dia UTC produziriam
+          # artifacts homonimos, e o nome tem de identificar a execucao.
+          name: sondagem-ambiente-${{ steps.sondagem.outputs.data || 'sem-data' }}-${{ github.run_id }}
+          # CAMINHO EXATO, nunca glob. Com `...-*.txt`, o checkout restaura
+          # todo relatorio ja commitado e a guarda abaixo nunca mais dispara:
+          # sempre haveria um arquivo casando, ainda que o desta execucao nao
+          # existisse. A guarda e o que converte em erro o aviso de julho de
+          # 2026, e guarda que nao guarda e pior que guarda nenhuma.
+          path: ${{ steps.sondagem.outputs.saida }}
+          if-no-files-found: error
+          retention-days: 90
