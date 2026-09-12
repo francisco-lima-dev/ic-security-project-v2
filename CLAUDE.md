@@ -14,6 +14,22 @@ JavaScript/TypeScript.
   distintos, 38 CWEs distintos após normalização
 - Benchmark DAST: OWASP Juice Shop e OWASP NodeGoat
 
+**As aplicações da campanha DAST não são submetidas às ferramentas SAST.**
+Decisão do orientador, e a razão não é de escopo e sim de ausência de
+gabarito: Juice Shop e NodeGoat não declaram, por vulnerabilidade, arquivo,
+linha, identificador de CWE e commit anterior à correção — os quatro
+elementos de que a apuração depende. Achados produzidos ali não seriam
+classificáveis em verdadeiro e falso positivo, e a contagem resultante
+mediria volume de alerta, não detecção.
+
+A consequência é que as duas famílias não compartilham alvo algum: a
+comparação entre SAST e DAST neste trabalho se dá entre o que cada uma
+alcança em seus próprios termos, e não entre detecções sobre a mesma
+aplicação.
+
+Decidido também manter o OWASP NodeGoat no estudo. Os quatro relatórios de
+`results/zap/` são, portanto, o conjunto DAST definitivo.
+
 ## Regra crítica — checkout do commit vulnerável
 
 Toda análise SAST **deve** fazer checkout do `PrePatchCommit`, o commit
@@ -242,11 +258,28 @@ databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`.
 **únicos dados de detecção válidos do estudo** — a campanha SAST anterior
 foi invalidada. Existiam em cópia única fora de controle de versão.
 
-Os relatórios não trazem campo de modo de varredura. A correspondência
-está no README do diretório, estabelecida por contagem de alertas
-(10/14/23/29) e não por nomenclatura: `juice-shop-report.json` é o
-baseline, apesar do nome não dizer. **Não renomear** — os nomes são o
-artefato produzido pela execução.
+Os relatórios não trazem campo de modo de varredura.
+
+A correspondência entre relatório, aplicação e modo de varredura está em
+`results/zap/README.md`, escrito na Fase F-1. Até então a remissão apontava
+para documento inexistente: nenhum commit do repositório continha esse
+README, e a correspondência não era recuperável de fonte alguma — ver o
+quinto episódio da regra geral de contagem.
+
+O README a estabelece por contagem sobre os próprios relatórios, em duas
+unidades — tipos de alerta (`site[].alerts[]`) e instâncias (soma de
+`instances[]`) —, e **as duas discriminam igualmente** os quatro arquivos,
+de modo que a atribuição não depende da unidade escolhida. A série citada
+neste arquivo (10/14/23/29) é a de **tipos**.
+
+O modo é ainda confirmado por evidência **independente da contagem**: os
+dois relatórios `full` trazem alertas de regra de varredura ativa
+(`pluginid` 4xxxx), e os dois `baseline` trazem zero. A aplicação sai de
+`site[0].@name`. Cada HTML é pareado ao JSON irmão pelo conjunto de nomes
+de alerta, não por semelhança de nome de arquivo.
+
+`juice-shop-report.json` é o baseline, apesar do nome não dizer. **Não
+renomear** — os nomes são o artefato produzido pela execução.
 
 O script de sondagem de disponibilidade **foi trazido na Fase E**:
 `tools/probe-repos.sh`, com a saída datada em
@@ -257,7 +290,10 @@ previstos em `tools/ground-truth/`, diretório que **não existe** no
 repositório.
 
 Motivo: o repositório precisa permitir verificar os números do estudo sem
-depender de artifacts do GitHub Actions, que expiram em 30 dias.
+depender de artifacts do GitHub Actions, cuja retenção padrão é de **90
+dias**, configurável de 1 a 90 em repositório público. O argumento que ela
+sustenta — versionar treated e logs, tratar o raw como perícia descartável —
+fica intacto e é reforçado.
 
 **Verificar versionabilidade com `git add --dry-run`, nunca com
 `git check-ignore -v`.** O `-v` reporta *casamento de padrão*, não veredito,
@@ -270,8 +306,15 @@ e devolve 0 tanto para padrão de ignore quanto para negação: para
 
 - Cada ferramenta roda em container Docker próprio, iterando sobre os CVEs
   de um lote
-- O laço é **idempotente**: pula CVE cuja saída já existe, permitindo
-  retomar um lote interrompido sem reprocessar
+- O laço é **idempotente**: pula CVE cuja saída bruta já existe. A
+  propriedade governa a retomada **local** de um lote interrompido.
+
+  **No ambiente da campanha ela é inerte.** As saídas brutas não são
+  versionadas e cada execução parte de ambiente limpo, de modo que
+  reexecutar um lote no GitHub Actions o **reprocessa integralmente** — o
+  custo de uma reexecução é o lote inteiro, não o seu remanescente.
+  Consequência para o `check-log.py`: o status `PULADO` não ocorre ali, e a
+  conferência "`PULADO` sem raw" não dispara no ambiente da campanha.
 - Todo CVE analisado gera arquivo de saída, mesmo sem achados
   (`"findings": []`), para distinguir "analisou e não achou" de "não
   analisou"
@@ -331,6 +374,67 @@ sinal tratado pelo script.
 Atribuir causa a interrupção exige evidência independente da assinatura.
 Registre o exit code bruto e o contexto; não nomeie memória sem outra prova.
 
+### `TIMEOUT_ANALYZE` provisório, e o teto de 6 h já observado
+
+**`TIMEOUT_ANALYZE` = 3600 s é provisório.** Foi fixado contra os máximos
+observados no ensaio local (146 s no CodeQL), que é critério distinto e mais
+frouxo do que o que de fato governa a campanha.
+
+**O limite é por CVE; o teto de 6 h é por job.** As duas grandezas não são
+comensuráveis por inspeção, e a folga de uma não implica a da outra.
+
+**O teto não é restrição hipotética: já interrompeu execuções deste
+projeto.** Em julho de 2026, na série exploratória do repositório anterior
+(`pipeline-security-analysis`), o CodeQL atingiu o teto primeiro sobre o
+conjunto inteiro e, depois, **ainda em regime de lotes**, em dois lotes da
+mesma partição — `aa` e `ab` — enquanto `ac`, `ad` e `ae` terminaram em
+1h09, 1h04 e 52 min.
+
+**O degrau é o dado.** Três lotes da mesma partição terminando com mais de
+quatro horas de folga, e dois consumindo o teto inteiro, não é perfil de
+custo agregado excessivo: é perfil de **item individual que não termina**.
+Reduzir o lote pela metade apenas dividiria o mesmo travamento em dois jobs;
+o que intercepta esse modo de falha é o limite de tempo **por invocação**.
+
+No lote `ab` o travamento está identificado: a execução não passou do
+**clone completo do primeiro repositório** (`zeit/next.js`), sem profundidade
+e sem limite de tempo. No lote `aa` a causa **não foi determinada** — o
+primeiro repositório era pequeno (`isaacs/st`), e não se apurou em que ponto
+o job parou de progredir.
+
+Uma dessas execuções correu seis horas e **não produziu arquivo algum**. O
+script já escrevia a saída por item diretamente no diretório final, de modo
+que a ausência de saída não decorre de promoção tardia. A perda
+apresentou-se no step de upload como **aviso de caminho não encontrado**,
+entre avisos de dependência deprecada, e não como erro.
+
+Daí três exigências do protocolo atual, que aquela série não tinha: obtenção
+do código por fetch raso, limite de tempo por invocação, e registro
+estruturado por item, que tornaria o travamento visível em minutos em vez de
+seis horas.
+
+**Fronteira do que essa evidência estabelece.** A série de julho era
+exploratória, tinha o **repositório** por unidade, usava a suíte
+`security-and-quality` e analisava o HEAD. Estabelece que o teto interrompe
+e que a perda pode apresentar-se como aviso. **Não** estabelece duração por
+CVE, tamanho de lote seguro, nem razão runner/local.
+
+A condição que torna a garantia aritmética, e não dependente de
+comportamento, é que o produto entre tamanho de lote e limite por invocação
+caiba no teto do job. O valor corrente não a satisfaz. Sua revisão depende
+de duas grandezas ainda não medidas: a razão entre as durações do runner e
+as do hospedeiro local, apurada no ensaio de fumaça, e a manutenção do
+tamanho de lote corrente. Não havendo valor confortável, o parâmetro a
+revisar é o **tamanho do lote**, não o limite.
+
+Até lá, 3600 s permanece, com `timeout-minutes` explícito abaixo de 360 no
+job e `if: always()` no upload como guarda independente.
+
+**Verificação pendente, decorrente do episódio acima:** conferir se os
+scripts atuais aplicam limite de tempo também ao **fetch e ao fallback de
+clone**, e não só à análise. O travamento de julho ocorreu antes de qualquer
+análise, onde o `TIMEOUT_ANALYZE` não alcança. Item da Fase G.
+
 ### Conjunto de status do log
 
 `OK`, `SEM_ACHADOS`, `PULADO`, `ERRO_LINHA`, `ERRO_FETCH`,
@@ -344,6 +448,33 @@ indefinidamente e sumiria da leitura de cobertura — o defeito acessório
 que a campanha anterior cometeu. Consequência assumida: a idempotência não
 pula esse CVE, porque não há raw cuja existência o sinalizasse, e fabricar
 um SARIF que a ferramenta não emitiu seria pior.
+
+**Denominador quando `SEM_ARQUIVO_ANALISAVEL` ocorre.** Exit 3 é causa
+**interna à ferramenta**, como o `gt_file_scanned: false` e ao contrário do
+repositório que não existe. O CVE **permanece no denominador** (221/222) nas
+duas modalidades e conta como não-detecção do Snyk Code. Nunca se cria
+denominador por ferramenta.
+
+Escrito **antes** da campanha, deliberadamente, para que a escolha não pareça
+posterior aos números. Três ramos previstos:
+
+- **0 de 223** — a ameaça sobre o conjunto se fecha ("o estado não ocorre
+  neste benchmark"), afirmação distinta de "o ramo de código foi exercitado
+  por execução real": este segue coberto apenas por stub. Ambas as frases vão
+  ao texto.
+- **1 ou 2** — reportados nominalmente, com o `coverage[]` do CVE anexado.
+  Denominador não se move.
+- **3 ou mais** — deixa de ser borda e vira resultado de cobertura do Snyk
+  Code, com sentença própria na comparação; vale checar correlação com os
+  cinco arquivos sem extensão e com TypeScript. Denominador não se move.
+
+**Forma de verificação do tratamento.** O conjunto é JS/TS por construção, e
+a condição de não haver projeto suportado, embora possível, não é dele
+esperada; caçar um CVE que a produza não se justifica pelo custo. O ramo é
+exercitado por execução controlada — o exit 3 é reproduzido por stub, fora do
+laço da campanha — e essa forma é declarada. A ocorrência real, se houver, é
+apurada pela própria campanha, cujo `coverage[]` responde sobre os 223: a
+verificação empírica é resultado do estudo, não pré-requisito da execução.
 
 ### Permissões dos artefatos produzidos em container
 
@@ -422,6 +553,23 @@ passam a modo 644, `AccessDeniedException` cai a **zero**, **nenhuma** consulta
 Com ela, a medição de duração do CodeQL passou a sair da **imagem da
 campanha**, não de uma imagem de diagnóstico — era a maior fragilidade da
 medição da Fase E.
+
+Sob `--user`, um processo cujo uid é o **dono** dos `.qlx` os lê mesmo em
+modo 600. Onde o uid de execução coincide com o dono do bundle (1001), o
+defeito não se manifesta — com ou sem o `chmod` na imagem. A execução no
+runner, portanto, **não distingue** imagem corrigida de não corrigida nesse
+eixo: ela mede o defeito do `HOME`, que só se manifesta sob uid ausente do
+`/etc/passwd` da imagem. Os dois defeitos ficam cobertos pela **união** de
+duas medições — `.qlx` em uid 1000, local, Fase E; `HOME` em uid 1001, no
+runner —, nunca por uma execução única.
+
+**Premissa não medida:** que o uid do runner seja 1001. Vem da documentação e
+de relatos públicos, não de medição própria. Confirmada no job de diagnóstico
+da Fase G, que registra uid **e gid em separado** — nada no pipeline pode
+supor `uid == gid`. Vindo diferente de 1001, o defeito dos `.qlx` volta a se
+manifestar no runner e o parágrafo acima se inverte quanto a *onde* cada
+defeito aparece; a primeira frase, sobre o dono ler arquivo modo 600, vale em
+qualquer uid.
 
 ### Revisão antes da execução
 
@@ -905,7 +1053,24 @@ irmão `semgrep-default.meta.json`. Entra na imagem por **`COPY` para
 O `COPY` não é o que resolve a armadilha do prefixo — um mount na raiz
 resolveria igual. O que ele faz é mover a garantia da invariante para
 dentro da imagem, onde ninguém a altera sem rebuild, e tornar a imagem
-autocontida. Custo nulo: o workflow reconstrói a imagem a cada execução.
+autocontida.
+
+**O custo deixou de ser nulo-por-frequência na Etapa 3.** A campanha
+constrói a imagem **uma vez** e a referencia **por digest** nos jobs de lote,
+em vez de reconstruí-la a cada execução. O propósito do `COPY` fica mais
+forte — o pack congela num digest citável —, mas a premissa de custo cai:
+alterar o pack no repositório passa a exigir rebuild e republicação
+explícitos.
+
+Consequência para as guardas de sha256: com rebuild por execução, repositório
+e imagem se moviam juntos e a comparação (2) quase não tinha como divergir.
+Com build único, a derivação entre os dois passa a ser o modo de falha
+esperado da nova forma de execução, e a comparação (2) **deixa de ser cinto
+redundante e passa a ser a guarda em que a decisão do build único repousa**.
+Ela é fatal e continua como está.
+
+Cada job de lote registra o **digest da imagem efetivamente usada**, e o
+relatório da campanha o reproduz.
 
 O caminho é dentro do diretório da ferramenta porque o build context é
 `ic-security-lab-<x>/` (verificado nos workflows da campanha anterior:
@@ -1038,6 +1203,7 @@ método de medição errado:
 | 1075 em vez de 1074 severidades | `grep -c 'severity:'` | uma regra declara `severity` no topo **e** em `metadata` |
 | "versionável" lido errado | `git check-ignore -v` | reporta casamento de padrão, não veredito |
 | exit 137 lido como memória | código de encerramento tomado por assinatura de OOM | `docker stop` envia `SIGKILL`; a assinatura é compatível com a causa, mas não a estabelece |
+| ρ ≈ 0,2 entre arquivos extraídos e duração do CodeQL | duas séries pareadas **por ordem de aparição** em documento que não declarava a correspondência | o pareamento correto, computado das fontes versionadas, é outro; o valor calculado era sobre pares errados |
 
 A verificação por regex sobre formato estruturado falha por causas
 **independentes** — ordem de campos e profundidade de aninhamento —, então
@@ -1054,6 +1220,68 @@ realiza de fato a operação em vez do que apenas casa padrão. No quarto não h
 parser que sirva — o método correto é **corroborar por evidência independente
 antes de atribuir**, porque a assinatura é compatível com a causa e não a
 estabelece.
+
+O quinto é de terceira natureza: não é contagem nem atribuição de causa, é
+**cruzamento**. O objeto estava certo e os dados eram reais, mas a
+correspondência entre duas séries foi **inferida pela ordem de aparição** em
+vez de lida da fonte. O erro é invisível dentro do cálculo — produz um número
+plausível — e só aparece ao reconstruir o pareamento por outro caminho.
+
+**O agravante, e a prova.** A correspondência estava disponível, chaveada por
+CVE, em duas fontes versionadas do próprio repositório:
+`logs/execution-log-codeql.csv`, com `duracao_segundos` por CVE, e o campo
+`codeql_inventario` de `logs/normalize-report-codeql.json`, com
+`{cve, notificacao, artifacts_depurado, bate}`. Não foram consultadas. O
+defeito não foi de indisponibilidade do dado, e sim de não ter procurado a
+fonte que o declara.
+
+Computado dessas fontes, o pareamento correto dos quatro CVEs da Fase E é:
+
+| CVE | duração | arquivos extraídos |
+|---|---:|---:|
+| `CVE-2017-16042` | 63 s | 3 |
+| `CVE-2018-14041` | 78 s | 126 |
+| `CVE-2018-14040` | 127 s | 174 |
+| `CVE-2019-10744` | 146 s | 58 |
+
+A ordem das duas séries difere porque o log inclui o `CVE-2016-1000229`, que
+saiu `ERRO_FETCH` com duração 0 e não gera inventário. Parear por posição
+desloca tudo a partir daí e troca os dois CVEs do bootstrap entre si — que foi
+exatamente o erro cometido.
+
+**Nenhum coeficiente de correlação é calculado sobre esses quatro pontos.**
+Quatro pontos não permitem prever; o registro existe para tornar a
+correspondência explícita, não para relacionar as grandezas.
+
+O padrão reincidiu sob outra forma, entre documentos: presumiu-se que certa
+passagem constasse dos três documentos do projeto por figurar em dois, sem
+conferir a terceira ocorrência. E uma terceira vez, sobre a campanha DAST:
+este arquivo remetia a correspondência entre relatório e modo de varredura a
+um README que **nunca existiu em commit algum** — a lacuna foi fechada na Fase
+F-1, com o README escrito a partir de contagem sobre os próprios relatórios.
+
+Daí, geral e simétrico: **correspondência não declarada é conferida antes de
+ser usada, trate-se de séries, de listas ou de documentos.** Não estando
+explícita, o primeiro passo é torná-la explícita na fonte, nunca estimá-la
+pela ordem. Todo relatório que produza duas séries sobre os mesmos itens deve
+**chavear ambas pelo identificador do item** — aqui, o CVE. E remissão a
+documento é conferida quanto à existência do documento.
+
+**Generalização dos episódios, e não um episódio a mais.** Resultado vazio ou
+nulo exige distinguir **"não há"** de **"não perguntei"**. Verificação que
+retorna zero é aceita apenas quando o método foi exercido contra caso
+conhecidamente positivo, ou quando o stderr foi lido. Padrão que não casa,
+pathspec inválido e argumento tomado por opção produzem zero indistinguível
+de ausência.
+
+Quatro ocorrências registradas, todas com resultado falso plausível:
+`git ls-files 'results/*/treated/'`, cujo curinga com barra final não casa
+nada, sugerindo ausência de arquivos que existiam; teste de padrão cujo
+argumento começava com `-`, lido como opção, com o stderr suprimido; a
+divergência de contagem de regras já registrada acima; e a varredura de
+segredo da Fase F, que não cobria webhook do Slack e cuja ausência de achado
+só era afirmável **nas formas procuradas** — o scanner do GitHub, com outro
+repertório, detectou uma forma que ela não procurava.
 
 ### Snyk Code
 Somente `--sarif-file-output`. O `--json-file-output` produz arquivo
@@ -1293,3 +1521,9 @@ Declaradas na monografia, não corrigíveis por código:
 - **Não sondar disponibilidade de repositório com credencial do hospedeiro** —
   mede o acesso do operador, não o anônimo que a campanha terá
 - Não gravar fixtures em `results/*/raw/`
+- **Não usar tag flutuante de imagem base nos Dockerfiles** — `FROM
+  python:3.12-slim` e congêneres admitem conteúdo distinto entre construções.
+  Fixar por digest (`FROM <imagem>@sha256:…`), pelo mesmo motivo que o CLI do
+  Snyk vem de URL versionada. O build único da campanha garante que os oito
+  lotes usem a mesma imagem; a fixação das bases é o que permite reconstruí-la
+  depois

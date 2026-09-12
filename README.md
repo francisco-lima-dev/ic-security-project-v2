@@ -9,10 +9,10 @@ three tools — **CodeQL**, **Semgrep** and **Snyk Code** — and the findings a
 normalized into a common schema so detection metrics can be computed (true
 positives, false negatives, coverage per CWE).
 
-> **Status:** Stage 1 complete (project structure + input lists).
-> Stage 2 (Docker images, analysis scripts and the normalizer) is **decided but
-> not implemented** — the tool configuration is locked and documented under
-> [Tool configuration](#tool-configuration--stage-2-decisions). Stage 3
+> **Status:** Stage 1 and Stage 2 complete (phases A through E) — Docker
+> images, analysis scripts and the normalizer are implemented and exercised
+> locally on the test batch; the tool configuration is locked and documented
+> under [Tool configuration](#tool-configuration--stage-2-decisions). Stage 3
 > (workflows, execution and metrics) has not started.
 
 ---
@@ -97,18 +97,19 @@ application source code is cloned at this stage.
 ├── tools/
 │   ├── extract-urls.js            # benchmark JSON → cve-metadata.{csv,json}
 │   ├── generate-lists.js          # cve-metadata.csv → listas/
-│   ├── normalize.py               # raw → common schema      (stage 2, pending)
-│   └── semgrep-packs/             # vendored p/default snapshot (stage 2)
+│   └── normalize.py               # raw → common schema (VERSIONED)
 ├── .claude/
 │   └── agents/
 │       └── revisor-pipeline.md    # review subagent (VERSIONED)
-├── ic-security-lab-codeql/        # image + scripts    (stage 2)
-├── ic-security-lab-semgrep/       # image + scripts    (stage 2)
-├── ic-security-lab-snyk-code/     # image + scripts    (stage 2)
+├── ic-security-lab-codeql/        # image + runner script (VERSIONED)
+├── ic-security-lab-semgrep/       # image + runner script (VERSIONED)
+│   └── rules/                     # vendored p/default snapshot + descriptor
+├── ic-security-lab-snyk-code/     # image + runner script (VERSIONED)
 ├── results/
 │   ├── codeql/{raw,treated}/      # raw ignored · treated versioned
 │   ├── semgrep/{raw,treated}/
-│   └── snyk-code/{raw,treated}/
+│   ├── snyk-code/{raw,treated}/
+│   └── zap/                       # DAST reports — see results/zap/README.md
 ├── logs/                          # execution-log-*.csv (VERSIONED)
 ├── ossf-cve-benchmark/            # external clone (IGNORED)
 ├── .gitignore
@@ -126,8 +127,9 @@ application source code is cloned at this stage.
 | `datasets/**` | ✅ | the experiment's input; must be citable and stable |
 | `tools/**` | ✅ | reproducibility — this is what generates the lists |
 | `results/*/treated/**` | ✅ | common schema, small, this is the research output |
+| `results/zap/**` | ✅ | the July 2026 DAST reports — the study's only valid detection data so far; see `results/zap/README.md` |
 | `logs/**` | ✅ | duration, exit code and tool version per CVE |
-| `tools/semgrep-packs/**` | ✅ | the exact ruleset that ran — pinned by sha256 |
+| `ic-security-lab-semgrep/rules/**` | ✅ | the exact ruleset that ran — pinned by sha256 |
 | `.claude/agents/**` | ✅ | the review checklist is part of the method |
 | `results/*/raw/**` | ❌ | raw SARIF/JSON, large and regenerable |
 | `ossf-cve-benchmark/` | ❌ | external dependency, not our content |
@@ -612,16 +614,19 @@ not a local convenience.
 
 ---
 
-## Next stages
+## Stages
 
-**Stage 2 — images, analysis scripts and the normalizer.** A `Dockerfile` and a
-runner script per tool under `ic-security-lab-{codeql,semgrep,snyk-code}/`,
-consuming the lists in `datasets/listas/`, plus `tools/normalize.py` outside the
-images. The tool configuration is settled above; what remains is implementation.
-Points of attention already mapped out: shallow clone at the exact commit
-(`fetch --depth 1 origin <sha>`), directory and database named by CVE, raw output
-at `results/<tool>/raw/<CVE>.<ext>`, and a `logs/execution-log-*.csv` carrying
-CVE, tool, duration, exit code and version.
+**Stage 2 — complete (phases A through E).** A `Dockerfile` and a runner script
+per tool under `ic-security-lab-{codeql,semgrep,snyk-code}/`, consuming the
+lists in `datasets/listas/`, plus `tools/normalize.py` outside the images. The
+points of attention mapped out beforehand are implemented: shallow fetch at the
+exact commit (`fetch --depth 1 origin <sha>`) with a full-clone fallback,
+directory and database named by CVE, raw output at
+`results/<tool>/raw/<CVE>.<ext>`, and a `logs/execution-log-*.csv` carrying CVE,
+repository, commit, status, message and duration. The pipeline was exercised
+locally on the `cves-sast-teste` batch across all three tools; the execution
+logs and the normalization reports of that run are versioned under `logs/`,
+while its raw and treated outputs are not.
 
 **Stage 3 — workflows, execution and metrics.** GitHub Actions workflows per
 tool and per batch, the campaign itself, and then cross-referencing the
