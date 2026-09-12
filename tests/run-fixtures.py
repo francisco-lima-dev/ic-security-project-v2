@@ -16,6 +16,8 @@ Cada asserção nomeia a invariante que protege. Saída não nula = alguma falho
 from __future__ import annotations
 
 import json
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -765,6 +767,185 @@ def main():
            "normalize.py nao importa nem invoca check-log.py")
     checar("import normalize" not in CHECK_LOG.read_text(encoding="utf-8"),
            "check-log.py nao importa normalize.py")
+
+    # ================== obtencao do codigo: estouro distinguivel de recusa
+    # Fase G-1b. O rc do `timeout` no fetch raso e no clone de contingencia
+    # era consumido pela condicao do `if` e se perdia: estouro do limite
+    # (124) e recusa do servidor (`upload-pack: not our ref`, 128) caiam no
+    # mesmo ramo e produziam a MESMA linha de log. Sao causas opostas —
+    # lentidao contra ausencia do objeto — e a contagem de fallback, que o
+    # protocolo exige como metrica de vigilancia, somava as duas no mesmo
+    # balde.
+    #
+    # O ramo e exercitado por EXECUCAO REAL do script, com um stub de
+    # `timeout` que devolve o codigo pedido em vez de medir tempo.
+    #
+    # Do que o ensaio depende no hospedeiro, declarado: `bash` e `git` (o
+    # `git init` e o `git remote add` nao estao sob timeout e usam o git
+    # real) e, se houver, o `codeql` do hospedeiro, invocado por
+    # `codeql version` ANTES do laco e portanto fora do stub — o ensaio
+    # passa com ou sem ele, mas o prefixo de versao da linha de log muda.
+    #
+    # O `exec "$@"` do stub e a parte honesta dele, e tambem a razao pela
+    # qual a independencia de `codeql` vale so para os rc escolhidos aqui:
+    # um cenario futuro com STUB_RC_FETCH=0 deixaria a analise rodar de
+    # verdade no hospedeiro. Nos dois cenarios abaixo o laco da `continue`
+    # antes disso.
+    #
+    # O script fixa WORKDIR=/tmp/src-$CVE_ID, fora do tempdir da suite e nao
+    # parametrizavel; dai o CVE sintetico, que nenhuma campanha usa.
+    #
+    # O ensaio roda sobre o script do CodeQL, e a identidade do bloco nos
+    # tres, asseverada abaixo, e o que o estende aos outros dois.
+    print("\n== Obtencao do codigo: estouro distinguivel de recusa ==")
+    obt = tmp / "obtencao"
+    stub = obt / "stub"
+    stub.mkdir(parents=True)
+    (stub / "timeout").write_text(
+        '#!/bin/sh\n'
+        'shift\n'                      # descarta a duracao; $@ vira o comando
+        'case "$*" in\n'
+        '  *fetch*) exit "${STUB_RC_FETCH:-124}" ;;\n'
+        '  *clone*) exit "${STUB_RC_CLONE:-124}" ;;\n'
+        'esac\n'
+        'exec "$@"\n', encoding="utf-8")
+    (stub / "timeout").chmod(0o755)
+
+    ws = obt / "ws"
+    (ws / "datasets" / "listas").mkdir(parents=True)
+    lista_obt = ws / "datasets" / "listas" / "lote"
+    lista_obt.write_text(
+        "CVE-0000-00000,https://github.com/x/y.git,"
+        "0123456789abcdef0123456789abcdef01234567,CWE-079,a.js,1\n",
+        encoding="utf-8")
+    RUN_CODEQL = RAIZ / "ic-security-lab-codeql" / "scripts" / "run_codeql.sh"
+
+    def rodar_obtencao(rc_fetch, rc_clone):
+        logs = ws / "logs"
+        if logs.exists():
+            shutil.rmtree(logs)
+        env = dict(os.environ)
+        env["PATH"] = "%s:%s" % (stub, env.get("PATH", ""))
+        env["WORKSPACE"] = str(ws)
+        env["STUB_RC_FETCH"] = str(rc_fetch)
+        env["STUB_RC_CLONE"] = str(rc_clone)
+        r = subprocess.run(["bash", str(RUN_CODEQL), str(lista_obt)],
+                           env=env, capture_output=True, text=True)
+        # Log ausente e RESULTADO da verificacao — o script nao chegou a
+        # registrar —, e tem de sair como falha legivel. Deixar o
+        # FileNotFoundError subir mataria a suite e suprimiria em silencio
+        # todas as assercoes seguintes. Mesma blindagem de bloco_obtencao().
+        alvo = logs / "execution-log-codeql.csv"
+        if not alvo.is_file():
+            return "SEM_LOG rc=%d stderr=%s" % (r.returncode, r.stderr[-200:])
+        linhas = alvo.read_text(encoding="utf-8").strip().splitlines()
+        return linhas[-1] if linhas else "LOG_VAZIO"
+
+    l_estouro = rodar_obtencao(124, 124)
+    l_recusa = rodar_obtencao(128, 128)
+
+    checar(l_estouro != l_recusa,
+           "estouro do limite e recusa do servidor NAO produzem mais a mesma "
+           "linha de log: era o defeito que contaminava a contagem de fallback",
+           "%s || %s" % (l_estouro, l_recusa))
+    checar("fetch raso excedeu 300s" in l_estouro,
+           "o estouro do fetch e nomeado COM o valor do limite", l_estouro)
+    checar("clone completo excedeu 900s" in l_estouro,
+           "o estouro do clone de contingencia e nomeado COM o valor do limite",
+           l_estouro)
+    checar("fetch raso saiu com 128" in l_recusa
+           and "clone completo saiu com 128" in l_recusa,
+           "a recusa do servidor e registrada com o codigo que o git devolveu",
+           l_recusa)
+    checar("excedeu" not in l_recusa,
+           "recusa do servidor NUNCA e descrita como estouro de limite",
+           l_recusa)
+    checar(all(len(x.split(",")) == 6 for x in (l_estouro, l_recusa)),
+           "a mensagem nova nao tem virgula: o CSV continua com 6 campos",
+           "%d || %d" % (len(l_estouro.split(",")), len(l_recusa.split(","))))
+    checar(all(x.split(",")[3] == "ERRO_FETCH" for x in (l_estouro, l_recusa)),
+           "o conjunto de status e fechado: a correcao muda a mensagem e NAO "
+           "acrescenta status",
+           "%s || %s" % (l_estouro.split(",")[3], l_recusa.split(",")[3]))
+
+    # A suite NAO executa os outros dois scripts — eles exigem pack em
+    # /default.yaml e SNYK_TOKEN. O que estende o ensaio a eles e a
+    # identidade byte a byte do bloco de obtencao.
+    def bloco_obtencao(caminho):
+        # Devolve None em vez de estourar: marcador ausente e RESULTADO da
+        # verificacao — o script deixou de ter a forma esperada —, e tem de
+        # sair como falha legivel, nunca como traceback que derruba a suite
+        # inteira e esconde as assercoes seguintes.
+        linhas = caminho.read_text(encoding="utf-8").splitlines()
+        ini = [i for i, l in enumerate(linhas) if 'timeout "$TIMEOUT_FETCH"' in l]
+        # O fim tem de vir DEPOIS do inicio: com `fim` sendo apenas o
+        # primeiro REF="$COMMIT" do arquivo, um deslocamento futuro daria
+        # fatia VAZIA, e tres blocos vazios satisfariam a igualdade adiante
+        # — a assercao imprimiria `ok` tendo comparado nada.
+        fim = [i for i, l in enumerate(linhas)
+               if l.strip() == 'REF="$COMMIT"' and ini and i > ini[0]]
+        if not ini or not fim:
+            return None
+        bloco = "\n".join(linhas[ini[0]:fim[0] + 1])
+        return bloco if bloco.strip() else None
+
+    blocos = {}
+    for pasta in ("codeql", "semgrep", "snyk-code"):
+        blocos[pasta] = bloco_obtencao(
+            RAIZ / ("ic-security-lab-%s" % pasta) / "scripts"
+            / ("run_%s.sh" % pasta))
+    ausentes = [k for k, v in blocos.items() if v is None]
+    checar(not ausentes,
+           "o bloco de obtencao foi localizavel nos tres scripts",
+           "sem marcador em: %s" % ausentes)
+    checar(not ausentes and len(set(blocos.values())) == 1,
+           "o bloco de obtencao e IDENTICO nos tres scripts: sem isso o ensaio "
+           "acima valeria so para o CodeQL",
+           "; ".join("%s:%s" % (k, "AUSENTE" if v is None
+                                else "%d linhas" % (v.count(chr(10)) + 1))
+                     for k, v in blocos.items()))
+
+    for pasta, bloco in blocos.items():
+        if bloco is None:
+            continue
+        atribuicoes = [l for l in bloco.splitlines()
+                       if "MOTIVO_FETCH=" in l or "MOTIVO_CLONE=" in l
+                       or 'MENSAGEM="fallback' in l]
+        checar(len(atribuicoes) == 5 and not any("," in l for l in atribuicoes),
+               "%s: as 5 mensagens novas existem e nenhuma tem virgula" % pasta,
+               atribuicoes)
+
+    for pasta in ("codeql", "semgrep", "snyk-code"):
+        fonte_sh = (RAIZ / ("ic-security-lab-%s" % pasta) / "scripts"
+                    / ("run_%s.sh" % pasta)).read_text(encoding="utf-8")
+        checar("\nTIMEOUT_FETCH=300\n" in fonte_sh
+               and "\nTIMEOUT_CLONE=900\n" in fonte_sh,
+               "%s: os limites de obtencao valem 300s e 900s" % pasta,
+               [l for l in fonte_sh.splitlines() if l.startswith("TIMEOUT_")])
+        checar("timeout 300 " not in fonte_sh and "timeout 900 " not in fonte_sh,
+               "%s: nao sobrou literal de limite fora da constante" % pasta)
+
+    # check-log.py continua aceitando o que o script passou a escrever. O
+    # status nao mudou, entao a classificacao nao pode ter mudado.
+    log_obt = ws / "logs" / "obtencao.csv"
+    log_obt.write_text(
+        "cve,repo,commit,status,mensagem,duracao_segundos\n"
+        + l_estouro.replace("CVE-0000-00000", "CVE-X", 1) + "\n"
+        + l_recusa.replace("CVE-0000-00000", "CVE-Y", 1) + "\n",
+        encoding="utf-8")
+    raw_vazio = obt / "raw-vazio"
+    raw_vazio.mkdir()
+    p_obt = subprocess.run(
+        [sys.executable, str(CHECK_LOG), "--tool", "codeql",
+         "--log", str(log_obt), "--raw-dir", str(raw_vazio)],
+        capture_output=True, text=True)
+    checar(p_obt.returncode == 0,
+           "check-log.py aceita as linhas novas sem anomalia: erro sem raw e "
+           "o caso normal",
+           p_obt.stdout[-300:] + p_obt.stderr[-300:])
+    checar("(1) raw existe e o ultimo status e de erro: 0" in p_obt.stdout,
+           "check-log.py continua classificando ERRO_FETCH como status de erro",
+           p_obt.stdout[-300:])
 
     print("\n%d verificacoes, %d falha(s)" % (verificacoes, len(falhas)))
     for descricao in falhas:

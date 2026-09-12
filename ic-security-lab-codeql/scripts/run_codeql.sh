@@ -54,6 +54,15 @@ SUITE="codeql/javascript-queries:codeql-suites/javascript-security-extended.qls"
 TIMEOUT_CREATE=3600
 TIMEOUT_ANALYZE=3600
 
+# Limites da OBTENÇÃO do código. Os valores são exatamente os que já
+# vigoravam, em literal, nas duas invocações do laço: 300 s no fetch raso e
+# 900 s no clone de contingência. Nada muda de comportamento — o que muda é
+# que o valor passa a ter nome, e a mensagem do log pode citá-lo sem
+# duplicar o literal. Duplicá-lo faria a mensagem mentir no dia em que
+# alguém editasse só um dos dois lugares.
+TIMEOUT_FETCH=300
+TIMEOUT_CLONE=900
+
 LISTA_ARG="${1:-datasets/listas/cves-sast.txt}"
 case "$LISTA_ARG" in
     /*) LISTA="$LISTA_ARG" ;;
@@ -202,11 +211,37 @@ while IFS=',' read -r CVE_ID REPO_URL COMMIT CWES FILEPATH FILELINE <&3 || [ -n 
     fi
 
     # stderr do git NUNCA vai para /dev/null: descartaria a razão da falha.
-    if GIT_TERMINAL_PROMPT=0 timeout 300 git fetch -q --depth 1 origin "$COMMIT" < /dev/null; then
+    #
+    # O código de retorno é capturado em VARIÁVEL antes de decidir o ramo, e
+    # não consumido pela condição do `if`. Sem isso, estouro do limite
+    # (rc 124, do `timeout`) e recusa do servidor (`upload-pack: not our
+    # ref`, rc 128) caem no mesmo ramo de contingência e produzem a MESMA
+    # linha de log — causas opostas, lentidão nossa ou do servidor contra
+    # ausência do objeto, contadas no mesmo balde. A contagem de fallback é
+    # métrica de vigilância do protocolo, e só serve se as distinguir.
+    # É a disciplina que as invocações de análise deste script já seguem, e
+    # que faltava só na obtenção.
+    #
+    # O 124 é o estouro do `timeout` do GNU coreutils, que é o que as três
+    # imagens têm por serem todas de base Debian. Sob outra implementação o
+    # número seria outro e um estouro sairia como "saiu com N" — leitura
+    # falsa e silenciosa. Fica amarrado à base, que é fixada por digest.
+    GIT_TERMINAL_PROMPT=0 timeout "$TIMEOUT_FETCH" git fetch -q --depth 1 origin "$COMMIT" < /dev/null
+    RC_FETCH=$?
+    if [ "$RC_FETCH" -eq 0 ]; then
         REF="FETCH_HEAD"
     else
-        echo "[$CVE_ID] fetch raso falhou; tentando clone completo" >&2
-        MENSAGEM="fallback de clone completo"
+        # Nenhuma vírgula nestas mensagens. O `registrar` já troca vírgula
+        # por ponto-e-vírgula; escrever sem ela é a primeira linha, não a
+        # única. O log é CSV de seis campos, e quem o lê — o
+        # tools/check-log.py — separa por vírgula.
+        if [ "$RC_FETCH" -eq 124 ]; then
+            MOTIVO_FETCH="fetch raso excedeu ${TIMEOUT_FETCH}s"
+        else
+            MOTIVO_FETCH="fetch raso saiu com $RC_FETCH"
+        fi
+        echo "[$CVE_ID] $MOTIVO_FETCH; tentando clone completo" >&2
+        MENSAGEM="fallback de clone completo; $MOTIVO_FETCH"
         if ! cd /tmp; then
             registrar "$CVE_ID" "$REPO_URL" "$COMMIT" "ERRO_FETCH" \
                 "nao foi possivel voltar para /tmp" $((SECONDS - INICIO))
@@ -218,9 +253,18 @@ while IFS=',' read -r CVE_ID REPO_URL COMMIT CWES FILEPATH FILELINE <&3 || [ -n 
         # config clone.defaultSingleBranch o inverteria, e commit em branch
         # não-padrão ocorre neste dataset (quatro CVEs do bootstrap vivem só
         # em v3-dev). Sem isto, falha parcial e silenciosa.
-        if ! GIT_TERMINAL_PROMPT=0 timeout 900 git clone -q --no-single-branch "$REPO_URL" "$WORKDIR" < /dev/null; then
+        GIT_TERMINAL_PROMPT=0 timeout "$TIMEOUT_CLONE" git clone -q --no-single-branch "$REPO_URL" "$WORKDIR" < /dev/null
+        RC_CLONE=$?
+        if [ "$RC_CLONE" -ne 0 ]; then
+            # Mesma disciplina do fetch: estouro do limite não é falha do
+            # servidor, e o ERRO_FETCH tem de dizer qual dos dois foi.
+            if [ "$RC_CLONE" -eq 124 ]; then
+                MOTIVO_CLONE="clone completo excedeu ${TIMEOUT_CLONE}s"
+            else
+                MOTIVO_CLONE="clone completo saiu com $RC_CLONE"
+            fi
             registrar "$CVE_ID" "$REPO_URL" "$COMMIT" "ERRO_FETCH" \
-                "fetch raso e clone completo falharam" $((SECONDS - INICIO))
+                "$MOTIVO_CLONE; $MOTIVO_FETCH" $((SECONDS - INICIO))
             limpar
             continue
         fi
