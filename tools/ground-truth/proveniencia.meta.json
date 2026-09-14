@@ -1,0 +1,42 @@
+{
+  "o_que_esta_apuracao_estabelece":
+    "Que a explanation e o conjunto CWEs do ground truth do OpenSSF CVE Benchmark foram herdados da consulta do CodeQL que identificou o caso, na maioria dos 223 CVEs. E o achado mais forte do estudo e, ate esta fase, o unico que um terceiro nao reproduzia: os scripts nunca haviam sido versionados.",
+  "codeql": {
+    "url": "https://github.com/github/codeql.git",
+    "subcaminho": "javascript/ql/src",
+    "commit_2020": "a7451a12fcd9d1ab725e802f590eb35f5fcad618",
+    "commit_2020_data": "2020-12-09T21:24:21+01:00",
+    "commit_2020_como_escolhido":
+      "git log --until=\"2020-12-09\" --oneline -1 sobre o clone do github/codeql, sem --first-parent. 09/12/2020 e a data do anuncio do benchmark pela OpenSSF.",
+    "commit_2020_ressalva":
+      "ESCOLHA DECLARADA, NAO FATO. (a) O commit NAO e de main: e commit de branch do PR #4775 (C#), integrado ao main so em 17/12/2020; o --until corta por data de commit sobre historico linearizado. Conferido em 13/09/2026 que a arvore javascript/ql/src dele (4d630cef002c4303b92e7c32193cba203dd16957) e identica a do main em b649ccd8 (09/12/2020 19:55Z, ultimo merge do dia) e em af180d43 (11/12/2020 20:42Z, imediatamente antes do PR #4778): o resultado deste commit vale para main nessa janela e so nela. (b) --until com data sem hora completa com a hora corrente do dia e o fuso local, de modo que a escolha dependia de quando e onde o comando rodou. (c) Nao se estabelece que este seja o estado que a apuracao ORIGINAL usou: o clone local do operador esta no main atual e seu reflog tem uma entrada so, a do clone de 05/09/2026. Ver commit_2020_12_11.",
+    "commit_2020_12_11": "9ff6d68a9b39735517906edb64a6a77fa3e2546f",
+    "commit_2020_12_11_data": "2020-12-11T21:58:09Z",
+    "commit_2020_12_11_o_que_e":
+      "Merge do PR #4778 ('JS: add new prototype pollution query and reorganize') no main; primeiro pai af180d43. NAO e ancora escolhida em substituicao a commit_2020: e o estado que mede a sensibilidade do resultado a data de corte. Contra ele o cotejo da 185 de 223 e 185 de 185 identicos, 38 sem casar - a tabela registrada no CLAUDE.md, linha a linha. Contra commit_2020, 163 e 163 de 163. A diferenca sao exatamente os 22 CVEs de Security/CWE-915/PrototypePollutingFunction.ql, cujo @name 'Prototype-polluting function' e cujas tags 078/079/094/400/915 estao no branch do PR desde fd293d07 (09/12/2020 09:58Z), antes do commit do release 1.0.0 do benchmark (09/12/2020 13:27Z). O ultimo merge do main em dezembro de 2020 (2bb96369, 22/12) tambem da 185 de 185. Qual estado representa 'dez/2020' e decisao do operador.",
+    "commit_atual": "f7caf559a2908474c623a4de26b511718a3d3272",
+    "commit_atual_data": "2026-09-05T10:18:23+01:00",
+    "commit_atual_como_escolhido":
+      "HEAD do clone que o operador fez em 05/09/2026, que e o estado que a apuracao original teria tido como 'atual'. Fixado aqui para que a linha do catalogo atual seja reproduzivel: um terceiro rodando meses depois pegaria outro HEAD e outro numero."
+  },
+  "semgrep": {
+    "url": "https://github.com/semgrep/semgrep-rules.git",
+    "subcaminho": "*",
+    "commit": "40b8c63f75dc7c22c8a77482d73bfb864b146f7e",
+    "commit_data": "2026-07-29T19:46:44-07:00",
+    "obtido_em": "2026-09-05",
+    "papel": "CONTROLE, nao medicao. Testa se as explanation do ground truth sao vocabulario comum da area — caso em que apareceriam tambem no Semgrep — ou especificas do CodeQL. Match ALTO refutaria a hipotese; match baixo e o esperado e prova pouco por si, porque os formatos diferem (o Semgrep usa id em slug e message em frase, o CodeQL usa nome curto de consulta).",
+    "viés_declarado":
+      "O cotejo e feito contra o catalogo ATUAL do Semgrep, nao o de 2020. O viés e CONSERVADOR: um catalogo menor, como o de 2020, daria correspondencia ainda menor que a nula medida. Trocar o catalogo por um de 2020 so reforcaria a conclusao, nunca a inverteria."
+  },
+  "ground_truth": {
+    "origem": "datasets/cve-metadata.csv, versionado neste repositorio",
+    "registros": 223,
+    "por_que_o_csv_e_nao_o_clone":
+      "O cruza-semgrep.js original lia os JSON do clone do benchmark, que e ignorado pelo git e nao existe em clone limpo. Ler o CSV versionado e o que torna o cotejo reproduzivel a partir do repositorio sozinho. A equivalencia entre as duas fontes e CONFERIDA pelos dois scripts quando o clone esta presente, e nao presumida: explanation no cruza-semgrep.js; explanation de todas as weaknesses e conjunto canonico de CWEs no cruza-codeql.py.",
+    "clone_conferido": "91c59fd54b2b768c0f310bb0027d2ac59cdf74d4",
+    "clone_conferido_em": "2026-09-13",
+    "clone_ressalva":
+      "O clone e ignorado pelo git e este procedimento nao fixa seu commit; o valor acima registra contra qual estado a equivalencia foi conferida (0 divergencias em 223 CVEs)."
+  }
+}

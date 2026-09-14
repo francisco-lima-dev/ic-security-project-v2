@@ -1,0 +1,8 @@
+{
+  "name": "ic-security-ground-truth",
+  "private": true,
+  "description": "Controle da apuracao de proveniencia do ground truth. Dependencia FIXADA por versao exata, sem ^: o resultado do controle nao pode mudar porque o resolvedor escolheu outra versao do parser.",
+  "dependencies": {
+    "js-yaml": "5.4.1"
+  }
+}
