@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 #
-# obter-catalogos.sh — materializa, em estado FIXADO, os catálogos de que a
-# apuração de proveniência depende. Sem isto, o cotejo não é reproduzível
-# por terceiro: dependeria de clones que só existem na máquina de quem
-# apurou.
+# obter-catalogos.sh — materializa, em estado FIXADO, os catálogos e estados
+# do benchmark de que a apuração de proveniência depende. Sem isto, o cotejo
+# não é reproduzível por terceiro: dependeria de clones que só existem na
+# máquina de quem apurou.
 #
 # Uso:
 #   tools/ground-truth/obter-catalogos.sh <diretorio-destino>
 #
 # Grava:
-#   <destino>/codeql-2020/javascript/ql/src        consultas JS em commit_2020
-#   <destino>/codeql-2020-12-11/javascript/ql/src  consultas JS no main após o PR #4778
-#   <destino>/codeql-atual/javascript/ql/src       consultas JS no commit "atual"
+#   <destino>/codeql-2020/javascript/ql/src        CodeQL de REFERÊNCIA (commit_2020)
+#   <destino>/codeql-2020-12-02/javascript/ql/src  main anterior ao estado prévio do benchmark
+#   <destino>/codeql-2020-12-11/javascript/ql/src  main após o PR #4778
+#   <destino>/codeql-atual/javascript/ql/src       CodeQL no commit "atual"
 #   <destino>/semgrep-rules                        catálogo do Semgrep
+#   <destino>/benchmark-previo/CVEs                benchmark ANTES do release 1.0.0
+#   <destino>/benchmark-release/CVEs               benchmark NO commit do release 1.0.0
 #
-# O segundo estado NÃO é âncora alternativa escolhida: é o que mede a
-# sensibilidade do resultado à data de corte dentro de dezembro de 2020.
-# Ver README.md e proveniencia.meta.json.
+# Só o primeiro é âncora. O de 11/12 mede a sensibilidade do resultado à data
+# de corte; o de 02/12 é o main que antecede o estado prévio do benchmark; os
+# dois estados do benchmark são o antes e o depois da troca de rótulos que o
+# achado temporal descreve. Ver README.md e proveniencia.meta.json.
 #
 # Os commits estão em proveniencia.meta.json, versionado, e são os mesmos que
 # o README cita. Não há valor digitado duas vezes.
@@ -111,9 +115,12 @@ obter() {  # obter <rotulo> <url> <sha> <subcaminho> <destino-absoluto>
     return 0
 }
 
-obter "CodeQL commit_2020" \
+obter "CodeQL commit_2020 (referencia)" \
     "$(ler codeql.url)" "$(ler codeql.commit_2020)" \
     "$(ler codeql.subcaminho)" "$DESTINO/codeql-2020"
+obter "CodeQL main 02/12/2020 (anterior ao benchmark previo)" \
+    "$(ler codeql.url)" "$(ler codeql.commit_2020_12_02)" \
+    "$(ler codeql.subcaminho)" "$DESTINO/codeql-2020-12-02"
 obter "CodeQL main 11/12/2020 (PR #4778)" \
     "$(ler codeql.url)" "$(ler codeql.commit_2020_12_11)" \
     "$(ler codeql.subcaminho)" "$DESTINO/codeql-2020-12-11"
@@ -123,6 +130,12 @@ obter "CodeQL atual" \
 obter "semgrep-rules" \
     "$(ler semgrep.url)" "$(ler semgrep.commit)" \
     "$(ler semgrep.subcaminho)" "$DESTINO/semgrep-rules"
+obter "benchmark, estado previo ao release" \
+    "$(ler benchmark.url)" "$(ler benchmark.previo_commit)" \
+    "$(ler benchmark.subcaminho)" "$DESTINO/benchmark-previo"
+obter "benchmark, commit do release" \
+    "$(ler benchmark.url)" "$(ler benchmark.release_commit)" \
+    "$(ler benchmark.subcaminho)" "$DESTINO/benchmark-release"
 
 if [ "$FALHAS" -gt 0 ]; then
     echo "ERRO: $FALHAS catalogo(s) nao foram obtidos." >&2

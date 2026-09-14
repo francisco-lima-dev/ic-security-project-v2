@@ -1,29 +1,103 @@
 {
   "o_que_esta_apuracao_estabelece":
     "Que a explanation e o conjunto CWEs do ground truth do OpenSSF CVE Benchmark foram herdados da consulta do CodeQL que identificou o caso, na maioria dos 223 CVEs. E o achado mais forte do estudo e, ate esta fase, o unico que um terceiro nao reproduzia: os scripts nunca haviam sido versionados.",
+  "convencao":
+    "Este descritor guarda ENTRADAS e FATOS DE PROVENIENCIA: commits, datas, hashes de arvore e dados obtidos da API do GitHub, cada um com a fonte e o campo. Nao guarda contagens: toda contagem sai da saida de cruza-codeql.py, compara-relatorios.py ou cruza-semgrep.js, e e citada no README a partir dela. Datas em UTC.",
   "codeql": {
     "url": "https://github.com/github/codeql.git",
     "subcaminho": "javascript/ql/src",
-    "commit_2020": "a7451a12fcd9d1ab725e802f590eb35f5fcad618",
-    "commit_2020_data": "2020-12-09T21:24:21+01:00",
+
+    "commit_2020": "ec573b517fcbe9c452b86ddc4ae0888819c85deb",
+    "commit_2020_data": "2020-12-08T15:38:36Z",
+    "commit_2020_arvore_js": "4d630cef002c4303b92e7c32193cba203dd16957",
+    "commit_2020_o_que_e": "Merge do PR #4759 no main (GET repos/github/codeql/pulls/4759 -> merge_commit_sha; primeiro pai 3bddb946, do main).",
     "commit_2020_como_escolhido":
-      "git log --until=\"2020-12-09\" --oneline -1 sobre o clone do github/codeql, sem --first-parent. 09/12/2020 e a data do anuncio do benchmark pela OpenSSF.",
-    "commit_2020_ressalva":
-      "ESCOLHA DECLARADA, NAO FATO. (a) O commit NAO e de main: e commit de branch do PR #4775 (C#), integrado ao main so em 17/12/2020; o --until corta por data de commit sobre historico linearizado. Conferido em 13/09/2026 que a arvore javascript/ql/src dele (4d630cef002c4303b92e7c32193cba203dd16957) e identica a do main em b649ccd8 (09/12/2020 19:55Z, ultimo merge do dia) e em af180d43 (11/12/2020 20:42Z, imediatamente antes do PR #4778): o resultado deste commit vale para main nessa janela e so nela. (b) --until com data sem hora completa com a hora corrente do dia e o fuso local, de modo que a escolha dependia de quando e onde o comando rodou. (c) Nao se estabelece que este seja o estado que a apuracao ORIGINAL usou: o clone local do operador esta no main atual e seu reflog tem uma entrada so, a do clone de 05/09/2026. Ver commit_2020_12_11.",
+      "Ultimo merge do main, pela cadeia de primeiros pais, com data de commit anterior a benchmark.release_commit_data. Reproduzivel: git log --first-parent --until=2020-12-09T13:27:12Z -1 a partir de qualquer commit do main posterior (conferido a partir de codeql.commit_2020_12_11). O merge seguinte na cadeia, 48a9521d, e de 2020-12-09T15:39:19Z.",
+    "commit_2020_por_que":
+      "ESTADO DE REFERENCIA, decisao do operador em 2026-09-13. A tese do estudo e heranca: para o rotulo ser herdado, a consulta tem de existir antes dele. A referencia e o CodeQL INTEGRADO AO MAIN no momento do commit do release do benchmark. E contagem conservadora por construcao: nao credita como heranca rotulo que corresponda a codigo ainda nao integrado. Isso NAO afirma que correspondencia com estado posterior seja mera coincidencia: ver achado_temporal, onde a heranca de codigo publico nao integrado esta documentada para os CVEs de prototype pollution.",
+    "commit_2020_dependencia_da_data":
+      "A selecao usa benchmark.release_commit_data, gravada pelo cliente. O NUMERO nao depende dela dentro da janela conferida: os oito merges da cadeia de primeiros pais de ec573b51 (2020-12-08T15:38:36Z) a af180d43 (2020-12-11T20:42:11Z) tem a mesma arvore JS (arvores_js_conferidas), de modo que qualquer corte nessa janela da o mesmo cotejo.",
+    "commit_2020_historico_da_escolha":
+      "Fase P: a7451a12fcd9d1ab725e802f590eb35f5fcad618, por git log --until=2020-12-09 SEM --first-parent. E commit de branch do PR #4775 (C#), integrado ao main so em 2020-12-17 (GET repos/github/codeql/commits/a7451a12/pulls -> merged_at), e --until sem hora completa com a hora e o fuso de quem roda. Fase P-2, primeira decisao do operador em 2026-09-13: b649ccd88049b1a6f127c69b5224a2f11b4054a2, ultimo merge do main em 2020-12-09 (19:55:37Z). Revista no mesmo dia para ec573b51 porque b649ccd8 e POSTERIOR ao commit do release do benchmark e nao satisfaz, por construcao, o criterio de a consulta existir antes. As arvores JS das tres sao identicas (arvores_js_conferidas): o numero nao muda, mas as duas anteriores so valiam por coincidencia de arvore.",
+    "commit_2020_apuracao_original":
+      "NAO ESTABELECIDO, e sem como estabelecer, qual estado de dez/2020 a apuracao ORIGINAL usou. Ela nao deixou script nem registro de commit. O clone local do github/codeql do operador esta no main atual e seu reflog tem uma entrada so, a do clone de 2026-09-05, sem checkout algum para 2020; o estado pode ter vindo de outro clone, da API ou de git show, que nao deixa entrada no reflog. Os scripts nao rastreados do clone do benchmark foram lidos e nao sao o cotejo (ground_truth.clone_scripts_nao_rastreados_leitura).",
+
+    "commit_2020_12_02": "04bacf43477d70ce8533cf8c9245cfd1dcf1462e",
+    "commit_2020_12_02_data": "2020-12-02T21:08:22Z",
+    "commit_2020_12_02_arvore_js": "d8383e83c7b3d294195317fa91f861a9c9f5cdb5",
+    "commit_2020_12_02_papel":
+      "MAIN QUE ANTECEDE O ESTADO PREVIO DO BENCHMARK, nao ancora. Merge do PR #4760; ultimo merge do main, pela cadeia de primeiros pais, com data de commit anterior a benchmark.previo_data. Existe para que a afirmacao 'a consulta precede o rotulo' valha tambem para o estado previo do benchmark, cotejando-o contra um main anterior a ele e nao so contra a referencia, que e posterior.",
+
     "commit_2020_12_11": "9ff6d68a9b39735517906edb64a6a77fa3e2546f",
     "commit_2020_12_11_data": "2020-12-11T21:58:09Z",
-    "commit_2020_12_11_o_que_e":
-      "Merge do PR #4778 ('JS: add new prototype pollution query and reorganize') no main; primeiro pai af180d43. NAO e ancora escolhida em substituicao a commit_2020: e o estado que mede a sensibilidade do resultado a data de corte. Contra ele o cotejo da 185 de 223 e 185 de 185 identicos, 38 sem casar - a tabela registrada no CLAUDE.md, linha a linha. Contra commit_2020, 163 e 163 de 163. A diferenca sao exatamente os 22 CVEs de Security/CWE-915/PrototypePollutingFunction.ql, cujo @name 'Prototype-polluting function' e cujas tags 078/079/094/400/915 estao no branch do PR desde fd293d07 (09/12/2020 09:58Z), antes do commit do release 1.0.0 do benchmark (09/12/2020 13:27Z). O ultimo merge do main em dezembro de 2020 (2bb96369, 22/12) tambem da 185 de 185. Qual estado representa 'dez/2020' e decisao do operador.",
+    "commit_2020_12_11_arvore_js": "6393c106fd9ae3c2aaa43d02e1db76334ab54097",
+    "commit_2020_12_11_papel":
+      "MEDIDA DE SENSIBILIDADE A DATA DE CORTE, nao ancora alternativa. Merge do PR #4778 ('JS: add new prototype pollution query and reorganize') no main, primeiro pai af180d43; primeiro estado do main que contem Security/CWE-915/PrototypePollutingFunction.ql. A tabela registrada no CLAUDE.md (atribuida la a 09/12/2020) se reproduz neste estado.",
+
     "commit_atual": "f7caf559a2908474c623a4de26b511718a3d3272",
-    "commit_atual_data": "2026-09-05T10:18:23+01:00",
+    "commit_atual_data": "2026-09-05T09:18:23Z",
     "commit_atual_como_escolhido":
-      "HEAD do clone que o operador fez em 05/09/2026, que e o estado que a apuracao original teria tido como 'atual'. Fixado aqui para que a linha do catalogo atual seja reproduzivel: um terceiro rodando meses depois pegaria outro HEAD e outro numero."
+      "HEAD do clone que o operador fez em 05/09/2026, que e o estado que a apuracao original teria tido como 'atual'. Fixado aqui para que a linha do catalogo atual seja reproduzivel: um terceiro rodando meses depois pegaria outro HEAD e outro numero.",
+
+    "consulta_prototype_pollution":
+      "PrototypePollutionUtility.ql (Security/CWE-400/, na referencia) e PrototypePollutingFunction.ql (Security/CWE-915/, a partir do PR #4778) sao a MESMA consulta, @id js/prototype-pollution-utility, renomeada e movida; o change-note tocado por fd293d07 declara a renomeacao. Conferido no cabecalho .ql dos dois catalogos. ResourceExhaustion.ql e ServerCrash.ql nao existem em nenhum dos catalogos de 2020 obtidos por obter-catalogos.sh.",
+
+    "arvores_js_conferidas": {
+      "metodo": "git rev-parse <commit>:javascript/ql/src sobre fetch raso com --filter=blob:none (ec573b51, a7451a12, b649ccd8, 9ff6d68a) e GET repos/github/codeql/contents/javascript/ql?ref=<commit> -> sha da entrada src (todos). Os dois metodos concordam onde ambos foram aplicados. Conferido em 2026-09-13.",
+      "04bacf43477d70ce8533cf8c9245cfd1dcf1462e": "d8383e83c7b3d294195317fa91f861a9c9f5cdb5",
+      "ec573b517fcbe9c452b86ddc4ae0888819c85deb": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "48a9521df93c5b040c13e5ce3c6e4c1359f1c5fb": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "f95c480b51018ffedb693bcf90da5350b652fdfc": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "b649ccd88049b1a6f127c69b5224a2f11b4054a2": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "0210c1f72171339f15fd581869d8e49107588a83": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "9bec9b46e104391c7561febfea8885365d77b65d": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "e5ef0e35df5670d5b2a7fa93b71fa6140e252890": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "af180d430e0a950feb551ad7e47ad87457157ea7": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "a7451a12fcd9d1ab725e802f590eb35f5fcad618": "4d630cef002c4303b92e7c32193cba203dd16957",
+      "9ff6d68a9b39735517906edb64a6a77fa3e2546f": "6393c106fd9ae3c2aaa43d02e1db76334ab54097",
+      "leitura": "Os oito merges da cadeia de primeiros pais do main de ec573b51 a af180d43, listados acima em ordem, e o commit de branch a7451a12 tem a mesma arvore JS; a primeira mudanca na cadeia e o merge do PR #4778 (9ff6d68a). 04bacf43, anterior ao estado previo do benchmark, tem arvore distinta."
+    }
+  },
+  "benchmark": {
+    "url": "https://github.com/ossf-cve-benchmark/ossf-cve-benchmark.git",
+    "subcaminho": "CVEs",
+    "release_commit": "4e90564e50b099af5041c7d7289c60cb9132ab1a",
+    "release_commit_data": "2020-12-09T13:27:12Z",
+    "release_commit_fonte": "GET repos/ossf-cve-benchmark/ossf-cve-benchmark/commits/4e90564 -> commit.committer.date. commit.author.date e 2020-09-22T06:39:46Z. Mensagem 'Release 1.0.0'. Commit raiz da historia atual do repositorio.",
+    "release_ressalva": "NAO ha objeto Release nem tag (GET .../releases e GET .../tags devolvem lista vazia). A data e de COMMIT, GRAVADA PELO CLIENTE, e nao de publicacao; nao foi encontrado limite superior do lado do servidor. O fork mais antigo listado (GET .../forks?sort=oldest -> created_at) e de 2020-12-09T13:50:06Z, mas aponta hoje para commits posteriores, e a historia do benchmark foi reescrita: o conteudo do fork na criacao nao e recuperavel, e o fork pode ser anterior ao commit achatado.",
+    "release_vs_csv": "O CSV versionado corresponde ao clone em ground_truth.clone_conferido, NAO ao commit do release. Entre o release e aquele commit, CVEs foram acrescentados e arquivos modificados (git diff --name-status 4e90564 HEAD -- CVEs no clone). Contagens: compara-relatorios.py entre o release e o CSV, citada no README.",
+    "previo_commit": "85411e55e072e4a964751c27f9d3322b5befb653",
+    "previo_data": "2020-12-02T22:37:58Z",
+    "previo_como_obtido": "base.sha do PR #1 do repositorio do benchmark (GET .../pulls/1), aberto em 2020-12-03T14:33:31Z e fechado sem merge em 2020-12-03T22:47:07Z. Mensagem 'preview release #4 for ossf'. Pertence a historia anterior ao achatamento do release e continua alcancavel por fetch raso por SHA.",
+    "previo_forma": "Um CVE do estado previo (CVE-2019-14863) usa a forma antiga do schema, com a weakness em patchBase e sem prePatch; cruza-codeql.py --gt-json le as duas formas e lista qual CVE usou a antiga.",
+    "previo_publicidade": "NAO ESTABELECIDA. A existencia de PR em 2020-12-03 nao prova visibilidade publica do repositorio naquela data."
+  },
+  "achado_temporal": {
+    "forma": "(b) — no commit do release, o estado de consulta que os rotulos dos CVEs de prototype pollution reproduzem era PUBLICO, num PR aberto, e NAO INTEGRADO ao main.",
+    "pr_4778_criado": "2020-12-04T13:02:02Z",
+    "pr_4778_criado_fonte": "GET repos/github/codeql/pulls/4778 -> created_at. A timeline (GET .../issues/4778/timeline) nao tem evento convert_to_draft nem ready_for_review.",
+    "pr_4778_head": "asgerf/codeql:js/more-prototype-pollution",
+    "pr_4778_head_fonte": "mesmo endpoint -> head.label; head.repo.fork true; head.repo.private false (valor atual).",
+    "pr_4778_merge": "2020-12-11T21:58:10Z",
+    "pr_4778_merge_fonte": "mesmo endpoint -> merged_at; merge_commit 9ff6d68a.",
+    "nome_no_pr": "O @name 'Prototype-polluting function' ja esta no head revisado em 2020-12-07T09:56:24Z (timeline, evento reviewed, commit_id d0bb6315483253ebe9b2c6a9a36e2f42354a3418), com tags 078/094/400/915 e sem 079 (GET .../contents/javascript/ql/src/Security/CWE-915/PrototypePollutingFunction.ql?ref=d0bb6315).",
+    "fd293d07": "fd293d07d7cfed26d1ce53d28f4c5cce992da2cf",
+    "fd293d07_o_que_muda": "Acrescenta external/cwe/cwe-079 a PrototypePollutingFunction.ql (GET repos/github/codeql/commits/fd293d07 -> files[].patch), completando o conjunto 078/079/094/400/915.",
+    "fd293d07_no_branch_nao_antes_de": "2020-12-09T09:58:52Z",
+    "fd293d07_no_branch_nao_antes_de_fonte": "commit.committer.date de fd293d07. Gravada pelo cliente: limite inferior plausivel, nao garantido.",
+    "fd293d07_no_branch_ate": "2020-12-09T09:59:55Z",
+    "fd293d07_no_branch_ate_fonte": "ed729a19638aa00113466296f550e87638d5408a, filho de fd293d07 e ultimo commit do PR (GET .../pulls/4778/commits), 'Apply suggestions from code review', criado pelo SERVIDOR do GitHub: commit.committer.name 'GitHub', email noreply@github.com, committer.login web-flow, verification.verified true, commit.committer.date 2020-12-09T09:59:55Z. O commit de sugestao e criado sobre o head do PR, entao o pai ja estava no branch.",
+    "fd293d07_sem_ci": "statuses, check-runs e check-suites vazios para fd293d07 e ed729a19: nao ha data de CI para limitar o push.",
+    "ordem_por_data": "fd293d07 no branch ate 2020-12-09T09:59:55Z (data do servidor) e commit do release em 2020-12-09T13:27:12Z (data do cliente). A ordem entre as duas depende do relogio do cliente do benchmark.",
+    "ordem_por_conteudo": "Independente de relogio: os rotulos dos CVEs de prototype pollution no commit do release trazem o conjunto 078/079/094/400/915, que no historico publico do CodeQL aparece primeiro em fd293d07 — o head revisado d0bb6315 e o main ate 9ff6d68a nao o tem. O conteudo do release e, portanto, posterior ou contemporaneo a esse estado, ou a um equivalente nao publicado.",
+    "troca_de_rotulos": "No estado previo do benchmark (benchmark.previo_commit) os CVEs de prototype pollution trazem o @name e as tags da consulta js/prototype-pollution-utility como estava no main; no commit do release (benchmark.release_commit), os da mesma consulta renomeada no PR, a partir de fd293d07. Contagens e CVEs: saida de compara-relatorios.py, citada no README.",
+    "o_que_nao_se_estabelece": "De onde os autores do benchmark tiraram o estado do PR — do PR publico ou de copia propria —, se o estado previo do benchmark era publico, e a hora de publicacao do release: so a do commit, gravada pelo cliente."
   },
   "semgrep": {
     "url": "https://github.com/semgrep/semgrep-rules.git",
     "subcaminho": "*",
     "commit": "40b8c63f75dc7c22c8a77482d73bfb864b146f7e",
-    "commit_data": "2026-07-29T19:46:44-07:00",
+    "commit_data": "2026-07-30T02:46:44Z",
     "obtido_em": "2026-09-05",
     "papel": "CONTROLE, nao medicao. Testa se as explanation do ground truth sao vocabulario comum da area — caso em que apareceriam tambem no Semgrep — ou especificas do CodeQL. Match ALTO refutaria a hipotese; match baixo e o esperado e prova pouco por si, porque os formatos diferem (o Semgrep usa id em slug e message em frase, o CodeQL usa nome curto de consulta).",
     "viés_declarado":
@@ -31,12 +105,15 @@
   },
   "ground_truth": {
     "origem": "datasets/cve-metadata.csv, versionado neste repositorio",
-    "registros": 223,
     "por_que_o_csv_e_nao_o_clone":
       "O cruza-semgrep.js original lia os JSON do clone do benchmark, que e ignorado pelo git e nao existe em clone limpo. Ler o CSV versionado e o que torna o cotejo reproduzivel a partir do repositorio sozinho. A equivalencia entre as duas fontes e CONFERIDA pelos dois scripts quando o clone esta presente, e nao presumida: explanation no cruza-semgrep.js; explanation de todas as weaknesses e conjunto canonico de CWEs no cruza-codeql.py.",
     "clone_conferido": "91c59fd54b2b768c0f310bb0027d2ac59cdf74d4",
+    "clone_conferido_data": "2023-11-29T14:14:34Z",
     "clone_conferido_em": "2026-09-13",
     "clone_ressalva":
-      "O clone e ignorado pelo git e este procedimento nao fixa seu commit; o valor acima registra contra qual estado a equivalencia foi conferida (0 divergencias em 223 CVEs)."
+      "O clone e ignorado pelo git e este procedimento nao fixa seu commit; o valor acima registra contra qual estado a equivalencia foi conferida. O CSV e, portanto, o benchmark neste commit, e nao no commit do release (benchmark.release_vs_csv).",
+    "clone_scripts_nao_rastreados": ["agrupa-conjuntos-cwe.js", "detalha-grupo.js", "diagnostico-ground-truth.js"],
+    "clone_scripts_nao_rastreados_leitura":
+      "Encontrados na raiz do clone local do benchmark, nao rastreados. Lidos por inteiro em 2026-09-13: os tres leem apenas <pasta>/*.json do benchmark (fs.readdirSync + JSON.parse), agrupam ou contam CWEs, explanation e localizacoes, e nao leem catalogo algum do CodeQL ou do Semgrep. NAO sao o cotejo de proveniencia nem registram o estado de dez/2020 usado na apuracao original. A busca por essa pista se encerra aqui."
   }
 }

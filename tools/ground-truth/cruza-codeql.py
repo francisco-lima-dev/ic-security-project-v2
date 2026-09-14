@@ -6,6 +6,7 @@ catálogo de consultas JavaScript do CodeQL, num commit FIXADO.
 
     python3 tools/ground-truth/cruza-codeql.py <dir-consultas> [--rotulo X]
                                               [--json F] [--csv F] [--clone D]
+                                              [--gt-json D]
 
 É a reconstrução do cotejo que produziu o achado mais forte do estudo — que
 `explanation` e `CWEs` do ground truth foram herdados da consulta do CodeQL
@@ -17,6 +18,24 @@ controle. O cotejo principal não precisa de parser YAML — lê CSV e o
 cabeçalho QLDoc dos `.ql`, ambos com a biblioteca padrão —, então escrevê-lo
 em Python elimina a dependência de `node_modules` para a metade que carrega
 o achado. O controle permanece em Node por outro motivo, declarado lá.
+
+FONTE DO GROUND TRUTH. Por padrão, o CSV versionado, que corresponde ao
+benchmark no commit do clone conferido — não ao commit do release. Com
+`--gt-json`, uma pasta `CVEs/` do benchmark em qualquer estado — o anterior
+ao release e o do próprio release, que o obter-catalogos.sh materializa.
+Nesse modo não há equivalência a conferir: a fonte é o próprio JSON.
+
+Leitura do JSON, e o que aborta:
+  - as weaknesses vêm de `prePatch.weaknesses`; na ausência de `prePatch`,
+    de `patchBase.weaknesses`, forma mais antiga do schema, que o estado
+    prévio ao release ainda usa em um CVE. Sem nenhuma das duas chaves:
+    ABORTA — tratar como "sem weakness" seria artefato de formato;
+  - explanation distintas entre weaknesses do mesmo CVE: ABORTA, porque o
+    CSV tem uma por CVE e escolher uma em silêncio mudaria o casamento;
+  - CVE repetido, ou campo `CVE` diferente do nome do arquivo: ABORTA;
+  - lista de weaknesses vazia, ou todas com explanation vazia: o CVE entra
+    com explanation vazia, não casa, e é LISTADO — é ausência de rótulo,
+    não ambiguidade.
 
 CRITÉRIO DE CASAMENTO — e por que não é subcadeia.
 Duas medidas, ambas reportadas:
@@ -31,7 +50,8 @@ decomposição NFD vem antes das minúsculas e sai toda a categoria Mn; lá as
 minúsculas vêm antes e sai só a faixa U+0300–U+036F. Sobre ASCII as duas
 coincidem, e as 223 `explanation` são ASCII (conferido em 13/09/2026). O
 exato é reportado junto para que se saiba quanto da correspondência vem de
-diferença de pontuação ou caixa, e quanto é identidade literal.
+diferença de pontuação ou caixa, e quanto é identidade literal. Explanation
+cuja chave normalizada é vazia não casa com nada.
 
 NUNCA subcadeia. O CLAUDE.md registra que os 17% obtidos por subcadeia no
 controle do Semgrep eram termos genéricos — "cross site scripting" — dentro
@@ -43,8 +63,8 @@ ESCOPO DO CATÁLOGO, declarado: todo `.ql` sob o diretório dado, INCLUSIVE
 experimental. No catálogo atual são 3, por `experimental/Security/CWE-918/
 SSRF.ql`, que herdou o @name de `Security/CWE-918/RequestForgery.ql` de 2020.
 
-CWE: normalizado para três dígitos DOS DOIS LADOS. O ground truth tem 14
-CVEs com CWE sem zero à esquerda, e o catálogo do CodeQL grava a tag em
+CWE: normalizado para três dígitos DOS DOIS LADOS. O ground truth tem CVEs
+com CWE sem zero à esquerda, e o catálogo do CodeQL grava a tag em
 minúsculas (`external/cwe/cwe-079`). Comparar sem normalizar produziria
 divergência que é do formato, não do dado.
 
@@ -62,10 +82,14 @@ subconjunto de todo conjunto — conjunto vazio não afirma herança parcial de
 coisa alguma. É o que separa 108/74/3 de 108/75/2 no catálogo atual; o
 relatório imprime também a contagem com o vazio tratado como subconjunto.
 
-EQUIVALÊNCIA CSV × BENCHMARK: o cotejo lê o CSV versionado. Quando o clone
-do benchmark está presente, a equivalência é CONFERIDA — explanation de
-todas as weaknesses e conjunto canônico de CWEs, CVE a CVE — e divergência
-aborta. Clone ausente gera aviso, não presunção silenciosa.
+EQUIVALÊNCIA CSV × BENCHMARK: quando o ground truth vem do CSV e o clone do
+benchmark está presente, a equivalência é CONFERIDA — explanation de todas
+as weaknesses e conjunto canônico de CWEs, CVE a CVE — e divergência aborta.
+Clone ausente gera aviso, não presunção silenciosa.
+
+O relatório JSON grava o rótulo de TODO CVE do ground truth, casado ou não,
+para que compara-relatorios.py nomeie diferenças entre dois estados sem
+recorrer a subtração de totais.
 """
 from __future__ import annotations
 
@@ -115,6 +139,50 @@ def ler_ground_truth(caminho):
                 "cwes": {c for c in cwes if c},
             })
     return registros
+
+
+def ler_ground_truth_json(pasta):
+    """Lê o ground truth de uma pasta CVEs/ do benchmark.
+
+    Devolve (registros, problemas, sem_explanation, forma_antiga). Ver
+    "Leitura do JSON" no docstring do módulo para o que é problema (aborta)
+    e o que é listado.
+    """
+    registros, problemas, sem_explanation, forma_antiga = [], [], [], []
+    vistos = set()
+    for arq in sorted(Path(pasta).glob("*.json")):
+        d = json.loads(arq.read_text(encoding="utf-8"))
+        cve = str(d.get("CVE") or "").strip()
+        if cve != arq.stem:
+            problemas.append("%s: campo CVE %r difere do nome do arquivo"
+                             % (arq.name, cve))
+            continue
+        if cve in vistos:
+            problemas.append("%s: CVE repetido" % cve)
+            continue
+        vistos.add(cve)
+        if "prePatch" in d:
+            base = d["prePatch"]
+        elif "patchBase" in d:
+            base = d["patchBase"]
+            forma_antiga.append(cve)
+        else:
+            problemas.append("%s: sem prePatch nem patchBase" % cve)
+            continue
+        weaknesses = (base or {}).get("weaknesses") or []
+        exps = {(w.get("explanation") or "").strip() for w in weaknesses} - {""}
+        if len(exps) > 1:
+            problemas.append("%s: %d explanation distintas" % (cve, len(exps)))
+            continue
+        if not exps:
+            sem_explanation.append(cve)
+        cwes = {cwe_canonico(x) for x in (d.get("CWEs") or [])} - {None}
+        registros.append({
+            "cve": cve,
+            "explanation": exps.pop() if exps else "",
+            "cwes": cwes,
+        })
+    return registros, problemas, sem_explanation, forma_antiga
 
 
 def conferir_clone(gt, pasta):
@@ -197,14 +265,35 @@ def main(argv=None):
     ap.add_argument("--clone", default=str(CLONE_PADRAO),
                     help="pasta CVEs/ do clone do benchmark, para conferir "
                          "a equivalência com o CSV")
+    ap.add_argument("--gt-json",
+                    help="lê o ground truth desta pasta CVEs/ em vez do CSV "
+                         "(ex.: benchmark anterior ao release, ou no release)")
     ap.add_argument("--rotulo", default="", help="rótulo do estado cotejado")
     ap.add_argument("--json", help="grava o relatório também em JSON")
     args = ap.parse_args(argv)
 
-    gt = ler_ground_truth(args.csv)
-    equivalencia = conferir_clone(gt, args.clone)
-    if equivalencia == -1:
-        return 2
+    if args.gt_json:
+        gt, problemas, sem_explanation, forma_antiga = \
+            ler_ground_truth_json(args.gt_json)
+        if problemas:
+            print("ERRO: ground truth em %s com %d CVE(s) problematico(s):"
+                  % (args.gt_json, len(problemas)), file=sys.stderr)
+            for p in problemas[:10]:
+                print("  " + p, file=sys.stderr)
+            return 2
+        if not gt:
+            print("ERRO: nenhum CVE lido em %s" % args.gt_json, file=sys.stderr)
+            print("  Zero aqui e 'nao perguntei', nao 'nao ha'.", file=sys.stderr)
+            return 2
+        fonte = args.gt_json
+        equivalencia = "nao_se_aplica"
+    else:
+        gt = ler_ground_truth(args.csv)
+        sem_explanation, forma_antiga = [], []
+        fonte = args.csv
+        equivalencia = conferir_clone(gt, args.clone)
+        if equivalencia == -1:
+            return 2
     qs = ler_consultas(args.consultas)
     if not qs:
         print("ERRO: nenhuma consulta .ql lida em %s" % args.consultas,
@@ -219,7 +308,8 @@ def main(argv=None):
 
     casados, sem_casar = [], []
     for c in gt:
-        q = por_chave.get(chave(c["explanation"]))
+        k = chave(c["explanation"])
+        q = por_chave.get(k) if k else None
         if q is None:
             sem_casar.append(c)
             continue
@@ -234,7 +324,7 @@ def main(argv=None):
             rel = "divergente"
         casados.append({**c, "consulta": q, "relacao": rel})
 
-    exatos = sum(1 for c in gt if c["explanation"] in por_exato)
+    exatos = sum(1 for c in gt if c["explanation"] and c["explanation"] in por_exato)
     conta = {}
     for c in casados:
         conta[c["relacao"]] = conta.get(c["relacao"], 0) + 1
@@ -251,10 +341,18 @@ def main(argv=None):
     rot = (" [%s]" % args.rotulo) if args.rotulo else ""
     print("--- cotejo ground truth x CodeQL%s ---" % rot)
     print("  consultas: %s" % args.consultas)
+    print("  ground truth: %s" % fonte)
     print("  .ql lidos com @name: %d | com tag external/cwe/: %d"
           % (len(qs), sum(1 for q in qs if q["cwes"])))
     print("  CVEs no ground truth: %d" % len(gt))
-    if equivalencia is None:
+    print("  CVEs sem explanation (nao casam): %d %s"
+          % (len(sem_explanation), sem_explanation or ""))
+    print("  CVEs em forma antiga do schema (patchBase): %d %s"
+          % (len(forma_antiga), forma_antiga or ""))
+    if equivalencia == "nao_se_aplica":
+        print("  equivalencia CSV x clone do benchmark: nao se aplica "
+              "(ground truth lido do JSON)")
+    elif equivalencia is None:
         print("  equivalencia CSV x clone do benchmark: NAO CONFERIDA (clone ausente)")
     else:
         print("  equivalencia CSV x clone do benchmark: CONFERIDA em %d CVEs"
@@ -308,9 +406,12 @@ def main(argv=None):
         Path(args.json).write_text(json.dumps({
             "rotulo": args.rotulo,
             "consultas_dir": args.consultas,
+            "fonte_ground_truth": fonte,
             "ql_lidos": len(qs),
             "ql_com_cwe": sum(1 for q in qs if q["cwes"]),
             "cves": len(gt),
+            "gt_sem_explanation": sem_explanation,
+            "gt_forma_antiga": forma_antiga,
             "equivalencia_clone_cves": equivalencia,
             "casados_normalizado": len(casados),
             "casados_exato": exatos,
@@ -328,6 +429,9 @@ def main(argv=None):
                       for c in sorted(casados, key=lambda x: x["cve"])
                       if c["relacao"] == rel]
                 for rel in conta},
+            "gt": {c["cve"]: {"explanation": c["explanation"],
+                              "cwes": sorted(c["cwes"])}
+                   for c in sorted(gt, key=lambda x: x["cve"])},
         }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print("\n  relatorio JSON: %s" % args.json)
     return 0
