@@ -29,9 +29,18 @@
  * Uso:
  *   node tools/generate-lists.js            # primeira geração
  *   node tools/generate-lists.js --force    # regerar, apagando os batches antigos
+ *   node tools/generate-lists.js --ids CVE-A,CVE-B,... --saida cves-sast-<nome>
+ *                                           # lista avulsa, por ID de CVE
  *
  * Sem --force, se já houver batches na pasta, o gerador lista o que seria
  * removido e aborta sem escrever nada.
+ *
+ * Modo por IDs (--ids + --saida): escreve SÓ datasets/listas/<saida>, com
+ * exatamente os CVEs pedidos, na ordem em que foram pedidos. Não toca em
+ * cves-sast.txt, nos batches nem em cves-sast-teste. Lê e valida o CSV
+ * inteiro como o modo de lotes — mesmas validações bloqueantes, mesmos
+ * avisos. ID ausente do conjunto, repetido ou malformado é fatal e nada é
+ * escrito. Aqui o --force só autoriza sobrescrever a própria <saida>.
  */
 
 const fs   = require('fs');
@@ -51,13 +60,34 @@ const BATCH_SIZE       = 30;
 const BATCH_RE = /^cves-sast-batch-[a-z]{2}$/;
 
 // ── argumentos ──
-const argv    = process.argv.slice(2);
-const FORCE   = argv.includes('--force');
-const unknown = argv.filter(a => a !== '--force');
-if (unknown.length) {
-  console.error(`\n❌ Argumento desconhecido: ${unknown.join(' ')}`);
-  console.error('   Uso: node tools/generate-lists.js [--force]\n');
+function usageError(msg) {
+  console.error(`\n❌ ${msg}`);
+  console.error('   Uso: node tools/generate-lists.js [--force]');
+  console.error('        node tools/generate-lists.js --ids CVE-A,CVE-B,... --saida cves-sast-<nome> [--force]\n');
   process.exit(2);
+}
+
+const argv   = process.argv.slice(2);
+let FORCE    = false;
+let idsArg   = null;
+let saidaArg = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--force') { FORCE = true; continue; }
+  if (a === '--ids' || a === '--saida') {
+    const v = argv[i + 1];
+    if (v === undefined || v.startsWith('--')) usageError(`${a} exige um valor`);
+    if ((a === '--ids' ? idsArg : saidaArg) !== null) usageError(`${a} repetido`);
+    if (a === '--ids') idsArg = v; else saidaArg = v;
+    i++;
+    continue;
+  }
+  usageError(`Argumento desconhecido: ${a}`);
+}
+
+const MODO_IDS = idsArg !== null || saidaArg !== null;
+if (MODO_IDS && (idsArg === null || saidaArg === null)) {
+  usageError('--ids e --saida só valem juntos');
 }
 
 /** CVEs do batch de teste, na ordem em que devem aparecer no arquivo. */
@@ -181,13 +211,66 @@ const staleBatches = fs.existsSync(OUT_DIR)
   ? fs.readdirSync(OUT_DIR).filter(f => BATCH_RE.test(f)).sort()
   : [];
 
-if (staleBatches.length && !FORCE) {
+if (!MODO_IDS && staleBatches.length && !FORCE) {
   fail(`Já existem ${staleBatches.length} batch(es) em datasets/listas/ — nada foi escrito`, [
     ...staleBatches.map(f => `seria removido: datasets/listas/${f}`),
     '',
     'Regerar apaga esses arquivos antes de escrever os novos.',
     'Confirme com:  node tools/generate-lists.js --force',
   ]);
+}
+
+// ── Pré-voo do modo por IDs: argumentos e lista de saída existente ──
+//
+// A ordem de saída é a ordem pedida, não a do CSV: a ordem de um lote é
+// material (o cves-sast-fumaca põe o item de maior custo esperado por último,
+// para que um estouro dele não comprometa a medição dos anteriores).
+//
+// Tudo aqui é fatal e acontece antes de ler o CSV. O ID ausente do conjunto
+// só é conferível depois da leitura, e também é fatal. Lista parcial nunca.
+const CVE_ID_RE = /^CVE-\d{4}-\d{4,}$/;
+const SAIDA_RE  = /^cves-sast-[a-z0-9]+(-[a-z0-9]+)*$/;
+
+let idsPedidos = [];
+let OUT_IDS    = null;
+let idsExistia = false;
+
+if (MODO_IDS) {
+  const problemas = [];
+
+  idsPedidos = idsArg.split(',');
+  const vistos    = new Set();
+  const repetidos = new Set();
+  idsPedidos.forEach((id, i) => {
+    if (id === '') {
+      problemas.push(`--ids: posição ${i + 1} vazia`);
+      return;
+    }
+    if (!CVE_ID_RE.test(id)) problemas.push(`--ids: ID malformado na posição ${i + 1}: "${id}"`);
+    if (vistos.has(id)) repetidos.add(id);
+    vistos.add(id);
+  });
+  for (const id of repetidos) problemas.push(`--ids: ID repetido: ${id}`);
+
+  // Só nome simples, sem diretório. Nomes de batch e o cves-sast-teste são do
+  // modo de lotes: um batch escrito por aqui seria apagado pelo próximo
+  // --force daquele modo, e o teste passaria a ter duas fontes.
+  if (!SAIDA_RE.test(saidaArg)) {
+    problemas.push(`--saida: nome inválido "${saidaArg}" (esperado cves-sast-<nome>, só [a-z0-9-], sem diretório)`);
+  } else if (BATCH_RE.test(saidaArg) || saidaArg === path.basename(OUT_TESTE)) {
+    problemas.push(`--saida: "${saidaArg}" pertence ao modo de lotes, não ao modo por IDs`);
+  }
+
+  if (problemas.length) fail(`Argumentos do modo por IDs inválidos (${problemas.length} problema(s))`, problemas);
+
+  OUT_IDS    = path.join(OUT_DIR, saidaArg);
+  idsExistia = fs.existsSync(OUT_IDS);
+  if (idsExistia && !FORCE) {
+    fail(`Já existe datasets/listas/${saidaArg} — nada foi escrito`, [
+      'Listas em execução não se regeram: conteúdo novo vai em lista nova.',
+      `Para sobrescrever mesmo assim:  node tools/generate-lists.js --ids ... --saida ${saidaArg} --force`,
+    ]);
+  }
 }
 
 if (!fs.existsSync(IN_CSV)) {
@@ -375,6 +458,39 @@ function writeList(file, lines) {
   fs.writeFileSync(file, lines.join('\n') + '\n');
 }
 
+const byCve = new Map(records.map(r => [r.cve, r]));
+
+// modo por IDs ----------------------------------------------------------
+//
+// Termina aqui: nada abaixo (cves-sast.txt, batches, cves-sast-teste) é
+// tocado, com ou sem --force.
+if (MODO_IDS) {
+  const ausentes = idsPedidos.filter(c => !byCve.has(c));
+  if (ausentes.length) {
+    fail(`${ausentes.length} CVE(s) pedido(s) ausente(s) do conjunto`,
+      ausentes.map(c => `não encontrado: ${c}`));
+  }
+
+  const selecionados = idsPedidos.map(c => byCve.get(c));
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  writeList(OUT_IDS, selecionados.map(toLine));
+
+  const barIds = '═'.repeat(62);
+  console.log(`\n${barIds}`);
+  console.log('✅ LISTA POR ID GERADA — todas as validações passaram');
+  console.log(barIds);
+  console.log(`Origem          : datasets/cve-metadata.csv`);
+  console.log(`Registros lidos : ${records.length} (esperado ${EXPECTED_RECORDS})`);
+  console.log(`Lista           : datasets/listas/${saidaArg}${idsExistia ? '  (SOBRESCRITA, --force)' : ''}`);
+  console.log(`Linhas          : ${selecionados.length}, na ordem pedida`);
+  console.log('');
+  selecionados.forEach((r, i) => {
+    console.log(`  ${String(i + 1).padStart(2)}  ${r.cve.padEnd(17)} ${r.filePath}`);
+  });
+  console.log(`${barIds}\n`);
+  process.exit(0);
+}
+
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 for (const f of staleBatches) fs.unlinkSync(path.join(OUT_DIR, f));
@@ -400,7 +516,6 @@ for (let i = 0; i < allLines.length; i += BATCH_SIZE) {
 }
 
 // batch de teste --------------------------------------------------------
-const byCve = new Map(records.map(r => [r.cve, r]));
 const faltando = TESTE_CVES.filter(c => !byCve.has(c));
 if (faltando.length) {
   fail('CVEs do batch de teste ausentes no CSV', faltando);
