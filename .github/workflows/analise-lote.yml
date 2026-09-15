@@ -30,12 +30,18 @@
 # `packages: read`, nunca `write`), nao commita — as sondagens datadas que ele
 # grava sao observacao, e entram no repositorio por commit do operador.
 #
-# O QUE O CODIGO DE SAIDA NAO DIZ: lote em que TODOS os CVEs sairam ERRO_*
-# (token do Snyk revogado, limite curto demais, rede de saida bloqueada no
-# container) termina verde — o container sai 0, o normalize.py sai 0 com zero
-# raws e o check-log.py nao conta erro sem raw como problema. A distincao esta
-# na contagem de status, que vai ao resumo da execucao e ao README, e nao no
-# verde do job.
+# LOTE SEM RAW FALHA O JOB. Lote que nao produziu saida bruta alguma nao pode
+# passar por lote analisado — as causas provaveis sao de infraestrutura:
+# token revogado, rede de saida bloqueada no container, limite POR CVE curto
+# demais —, e nesse caso o container, o normalize.py e o check-log.py saem
+# todos 0. O portao "lote sem raw" e condicao ACRESCENTADA pelo workflow, nao
+# redefinicao do contrato daqueles scripts, cujos codigos de saida seguem
+# intocados. A causa nao e atribuida pelo portao: quem a estabelece e a
+# contagem de status do check-log.py.
+#
+# O QUE O CODIGO DE SAIDA CONTINUA NAO DIZENDO: lote com PARTE dos CVEs em
+# ERRO_* termina verde. A distincao esta na contagem de status do
+# check-log.py, que vai ao resumo da execucao e ao README.
 
 name: Analise SAST por lote
 
@@ -97,8 +103,9 @@ jobs:
         #   job_min  — timeout-minutes do job, abaixo de 360.
         #   pos_min  — orcamento DEPOIS do lote: a soma dos timeout-minutes dos
         #              passos seguintes (remanescente 2, normalizar 5,
-        #              check-log 2, montar 3; no Semgrep, mais a rede, 10) e
-        #              folga de 3 para o upload, que nao tem limite proprio.
+        #              check-log 2, lote sem raw 1, montar 3; no Semgrep, mais
+        #              a rede, 10) e folga de 3 para o upload, que nao tem
+        #              limite proprio.
         #   lote_s   — teto do `timeout` em volta do docker run. O limite
         #              EFETIVO e calculado no passo do lote: o menor entre
         #              lote_s e o que resta do job depois do ja gasto e de
@@ -114,21 +121,21 @@ jobs:
             digest: sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec
             lote_s: 9000
             lote_min: 155
-            pos_min: 15
+            pos_min: 16
             job_min: 180
           - ferramenta: semgrep
             imagem: ic-security-lab-semgrep
             digest: sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000
             lote_s: 5400
             lote_min: 95
-            pos_min: 25
+            pos_min: 26
             job_min: 120
           - ferramenta: snyk-code
             imagem: ic-security-lab-snyk-code
             digest: sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7
             lote_s: 5400
             lote_min: 95
-            pos_min: 15
+            pos_min: 16
             job_min: 120
 
     timeout-minutes: ${{ matrix.job_min }}
@@ -213,8 +220,9 @@ jobs:
               printf '    arvore de trabalho que depois va rodar lote. No runner a idempotencia\n'
               printf '    e inerte, porque o ambiente nasce limpo; localmente ela PULARIA os\n'
               printf '    CVEs cujo raw ja existe, e o lote sairia incompleto sem erro visivel.\n'
-              printf '  * O job verde NAO significa lote analisado: lote com todos os CVEs em\n'
-              printf '    ERRO_* termina verde. Ler a contagem de status abaixo.\n\n'
+              printf '  * Lote sem raw algum FALHA o job. Mas o job verde NAO significa lote\n'
+              printf '    inteiro analisado: lote com parte dos CVEs em ERRO_* termina verde.\n'
+              printf '    Ler a contagem de status abaixo.\n\n'
               printf 'lote: %s\n' "$LOTE"
               printf 'ferramenta: %s\n' "$FERRAMENTA"
               printf 'imagem_pedida: ghcr.io/<dono>/%s@%s\n' "$IMAGEM" "$DIGEST"
@@ -902,7 +910,7 @@ jobs:
           fi
           cat "$ARQ"
           printf 'check-log.py: rc=%s\n' "$RC" >> "$SAIDA/README.txt"
-          # A contagem de status vai a pagina da execucao: lote com todos os
+          # A contagem de status vai a pagina da execucao: lote com parte dos
           # CVEs em ERRO_* sai verde, e e so aqui que isso aparece sem abrir o
           # artifact.
           if STATUS="$(grep -m 1 '^  ultimo status por CVE: ' "$ARQ")"; then
@@ -911,6 +919,102 @@ jobs:
               printf -- '- check-log.py nao emitiu a contagem de status (rc=%s)\n' "$RC" >> "$GITHUB_STEP_SUMMARY"
           fi
           exit "$RC"
+
+      # -----------------------------------------------------------------
+      - name: Portao — lote sem raw
+        id: lotevazio
+        # Lote que nao produziu raw algum nao pode passar por lote analisado.
+        # As causas provaveis sao de infraestrutura — token revogado, rede de
+        # saida bloqueada no container, limite POR CVE curto demais —, e nelas
+        # o container, o normalize.py e o check-log.py saem todos 0: sem este
+        # portao o job ficaria verde e o operador seguiria para o lote seguinte
+        # achando que seguiu. (Estouro do limite do LOTE ja falha o passo do
+        # lote, pelo rc 124/137.)
+        #
+        # Condicao ACRESCENTADA pelo workflow; os codigos de saida do
+        # normalize.py e do check-log.py nao mudam. A condicao e "zero raws",
+        # e nao "todos os CVEs em ERRO_*": esta exigiria enumerar categorias e
+        # tolerar o ERRO_FETCH legitimo do CVE-2016-1000229.
+        #
+        # Conta so raws DESTE lote: para cada CVE da lista do lote, o raw
+        # definitivo com a extensao da ferramenta. O temporario
+        # .em-progresso-*.tmp nao conta, nem arquivo de CVE fora da lista, nem
+        # campo que nao tenha a forma de CVE — que os run_*.sh rejeitam como
+        # ERRO_LINHA, e que nao pode virar caminho.
+        #
+        # O portao NOMEIA A CONDICAO e nao atribui causa: ele tambem dispara
+        # num lote em que todos os CVEs saiam SEM_ARQUIVO_ANALISAVEL (exit 3 do
+        # Snyk), que nao grava raw e e resultado, nao falha. Quem estabelece a
+        # causa e a contagem de status do check-log.py, e a mensagem manda le-la.
+        #
+        # Sem override. Disparo por razao legitima nao perde dado: montar e
+        # publicar rodam com if: always(), e a falha e sinalizacao.
+        if: ${{ !cancelled() && steps.lote.outcome != 'skipped' }}
+        timeout-minutes: 1
+        shell: bash --noprofile --norc -euo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+        run: |
+          LEIA="$SAIDA/README.txt"
+          if [ ! -f "$SAIDA/container/lote.txt" ]; then
+              echo "o lote nao chegou a rodar; o portao de lote sem raw nao se aplica"
+              printf 'portao de lote sem raw: nao se aplica — o lote nao chegou a rodar\n' >> "$LEIA"
+              exit 0
+          fi
+          case "$FERRAMENTA" in
+              codeql|snyk-code) EXT=".sarif" ;;
+              semgrep) EXT=".json" ;;
+              *)
+                  echo "ERRO: ferramenta desconhecida na matriz: $FERRAMENTA" >&2
+                  exit 1
+                  ;;
+          esac
+          RAW="results/$FERRAMENTA/raw"
+          LISTA="datasets/listas/$LOTE"
+          # CVEs da lista capturados em ATRIBUICAO, onde o `-e` alcanca a falha
+          # do awk; em substituicao de processo ela se perderia.
+          CVES="$(awk -F, '!/^[[:space:]]*$/ && !/^#/ {print $1}' "$LISTA")"
+          N_LISTA=0
+          N_COM_RAW=0
+          while IFS= read -r CVE; do
+              CVE="${CVE%$'\r'}"
+              if [ -z "$CVE" ]; then
+                  continue
+              fi
+              N_LISTA=$((N_LISTA + 1))
+              # Campo sem a forma de CVE nao vira caminho: os run_*.sh o
+              # rejeitam como ERRO_LINHA, e nenhum raw pode existir para ele.
+              if ! [[ "$CVE" =~ ^CVE-[0-9]{4}-[0-9]+$ ]]; then
+                  continue
+              fi
+              if [ -f "$RAW/$CVE$EXT" ]; then
+                  N_COM_RAW=$((N_COM_RAW + 1))
+              fi
+          done <<< "$CVES"
+
+          if [ "$N_COM_RAW" -gt 0 ]; then
+              echo "portao de lote sem raw: OK — $N_COM_RAW de $N_LISTA CVEs do lote com raw"
+              printf 'portao de lote sem raw: OK — %s de %s CVEs do lote com raw\n' "$N_COM_RAW" "$N_LISTA" >> "$LEIA"
+              printf -- '- portao de lote sem raw: OK, %s de %s CVEs com raw\n' "$N_COM_RAW" "$N_LISTA" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+
+          # A mensagem nomeia a CONDICAO e manda ler a contagem; as causas vao
+          # como hipoteses, porque o portao nao tem evidencia para escolher
+          # entre elas.
+          {
+              echo "ERRO: LOTE SEM RAW — o lote $LOTE nao produziu saida bruta alguma: 0 de $N_LISTA CVEs com raw em $RAW."
+              echo "  Lote sem raw nao pode passar por lote analisado. NAO siga para o lote seguinte"
+              echo "  antes de ler a contagem de status do check-log.py: linha 'ultimo status por CVE'"
+              echo "  em portoes/check-log.txt no artifact, repetida no resumo desta execucao."
+              echo "  Causas provaveis, a conferir contra aquela contagem: token revogado, rede de"
+              echo "  saida bloqueada no container, limite por CVE curto demais. Excecao: se todos"
+              echo "  os CVEs sairam SEM_ARQUIVO_ANALISAVEL, o disparo e resultado, nao falha."
+              echo "  O artifact sobe mesmo assim (montagem e upload com if: always())."
+          } >&2
+          printf 'portao de lote sem raw: FALHOU — 0 de %s CVEs do lote com raw; ler "ultimo status por CVE" do check-log.py antes de atribuir causa\n' "$N_LISTA" >> "$LEIA"
+          printf -- '- **LOTE SEM RAW: 0 de %s CVEs com raw.** Ler a contagem de status acima antes de seguir para o lote seguinte; causas provaveis de infraestrutura (token, rede de saida, limite por CVE), salvo lote todo em SEM_ARQUIVO_ANALISAVEL.\n' "$N_LISTA" >> "$GITHUB_STEP_SUMMARY"
+          exit 1
 
       # -----------------------------------------------------------------
       - name: Rede do Semgrep (medicao, nao fatal)
@@ -1089,6 +1193,7 @@ jobs:
           R_LOTE: ${{ steps.lote.outcome }}
           R_NORMALIZAR: ${{ steps.normalizar.outcome }}
           R_CHECKLOG: ${{ steps.checklog.outcome }}
+          R_LOTEVAZIO: ${{ steps.lotevazio.outcome }}
           R_REDE: ${{ steps.rede.outcome }}
         run: |
           if [ -z "$SAIDA" ] || [ ! -d "$SAIDA" ]; then
@@ -1156,6 +1261,7 @@ jobs:
               printf 'lote: %s\n' "${R_LOTE:-nao rodou}"
               printf 'normalize.py: %s\n' "${R_NORMALIZAR:-nao rodou}"
               printf 'check-log.py: %s\n' "${R_CHECKLOG:-nao rodou}"
+              printf 'portao de lote sem raw: %s\n' "${R_LOTEVAZIO:-nao rodou}"
               printf 'rede do Semgrep (nao fatal, so no Semgrep): %s\n' "${R_REDE:-nao rodou}"
               printf 'resultados e logs copiados para o artifact: %s\n' "$COPIADOS"
 
