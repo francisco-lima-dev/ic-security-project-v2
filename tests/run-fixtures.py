@@ -820,11 +820,27 @@ def main():
         encoding="utf-8")
     RUN_CODEQL = RAIZ / "ic-security-lab-codeql" / "scripts" / "run_codeql.sh"
 
+    def ambiente_sem_limites():
+        # Fase H, H0b: os run_*.sh passaram a ler TIMEOUT_* do ambiente.
+        # Copiar o ambiente de quem roda a suite SEM retira-los faria o
+        # resultado depender do shell do operador: um TIMEOUT_FETCH=60
+        # exportado trocaria o "excedeu 300s" asseverado adiante, e um valor
+        # invalido pararia o script na guarda de limites. Retira todo
+        # TIMEOUT_*, nao so os cinco nomes atuais: nome acrescentado depois
+        # nao pode reabrir o vazamento.
+        env = dict(os.environ)
+        for chave in [k for k in env if k.startswith("TIMEOUT_")]:
+            del env[chave]
+        # O bash nao interativo carrega o arquivo apontado por BASH_ENV, que
+        # pode definir TIMEOUT_* — o mesmo vazamento por outro caminho.
+        env.pop("BASH_ENV", None)
+        return env
+
     def rodar_obtencao(rc_fetch, rc_clone):
         logs = ws / "logs"
         if logs.exists():
             shutil.rmtree(logs)
-        env = dict(os.environ)
+        env = ambiente_sem_limites()
         env["PATH"] = "%s:%s" % (stub, env.get("PATH", ""))
         env["WORKSPACE"] = str(ws)
         env["STUB_RC_FETCH"] = str(rc_fetch)
@@ -923,12 +939,102 @@ def main():
     for pasta in ("codeql", "semgrep", "snyk-code"):
         fonte_sh = (RAIZ / ("ic-security-lab-%s" % pasta) / "scripts"
                     / ("run_%s.sh" % pasta)).read_text(encoding="utf-8")
-        checar("\nTIMEOUT_FETCH=300\n" in fonte_sh
-               and "\nTIMEOUT_CLONE=900\n" in fonte_sh,
-               "%s: os limites de obtencao valem 300s e 900s" % pasta,
-               [l for l in fonte_sh.splitlines() if l.startswith("TIMEOUT_")])
         checar("timeout 300 " not in fonte_sh and "timeout 900 " not in fonte_sh,
                "%s: nao sobrou literal de limite fora da constante" % pasta)
+
+    # Defaults e sobrescrita dos limites, por EXECUCAO dos tres scripts.
+    # Fase H, H0b: os limites viraram `${VAR-default}`. A assercao anterior
+    # procurava o literal `TIMEOUT_FETCH=300` na fonte, e era a UNICA protecao
+    # do default do Semgrep e do Snyk: o ensaio de obtencao acima roda so o
+    # CodeQL, e o bloco comparado por identidade nao inclui as atribuicoes.
+    #
+    # Por execucao, e nao por grafia: a linha "limites efetivos em segundos:"
+    # sai logo apos a guarda de limites e ANTES das guardas de pack, token e
+    # sha256 — que aqui abortam por falta do ENV da imagem —, entao os tres
+    # scripts a emitem fora da imagem e sem trabalho algum. Sem TIMEOUT_* no
+    # ambiente, o que ela imprime SAO os defaults.
+    #
+    # Tres bracos, cada um pegando o que os outros deixam passar:
+    #   default     — valor do codigo mudou, ou a linha deixou de ser emitida
+    #   sobrescrita — o script ignora o ambiente (nome trocado, atribuicao
+    #                 direta de volta)
+    #   vazia       — `${VAR:-default}` de volta em QUALQUER das variaveis: a
+    #                 vazia cairia no default em silencio em vez de parar
+    #                 na guarda
+    print("\n== Limites de tempo: defaults, sobrescrita e guarda ==")
+    lim = obt / "limites-ws"   # nunca criado: o script aborta antes de usa-lo
+    LIMITES = {
+        "codeql": [("TIMEOUT_CREATE", "3600"), ("TIMEOUT_ANALYZE", "3600"),
+                   ("TIMEOUT_FETCH", "300"), ("TIMEOUT_CLONE", "900")],
+        "semgrep": [("TIMEOUT_ANALISE", "1800"),
+                    ("TIMEOUT_FETCH", "300"), ("TIMEOUT_CLONE", "900")],
+        "snyk-code": [("TIMEOUT_ANALISE", "1800"),
+                      ("TIMEOUT_FETCH", "300"), ("TIMEOUT_CLONE", "900")],
+    }
+
+    def linha_limites(pares):
+        return "limites efetivos em segundos: %s\n" % "; ".join(
+            "%s=%s" % par for par in pares)
+
+    def rodar_limites(pasta, extra):
+        env = ambiente_sem_limites()
+        # Sem o ENV da imagem e sem token: o script TEM de parar na guarda
+        # seguinte a linha de limites. Com SNYK_TOKEN herdado do operador, o
+        # do Snyk passaria adiante e invocaria `snyk --version`.
+        for chave in ("PACK_SHA256", "SNYK_TOKEN", "SNYK_CLI_SHA256",
+                      "CODEQL_BUNDLE_SHA256"):
+            env.pop(chave, None)
+        env["WORKSPACE"] = str(lim)
+        env.update(extra)
+        return subprocess.run(
+            ["bash", str(RAIZ / ("ic-security-lab-%s" % pasta) / "scripts"
+                         / ("run_%s.sh" % pasta))],
+            env=env, capture_output=True, text=True)
+
+    # A mensagem da guarda SEGUINTE a de limites, e nao so `rc == 1`: sem ela
+    # a parada poderia vir de causa alheia — "lista nao encontrada", adiante,
+    # tambem sai 1 — e a descricao "para na guarda seguinte" ficaria sem
+    # conferencia.
+    GUARDA_SEGUINTE = {
+        "codeql": "ERRO: CODEQL_BUNDLE_SHA256 nao definido na imagem.",
+        "semgrep": "ERRO: PACK_SHA256 nao definido.",
+        "snyk-code": "ERRO: SNYK_TOKEN nao definido no ambiente.",
+    }
+
+    for pasta, pares in LIMITES.items():
+        r = rodar_limites(pasta, {})
+        checar(r.returncode == 1 and linha_limites(pares) in r.stderr
+               and GUARDA_SEGUINTE[pasta] in r.stderr
+               and "nao e um inteiro" not in r.stderr,
+               "%s: sem TIMEOUT_* no ambiente, os limites efetivos sao os "
+               "defaults do codigo, e o script para na guarda seguinte" % pasta,
+               "rc=%d %s" % (r.returncode, r.stderr[-300:]))
+
+        # Valores distintos por variavel: um mesmo valor em todas deixaria
+        # passar duas variaveis trocadas entre si.
+        outros = [(nome, str(11 + i)) for i, (nome, _) in enumerate(pares)]
+        r = rodar_limites(pasta, dict(outros))
+        checar(r.returncode == 1 and linha_limites(outros) in r.stderr
+               and GUARDA_SEGUINTE[pasta] in r.stderr,
+               "%s: TIMEOUT_* definido no ambiente sobrescreve o default, "
+               "variavel a variavel" % pasta,
+               "rc=%d %s" % (r.returncode, r.stderr[-300:]))
+
+        # Vazio e zero, variavel a variavel. O zero e o caso que a guarda
+        # existe para barrar: para o GNU `timeout` ele DESLIGA o limite com
+        # rc 0, e sem a guarda nada falharia. Um afrouxamento da forma para
+        # `^[0-9]+$` passaria por todos os outros bracos.
+        for nome, _ in pares:
+            for invalido, rotulo in (("", "VAZIO, e nao cai no default"),
+                                     ("0", "ZERO, que desligaria o limite")):
+                r = rodar_limites(pasta, {nome: invalido})
+                checar(r.returncode == 1
+                       and ("ERRO: %s nao e um inteiro positivo" % nome) in r.stderr
+                       and ("obtido: '%s'" % invalido) in r.stderr
+                       and "limites efetivos" not in r.stderr,
+                       "%s: %s definido %s, para na guarda antes de qualquer "
+                       "trabalho" % (pasta, nome, rotulo),
+                       "rc=%d %s" % (r.returncode, r.stderr[-300:]))
 
     # check-log.py continua aceitando o que o script passou a escrever. O
     # status nao mudou, entao a classificacao nao pode ter mudado.
@@ -1000,7 +1106,7 @@ def main():
         else:
             DESCRITOR_GI.write_text(
                 json.dumps({"sha256": descritor_sha}), encoding="utf-8")
-        env = dict(os.environ)
+        env = ambiente_sem_limites()
         env["WORKSPACE"] = str(gi)
         env["PATH"] = "%s:%s" % (stub, env.get("PATH", ""))
         env["STUB_RC_FETCH"] = "124"
@@ -1078,7 +1184,7 @@ def main():
         else:
             DESCRITOR_GS.write_text(
                 json.dumps({"sha256": descritor_sha}), encoding="utf-8")
-        env = dict(os.environ)
+        env = ambiente_sem_limites()
         env["WORKSPACE"] = str(gs)
         env["SNYK_TOKEN"] = "irrelevante-para-a-guarda"
         if env_sha is None:

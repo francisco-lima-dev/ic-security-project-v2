@@ -430,10 +430,88 @@ revisar é o **tamanho do lote**, não o limite.
 Até lá, 3600 s permanece, com `timeout-minutes` explícito abaixo de 360 no
 job e `if: always()` no upload como guarda independente.
 
-**Verificação pendente, decorrente do episódio acima:** conferir se os
-scripts atuais aplicam limite de tempo também ao **fetch e ao fallback de
-clone**, e não só à análise. O travamento de julho ocorreu antes de qualquer
-análise, onde o `TIMEOUT_ANALYZE` não alcança. Item da Fase G.
+#### Limites sobrescrevíveis por ambiente (Fase H, H0b, 14/09/2026)
+
+Os três `run_*.sh` leem os limites com `${VAR-default}`. **Ausente**, vale o
+default do script, que é o valor que vigorava. **Definida**, vale o ambiente:
+`-e TIMEOUT_ANALYZE=1800` no `docker run` ajusta o limite sem rebuild e sem
+digest novo. O número no código deixou de provar o que rodou; o que prova é o
+valor efetivo registrado, adiante.
+
+**Os nomes não são uniformes, e não se renomeiam.** Renomear é mudança de
+interface, e nome trocado no workflow é ignorado em silêncio — o script roda
+com o default.
+
+| Script | Análise | Obtenção |
+|---|---|---|
+| `run_codeql.sh` | `TIMEOUT_CREATE` 3600 **e** `TIMEOUT_ANALYZE` 3600 | `TIMEOUT_FETCH` 300, `TIMEOUT_CLONE` 900 |
+| `run_semgrep.sh` | `TIMEOUT_ANALISE` 1800 | idem |
+| `run_snyk-code.sh` | `TIMEOUT_ANALISE` 1800 | idem |
+
+No CodeQL a análise de um CVE pode consumir a **soma** dos dois, 7200 s; com a
+obtenção em fallback, 8400 s. É a soma, e não o `TIMEOUT_ANALYZE` sozinho, que
+entra no produto lote × limite contra o teto de 6 h.
+
+**Sem dois-pontos, de propósito.** Com `${VAR:-default}`, variável definida e
+vazia — `env:` de workflow cuja expressão resolveu vazio — cairia no default
+em silêncio. Com `${VAR-default}` ela chega à guarda e aborta. Consequência
+para o workflow de lote: passar o `-e` só quando houver valor.
+
+**Guarda fatal antes de qualquer trabalho:** cada limite casa
+`^[1-9][0-9]*$`, ou o script sai 1 nomeando variável e valor. Medido no GNU
+`timeout` (9.11 no hospedeiro, 9.7 na base das imagens):
+
+| Valor | `timeout` | Sem a guarda |
+|---|---|---|
+| `1800s` | **aceito**, roda normal | o log gravaria `excedeu 1800ss` |
+| vazio, `-5`, `abc` | rc 125 | todo CVE do lote em `ERRO_FETCH`/`ERRO_ANALISE` |
+| `0` | **desliga o limite**, rc 0 | nada falha — é o caso perigoso |
+
+A guarda barra todos pela forma, o `0` inclusive, pelo `^[1-9]`. Dos casos da
+tabela, o `0` é o que mais importa barrar, porque sem a guarda não produziria
+sinal algum; a suíte o exercita por execução, variável a variável, nos três
+scripts.
+
+**Valor efetivo registrado em duas frentes:** a linha
+`limites efetivos em segundos: NOME=valor; …` no stderr, e os mesmos segmentos
+`NOME=valor` na primeira linha do log de cada execução, via
+`VERSAO_PENDENTE`. A redação evita as marcas do `_parece_obtencao()` do
+`check-log.py`. Conferido com controle positivo: o segmento
+`fetch raso limite 300s` sai `NAO RECONHECIDO`; `TIMEOUT_FETCH=300` não sai.
+
+**Verificado por controle positivo, não só por sintaxe** (14/09/2026,
+`CVE-2017-16042`):
+
+| Execução | Desfecho |
+|---|---|
+| Semgrep, imagem reconstruída, `-e TIMEOUT_ANALISE=1` | `ERRO_ANALISE`, `semgrep excedeu 1s` |
+| Semgrep, mesma imagem, sem a variável | `OK` em 13 s, `TIMEOUT_ANALISE=1800` no log |
+| CodeQL, script novo montado sobre imagem existente, `-e TIMEOUT_CREATE=1` | `ERRO_ANALISE`, `database create excedeu 1s` |
+| CodeQL, idem, `-e TIMEOUT_ANALYZE=1` | `ERRO_ANALISE`, `database analyze excedeu 1s` |
+
+O Snyk **não** foi exercitado em container: exige `SNYK_TOKEN`. Dele se
+verificou, no hospedeiro, a guarda e a linha de stderr — que saem antes da
+checagem do token —, e por leitura a propagação ao `timeout`.
+
+**Verificação que constava como pendente — fechada, e já satisfeita quando foi
+escrita.** O parágrafo, da Fase F-2 (`53fcfad`, 11/09/2026), pedia conferir se
+os scripts limitavam também o **fetch e o fallback de clone**, e não só a
+análise, porque o travamento de julho ocorreu antes de qualquer análise, onde o
+`TIMEOUT_ANALYZE` não alcança.
+
+Limitavam, e desde antes do parágrafo: `timeout 300` no fetch raso e
+`timeout 900` no clone de contingência estão nos três scripts desde a primeira
+versão deles (`46ab9e5`, 06/09/2026), e seguiam lá no próprio `53fcfad`. A
+Fase G-1b (`6ed071a`) deu nome aos valores — `TIMEOUT_FETCH`, `TIMEOUT_CLONE` —
+e separou estouro de recusa no log; H0b os tornou sobrescrevíveis. O modo de
+falha do lote `ab` de julho — clone completo sem limite — fica alcançado por
+eles. O registro do estouro de ambos é exercitado em `tests/run-fixtures.py`
+por execução do script do CodeQL com o `timeout` substituído por stub que
+devolve 124 — não por estouro real —, e os outros dois scripts entram pela
+identidade byte a byte do bloco de obtenção.
+
+Fora do alcance, declarado: `git init`, `git remote add`, `git checkout` e
+`git rev-parse` não estão sob `timeout`.
 
 ### Conjunto de status do log
 

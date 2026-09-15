@@ -48,7 +48,13 @@ PACK_REPO="$WORKSPACE/ic-security-lab-semgrep/rules/semgrep-default.yaml"
 # é chute, e um valor curto demais transformaria análise legítima de
 # repositório grande em ERRO_ANALISE sistemático. Generoso de propósito.
 # Revisar depois de medir.
-TIMEOUT_ANALISE=1800
+#
+# O número abaixo é DEFAULT, não necessariamente o que rodou: o ambiente o
+# sobrescreve (`-e TIMEOUT_ANALISE=900` no docker run), e o valor efetivo vai
+# ao stderr e à primeira linha do log. O nome é TIMEOUT_ANALISE aqui e no
+# Snyk, e TIMEOUT_CREATE + TIMEOUT_ANALYZE no CodeQL: nome trocado no
+# workflow é ignorado em silêncio e o script roda com o default.
+TIMEOUT_ANALISE="${TIMEOUT_ANALISE-1800}"
 
 # Limites da OBTENÇÃO do código. Os valores são exatamente os que já
 # vigoravam, em literal, nas duas invocações do laço: 300 s no fetch raso e
@@ -56,8 +62,41 @@ TIMEOUT_ANALISE=1800
 # que o valor passa a ter nome, e a mensagem do log pode citá-lo sem
 # duplicar o literal. Duplicá-lo faria a mensagem mentir no dia em que
 # alguém editasse só um dos dois lugares.
-TIMEOUT_FETCH=300
-TIMEOUT_CLONE=900
+#
+# Também DEFAULT, sobrescrevível por ambiente como o de análise.
+TIMEOUT_FETCH="${TIMEOUT_FETCH-300}"
+TIMEOUT_CLONE="${TIMEOUT_CLONE-900}"
+
+# --- validação dos limites de tempo ---------------------------------------
+# Fatal, e antes de qualquer trabalho. Valor que o `timeout` recuse faria
+# CADA CVE do lote cair em ERRO_FETCH ou ERRO_ANALISE — falha cara, tardia e
+# de causa não óbvia no log. Aqui custa segundos e nomeia a causa. E o `0`
+# nem falharia: para o GNU `timeout` ele DESLIGA o limite, em silêncio.
+#
+# Por isso as expansões acima são `${VAR-default}`, sem dois-pontos: com
+# `${VAR:-default}`, variável DEFINIDA e VAZIA — `env:` de workflow cuja
+# expressão resolveu vazio — cairia no default e nunca chegaria a esta
+# guarda. Ausente usa o default; vazia é erro.
+#
+# Só inteiro positivo de segundos, sem zero à esquerda. O `timeout` aceitaria
+# sufixo e fração, mas as mensagens do log gravam "excedeu ${X}s", e um
+# "1800ss" ali seria registro errado.
+for NOME_LIMITE in TIMEOUT_ANALISE TIMEOUT_FETCH TIMEOUT_CLONE; do
+    if ! [[ "${!NOME_LIMITE}" =~ ^[1-9][0-9]*$ ]]; then
+        echo "ERRO: $NOME_LIMITE nao e um inteiro positivo de segundos" >&2
+        echo "  obtido: '${!NOME_LIMITE}'" >&2
+        exit 1
+    fi
+done
+
+# Valor EFETIVO, nas duas frentes: stderr agora, para quem acompanha o job, e
+# a primeira linha do log via VERSAO_PENDENTE, para quem lê o artefato.
+#
+# Redação `NOME=valor`, deliberada: segmento com "fallback", "fetch raso",
+# "clone completo" ou "voltar para /tmp" casaria o pré-filtro de obtenção do
+# tools/check-log.py e sairia como NAO RECONHECIDO. E sem vírgula.
+LIMITES_EFETIVOS="TIMEOUT_ANALISE=$TIMEOUT_ANALISE; TIMEOUT_FETCH=$TIMEOUT_FETCH; TIMEOUT_CLONE=$TIMEOUT_CLONE"
+echo "limites efetivos em segundos: $LIMITES_EFETIVOS" >&2
 
 LISTA_ARG="${1:-datasets/listas/cves-sast.txt}"
 case "$LISTA_ARG" in
@@ -147,7 +186,7 @@ if [ -z "$VERSAO_SEMGREP" ]; then
     VERSAO_SEMGREP="VERSAO_NAO_CAPTURADA"
     echo "AVISO: nao foi possivel capturar a versao do semgrep" >&2
 fi
-VERSAO_PENDENTE="semgrep $VERSAO_SEMGREP; pack sha256 $PACK_ATUAL"
+VERSAO_PENDENTE="semgrep $VERSAO_SEMGREP; pack sha256 $PACK_ATUAL; $LIMITES_EFETIVOS"
 
 # --- log estruturado ------------------------------------------------------
 registrar() {
