@@ -1068,6 +1068,97 @@ prosa. Conjunto **ausente** da tabela → falha ruidosa. Conjunto
 **presente com primário vazio** (`CWE-250|CWE-400`) → grava nulo, conta,
 reporta. São erros diferentes.
 
+## Imagens da campanha — digests publicados
+
+O digest é o contrato: os jobs de lote referenciam a imagem por ele, e a tag
+`campanha` se move a cada build. Todo rebuild produz digests novos por
+definição, e cada conjunto publicado fica registrado aqui, datado e com o run
+id do `build-imagens.yml`, que é quem os produz. O inventário completo de cada
+build está no consolidado `datasets/sondagens/sondagem-imagens-runner-<data>.txt`;
+o artifact expira em 90 dias.
+
+### Vigentes — rebuild de H0c, 15/09/2026
+
+Execução `34961746566`, construída em `2026-09-15T11:09:37Z` sobre o commit
+`a08c559` (H0b), runner `ubuntu24` / `20260907.300.1`, uid:gid `1001:1001`.
+Consolidado: `datasets/sondagens/sondagem-imagens-runner-2026-09-15.txt`.
+
+```
+ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec
+ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000
+ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7
+```
+
+**Por que existem.** H0b tornou os limites de tempo sobrescrevíveis por
+ambiente, e os scripts entram na imagem por `COPY scripts/ /scripts/`: sem
+rebuild, as imagens publicadas rodariam os scripts anteriores, que ignoram o
+ambiente. O rebuild precede o ensaio de fumaça para que o ensaio meça as
+imagens que a campanha usa — medição numa imagem aplicada a outra não é
+evidência.
+
+**Valores pinados, conferidos contra os descritores versionados:** bundle do
+CodeQL `v2.25.4` (sha256 `5a68ac6f…`), pack do Semgrep (sha256 `1ddc9b0b…`),
+`semgrep==1.171.0`, CLI do Snyk `1.1306.1` (sha256 `3b25e606…`). Idênticos aos
+de 12/09; nenhum descritor, Dockerfile ou o próprio workflow mudou entre
+`49282a8` e `a08c559`.
+
+**Deriva contra o consolidado de 12/09 — a medida do que ficou solto.**
+
+| Imagem | `.deb` com versão mudada | pip com versão mudada | acrescentados / removidos |
+|---|---:|---:|---:|
+| codeql | 0 de 413 | — | 0 / 0 |
+| semgrep | 0 de 118 | 1 de 67: `uvicorn` 0.52.4 → 0.53.0 | 0 / 0 |
+| snyk-code | 0 de 119 | — | 0 / 0 |
+
+Um dos 716 artefatos soltos derivou em 2,5 dias, sem mudança de versão maior.
+Base, runner, kernel e Docker idênticos aos de 12/09. O `image_id` mudou nas
+três, como esperado: mudaram a camada de scripts e o label de revisão.
+
+Apurado por parser da forma do consolidado, com a contagem declarada de cada
+seção conferida contra as linhas lidas, e com controle positivo por mutação
+sintética. O parser não está versionado; a deriva é reproduzível por `diff`
+simples dos dois consolidados, que têm a mesma forma — fora cabeçalho, digests
+e `image_id`, a única linha divergente é a do `uvicorn`.
+
+### Histórico — substituídos pelo rebuild de H0c
+
+Substituídos em 15/09/2026 porque trazem os scripts anteriores a H0b, com os
+limites de tempo fixos no código. Nenhuma imagem foi apagada do GHCR nesta
+fase: são o registro do que a Fase G produziu.
+
+**12/09/2026, 22:11 UTC — execução `34722049993`, commit `49282a8` (G-2c).**
+Vigentes até H0c. Consolidado:
+`datasets/sondagens/sondagem-imagens-runner-2026-09-12.txt`.
+
+```
+ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:80c647fb2b5ff2bd17915d88f7d26af8962a2298c51d38d2e1950b142d22536a
+ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:27ef60ddb50ee7eaa2f482ddd9b3db55a32147f7f01e8ef4369309d1fda20eaf
+ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:51d2d36b9174f90d3d6721caf4f7d990b921336a1dfa7e67ecb09a0c16b6fba8
+```
+
+**12/09/2026, 17:48 UTC — execução `34709333865`, commit `ae7c490`.** Build
+anterior do mesmo dia, superado pelo das 22:11 antes de existir workflow de
+lote que o usasse. Nenhum consolidado dele foi versionado; os digests abaixo
+vêm do `digests.txt` do artifact, lido em 15/09/2026.
+
+```
+ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:8b6dd9c11d02c16b5007710ef2d12e93c46288b1ebb829dc0f866dd096b345eb
+ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:f27c2a37632d6b93452b2d038d7bb69b5d9ee34fd84a0055938d21a0ec320ab4
+ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:5a0458faff9b10dc1edb4abee2f1e7b423be0909135b690702eb318052291d31
+```
+
+**12/09/2026, 17:34 UTC — execução `34708622703`, commit `a15b810` (G-2b).**
+Falhou no passo de construção e publicação, mas **depois** de publicar duas das
+três imagens: o `digests.txt` do artifact, lido em 15/09/2026, registra CodeQL e
+Semgrep, e não traz digest nem inventário do Snyk. Imagem publicada por execução
+que falhou continua no registro — é o caso que a emissão antecipada do output e
+o `if: always()` do upload existem para não perder.
+
+```
+ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:b72cd8b47b6d56d5acbb6ba65fdcd9174d731781b43e20f107a529e1b0faddf8
+ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:dc8f7f7fdd668d7c49305593ca05e164f8725be2f96742c75210ed3bad86ed04
+```
+
 ## Configuração das ferramentas
 
 ### CodeQL
