@@ -496,6 +496,11 @@ jobs:
           linha "runner, variando SO o -e HOME=/tmp. O lote roda com ele; aqui se mede o"
           linha "que acontece sem ele. Os comandos ESCREVEM: o --version e sonda fraca, e o"
           linha "Snyk o atravessa antes de tentar gravar configuracao."
+          linha ""
+          linha "INVARIANTE ENTRE OS BRACOS: -e XDG_CACHE_HOME=/tmp nos dois, como no lote,"
+          linha "para que a quebra do braco sem HOME nao possa vir do cache. Por isso o braco"
+          linha "sem HOME NAO e a coluna \"--user so\" da tabela de 08/09/2026 do CLAUDE.md:"
+          linha "la nao havia XDG_CACHE_HOME. As duas medicoes nao sao a mesma condicao."
 
           # A escrita generica e o que responde se $HOME e gravavel; o comando
           # da ferramenta responde se a ferramenta quebra. Sao perguntas
@@ -504,7 +509,11 @@ jobs:
 
           declare -A ESCRITA HOME_VISTO WHOAMI FERR
           for BRACO in SEM_HOME COM_HOME; do
-              ARGS=(--user "$HOST_UID:$HOST_GID")
+              # XDG_CACHE_HOME=/tmp nos DOIS bracos, como no lote: e invariante
+              # entre eles, e o que varia e so o HOME. Sem ele, uma quebra no
+              # braco sem HOME=/tmp poderia vir em parte do cache, e a sonda a
+              # creditaria inteira ao HOME.
+              ARGS=(--user "$HOST_UID:$HOST_GID" -e XDG_CACHE_HOME=/tmp)
               if [ "$BRACO" = "COM_HOME" ]; then
                   ARGS+=(-e HOME=/tmp)
               fi
@@ -1098,7 +1107,12 @@ jobs:
               print("VEREDITO_REDE=ALCANCAVEL")
           except Exception as erro:
               print("VEREDITO_REDE=INALCANCAVEL %s: %s" % (type(erro).__name__, erro))'
-          ARGS=(--user "$HOST_UID:$HOST_GID" -e HOME=/tmp)
+          # Espelha a invocacao do lote em --user e nas variaveis de ambiente
+          # (HOME e XDG_CACHE_HOME). NAO espelha as flags do semgrep: o lote
+          # (run_semgrep.sh) passa --time e varre `.`; o braco 3 varre /alvo, sem
+          # --time. O que se estabelece e a imagem e o pack operando sem rede
+          # nesse ambiente de execucao, nao a linha de comando exata do lote.
+          ARGS=(--user "$HOST_UID:$HOST_GID" -e HOME=/tmp -e XDG_CACHE_HOME=/tmp)
 
           sondar "BRACO 1 — CONTROLE, com rede" \
               timeout 120 docker run --rm "${ARGS[@]}" --entrypoint python3 "$REF" -c "$SONDA_PY"
