@@ -1,0 +1,1207 @@
+# analise-lote.yml — roda UM lote de CVEs nas tres ferramentas SAST, sobre as
+# imagens publicadas por DIGEST, normaliza no runner, aplica os portoes e
+# publica os artifacts.
+#
+# E O WORKFLOW DA CAMPANHA, nao um workflow de ensaio. O ensaio de fumaca e a
+# primeira invocacao dele, com `cves-sast-fumaca`; a campanha sao as oito
+# seguintes, `cves-sast-batch-aa` ate `-ah`. Um workflow de ensaio separado
+# mediria uma coisa que a campanha nao usa, e a diferenca apareceria no
+# `batch-aa`, depois do congelamento do tamanho de lote.
+#
+# MATRIZ POR FERRAMENTA, tres jobs, e nao um job com tres passos: o
+# `timeout-minutes` e o teto de 6 h sao POR JOB, e somar as tres duracoes
+# contra o mesmo teto consumiria a folga que o CLAUDE.md ja declara apertada.
+# A matriz tambem da log e artifact separados por ferramenta, que e a forma
+# que o `check-log.py --tool` consome.
+#
+# CONVENCOES, herdadas do build-imagens.yml e do CLAUDE.md:
+#   - workflow_dispatch apenas;
+#   - nenhum `|| true`, nenhum stderr descartado, nenhum `set -x` — o job do
+#     Snyk carrega o token;
+#   - nenhuma entrada do dispatch e interpolada com `${{ }}` dentro de `run:`:
+#     tudo chega por `env:`. Cadeia livre interpolada no script vira codigo;
+#   - o output com o diretorio do artifact sai ANTES de qualquer trabalho, e o
+#     upload roda com `if: always()` e `if-no-files-found: error` — a perda de
+#     julho de 2026 apareceu como aviso de caminho nao encontrado no upload;
+#   - todo comando que toca a rede tem limite de tempo proprio: o travamento
+#     de julho de 2026 foi numa operacao de rede sem limite.
+#
+# O QUE ESTE WORKFLOW NAO FAZ: nao constroi nem publica imagem (daí
+# `packages: read`, nunca `write`), nao commita — as sondagens datadas que ele
+# grava sao observacao, e entram no repositorio por commit do operador.
+#
+# O QUE O CODIGO DE SAIDA NAO DIZ: lote em que TODOS os CVEs sairam ERRO_*
+# (token do Snyk revogado, limite curto demais, rede de saida bloqueada no
+# container) termina verde — o container sai 0, o normalize.py sai 0 com zero
+# raws e o check-log.py nao conta erro sem raw como problema. A distincao esta
+# na contagem de status, que vai ao resumo da execucao e ao README, e nao no
+# verde do job.
+
+name: Analise SAST por lote
+
+on:
+  workflow_dispatch:
+    inputs:
+      lote:
+        description: "Arquivo em datasets/listas/, sem diretorio (ex.: cves-sast-fumaca)"
+        required: true
+        type: string
+      # Os tres limites existem para que a decisao de H4 seja aplicada sem
+      # rebuild e sem digest novo. Vazio = o default do script, e o -e NAO e
+      # passado: os run_*.sh leem `${VAR-default}`, sem dois-pontos, e uma
+      # variavel definida e VAZIA para na guarda e derruba o lote inteiro.
+      timeout_create:
+        description: "TIMEOUT_CREATE do CodeQL, em segundos. Vazio: default do script"
+        required: false
+        type: string
+        default: ""
+      timeout_analyze:
+        description: "TIMEOUT_ANALYZE do CodeQL, em segundos. Vazio: default do script"
+        required: false
+        type: string
+        default: ""
+      timeout_analise:
+        description: "TIMEOUT_ANALISE do Semgrep e do Snyk Code, em segundos. Vazio: default do script"
+        required: false
+        type: string
+        default: ""
+
+# O minimo. Pacote privado do mesmo repositorio e legivel com packages: read.
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  analisar:
+    name: ${{ matrix.ferramenta }}
+    # ubuntu-latest, o mesmo label da sondagem-ambiente.yml e do
+    # build-imagens.yml: e o ambiente que aquelas medicoes descrevem. O README
+    # do artifact grava ImageOS e ImageVersion.
+    runs-on: ubuntu-latest
+
+    strategy:
+      # Cada ferramenta e medicao independente: a falha de uma nao pode
+      # cancelar as outras duas no meio do lote.
+      fail-fast: false
+      matrix:
+        # DIGESTS lidos do CLAUDE.md, secao "Imagens da campanha — digests
+        # publicados": rebuild de H0c, execucao 34961746566, commit a08c559.
+        # Sempre por digest; a tag `campanha` se move a cada build.
+        #
+        # DIMENSIONAMENTO. Os tetos sao frouxos de proposito e NAO derivados:
+        # o lote de fumaca tem sete CVEs, seis analisaveis, e um deles e o
+        # graylog2-server, de porte muito acima de tudo que ja rodou. Sao folga
+        # sobre uma expectativa de dezenas de minutos.
+        #
+        # O que e aritmetico e a relacao entre eles:
+        #   job_min  — timeout-minutes do job, abaixo de 360.
+        #   pos_min  — orcamento DEPOIS do lote: a soma dos timeout-minutes dos
+        #              passos seguintes (remanescente 2, normalizar 5,
+        #              check-log 2, montar 3; no Semgrep, mais a rede, 10) e
+        #              folga de 3 para o upload, que nao tem limite proprio.
+        #   lote_s   — teto do `timeout` em volta do docker run. O limite
+        #              EFETIVO e calculado no passo do lote: o menor entre
+        #              lote_s e o que resta do job depois do ja gasto e de
+        #              pos_min. Pull lento come o lote, nao o upload.
+        #   lote_min — timeout-minutes do passo do lote, rede de seguranca caso
+        #              o `timeout` nao devolva o controle.
+        # Passo que estoura falha e o upload `if: always()` roda; job que
+        # estoura e cancelado, e ai o upload nao e garantido. O orcamento
+        # protege o job, nao o passo.
+        include:
+          - ferramenta: codeql
+            imagem: ic-security-lab-codeql
+            digest: sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec
+            lote_s: 9000
+            lote_min: 155
+            pos_min: 15
+            job_min: 180
+          - ferramenta: semgrep
+            imagem: ic-security-lab-semgrep
+            digest: sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000
+            lote_s: 5400
+            lote_min: 95
+            pos_min: 25
+            job_min: 120
+          - ferramenta: snyk-code
+            imagem: ic-security-lab-snyk-code
+            digest: sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7
+            lote_s: 5400
+            lote_min: 95
+            pos_min: 15
+            job_min: 120
+
+    timeout-minutes: ${{ matrix.job_min }}
+
+    env:
+      FERRAMENTA: ${{ matrix.ferramenta }}
+      IMAGEM: ${{ matrix.imagem }}
+      DIGEST: ${{ matrix.digest }}
+      LOTE: ${{ inputs.lote }}
+      LOTE_SEGUNDOS: ${{ matrix.lote_s }}
+      POS_MIN: ${{ matrix.pos_min }}
+      JOB_MIN: ${{ matrix.job_min }}
+      DONO: ${{ github.repository_owner }}
+      NOME_CONTAINER: lote-${{ matrix.ferramenta }}-${{ github.run_id }}-${{ github.run_attempt }}
+      # O BATCH_SIZE do tools/generate-lists.js. Lista maior que um lote — a
+      # completa, por exemplo — estouraria o job depois de horas.
+      TAMANHO_MAXIMO_LOTE: "30"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # O workspace e montado dentro do container. Sem isto o token do
+          # Actions ficaria gravado em .git/config e seria montado junto.
+          persist-credentials: false
+
+      # -----------------------------------------------------------------
+      - name: Preparar o lote
+        id: preparar
+        shell: bash --noprofile --norc -euo pipefail {0}
+        run: |
+          INICIO_JOB="$(date -u '+%s')"
+          AGORA="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          DATA="$(date -u '+%Y-%m-%d')"
+
+          # Forma do nome ANTES de tudo: ele vira nome de diretorio e de
+          # artifact, e workflow_dispatch aceita cadeia livre. Barra ou `..`
+          # escapariam de datasets/listas/.
+          if ! [[ "$LOTE" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+              echo "ERRO: nome de lote invalido: '$LOTE'" >&2
+              echo "  Esperado: nome de arquivo em datasets/listas/, sem diretorio." >&2
+              exit 1
+          fi
+
+          # run_attempt no nome: a reexecucao de um job falho produziria
+          # artifact homonimo, e o nome tem de identificar a tentativa.
+          NOME="lote-$LOTE-$FERRAMENTA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          SAIDA="$RUNNER_TEMP/$NOME"
+          # OUTPUT antes de qualquer trabalho. Emitido no fim, uma falha no
+          # meio faria o upload cair no literal de fallback, e o que ja tivesse
+          # sido produzido nao subiria — a perda de julho de 2026.
+          {
+              printf 'saida=%s\n' "$SAIDA"
+              printf 'nome=%s\n' "$NOME"
+              printf 'data=%s\n' "$DATA"
+              printf 'inicio_job=%s\n' "$INICIO_JOB"
+          } >> "$GITHUB_OUTPUT"
+          mkdir -p "$SAIDA/container" "$SAIDA/portoes" "$SAIDA/datasets/sondagens"
+          LEIA="$SAIDA/README.txt"
+
+          # O README nasce aqui, com o aviso de protocolo, para existir mesmo
+          # se o job morrer no passo seguinte.
+          case "$LOTE" in
+              cves-sast-fumaca|cves-sast-teste) ENSAIO="sim" ;;
+              *) ENSAIO="nao" ;;
+          esac
+          {
+              printf 'Artefato do lote %s — ferramenta %s\n' "$LOTE" "$FERRAMENTA"
+              printf '====================================================================\n\n'
+              printf 'AVISO DE PROTOCOLO — ler antes de usar qualquer coisa deste artifact\n\n'
+              if [ "$ENSAIO" = "sim" ]; then
+                  printf '  * ESTE LOTE E DE ENSAIO. Os resultados de DETECCAO dele sao\n'
+                  printf '    DESCARTADOS, como foram os do ensaio local: CVEs deste lote integram\n'
+                  printf '    lotes da campanha. Preservam-se o LOG de execucao e o\n'
+                  printf '    normalize-report; os achados, nao.\n'
+              else
+                  printf '  * Regra do ensaio de fumaca (cves-sast-fumaca): os resultados de\n'
+                  printf '    DETECCAO de ensaio sao descartados; preservam-se so o log de\n'
+                  printf '    execucao e o normalize-report. Este lote nao e o de ensaio.\n'
+              fi
+              printf '  * NUNCA descompactar este artifact dentro de results/*/raw/ de uma\n'
+              printf '    arvore de trabalho que depois va rodar lote. No runner a idempotencia\n'
+              printf '    e inerte, porque o ambiente nasce limpo; localmente ela PULARIA os\n'
+              printf '    CVEs cujo raw ja existe, e o lote sairia incompleto sem erro visivel.\n'
+              printf '  * O job verde NAO significa lote analisado: lote com todos os CVEs em\n'
+              printf '    ERRO_* termina verde. Ler a contagem de status abaixo.\n\n'
+              printf 'lote: %s\n' "$LOTE"
+              printf 'ferramenta: %s\n' "$FERRAMENTA"
+              printf 'imagem_pedida: ghcr.io/<dono>/%s@%s\n' "$IMAGEM" "$DIGEST"
+              printf 'preparado_em: %s\n' "$AGORA"
+              printf 'workflow_run_id: %s\n' "$GITHUB_RUN_ID"
+              printf 'workflow_run_attempt: %s\n' "$GITHUB_RUN_ATTEMPT"
+              printf 'commit: %s\n' "$GITHUB_SHA"
+              printf 'runner_image_os: %s\n' "${ImageOS:-NAO_DEFINIDO}"
+              printf 'runner_image_version: %s\n' "${ImageVersion:-NAO_DEFINIDO}"
+              printf 'uid_do_runner: %s\n' "$(id -u)"
+              printf 'gid_do_runner: %s\n' "$(id -g)"
+          } > "$LEIA"
+
+          # --- o lote existe ------------------------------------------------
+          # Fatal, antes de qualquer pull. Erro de digitacao no dispatch
+          # produziria lote vazio passando como sucesso.
+          LISTA="datasets/listas/$LOTE"
+          if [ ! -f "$LISTA" ]; then
+              echo "ERRO: lote inexistente: $LISTA" >&2
+              echo "  Listas disponiveis em datasets/listas/:" >&2
+              ls -1 datasets/listas/ >&2
+              exit 1
+          fi
+          LINHAS_FISICAS="$(wc -l < "$LISTA")"
+          # awk e nao `grep -c`: o grep sai 1 com zero casamentos, e sob `-e`
+          # a atribuicao abortaria sem mensagem justamente no caso a apontar.
+          REGISTROS="$(awk '!/^[[:space:]]*$/ && !/^#/ {n++} END {print n+0}' "$LISTA")"
+          if [ "$REGISTROS" -eq 0 ]; then
+              echo "ERRO: $LISTA nao tem registro algum" >&2
+              exit 1
+          fi
+          if [ "$REGISTROS" -gt "$TAMANHO_MAXIMO_LOTE" ]; then
+              echo "ERRO: $LISTA tem $REGISTROS registros, acima do tamanho de lote ($TAMANHO_MAXIMO_LOTE)" >&2
+              echo "  A lista completa nao e lote: rode os cves-sast-batch-*." >&2
+              exit 1
+          fi
+          if [ -n "$(tail -c 1 "$LISTA")" ]; then
+              QUEBRA="AUSENTE (os run_*.sh leem a ultima linha mesmo assim)"
+          else
+              QUEBRA="presente"
+          fi
+          echo "lote: $LOTE | registros: $REGISTROS | linhas fisicas: $LINHAS_FISICAS | quebra final: $QUEBRA"
+          {
+              printf 'lista: %s\n' "$LISTA"
+              printf 'registros_na_lista: %s\n' "$REGISTROS"
+              printf 'linhas_fisicas_na_lista: %s\n' "$LINHAS_FISICAS"
+              printf 'quebra_de_linha_final: %s\n\n' "$QUEBRA"
+          } >> "$LEIA"
+
+          # --- estado herdado do checkout -----------------------------------
+          # Os run_*.sh fazem APPEND no log de execucao, e o log versionado de
+          # execucoes anteriores entraria no log do lote. O check-log.py
+          # deduplica por CVE e confere contra os raws presentes: CVE de
+          # execucao local, cujo raw nao existe aqui, dispararia a (2) e
+          # derrubaria o job por artefato historico. O normalize-report sai
+          # junto, para que o artifact nunca publique o de outra execucao se a
+          # normalizacao morrer antes de gravar.
+          HIST="$RUNNER_TEMP/historico-versionado"
+          mkdir -p "$HIST/logs" "$HIST/treated"
+          printf 'estado herdado do checkout, movido para fora do workspace:\n' >> "$LEIA"
+          for ARQ in "logs/execution-log-$FERRAMENTA.csv" "logs/normalize-report-$FERRAMENTA.json"; do
+              if [ -e "$ARQ" ]; then
+                  N="$(wc -l < "$ARQ")"
+                  mv "$ARQ" "$HIST/logs/"
+                  echo "movido para fora do workspace: $ARQ ($N linhas)"
+                  printf '  %s (%s linhas)\n' "$ARQ" "$N" >> "$LEIA"
+              else
+                  echo "ausente, nada a mover: $ARQ"
+                  printf '  %s: ausente\n' "$ARQ" >> "$LEIA"
+              fi
+          done
+
+          # Tratados versionados saem pelo mesmo motivo, e por um a mais: o
+          # normalize.py PULA tratado existente com o mesmo schema_version.
+          # Reexecutar um lote ja commitado publicaria o tratado antigo como se
+          # fosse deste lote, sem erro.
+          TRATADO="results/$FERRAMENTA/treated"
+          N_TRAT=0
+          if [ -d "$TRATADO" ]; then
+              N_TRAT="$(find "$TRATADO" -maxdepth 1 -type f -name '*.json' | wc -l)"
+              if [ "$N_TRAT" -gt 0 ]; then
+                  find "$TRATADO" -maxdepth 1 -type f -name '*.json' -exec mv -t "$HIST/treated/" {} +
+              fi
+          fi
+          echo "tratados versionados movidos: $N_TRAT"
+          printf '  %s/*.json: %s arquivo(s)\n' "$TRATADO" "$N_TRAT" >> "$LEIA"
+
+          # O raw NAO e versionado: qualquer coisa ali e achado. Fatal, e nao
+          # so reportado — a idempotencia pularia os CVEs cujo raw existisse, e
+          # o lote sairia incompleto sem erro visivel.
+          RAW="results/$FERRAMENTA/raw"
+          if [ -d "$RAW" ]; then
+              N_RAW="$(find "$RAW" -mindepth 1 | wc -l)"
+              ESTADO_RAW="presente, $N_RAW entrada(s)"
+          else
+              N_RAW=0
+              ESTADO_RAW="ausente (nao versionado), 0 entradas"
+          fi
+          echo "raw no inicio: $ESTADO_RAW"
+          printf '  %s no inicio: %s\n\n' "$RAW" "$ESTADO_RAW" >> "$LEIA"
+          if [ "$N_RAW" -ne 0 ]; then
+              echo "ERRO: $RAW nao esta vazio no inicio do lote:" >&2
+              find "$RAW" -mindepth 1 >&2
+              exit 1
+          fi
+
+          {
+              printf '## Lote `%s` — %s\n\n' "$LOTE" "$FERRAMENTA"
+              printf '%s registros em `%s`; raw no inicio: %s\n' "$REGISTROS" "$LISTA" "$ESTADO_RAW"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # -----------------------------------------------------------------
+      - name: Portao previo — suite de fixtures
+        id: fixtures
+        # Segundos, e evita descobrir normalizador quebrado depois de horas de
+        # analise. Falha dura.
+        timeout-minutes: 10
+        shell: bash --noprofile --norc -euo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+        run: |
+          ARQ="$SAIDA/portoes/run-fixtures.txt"
+          if python3 tests/run-fixtures.py > "$ARQ" 2>&1; then RC=0; else RC=$?; fi
+          cat "$ARQ"
+          if RESUMO="$(grep -E '^[0-9]+ verificacoes, [0-9]+ falha\(s\)$' "$ARQ" | tail -n 1)"; then
+              :
+          else
+              RESUMO="LINHA DE RESUMO NAO ENCONTRADA"
+          fi
+          printf 'portao previo (tests/run-fixtures.py): rc=%s | %s\n' "$RC" "$RESUMO" >> "$SAIDA/README.txt"
+          echo "run-fixtures: rc=$RC | $RESUMO"
+          exit "$RC"
+
+      # -----------------------------------------------------------------
+      - name: Obter a imagem por digest
+        id: imagem
+        timeout-minutes: 35
+        shell: bash --noprofile --norc -euo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+          GHCR_USUARIO: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! [[ "$DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+              echo "ERRO: digest da matriz malformado: '$DIGEST'" >&2
+              exit 1
+          fi
+          # GHCR exige namespace em minusculas.
+          NS="$(printf '%s' "$DONO" | tr '[:upper:]' '[:lower:]')"
+          REF="ghcr.io/$NS/$IMAGEM@$DIGEST"
+          printf 'ref=%s\n' "$REF" >> "$GITHUB_OUTPUT"
+
+          # Senha pela stdin, nunca como argumento: argumento aparece na lista
+          # de processos. O logout no trap EXIT alcanca tambem o caminho de
+          # erro. As imagens ja baixadas continuam no daemon depois do logout.
+          trap 'docker logout ghcr.io' EXIT
+          printf '%s' "$GHCR_TOKEN" \
+              | docker login ghcr.io --username "$GHCR_USUARIO" --password-stdin
+
+          timeout 1800 docker pull "$REF"
+
+          # O RepoDigest do que veio, casado contra o pedido por `case` com
+          # padrao literal — a forma do build-imagens.yml. Nao
+          # `index .RepoDigests 0`, que pega o primeiro sem garantir que seja
+          # deste repositorio e estoura no template com a lista vazia, antes de
+          # a guarda poder dizer o que houve. A lista e capturada em
+          # ATRIBUICAO, onde o `-e` alcanca a falha do inspect; em
+          # substituicao de processo ela se perderia.
+          VISTOS="$(docker image inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$REF")"
+          CONFERIDO=""
+          while IFS= read -r LINHA; do
+              case "$LINHA" in
+                  "$REF") CONFERIDO="$LINHA"; break ;;
+              esac
+          done <<< "$VISTOS"
+          if [ -z "$CONFERIDO" ]; then
+              echo "ERRO: o digest pedido nao esta entre os RepoDigests da imagem obtida" >&2
+              echo "  pedido: $REF" >&2
+              echo "  RepoDigests recebidos:" >&2
+              printf '%s\n' "$VISTOS" >&2
+              exit 1
+          fi
+          IMAGE_ID="$(docker image inspect --format '{{.Id}}' "$REF")"
+          echo "imagem conferida: $CONFERIDO ($IMAGE_ID)"
+          {
+              printf 'imagem_usada: %s\n' "$REF"
+              printf 'repodigest_conferido: %s\n' "$CONFERIDO"
+              printf 'image_id: %s\n' "$IMAGE_ID"
+          } >> "$SAIDA/README.txt"
+
+      # -----------------------------------------------------------------
+      - name: Controle do HOME (medicao, nao fatal)
+        id: home
+        # Rodar o lote com -e HOME=/tmp estabelece que a invocacao CORRIGIDA
+        # funciona, nao que o defeito existe. Este passo mede o defeito na
+        # imagem da campanha, sob o uid do runner, com os dois bracos.
+        # Medicao: desfecho inesperado e dado, e erro do proprio passo nao
+        # derruba o lote — daí `continue-on-error`, cujo desfecho vai ao
+        # README.
+        continue-on-error: true
+        timeout-minutes: 10
+        # Sem `-e`: sondagem cujo comando falha e dado, nao acidente.
+        shell: bash --noprofile --norc -uo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+          DATA: ${{ steps.preparar.outputs.data }}
+          REF: ${{ steps.imagem.outputs.ref }}
+        run: |
+          ARQ="$SAIDA/datasets/sondagens/sondagem-home-$FERRAMENTA-runner-$DATA.txt"
+          TRAB="$(mktemp -d)"
+          if [ -z "$TRAB" ] || [ ! -d "$TRAB" ]; then
+              echo "ERRO: mktemp -d falhou" >&2
+              exit 1
+          fi
+          ULTIMA="$TRAB/ultima.txt"
+          RC_ULTIMA=0
+          HOST_UID="$(id -u)"
+          HOST_GID="$(id -g)"
+
+          linha() { printf '%s\n' "$*" | tee -a "$ARQ"; }
+          # Executa, grava stdout E stderr, registra o rc SEMPRE. Leitura
+          # programatica le $ULTIMA, nunca $ARQ: o relatorio ecoa o comando, e
+          # casar sobre ele casaria o eco em vez da resposta.
+          sondar() {
+              local rotulo="$1"; shift
+              linha ""
+              linha "--- $rotulo"
+              linha "\$ $*"
+              "$@" > "$ULTIMA" 2>&1
+              RC_ULTIMA=$?
+              tee -a "$ARQ" < "$ULTIMA"
+              linha "[rc=$RC_ULTIMA]"
+          }
+          campo() { sed -n "s/^$1=\\(.*\\)\$/\\1/p" "$ULTIMA" | head -n 1; }
+          # rc do docker que significa "o container nao rodou o comando":
+          # 124 do `timeout`, 125 do proprio docker. Nao e resultado da sonda.
+          rc_de_sonda() {
+              case "$1" in
+                  124|125) printf 'INDETERMINADO\n' ;;
+                  *) printf '%s\n' "$1" ;;
+              esac
+          }
+          julgar() {
+              local sem="$1" com="$2"
+              if [ "$sem" = "INDETERMINADO" ] || [ "$com" = "INDETERMINADO" ]; then
+                  printf 'INCONCLUSIVO — a sonda nao respondeu em algum braco (sem=%s com=%s)\n' "$sem" "$com"
+              elif [ "$sem" != "0" ] && [ "$com" = "0" ]; then
+                  printf 'DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=%s); com -e HOME=/tmp opera\n' "$sem"
+              elif [ "$sem" = "0" ]; then
+                  printf 'DEFEITO NAO SE MANIFESTOU — sem -e HOME=/tmp operou (rc=0)\n'
+              else
+                  printf 'INCONCLUSIVO — falhou tambem com -e HOME=/tmp (sem=%s com=%s): a sonda nao discrimina\n' "$sem" "$com"
+              fi
+          }
+
+          : > "$ARQ"
+          linha "# Controle do defeito do HOME na imagem da campanha — $FERRAMENTA"
+          linha "# Observacao datada. O procedimento e .github/workflows/analise-lote.yml"
+          linha "#"
+          linha "sondado_em: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          linha "workflow_run_id: $GITHUB_RUN_ID"
+          linha "workflow_run_attempt: $GITHUB_RUN_ATTEMPT"
+          linha "commit: $GITHUB_SHA"
+          linha "runner_image_os: ${ImageOS:-NAO_DEFINIDO}"
+          linha "runner_image_version: ${ImageVersion:-NAO_DEFINIDO}"
+          linha "imagem: $REF"
+          linha "uid_do_runner: $HOST_UID"
+          linha "gid_do_runner: $HOST_GID"
+          linha ""
+          linha "O QUE SE MEDE. Os dois bracos rodam a MESMA imagem, com --user do"
+          linha "runner, variando SO o -e HOME=/tmp. O lote roda com ele; aqui se mede o"
+          linha "que acontece sem ele. Os comandos ESCREVEM: o --version e sonda fraca, e o"
+          linha "Snyk o atravessa antes de tentar gravar configuracao."
+
+          # A escrita generica e o que responde se $HOME e gravavel; o comando
+          # da ferramenta responde se a ferramenta quebra. Sao perguntas
+          # distintas, e as duas vao ao arquivo.
+          GENERICO='echo "SONDA_HOME_RODOU=1"; echo "container_uid=$(id -u)"; echo "container_gid=$(id -g)"; echo "container_HOME=$HOME"; if whoami; then echo "whoami_rc=0"; else echo "whoami_rc=$?"; fi; if mkdir -p "$HOME/.sonda-home" && printf ok > "$HOME/.sonda-home/sonda"; then echo "escrita_em_HOME_rc=0"; else echo "escrita_em_HOME_rc=$?"; fi'
+
+          declare -A ESCRITA HOME_VISTO WHOAMI FERR
+          for BRACO in SEM_HOME COM_HOME; do
+              ARGS=(--user "$HOST_UID:$HOST_GID")
+              if [ "$BRACO" = "COM_HOME" ]; then
+                  ARGS+=(-e HOME=/tmp)
+              fi
+              sondar "$BRACO — escrita generica em \$HOME" \
+                  timeout 120 docker run --rm "${ARGS[@]}" --entrypoint sh "$REF" -c "$GENERICO"
+              if grep -q '^SONDA_HOME_RODOU=1$' "$ULTIMA"; then
+                  V="$(campo escrita_em_HOME_rc)"
+                  ESCRITA[$BRACO]="${V:-INDETERMINADO}"
+                  V="$(campo container_HOME)"
+                  HOME_VISTO[$BRACO]="${V:-INDETERMINADO}"
+                  V="$(campo whoami_rc)"
+                  WHOAMI[$BRACO]="${V:-INDETERMINADO}"
+              else
+                  ESCRITA[$BRACO]="INDETERMINADO"
+                  HOME_VISTO[$BRACO]="INDETERMINADO (o container nao rodou)"
+                  WHOAMI[$BRACO]="INDETERMINADO"
+              fi
+              case "$FERRAMENTA" in
+                  semgrep)
+                      sondar "$BRACO — semgrep --version (grava \$HOME/.semgrep antes de responder)" \
+                          timeout 120 docker run --rm "${ARGS[@]}" --entrypoint semgrep "$REF" --version
+                      FERR[$BRACO]="$(rc_de_sonda "$RC_ULTIMA")"
+                      ;;
+                  snyk-code)
+                      sondar "$BRACO — snyk --version (sonda FRACA, registrada para contraste)" \
+                          timeout 120 docker run --rm "${ARGS[@]}" --entrypoint snyk "$REF" --version
+                      sondar "$BRACO — snyk config set (grava configuracao em \$HOME)" \
+                          timeout 120 docker run --rm "${ARGS[@]}" --entrypoint snyk "$REF" config set org=sonda-home
+                      FERR[$BRACO]="$(rc_de_sonda "$RC_ULTIMA")"
+                      ;;
+                  *)
+                      FERR[$BRACO]="NAO_SONDADO"
+                      ;;
+              esac
+          done
+
+          V_GENERICO="$(julgar "${ESCRITA[SEM_HOME]}" "${ESCRITA[COM_HOME]}")"
+          linha ""
+          linha "================================================================"
+          linha "VEREDITOS"
+          linha "================================================================"
+          linha "HOME visto de dentro: sem -e HOME=/tmp = ${HOME_VISTO[SEM_HOME]} | com = ${HOME_VISTO[COM_HOME]}"
+          linha "whoami rc (0 = uid presente no /etc/passwd da imagem): sem = ${WHOAMI[SEM_HOME]} | com = ${WHOAMI[COM_HOME]}"
+          linha "escrita generica em \$HOME: $V_GENERICO"
+          case "$FERRAMENTA" in
+              semgrep|snyk-code)
+                  linha "comando da ferramenta: $(julgar "${FERR[SEM_HOME]}" "${FERR[COM_HOME]}")"
+                  ;;
+              *)
+                  linha "comando da ferramenta: NAO SONDADO. Nenhum comando do CodeQL que grave em"
+                  linha "  \$HOME e custe segundos foi identificado: \`codeql resolve languages\` operou nos"
+                  linha "  dois bracos na medicao local de 15/09/2026, e nao discrimina. O custo do"
+                  linha "  defeito no CodeQL — o compile-cache em \$HOME/.codeql durante o analyze — nao"
+                  linha "  e medido aqui."
+                  ;;
+          esac
+          linha ""
+          linha "ALCANCE, declarado: isto mede a imagem da campanha sob o uid:gid deste"
+          linha "runner. Sob outro uid a precondicao — uid ausente do /etc/passwd da imagem —"
+          linha "pode nao valer, e a medicao nao transfere."
+
+          printf 'controle do HOME: %s\n' "$V_GENERICO" >> "$SAIDA/README.txt"
+          printf -- '- controle do HOME: %s\n' "$V_GENERICO" >> "$GITHUB_STEP_SUMMARY"
+          rm -rf "$TRAB"
+          exit 0
+
+      # -----------------------------------------------------------------
+      - name: Rodar o lote
+        id: lote
+        # Rede de seguranca. O limite que age primeiro e o `timeout` em volta
+        # do docker run, calculado abaixo; ver o comentario da matriz.
+        timeout-minutes: ${{ matrix.lote_min }}
+        shell: bash --noprofile --norc -euo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+          INICIO_JOB: ${{ steps.preparar.outputs.inicio_job }}
+          REF: ${{ steps.imagem.outputs.ref }}
+          IN_TIMEOUT_CREATE: ${{ inputs.timeout_create }}
+          IN_TIMEOUT_ANALYZE: ${{ inputs.timeout_analyze }}
+          IN_TIMEOUT_ANALISE: ${{ inputs.timeout_analise }}
+          # O segredo so existe no ambiente do job do Snyk, e so neste passo.
+          SNYK_TOKEN: ${{ matrix.ferramenta == 'snyk-code' && secrets.SNYK_TOKEN || '' }}
+        run: |
+          LEIA="$SAIDA/README.txt"
+          RESUMO="$SAIDA/container/resumo.txt"
+          HOST_UID="$(id -u)"
+          HOST_GID="$(id -g)"
+
+          # --- limites: -e SO para entrada nao vazia ------------------------
+          # Os defaults abaixo DUPLICAM os dos run_*.sh de proposito: sao o que
+          # a linha "limites efetivos" tem de mostrar quando nenhum -e e
+          # passado. Se o default do script mudar, a conferencia falha — alto,
+          # que e o comportamento desejado.
+          case "$FERRAMENTA" in
+              codeql)
+                  NOMES=(TIMEOUT_CREATE TIMEOUT_ANALYZE TIMEOUT_FETCH TIMEOUT_CLONE)
+                  DEFAULTS=(3600 3600 300 900)
+                  ENTRADAS=("$IN_TIMEOUT_CREATE" "$IN_TIMEOUT_ANALYZE" "" "")
+                  ;;
+              semgrep|snyk-code)
+                  NOMES=(TIMEOUT_ANALISE TIMEOUT_FETCH TIMEOUT_CLONE)
+                  DEFAULTS=(1800 300 900)
+                  ENTRADAS=("$IN_TIMEOUT_ANALISE" "" "")
+                  ;;
+              *)
+                  echo "ERRO: ferramenta desconhecida na matriz: $FERRAMENTA" >&2
+                  exit 1
+                  ;;
+          esac
+          ARGS_LIMITES=()
+          PARES=""
+          for I in "${!NOMES[@]}"; do
+              if [ -n "${ENTRADAS[$I]}" ]; then
+                  ARGS_LIMITES+=(-e "${NOMES[$I]}=${ENTRADAS[$I]}")
+                  VALOR="${ENTRADAS[$I]}"
+              else
+                  VALOR="${DEFAULTS[$I]}"
+              fi
+              PARES="${PARES:+$PARES; }${NOMES[$I]}=$VALOR"
+          done
+          LINHA_ESPERADA="limites efetivos em segundos: $PARES"
+          echo "limites pedidos (-e): ${ARGS_LIMITES[*]:-nenhum}"
+          echo "linha esperada: $LINHA_ESPERADA"
+
+          # --- pre-voo da imagem --------------------------------------------
+          # O container roda sobre uma lista INEXISTENTE. Os run_*.sh imprimem
+          # a linha de limites, passam pelas guardas de integridade e so
+          # entao param em "lista nao encontrada" — antes de criar log ou raw.
+          # Imagem com script anterior a H0b, imagem obsoleta em relacao ao
+          # descritor, limite invalido e volume nao montado viram falha em
+          # segundos, e nao depois do lote inteiro.
+          #
+          # No Snyk a checagem do token vem ANTES da guarda do descritor, e
+          # entre as duas nada usa token nem rede. Um token FICTICIO leva o
+          # pre-voo ate a guarda e ate a lista, como nas outras duas; o segredo
+          # real nao entra aqui.
+          PREVOO_LISTA="datasets/listas/.prevoo-inexistente"
+          if [ -e "$PREVOO_LISTA" ]; then
+              echo "ERRO: $PREVOO_LISTA existe; o pre-voo precisa de lista ausente" >&2
+              exit 1
+          fi
+          ARGS_PREVOO=()
+          if [ "$FERRAMENTA" = "snyk-code" ]; then
+              ARGS_PREVOO=(-e SNYK_TOKEN=prevoo-ficticio-nao-e-segredo)
+          fi
+          PREVOO="$SAIDA/container/prevoo.txt"
+          # HOME e XDG_CACHE_HOME em /tmp: a invocacao documentada no CLAUDE.md,
+          # a mesma das medicoes da Fase E.
+          if timeout 300 docker run --rm \
+                  --user "$HOST_UID:$HOST_GID" \
+                  -e HOME=/tmp \
+                  -e XDG_CACHE_HOME=/tmp \
+                  "${ARGS_LIMITES[@]}" \
+                  "${ARGS_PREVOO[@]}" \
+                  -v "$GITHUB_WORKSPACE":/workspace \
+                  "$REF" \
+                  "$PREVOO_LISTA" > "$PREVOO" 2>&1; then
+              RC_PREVOO=0
+          else
+              RC_PREVOO=$?
+          fi
+          cat "$PREVOO"
+          PARADA="ERRO: lista nao encontrada: /workspace/$PREVOO_LISTA"
+          PROBLEMAS_PREVOO=()
+          if [ "$RC_PREVOO" -ne 1 ]; then
+              PROBLEMAS_PREVOO+=("rc=$RC_PREVOO, esperado 1")
+          fi
+          if ! grep -Fxq "$LINHA_ESPERADA" "$PREVOO"; then
+              if grep -q '^limites efetivos em segundos: ' "$PREVOO"; then
+                  PROBLEMAS_PREVOO+=("linha de limites com valores diferentes dos pedidos")
+              else
+                  PROBLEMAS_PREVOO+=("linha de limites AUSENTE: imagem com script anterior a H0b, ou guarda de limites abortou")
+              fi
+          fi
+          if ! grep -Fxq "$PARADA" "$PREVOO"; then
+              PROBLEMAS_PREVOO+=("nao parou onde devia: '$PARADA'")
+          fi
+          if grep -Fq "nao foi possivel conferir a imagem" "$PREVOO"; then
+              PROBLEMAS_PREVOO+=("guarda de obsolescencia sem o descritor: o workspace nao chegou montado")
+          fi
+          if [ "${#PROBLEMAS_PREVOO[@]}" -gt 0 ]; then
+              echo "ERRO: pre-voo da imagem falhou:" >&2
+              printf '  - %s\n' "${PROBLEMAS_PREVOO[@]}" >&2
+              printf 'pre-voo: FALHOU — %s\n' "${PROBLEMAS_PREVOO[*]}" >> "$LEIA"
+              exit 1
+          fi
+          echo "pre-voo: OK"
+          printf 'pre-voo da imagem: OK (linha de limites conferida; parada em "%s")\n' "$PARADA" >> "$LEIA"
+
+          # --- o lote -------------------------------------------------------
+          ARGS_TOKEN=()
+          if [ "$FERRAMENTA" = "snyk-code" ]; then
+              if [ -z "${SNYK_TOKEN:-}" ]; then
+                  echo "ERRO: o segredo SNYK_TOKEN esta vazio ou ausente no repositorio" >&2
+                  exit 1
+              fi
+              # Nome da variavel, nunca o valor: o valor nao vai para a linha de
+              # comando nem para o log.
+              ARGS_TOKEN=(-e SNYK_TOKEN)
+          fi
+
+          # Limite EFETIVO: o menor entre o teto da matriz e o que resta do
+          # job. Os 150 s cobrem o -k 60 do timeout, os 30 do docker stop e o
+          # checkout, que roda antes de o preparo gravar o instante inicial.
+          if ! [[ "$INICIO_JOB" =~ ^[0-9]+$ ]]; then
+              echo "ERRO: instante inicial do job ausente ou malformado: '$INICIO_JOB'" >&2
+              exit 1
+          fi
+          DECORRIDO=$(( $(date -u '+%s') - INICIO_JOB ))
+          DISPONIVEL=$(( JOB_MIN * 60 - DECORRIDO - POS_MIN * 60 - 150 ))
+          LIMITE_LOTE="$LOTE_SEGUNDOS"
+          if [ "$DISPONIVEL" -lt "$LIMITE_LOTE" ]; then
+              LIMITE_LOTE="$DISPONIVEL"
+          fi
+          echo "limite do lote: ${LIMITE_LOTE}s (teto ${LOTE_SEGUNDOS}s; decorrido ${DECORRIDO}s; disponivel ${DISPONIVEL}s)"
+          if [ "$LIMITE_LOTE" -lt 300 ]; then
+              echo "ERRO: sobram ${LIMITE_LOTE}s para o lote; o job nao comporta a analise" >&2
+              exit 1
+          fi
+
+          { printf '=== df -h antes do lote, %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"; df -h; } > "$SAIDA/disco.txt"
+          SAIDA_LOTE="$SAIDA/container/lote.txt"
+          INICIO_ISO="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          INICIO=$SECONDS
+          echo "lote iniciado em $INICIO_ISO; saida combinada em $SAIDA_LOTE"
+
+          # O rc e capturado em VARIAVEL antes de decidir o ramo. Sob `-e`, o
+          # docker run falho abortaria o passo, e normalizacao e check-log
+          # perderiam o diagnostico justamente da execucao que falhou.
+          if timeout -k 60 "$LIMITE_LOTE" docker run --rm \
+                  --name "$NOME_CONTAINER" \
+                  --user "$HOST_UID:$HOST_GID" \
+                  -e HOME=/tmp \
+                  -e XDG_CACHE_HOME=/tmp \
+                  "${ARGS_LIMITES[@]}" \
+                  "${ARGS_TOKEN[@]}" \
+                  -v "$GITHUB_WORKSPACE":/workspace \
+                  "$REF" \
+                  "datasets/listas/$LOTE" > "$SAIDA_LOTE" 2>&1; then
+              RC=0
+          else
+              RC=$?
+          fi
+          DURACAO=$((SECONDS - INICIO))
+          FIM_ISO="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
+          # Estouro do `timeout`: 124 (TERM atendido) ou 137 (KILL no cliente).
+          # O TERM chega ao run_*.sh pelo proxy de sinais do docker, mas o trap
+          # dele so roda quando a ferramenta em primeiro plano retorna; e o
+          # KILL mata o CLIENTE, nao o container. O `docker stop` e o que para
+          # o container de fato, antes de a normalizacao ler o raw.
+          ESTOURO="nao"
+          if [ "$RC" -eq 124 ] || [ "$RC" -eq 137 ]; then
+              ESTOURO="sim"
+              echo "AVISO: o lote estourou ${LIMITE_LOTE}s (rc=$RC); parando o container" >&2
+              if docker stop --time 30 "$NOME_CONTAINER"; then
+                  echo "container parado"
+              else
+                  echo "AVISO: docker stop saiu com $? (o container pode ja ter terminado)" >&2
+              fi
+          fi
+          { printf '\n=== df -h depois do lote, %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"; df -h; } >> "$SAIDA/disco.txt"
+
+          # --- conferencias sobre a saida do lote ---------------------------
+          FALHAS=()
+          if [ "$RC" -ne 0 ]; then
+              FALHAS+=("container saiu com rc=$RC")
+          fi
+          if grep -Fxq "$LINHA_ESPERADA" "$SAIDA_LOTE"; then
+              LIMITES_OK="sim"
+          else
+              LIMITES_OK="nao"
+              FALHAS+=("linha de limites ausente ou divergente na saida do lote")
+          fi
+          if grep -Fq "nao foi possivel conferir a imagem" "$SAIDA_LOTE"; then
+              FALHAS+=("guarda de obsolescencia rodou sem o descritor")
+          fi
+          if grep -q '^Lote concluido: ' "$SAIDA_LOTE"; then
+              CONCLUIDO="sim"
+          else
+              CONCLUIDO="nao"
+              if [ "$RC" -eq 0 ]; then
+                  FALHAS+=("container saiu 0 sem 'Lote concluido': o laco nao chegou ao fim")
+              fi
+          fi
+          if LIMITES_VISTOS="$(grep -m 1 '^limites efetivos em segundos: ' "$SAIDA_LOTE")"; then
+              :
+          else
+              LIMITES_VISTOS="AUSENTE"
+          fi
+
+          {
+              printf 'inicio: %s\n' "$INICIO_ISO"
+              printf 'fim: %s\n' "$FIM_ISO"
+              printf 'duracao_segundos: %s\n' "$DURACAO"
+              printf 'rc_container: %s\n' "$RC"
+              printf 'limite_do_lote_segundos: %s (teto %s; decorrido no job ao iniciar %s; disponivel %s)\n' \
+                  "$LIMITE_LOTE" "$LOTE_SEGUNDOS" "$DECORRIDO" "$DISPONIVEL"
+              printf 'estouro_do_limite_do_lote: %s\n' "$ESTOURO"
+              printf 'laco_chegou_ao_fim: %s\n' "$CONCLUIDO"
+              printf 'limites_pedidos: %s\n' "${ARGS_LIMITES[*]:-nenhum -e; defaults do script}"
+              printf 'limites_esperados: %s\n' "$LINHA_ESPERADA"
+              printf 'limites_efetivos: %s\n' "$LIMITES_VISTOS"
+              printf 'limites_conferidos: %s\n' "$LIMITES_OK"
+          } > "$RESUMO"
+          cat "$RESUMO"
+          tail -n 40 "$SAIDA_LOTE"
+          printf -- '- lote: rc=%s em %ss; laco ao fim: %s; limites conferidos: %s\n' \
+              "$RC" "$DURACAO" "$CONCLUIDO" "$LIMITES_OK" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${#FALHAS[@]}" -gt 0 ]; then
+              echo "ERRO: o lote falhou:" >&2
+              printf '  - %s\n' "${FALHAS[@]}" >&2
+              if [ "$RC" -ne 0 ]; then
+                  exit "$RC"
+              fi
+              exit 1
+          fi
+
+      # -----------------------------------------------------------------
+      - name: Parar container remanescente
+        # Se o PASSO do lote foi morto pelo timeout-minutes, o docker run
+        # morreu com ele e o container seguiu rodando no daemon. Normalizar
+        # com o container ainda escrevendo leria raw pela metade.
+        if: always()
+        timeout-minutes: 2
+        shell: bash --noprofile --norc -euo pipefail {0}
+        run: |
+          # Comparacao EXATA de nome, sem a semantica de regex do --filter do
+          # docker, que varia com a versao quanto a barra inicial.
+          NOMES="$(docker ps --format '{{.Names}}')"
+          VIVO="nao"
+          while IFS= read -r N; do
+              if [ "$N" = "$NOME_CONTAINER" ]; then
+                  VIVO="sim"
+              fi
+          done <<< "$NOMES"
+          if [ "$VIVO" = "nao" ]; then
+              echo "nenhum container remanescente: $NOME_CONTAINER"
+              exit 0
+          fi
+          echo "AVISO: container remanescente $NOME_CONTAINER; parando" >&2
+          docker stop --time 30 "$NOME_CONTAINER"
+
+      # -----------------------------------------------------------------
+      - name: Normalizar no runner
+        id: normalizar
+        # NO RUNNER, no mesmo job, antes do upload, e nao negociavel: dois
+        # dos tres normalizadores caem no mtime do raw para o analysis_date, e
+        # o mtime nao sobrevive ao artifact. Normalizar depois do download
+        # gravaria a hora do download como data da analise, sem erro visivel.
+        #
+        # Sem --lista: o default e a lista COMPLETA, que e o que o
+        # normalize.py quer (os campos de ground truth vem dela). O --lista
+        # dele tem semantica OPOSTA ao --lista-lote do check-log.py.
+        if: ${{ !cancelled() && steps.lote.outcome != 'skipped' }}
+        timeout-minutes: 5
+        shell: bash --noprofile --norc -euo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+        run: |
+          if [ ! -f "$SAIDA/container/lote.txt" ]; then
+              echo "o lote nao chegou a rodar (pre-voo ou guarda anterior); nada a normalizar"
+              printf 'normalize.py: nao rodou — o lote nao chegou a rodar\n' >> "$SAIDA/README.txt"
+              exit 0
+          fi
+          ARQ="$SAIDA/portoes/normalize.txt"
+          if python3 tools/normalize.py --tool "$FERRAMENTA" > "$ARQ" 2>&1; then RC=0; else RC=$?; fi
+          cat "$ARQ"
+          printf 'normalize.py: rc=%s\n' "$RC" >> "$SAIDA/README.txt"
+          # rc 1 = CVE com falha ou raw orfao; rc 2 = sem diretorio de raw.
+          # Os dois sao defeito real e falham o job.
+          exit "$RC"
+
+      # -----------------------------------------------------------------
+      - name: Conferir log x raw
+        id: checklog
+        # --lista-lote e OBRIGATORIA: a conferencia (4) so existe com ela, e e
+        # a unica assinatura observavel do defeito do fd 0 — CVE que some sem
+        # raw, sem erro e sem linha de log. Recebe a lista DO LOTE, nunca a
+        # completa.
+        #
+        # O codigo de saida gateia: `problemas` no check-log.py nao inclui a
+        # metrica (5) de fallback de obtencao, logo repositorio lento nao
+        # derruba o job.
+        if: ${{ !cancelled() && steps.lote.outcome != 'skipped' }}
+        timeout-minutes: 2
+        shell: bash --noprofile --norc -euo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+        run: |
+          if [ ! -f "$SAIDA/container/lote.txt" ]; then
+              echo "o lote nao chegou a rodar; nada a conferir"
+              printf 'check-log.py: nao rodou — o lote nao chegou a rodar\n' >> "$SAIDA/README.txt"
+              exit 0
+          fi
+          ARQ="$SAIDA/portoes/check-log.txt"
+          if python3 tools/check-log.py --tool "$FERRAMENTA" \
+                  --lista-lote "datasets/listas/$LOTE" > "$ARQ" 2>&1; then
+              RC=0
+          else
+              RC=$?
+          fi
+          cat "$ARQ"
+          printf 'check-log.py: rc=%s\n' "$RC" >> "$SAIDA/README.txt"
+          # A contagem de status vai a pagina da execucao: lote com todos os
+          # CVEs em ERRO_* sai verde, e e so aqui que isso aparece sem abrir o
+          # artifact.
+          if STATUS="$(grep -m 1 '^  ultimo status por CVE: ' "$ARQ")"; then
+              printf -- '- %s\n' "${STATUS#  }" >> "$GITHUB_STEP_SUMMARY"
+          else
+              printf -- '- check-log.py nao emitiu a contagem de status (rc=%s)\n' "$RC" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$RC"
+
+      # -----------------------------------------------------------------
+      - name: Rede do Semgrep (medicao, nao fatal)
+        id: rede
+        # O laco faz `git fetch` DENTRO do container, entao o container do lote
+        # precisa de rede e --network=none nele e impossivel. Rodar o lote
+        # mostraria que o Semgrep nao USA a rede — observacao, nao imposicao.
+        # Este passo mede outra coisa: que a imagem e o pack OPERAM com rede
+        # zero no ambiente da campanha. Tres bracos, na ordem; a logica de
+        # veredito dos bracos 1 e 2 e a da sondagem-ambiente.yml.
+        #
+        # O braco 3 mediu 109 s e 113 s localmente, sob --network=none, contra
+        # ~15 s de um lote inteiro com rede. O teto do passo entra no pos_min
+        # da matriz.
+        if: ${{ !cancelled() && matrix.ferramenta == 'semgrep' && steps.imagem.outcome == 'success' }}
+        continue-on-error: true
+        timeout-minutes: 10
+        shell: bash --noprofile --norc -uo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+          DATA: ${{ steps.preparar.outputs.data }}
+          REF: ${{ steps.imagem.outputs.ref }}
+        run: |
+          ARQ="$SAIDA/datasets/sondagens/sondagem-rede-semgrep-runner-$DATA.txt"
+          TRAB="$(mktemp -d)"
+          if [ -z "$TRAB" ] || [ ! -d "$TRAB" ]; then
+              echo "ERRO: mktemp -d falhou" >&2
+              exit 1
+          fi
+          ULTIMA="$TRAB/ultima.txt"
+          RC_ULTIMA=0
+          HOST_UID="$(id -u)"
+          HOST_GID="$(id -g)"
+
+          linha() { printf '%s\n' "$*" | tee -a "$ARQ"; }
+          sondar() {
+              local rotulo="$1"; shift
+              linha ""
+              linha "--- $rotulo"
+              linha "\$ $*"
+              "$@" > "$ULTIMA" 2>&1
+              RC_ULTIMA=$?
+              tee -a "$ARQ" < "$ULTIMA"
+              linha "[rc=$RC_ULTIMA]"
+          }
+          # Tres estados por lado, nao dois: container que nao rodou nao e
+          # container que nao alcancou a rede. Copiado da sondagem-ambiente.yml.
+          ler_veredito_rede() {
+              if ! grep -q 'VEREDITO_REDE=' "$ULTIMA"; then
+                  printf 'NAO_RESPONDEU\n'
+              elif grep -q 'VEREDITO_REDE=ALCANCAVEL' "$ULTIMA"; then
+                  printf 'ALCANCOU\n'
+              else
+                  printf 'NAO_ALCANCOU\n'
+              fi
+          }
+
+          : > "$ARQ"
+          linha "# Semgrep com rede zero, na imagem da campanha"
+          linha "# Observacao datada. O procedimento e .github/workflows/analise-lote.yml"
+          linha "#"
+          linha "sondado_em: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          linha "workflow_run_id: $GITHUB_RUN_ID"
+          linha "workflow_run_attempt: $GITHUB_RUN_ATTEMPT"
+          linha "commit: $GITHUB_SHA"
+          linha "runner_image_os: ${ImageOS:-NAO_DEFINIDO}"
+          linha "runner_image_version: ${ImageVersion:-NAO_DEFINIDO}"
+          linha "imagem: $REF"
+          linha "uid_do_runner: $HOST_UID"
+          linha "gid_do_runner: $HOST_GID"
+          linha ""
+          linha "O QUE ISTO NAO ESTABELECE: que o LACO de analise roda sem rede. Ele nao"
+          linha "roda — precisa dela para o git fetch, dentro do mesmo container. O que se"
+          linha "estabelece aqui e que a imagem e o pack vendorizado operam com rede zero."
+
+          # A imagem e python:3.12-slim, sem wget nem curl: a sonda e Python,
+          # e o mesmo comando roda nos dois bracos, variando SO a rede.
+          SONDA_PY='import urllib.request
+          try:
+              urllib.request.urlopen("https://example.com", timeout=5).read(1)
+              print("VEREDITO_REDE=ALCANCAVEL")
+          except Exception as erro:
+              print("VEREDITO_REDE=INALCANCAVEL %s: %s" % (type(erro).__name__, erro))'
+          ARGS=(--user "$HOST_UID:$HOST_GID" -e HOME=/tmp)
+
+          sondar "BRACO 1 — CONTROLE, com rede" \
+              timeout 120 docker run --rm "${ARGS[@]}" --entrypoint python3 "$REF" -c "$SONDA_PY"
+          CONTROLE="$(ler_veredito_rede)"
+
+          sondar "BRACO 2 — mesma imagem, mesmo comando, com --network=none" \
+              timeout 120 docker run --rm --network=none "${ARGS[@]}" --entrypoint python3 "$REF" -c "$SONDA_PY"
+          SONDA="$(ler_veredito_rede)"
+
+          ISOLAMENTO="nao-confirmado"
+          if [ "$CONTROLE" != "ALCANCOU" ]; then
+              V_REDE="INCONCLUSIVO — o controle COM rede nao alcancou (estado: $CONTROLE). O metodo nao foi validado contra caso positivo, e o braco 2 nada estabelece sobre --network=none."
+          elif [ "$SONDA" = "NAO_RESPONDEU" ]; then
+              V_REDE="INCONCLUSIVO — o braco com --network=none nao emitiu veredito: o container nao rodou. Ausencia de resposta nao e evidencia de isolamento."
+          elif [ "$SONDA" = "ALCANCOU" ]; then
+              V_REDE="ISOLAMENTO NAO OPERA — o braco 2 alcancou a rede sob --network=none."
+          else
+              V_REDE="ISOLAMENTO CONFIRMADO — o controle alcancou a rede e o braco 2, que RODOU e respondeu, nao alcancou."
+              ISOLAMENTO="confirmado"
+          fi
+
+          mkdir -p "$TRAB/alvo" "$TRAB/saida"
+          printf '%s\n' \
+              "var cp = require('child_process');" \
+              "function h(req) { cp.exec(req.query.cmd); eval(req.body.code); }" \
+              > "$TRAB/alvo/a.js"
+          INICIO=$SECONDS
+          sondar "BRACO 3 — semgrep scan com o pack vendorizado, --network=none" \
+              timeout 420 docker run --rm --network=none "${ARGS[@]}" \
+                  -v "$TRAB/alvo":/alvo:ro -v "$TRAB/saida":/saida \
+                  --entrypoint semgrep "$REF" \
+                  scan --config=/default.yaml --json --metrics=off --output=/saida/scan.json /alvo
+          RC_SCAN=$RC_ULTIMA
+          DURACAO_SCAN=$((SECONDS - INICIO))
+          linha "duracao do braco 3: ${DURACAO_SCAN}s"
+
+          # Parser do formato, nunca regex sobre o JSON.
+          python3 -c '
+          import json, sys
+          d = json.load(open(sys.argv[1], encoding="utf-8"))
+          print("ESCANEADOS=%d" % len((d.get("paths") or {}).get("scanned") or []))
+          print("ACHADOS=%d" % len(d.get("results") or []))
+          print("ERROS=%d" % len(d.get("errors") or []))
+          print("VERSAO=%s" % d.get("version"))
+          ' "$TRAB/saida/scan.json" > "$ULTIMA" 2>&1
+          RC_PARSE=$?
+          tee -a "$ARQ" < "$ULTIMA"
+          linha "[rc do parser=$RC_PARSE]"
+          ESCANEADOS="$(sed -n 's/^ESCANEADOS=\([0-9][0-9]*\)$/\1/p' "$ULTIMA" | head -n 1)"
+          if [ -z "$ESCANEADOS" ]; then ESCANEADOS=0; fi
+          if [ -f "$TRAB/saida/scan.json" ]; then
+              mkdir -p "$SAIDA/rede-semgrep"
+              cp "$TRAB/saida/scan.json" "$SAIDA/rede-semgrep/scan.json"
+          fi
+
+          if [ "$ISOLAMENTO" != "confirmado" ]; then
+              V_SCAN="INCONCLUSIVO — sem isolamento confirmado nos bracos 1 e 2, o braco 3 nada estabelece sobre rede zero."
+          elif [ "$RC_SCAN" -eq 0 ] && [ "$RC_PARSE" -eq 0 ] && [ "$ESCANEADOS" -gt 0 ]; then
+              V_SCAN="OPERA SEM REDE — scan com o pack vendorizado completou sob --network=none (rc=0, $ESCANEADOS arquivo(s) em paths.scanned, ${DURACAO_SCAN}s)."
+          else
+              V_SCAN="NAO OPERA SEM REDE — rc do scan=$RC_SCAN, rc do parser=$RC_PARSE, paths.scanned=$ESCANEADOS."
+          fi
+
+          linha ""
+          linha "================================================================"
+          linha "VEREDITOS"
+          linha "================================================================"
+          linha "controle (com rede): $CONTROLE"
+          linha "braco 2 (--network=none): $SONDA"
+          linha "isolamento: $V_REDE"
+          linha "semgrep com rede zero: $V_SCAN"
+
+          printf 'rede do Semgrep: %s\n' "$V_SCAN" >> "$SAIDA/README.txt"
+          printf -- '- rede do Semgrep: %s\n' "$V_SCAN" >> "$GITHUB_STEP_SUMMARY"
+          rm -rf "$TRAB"
+          exit 0
+
+      # -----------------------------------------------------------------
+      - name: Montar o artifact
+        id: montar
+        if: always()
+        timeout-minutes: 3
+        # Sem `-e`: monta o que existir. Copia que falha e contada e vira
+        # codigo de saida no fim, nunca silencio.
+        shell: bash --noprofile --norc -uo pipefail {0}
+        env:
+          SAIDA: ${{ steps.preparar.outputs.saida }}
+          R_PREPARAR: ${{ steps.preparar.outcome }}
+          R_FIXTURES: ${{ steps.fixtures.outcome }}
+          R_IMAGEM: ${{ steps.imagem.outcome }}
+          R_HOME: ${{ steps.home.outcome }}
+          R_LOTE: ${{ steps.lote.outcome }}
+          R_NORMALIZAR: ${{ steps.normalizar.outcome }}
+          R_CHECKLOG: ${{ steps.checklog.outcome }}
+          R_REDE: ${{ steps.rede.outcome }}
+        run: |
+          if [ -z "$SAIDA" ] || [ ! -d "$SAIDA" ]; then
+              echo "o diretorio do artifact nao foi criado (o preparo falhou antes); nada a montar"
+              exit 0
+          fi
+          LEIA="$SAIDA/README.txt"
+          ERROS=0
+          copiar() {
+              if cp -a "$1" "$2"; then
+                  return 0
+              fi
+              echo "ERRO: falha ao copiar $1 para $2" >&2
+              ERROS=$((ERROS + 1))
+          }
+
+          # Resultados e logs SO se o lote rodou. Se o preparo falhou antes de
+          # mover o estado herdado — lote inexistente, por exemplo —, o que ha
+          # em logs/ e results/ e do checkout, de outra execucao, e publica-lo
+          # sob o nome deste lote seria artefato alheio com rotulo proprio.
+          if [ -f "$SAIDA/container/lote.txt" ]; then
+              for SUB in raw treated; do
+                  if [ -d "results/$FERRAMENTA/$SUB" ]; then
+                      mkdir -p "$SAIDA/results/$FERRAMENTA"
+                      copiar "results/$FERRAMENTA/$SUB" "$SAIDA/results/$FERRAMENTA/"
+                  fi
+              done
+              mkdir -p "$SAIDA/logs"
+              for ARQ in "logs/execution-log-$FERRAMENTA.csv" "logs/normalize-report-$FERRAMENTA.json"; do
+                  if [ -f "$ARQ" ]; then
+                      copiar "$ARQ" "$SAIDA/logs/"
+                  fi
+              done
+              COPIADOS="sim"
+          else
+              COPIADOS="nao — o lote nao chegou a rodar; o que ha em logs/ e results/ e estado do checkout"
+          fi
+
+          contar() {
+              if [ -d "$1" ]; then
+                  find "$1" -maxdepth 1 -type f -name "$2" | wc -l
+              else
+                  printf 'ausente\n'
+              fi
+          }
+          extrair() {
+              if [ -f "$1" ]; then
+                  grep -E "$2" "$1"
+                  if [ "$?" -gt 1 ]; then
+                      echo "  (erro ao ler $1)"
+                  fi
+              else
+                  echo "  ($1 ausente)"
+              fi
+          }
+
+          {
+              printf '\n====================================================================\n'
+              printf 'DESFECHO DOS PASSOS\n'
+              printf '====================================================================\n'
+              printf 'preparar: %s\n' "$R_PREPARAR"
+              printf 'portao previo (fixtures): %s\n' "${R_FIXTURES:-nao rodou}"
+              printf 'imagem por digest: %s\n' "${R_IMAGEM:-nao rodou}"
+              printf 'controle do HOME (nao fatal): %s\n' "${R_HOME:-nao rodou}"
+              printf 'lote: %s\n' "${R_LOTE:-nao rodou}"
+              printf 'normalize.py: %s\n' "${R_NORMALIZAR:-nao rodou}"
+              printf 'check-log.py: %s\n' "${R_CHECKLOG:-nao rodou}"
+              printf 'rede do Semgrep (nao fatal, so no Semgrep): %s\n' "${R_REDE:-nao rodou}"
+              printf 'resultados e logs copiados para o artifact: %s\n' "$COPIADOS"
+
+              printf '\n--- container\n'
+              if [ -f "$SAIDA/container/resumo.txt" ]; then
+                  cat "$SAIDA/container/resumo.txt"
+              else
+                  printf '  (o lote nao chegou a rodar)\n'
+              fi
+
+              printf '\n--- contagens\n'
+              printf 'raws (CVE-*): %s\n' "$(contar "$SAIDA/results/$FERRAMENTA/raw" 'CVE-*')"
+              printf 'tratados (*.json): %s\n' "$(contar "$SAIDA/results/$FERRAMENTA/treated" '*.json')"
+              if [ -f "$SAIDA/logs/execution-log-$FERRAMENTA.csv" ]; then
+                  printf 'linhas no log de execucao (com cabecalho): %s\n' "$(wc -l < "$SAIDA/logs/execution-log-$FERRAMENTA.csv")"
+              else
+                  printf 'log de execucao: ausente\n'
+              fi
+
+              printf '\n--- portoes (linhas emitidas pelos proprios scripts)\n'
+              printf '[tests/run-fixtures.py]\n'
+              extrair "$SAIDA/portoes/run-fixtures.txt" '^[0-9]+ verificacoes, '
+              printf '[tools/normalize.py]\n'
+              extrair "$SAIDA/portoes/normalize.txt" '^  (processados|linhas da lista sem raw|achados):'
+              printf '[tools/check-log.py]\n'
+              extrair "$SAIDA/portoes/check-log.txt" '^  (linhas no log|ultimo status por CVE|\([1-4]\))|fallback de clone completo:|NAO RECONHECIDO|ANOMALO|INCOERENTE'
+          } >> "$LEIA"
+
+          echo "conteudo do artifact:"
+          find "$SAIDA" -type f | sort
+          if [ "$ERROS" -gt 0 ]; then
+              echo "ERRO: $ERROS copia(s) falharam" >&2
+              exit 1
+          fi
+          exit 0
+
+      # -----------------------------------------------------------------
+      - name: Publicar o artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.preparar.outputs.nome || format('lote-nao-preparado-{0}-{1}-{2}', matrix.ferramenta, github.run_id, github.run_attempt) }}
+          path: ${{ steps.preparar.outputs.saida || 'lote-nao-preparado' }}
+          if-no-files-found: error
+          retention-days: 90
+          # Arquivo oculto entra: um `.em-progresso-<CVE>.tmp` deixado por
+          # estouro e a evidencia do CVE interrompido, e o default do
+          # upload-artifact o deixaria de fora.
+          include-hidden-files: true
