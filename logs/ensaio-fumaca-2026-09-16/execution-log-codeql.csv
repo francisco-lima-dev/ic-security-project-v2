@@ -1,0 +1,8 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2018-14040,https://github.com/twbs/bootstrap.git,13bf8aeae3db71e28af69782328c22215795c169,OK,codeql 2.25.4; suite codeql/javascript-queries:codeql-suites/javascript-security-extended.qls; TIMEOUT_CREATE=3600; TIMEOUT_ANALYZE=3600; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 12 achados; HEAD conferido,82
+CVE-2018-14041,https://github.com/twbs/bootstrap.git,149096016f70fd815540d62c0989fd99cdc809e0,OK,49 achados; HEAD conferido,59
+CVE-2019-10744,https://github.com/lodash/lodash.git,1f8ea07746963a535385a5befc19fa687a627d2b,OK,19 achados; HEAD conferido,103
+CVE-2016-1000229,https://github.com/linxiaowu66/swagger-ui.git,14fad2b4c76efe249db515c98432eb609aa77691,ERRO_FETCH,clone completo saiu com 128; fetch raso saiu com 128,0
+CVE-2017-16042,https://github.com/tj/node-growl.git,dc8aae046df328edd32dd69f3cd2d6b114d7018e,OK,24 achados; HEAD conferido,44
+CVE-2018-20164,https://github.com/ua-parser/uap-core.git,4e97f111af71597d038eff1730fb8d7e4f4e7ae4,SEM_ACHADOS,0 achados; HEAD conferido,51
+CVE-2018-14380,https://github.com/Graylog2/graylog2-server.git,f4a6bf94bc084e58afc730881c1a746408e1f574,OK,7 achados; HEAD conferido,77

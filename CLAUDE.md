@@ -430,6 +430,13 @@ revisar é o **tamanho do lote**, não o limite.
 Até lá, 3600 s permanece, com `timeout-minutes` explícito abaixo de 360 no
 job e `if: always()` no upload como guarda independente.
 
+**Decidido em H4, 16/09/2026: 900 s** nos três limites de análise, por medição
+no runner — ver "Ensaio de fumaça — leitura (Fase H, 16/09/2026)", que traz a
+folga declarada e o critério. O default do código **continua 3600/1800**: os
+900 entram como entrada do `workflow_dispatch` a cada disparo de lote, nunca no
+script. `TIMEOUT_FETCH` e `TIMEOUT_CLONE` seguem sem mudança, por não haver
+dado.
+
 #### Limites sobrescrevíveis por ambiente (Fase H, H0b, 14/09/2026)
 
 Os três `run_*.sh` leem os limites com `${VAR-default}`. **Ausente**, vale o
@@ -677,6 +684,116 @@ cada acréscimo.
 Mas **não há segunda revisão completa**. Vale para a Fase C (declarado na Seção 8.5 da metodologia) e
 reaparece na Fase D pelo mesmo motivo: uma segunda revisão motivaria novas
 correções, e a recursão não tem ponto de parada natural.
+
+## Ensaio de fumaça — leitura (Fase H, 16/09/2026)
+
+Execução `35101790912` do `analise-lote.yml`, commit `3af154a`, lote
+`cves-sast-fumaca` (7 CVEs), com os três campos de limite **vazios**: o ensaio
+mede os defaults. Runner `ubuntu24` / `20260907.300.1`, uid:gid **1001:1001**.
+Os três jobs saíram `success` — CodeQL 7m45s, Semgrep 5m14s, Snyk Code 3m03s.
+Seis CVEs analisados; o `CVE-2016-1000229` saiu `ERRO_FETCH`, como previsto.
+
+**Resultados de detecção descartados**, pela regra do ensaio: raw e tratado não
+entram no repositório. **Preservados em `logs/ensaio-fumaca-2026-09-16/`**: os
+três `execution-log-*.csv` e os três `normalize-report-*.json`, byte-idênticos
+aos do artifact. Os arquivos homônimos na raiz de `logs/` continuam sendo os do
+ensaio **local** da Fase E e não foram tocados. As sondagens datadas estão em
+`datasets/sondagens/`.
+
+### 1. Razão runner ÷ local no CodeQL ≈ 0,70
+
+| CVE | local (Fase E) | runner | razão |
+|---|---:|---:|---:|
+| `CVE-2017-16042` | 63 s | 44 s | 0,70 |
+| `CVE-2018-14041` | 78 s | 59 s | 0,76 |
+| `CVE-2018-14040` | 127 s | 82 s | 0,65 |
+| `CVE-2019-10744` | 146 s | 103 s | 0,71 |
+
+**Ressalva:** são quatro pontos, de repositórios pequenos a médios, medidos num
+único par de máquinas. Não transfere para repositório grande, para outro runner
+nem para as outras duas ferramentas.
+
+### 2. Porte do repositório não prediz custo de análise — correção de premissa
+
+Arquivos extraídos pelo CodeQL × duração, no runner:
+
+| arquivos extraídos | duração |
+|---:|---:|
+| 3 | 44 s |
+| 58 | 103 s |
+| 126 | 59 s |
+| 174 | 82 s |
+| 14 | 51 s |
+| 704 | 77 s |
+
+O caso de 58 arquivos custou mais que o de 704. A premissa de que repositório
+grande implica análise longa — que sustentava o dimensionamento por tamanho de
+repositório — **não se sustenta nesta faixa**, e fica registrada como corrigida.
+
+### 3. Os valores de `T` decididos
+
+`TIMEOUT_CREATE` = `TIMEOUT_ANALYZE` = `TIMEOUT_ANALISE` = **900 s**.
+`TIMEOUT_FETCH` (300) e `TIMEOUT_CLONE` (900) **sem mudança, por não haver
+dado**: o único fallback do ensaio saiu por rc 128 do git, não por estouro.
+
+**A assimetria da falha é o critério.** Limite curto demais falha um CVE, é
+nomeado no log (`excedeu ${T}s`), fica localizado e é reexecutável por CVE.
+Limite longo demais deixa o item travado consumir o teto do job, mata o lote
+inteiro e a reexecução recomeça do zero — o modo de falha de julho de 2026.
+
+**Folga declarada:** ~9× sobre o máximo observado no CodeQL (103 s), ~15× nos
+outros dois (58 s no Semgrep, 60 s no Snyk Code).
+
+### 4. Lote de 30 confirmado no escopo restrito
+
+69 s por CVE analisado no CodeQL, projeção de ~35 min contra 150 de teto.
+
+**Escrito assim de propósito, e não "o ensaio confirmou o lote de 30":** o
+perfil de item que não termina — o que interrompeu os lotes `aa` e `ab` em
+julho de 2026 — **não foi amostrado** por sete CVEs.
+
+### 5. Inventário do CodeQL: notificação × `artifacts[]` depurado
+
+Batem **6 de 6**, até **704 arquivos**, incluindo o caso multilíngue
+(`CVE-2018-14380`: 506 `.jsx`, 158 `.js`, 21 `.ts` extraídos; o Semgrep viu
+ainda 1165 `.java` no mesmo repositório). **Nenhum teto na faixa medida.**
+
+### 6. O Snyk Code não decide `gt_file_scanned`
+
+`null` em **6 de 6**, com o motivo "coverage[] agregada, sem inventário de
+caminhos: nao decide sobre um arquivo". **Resolve por observação** a suposição
+que o `normalize.py` carregava. Consequência: cobertura por arquivo disponível
+em **duas das três** ferramentas.
+
+### 7. `gt_file_scanned: true` no `.yaml` do `CVE-2018-20164`
+
+Significa que o arquivo **entrou no inventário** — presente na notificação de
+extraídos do CodeQL e em `paths.scanned` do Semgrep —, **não que foi analisado
+como YAML**: as duas ferramentas deram `SEM_ACHADOS`. **O ramo `false` segue
+sem exercício no laço.**
+
+### 8. Braço 3 da sonda de rede: 112 s no runner contra ~13 s de um lote com rede
+
+O Semgrep **opera** sem rede, mas tentando alcançá-la e esperando o timeout, o
+que é distinto de "não usa a rede". Reproduzido: 109 s e 113 s no hospedeiro
+local, 112 s no runner — **não é artefato local**.
+
+### Como os valores de `T` se aplicam
+
+**Não estão no código, e não devem entrar nele.** Os `run_*.sh` mantêm os
+defaults (3600/3600/1800/300/900), e os 900 entram como **entrada do
+`workflow_dispatch`**, a cada disparo de lote:
+
+```
+gh workflow run analise-lote.yml --ref master \
+    -f lote=cves-sast-batch-aa \
+    -f timeout_create=900 -f timeout_analyze=900 -f timeout_analise=900
+```
+
+Cada job usa só os campos da sua ferramenta; campo vazio vale o default do
+script. É o que H0b comprou: mudar o limite não exige rebuild nem digest novo.
+O valor efetivo de cada lote fica na primeira linha do log e no README do
+artifact, e o passo do lote o confere contra o pedido.
 
 ## Obtenção do código — comportamento medido
 

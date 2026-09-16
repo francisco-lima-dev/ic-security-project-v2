@@ -1,0 +1,8 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2018-14040,https://github.com/twbs/bootstrap.git,13bf8aeae3db71e28af69782328c22215795c169,OK,snyk 1.1306.1; TIMEOUT_ANALISE=1800; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 9 achados; snyk exit 1; HEAD conferido,25
+CVE-2018-14041,https://github.com/twbs/bootstrap.git,149096016f70fd815540d62c0989fd99cdc809e0,OK,4 achados; snyk exit 1; HEAD conferido,29
+CVE-2019-10744,https://github.com/lodash/lodash.git,1f8ea07746963a535385a5befc19fa687a627d2b,OK,15 achados; snyk exit 1; HEAD conferido,60
+CVE-2016-1000229,https://github.com/linxiaowu66/swagger-ui.git,14fad2b4c76efe249db515c98432eb609aa77691,ERRO_FETCH,clone completo saiu com 128; fetch raso saiu com 128,0
+CVE-2017-16042,https://github.com/tj/node-growl.git,dc8aae046df328edd32dd69f3cd2d6b114d7018e,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,15
+CVE-2018-20164,https://github.com/ua-parser/uap-core.git,4e97f111af71597d038eff1730fb8d7e4f4e7ae4,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2018-14380,https://github.com/Graylog2/graylog2-server.git,f4a6bf94bc084e58afc730881c1a746408e1f574,OK,29 achados; snyk exit 1; HEAD conferido,24
