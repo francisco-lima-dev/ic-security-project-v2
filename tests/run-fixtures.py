@@ -858,9 +858,27 @@ def main():
         # todas as assercoes seguintes. Mesma blindagem de bloco_obtencao().
         alvo = logs / "execution-log-codeql.csv"
         if not alvo.is_file():
-            return "SEM_LOG rc=%d stderr=%s" % (r.returncode, r.stderr[-200:])
+            return ("SEM_LOG: o log de execucao NAO FOI GERADO por %s (rc=%d); "
+                    "stderr=%s" % (alvo.name, r.returncode, r.stderr[-200:]))
         linhas = alvo.read_text(encoding="utf-8").strip().splitlines()
-        return linhas[-1] if linhas else "LOG_VAZIO"
+        return linhas[-1] if linhas else ("LOG_VAZIO: %s existe e nao tem linha "
+                                          "alguma" % alvo.name)
+
+    # Campo de status POR POSICAO, sem excecao. O marcador devolvido acima
+    # quando o log nao existe nao tem seis campos, e o `partes[3]` direto
+    # levantava IndexError: a suite inteira morria com traceback, em vez de
+    # ESTA verificacao falhar e as seguintes seguirem. Este arquivo e o portao
+    # que roda 24 vezes na campanha, uma vez por job, e perder o portao inteiro
+    # e pior que perder uma verificacao — o defeito e anterior a Fase H e foi
+    # observado num mutante de H0b.
+    #
+    # Com log presente o valor devolvido e o mesmo `partes[3]` de antes: a
+    # verificacao nao muda, e a contagem de verificacoes tampouco.
+    def status_da_linha(linha):
+        partes = linha.split(",")
+        if len(partes) > 3:
+            return partes[3]
+        return "SEM_CAMPO_DE_STATUS (%s)" % linha[:160]
 
     l_estouro = rodar_obtencao(124, 124)
     l_recusa = rodar_obtencao(128, 128)
@@ -884,10 +902,10 @@ def main():
     checar(all(len(x.split(",")) == 6 for x in (l_estouro, l_recusa)),
            "a mensagem nova nao tem virgula: o CSV continua com 6 campos",
            "%d || %d" % (len(l_estouro.split(",")), len(l_recusa.split(","))))
-    checar(all(x.split(",")[3] == "ERRO_FETCH" for x in (l_estouro, l_recusa)),
+    checar(all(status_da_linha(x) == "ERRO_FETCH" for x in (l_estouro, l_recusa)),
            "o conjunto de status e fechado: a correcao muda a mensagem e NAO "
            "acrescenta status",
-           "%s || %s" % (l_estouro.split(",")[3], l_recusa.split(",")[3]))
+           "%s || %s" % (status_da_linha(l_estouro), status_da_linha(l_recusa)))
 
     # A suite NAO executa os outros dois scripts — eles exigem pack em
     # /default.yaml e SNYK_TOKEN. O que estende o ensaio a eles e a
@@ -1039,6 +1057,12 @@ def main():
     # check-log.py continua aceitando o que o script passou a escrever. O
     # status nao mudou, entao a classificacao nao pode ter mudado.
     log_obt = ws / "logs" / "obtencao.csv"
+    # O diretorio pode NAO existir: rodar_obtencao() apaga ws/logs a cada braco,
+    # e script que morre antes das pre-condicoes nao o recria. Sem esta linha a
+    # suite morria aqui com FileNotFoundError — depois de a verificacao anterior
+    # ja ter falhado de forma nomeada, e antes das secoes seguintes. Com o log
+    # presente, criar o pai que ja existe nao muda nada.
+    log_obt.parent.mkdir(parents=True, exist_ok=True)
     log_obt.write_text(
         "cve,repo,commit,status,mensagem,duracao_segundos\n"
         + l_estouro.replace("CVE-0000-00000", "CVE-X", 1) + "\n"
