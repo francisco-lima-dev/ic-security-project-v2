@@ -1813,3 +1813,14 @@ Declaradas na monografia, não corrigíveis por código:
   Snyk vem de URL versionada. O build único da campanha garante que os oito
   lotes usem a mesma imagem; a fixação das bases é o que permite reconstruí-la
   depois
+- **Não encadear com `&&` uma guarda que CONTA antes de um comando que
+  ESCREVE** — `grep -c` sai 1 com zero casamentos, que é justamente o resultado
+  desejado numa guarda, e a cadeia quebra **antes** do comando seguinte.
+  Ocorrido em H4 (16/09/2026): a guarda "nenhum raw no índice" imprimiu `0`, o
+  `git commit` encadeado depois dela **nunca rodou**, e o `echo "$?"` da linha
+  seguinte reportou o código da cadeia quebrada, não o de um commit.
+  Sintoma observável: o push responde `Everything up-to-date` e o `HEAD` não se
+  move. Contar com `awk` ou `wc -l`, que não falham sem casamento, e conferir
+  **explicitamente** o código do comando que importa, em vez de confiar na
+  cadeia. É a regra geral de contagem — zero indistinguível de falha — num
+  contexto novo: guarda antes de escrita
