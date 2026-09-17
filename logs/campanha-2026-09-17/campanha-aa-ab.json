@@ -1,0 +1,2342 @@
+{
+  "gerado_em": "2026-09-17T01:04:10Z",
+  "procedencia": {
+    "fonte": "artifacts baixados das execucoes do analise-lote.yml; numeros computados dos arquivos, nao transcritos",
+    "execucoes": {
+      "cves-sast-batch-aa": "35106944490",
+      "cves-sast-batch-ab": "35135927579"
+    },
+    "commit_do_workflow": "579f383195251daa8ff1858322652e9c0bcb4c39",
+    "retencao": "os artifacts expiram 90 dias apos a execucao; este arquivo e a copia dos numeros, nao dos raws",
+    "descarte": "resultados de deteccao dos lotes NAO sao descartados (regra vale so para o ensaio de fumaca)"
+  },
+  "lotes": {
+    "cves-sast-batch-aa": {
+      "codeql": {
+        "cves_na_lista": 30,
+        "status": {
+          "ERRO_FETCH": 1,
+          "OK": 23,
+          "SEM_ACHADOS": 6
+        },
+        "raws": 29,
+        "achados": 245,
+        "achados_sem_cwe": 0,
+        "normalize": {
+          "processados": 29,
+          "com_falha": 0,
+          "linhas_da_lista_sem_raw": 194,
+          "raws_sem_linha_na_lista": 0,
+          "pulados_por_idempotencia": 0,
+          "raws_ilegiveis": 0,
+          "analysis_date_fallback_mtime": 29,
+          "schema_version": "1.3"
+        },
+        "check_log": {
+          "conf_1_raw_com_status_de_erro": 0,
+          "conf_2_sucesso_sem_raw": 0,
+          "conf_3_sem_arquivo_analisavel": 0,
+          "conf_4_sumidos": 0,
+          "status_agregado": "{'ERRO_FETCH': 1, 'OK': 23, 'SEM_ACHADOS': 6}",
+          "fallback_cves": 1,
+          "fallback_causa_fetch_estouro": 0,
+          "fallback_causa_fetch_outro": 1,
+          "clone_tambem_falhou": 1,
+          "nao_reconhecido": 0,
+          "anomalo": 0,
+          "incoerente": 0
+        },
+        "gt_file_scanned": {
+          "True": 29
+        },
+        "duracao": {
+          "soma_segundos": 1645,
+          "container_segundos": 1647,
+          "sobrecarga_do_laco_segundos": 2,
+          "mediana_segundos": 48,
+          "maximo_segundos": 220,
+          "maximo_cve": "CVE-2017-1000006"
+        },
+        "limites": {
+          "limites_pedidos": "-e TIMEOUT_CREATE=900 -e TIMEOUT_ANALYZE=900",
+          "limites_efetivos": "limites efetivos em segundos: TIMEOUT_CREATE=900; TIMEOUT_ANALYZE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900",
+          "limites_conferidos": "sim",
+          "limite_do_lote_segundos": "9000 (teto 9000; decorrido no job ao iniciar 53; disponivel 9637)"
+        },
+        "imagem": {
+          "usada": "ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec",
+          "repodigest_conferido": "ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec",
+          "image_id": "sha256:61d5ab857af5b85b362c247a06dce837c94487a670eb0a0b3fb021f8efda6bef"
+        },
+        "portao_lote_sem_raw": "OK — 29 de 30 CVEs do lote com raw",
+        "sonda_home": "DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera",
+        "sonda_rede": null,
+        "disco": [
+          "=== df -h antes do lote, 2026-09-16T14:13:32Z",
+          "/dev/root       145G   61G   84G  43% /",
+          "=== df -h depois do lote, 2026-09-16T14:40:59Z",
+          "/dev/root       145G   61G   84G  43% /"
+        ],
+        "codeql_inventario": [
+          {
+            "cve": "CVE-2016-10735",
+            "notificacao": 108,
+            "artifacts_depurado": 108,
+            "bate": true,
+            "duracao_segundos": 63
+          },
+          {
+            "cve": "CVE-2017-0931",
+            "notificacao": 4,
+            "artifacts_depurado": 4,
+            "bate": true,
+            "duracao_segundos": 47
+          },
+          {
+            "cve": "CVE-2017-1000006",
+            "notificacao": 825,
+            "artifacts_depurado": 825,
+            "bate": true,
+            "duracao_segundos": 220
+          },
+          {
+            "cve": "CVE-2017-1000219",
+            "notificacao": 3,
+            "artifacts_depurado": 3,
+            "bate": true,
+            "duracao_segundos": 47
+          },
+          {
+            "cve": "CVE-2017-1000427",
+            "notificacao": 113,
+            "artifacts_depurado": 113,
+            "bate": true,
+            "duracao_segundos": 47
+          },
+          {
+            "cve": "CVE-2017-1001004",
+            "notificacao": 25,
+            "artifacts_depurado": 25,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-10910",
+            "notificacao": 47,
+            "artifacts_depurado": 47,
+            "bate": true,
+            "duracao_segundos": 51
+          },
+          {
+            "cve": "CVE-2017-15010",
+            "notificacao": 22,
+            "artifacts_depurado": 22,
+            "bate": true,
+            "duracao_segundos": 48
+          },
+          {
+            "cve": "CVE-2017-16003",
+            "notificacao": 20,
+            "artifacts_depurado": 20,
+            "bate": true,
+            "duracao_segundos": 45
+          },
+          {
+            "cve": "CVE-2017-16006",
+            "notificacao": 82,
+            "artifacts_depurado": 82,
+            "bate": true,
+            "duracao_segundos": 55
+          },
+          {
+            "cve": "CVE-2017-16011",
+            "notificacao": 94,
+            "artifacts_depurado": 94,
+            "bate": true,
+            "duracao_segundos": 69
+          },
+          {
+            "cve": "CVE-2017-16014",
+            "notificacao": 34,
+            "artifacts_depurado": 34,
+            "bate": true,
+            "duracao_segundos": 49
+          },
+          {
+            "cve": "CVE-2017-16018",
+            "notificacao": 45,
+            "artifacts_depurado": 45,
+            "bate": true,
+            "duracao_segundos": 51
+          },
+          {
+            "cve": "CVE-2017-16023",
+            "notificacao": 4,
+            "artifacts_depurado": 4,
+            "bate": true,
+            "duracao_segundos": 43
+          },
+          {
+            "cve": "CVE-2017-16026",
+            "notificacao": 73,
+            "artifacts_depurado": 73,
+            "bate": true,
+            "duracao_segundos": 63
+          },
+          {
+            "cve": "CVE-2017-16028",
+            "notificacao": 16,
+            "artifacts_depurado": 16,
+            "bate": true,
+            "duracao_segundos": 45
+          },
+          {
+            "cve": "CVE-2017-16029",
+            "notificacao": 13,
+            "artifacts_depurado": 13,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2017-16030",
+            "notificacao": 21,
+            "artifacts_depurado": 21,
+            "bate": true,
+            "duracao_segundos": 54
+          },
+          {
+            "cve": "CVE-2017-16031",
+            "notificacao": 64,
+            "artifacts_depurado": 64,
+            "bate": true,
+            "duracao_segundos": 54
+          },
+          {
+            "cve": "CVE-2017-16034",
+            "notificacao": 10,
+            "artifacts_depurado": 10,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-16042",
+            "notificacao": 3,
+            "artifacts_depurado": 3,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-16043",
+            "notificacao": 82,
+            "artifacts_depurado": 82,
+            "bate": true,
+            "duracao_segundos": 68
+          },
+          {
+            "cve": "CVE-2017-16082",
+            "notificacao": 114,
+            "artifacts_depurado": 114,
+            "bate": true,
+            "duracao_segundos": 54
+          },
+          {
+            "cve": "CVE-2017-16083",
+            "notificacao": 48,
+            "artifacts_depurado": 48,
+            "bate": true,
+            "duracao_segundos": 54
+          },
+          {
+            "cve": "CVE-2017-16084",
+            "notificacao": 2,
+            "artifacts_depurado": 2,
+            "bate": true,
+            "duracao_segundos": 47
+          },
+          {
+            "cve": "CVE-2017-16087",
+            "notificacao": 9,
+            "artifacts_depurado": 9,
+            "bate": true,
+            "duracao_segundos": 49
+          },
+          {
+            "cve": "CVE-2017-16098",
+            "notificacao": 6,
+            "artifacts_depurado": 6,
+            "bate": true,
+            "duracao_segundos": 45
+          },
+          {
+            "cve": "CVE-2017-16100",
+            "notificacao": 6,
+            "artifacts_depurado": 6,
+            "bate": true,
+            "duracao_segundos": 47
+          },
+          {
+            "cve": "CVE-2017-16107",
+            "notificacao": 6,
+            "artifacts_depurado": 6,
+            "bate": true,
+            "duracao_segundos": 48
+          }
+        ],
+        "codeql_inventario_batem": "29 de 29"
+      },
+      "semgrep": {
+        "cves_na_lista": 30,
+        "status": {
+          "ERRO_FETCH": 1,
+          "OK": 24,
+          "SEM_ACHADOS": 5
+        },
+        "raws": 29,
+        "achados": 154,
+        "achados_sem_cwe": 0,
+        "normalize": {
+          "processados": 29,
+          "com_falha": 0,
+          "linhas_da_lista_sem_raw": 194,
+          "raws_sem_linha_na_lista": 0,
+          "pulados_por_idempotencia": 0,
+          "raws_ilegiveis": 0,
+          "analysis_date_fallback_mtime": 0,
+          "schema_version": "1.3"
+        },
+        "check_log": {
+          "conf_1_raw_com_status_de_erro": 0,
+          "conf_2_sucesso_sem_raw": 0,
+          "conf_3_sem_arquivo_analisavel": 0,
+          "conf_4_sumidos": 0,
+          "status_agregado": "{'ERRO_FETCH': 1, 'OK': 24, 'SEM_ACHADOS': 5}",
+          "fallback_cves": 1,
+          "fallback_causa_fetch_estouro": 0,
+          "fallback_causa_fetch_outro": 1,
+          "clone_tambem_falhou": 1,
+          "nao_reconhecido": 0,
+          "anomalo": 0,
+          "incoerente": 0
+        },
+        "gt_file_scanned": {
+          "True": 29
+        },
+        "duracao": {
+          "soma_segundos": 602,
+          "container_segundos": 603,
+          "sobrecarga_do_laco_segundos": 1,
+          "mediana_segundos": 19.0,
+          "maximo_segundos": 37,
+          "maximo_cve": "CVE-2017-16043"
+        },
+        "limites": {
+          "limites_pedidos": "-e TIMEOUT_ANALISE=900",
+          "limites_efetivos": "limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900",
+          "limites_conferidos": "sim",
+          "limite_do_lote_segundos": "5400 (teto 5400; decorrido no job ao iniciar 17; disponivel 5473)"
+        },
+        "imagem": {
+          "usada": "ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000",
+          "repodigest_conferido": "ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000",
+          "image_id": "sha256:87c196298d41e95c2f6a3887730aaa78f9744e88c96b8f093dbb9a884aeca3b7"
+        },
+        "portao_lote_sem_raw": "OK — 29 de 30 CVEs do lote com raw",
+        "sonda_home": "DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera",
+        "sonda_rede": "OPERA SEM REDE — scan com o pack vendorizado completou sob --network=none (rc=0, 1 arquivo(s) em paths.scanned, 114s).",
+        "disco": [
+          "=== df -h antes do lote, 2026-09-16T14:12:54Z",
+          "/dev/root       145G   59G   86G  41% /",
+          "=== df -h depois do lote, 2026-09-16T14:22:57Z",
+          "/dev/root       145G   59G   86G  41% /"
+        ]
+      },
+      "snyk-code": {
+        "cves_na_lista": 30,
+        "status": {
+          "ERRO_FETCH": 1,
+          "OK": 18,
+          "SEM_ACHADOS": 11
+        },
+        "raws": 29,
+        "achados": 275,
+        "achados_sem_cwe": 0,
+        "normalize": {
+          "processados": 29,
+          "com_falha": 0,
+          "linhas_da_lista_sem_raw": 194,
+          "raws_sem_linha_na_lista": 0,
+          "pulados_por_idempotencia": 0,
+          "raws_ilegiveis": 0,
+          "analysis_date_fallback_mtime": 0,
+          "schema_version": "1.3"
+        },
+        "check_log": {
+          "conf_1_raw_com_status_de_erro": 0,
+          "conf_2_sucesso_sem_raw": 0,
+          "conf_3_sem_arquivo_analisavel": 0,
+          "conf_4_sumidos": 0,
+          "status_agregado": "{'ERRO_FETCH': 1, 'OK': 18, 'SEM_ACHADOS': 11}",
+          "fallback_cves": 1,
+          "fallback_causa_fetch_estouro": 0,
+          "fallback_causa_fetch_outro": 1,
+          "clone_tambem_falhou": 1,
+          "nao_reconhecido": 0,
+          "anomalo": 0,
+          "incoerente": 0
+        },
+        "gt_file_scanned": {
+          "None": 29
+        },
+        "duracao": {
+          "soma_segundos": 412,
+          "container_segundos": 415,
+          "sobrecarga_do_laco_segundos": 3,
+          "mediana_segundos": 12,
+          "maximo_segundos": 44,
+          "maximo_cve": "CVE-2017-1000006"
+        },
+        "limites": {
+          "limites_pedidos": "-e TIMEOUT_ANALISE=900",
+          "limites_efetivos": "limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900",
+          "limites_conferidos": "sim",
+          "limite_do_lote_segundos": "5400 (teto 5400; decorrido no job ao iniciar 15; disponivel 6075)"
+        },
+        "imagem": {
+          "usada": "ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7",
+          "repodigest_conferido": "ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7",
+          "image_id": "sha256:318db7224c1cbecb65cfa1967bd43a4e1196c61fec60c6fbb6404cb5f254ad55"
+        },
+        "portao_lote_sem_raw": "OK — 29 de 30 CVEs do lote com raw",
+        "sonda_home": "DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera",
+        "sonda_rede": null,
+        "disco": [
+          "=== df -h antes do lote, 2026-09-16T14:12:53Z",
+          "/dev/root       145G   59G   86G  41% /",
+          "=== df -h depois do lote, 2026-09-16T14:19:48Z",
+          "/dev/root       145G   59G   86G  41% /"
+        ]
+      }
+    },
+    "cves-sast-batch-ab": {
+      "codeql": {
+        "cves_na_lista": 30,
+        "status": {
+          "OK": 27,
+          "SEM_ACHADOS": 3
+        },
+        "raws": 30,
+        "achados": 199,
+        "achados_sem_cwe": 0,
+        "normalize": {
+          "processados": 30,
+          "com_falha": 0,
+          "linhas_da_lista_sem_raw": 193,
+          "raws_sem_linha_na_lista": 0,
+          "pulados_por_idempotencia": 0,
+          "raws_ilegiveis": 0,
+          "analysis_date_fallback_mtime": 30,
+          "schema_version": "1.3"
+        },
+        "check_log": {
+          "conf_1_raw_com_status_de_erro": 0,
+          "conf_2_sucesso_sem_raw": 0,
+          "conf_3_sem_arquivo_analisavel": 0,
+          "conf_4_sumidos": 0,
+          "status_agregado": "{'OK': 27, 'SEM_ACHADOS': 3}",
+          "fallback_cves": 0,
+          "fallback_causa_fetch_estouro": 0,
+          "fallback_causa_fetch_outro": 0,
+          "clone_tambem_falhou": 0,
+          "nao_reconhecido": 0,
+          "anomalo": 0,
+          "incoerente": 0
+        },
+        "gt_file_scanned": {
+          "True": 30
+        },
+        "duracao": {
+          "soma_segundos": 1580,
+          "container_segundos": 1581,
+          "sobrecarga_do_laco_segundos": 1,
+          "mediana_segundos": 45.5,
+          "maximo_segundos": 162,
+          "maximo_cve": "CVE-2017-18214"
+        },
+        "limites": {
+          "limites_pedidos": "-e TIMEOUT_CREATE=900 -e TIMEOUT_ANALYZE=900",
+          "limites_efetivos": "limites efetivos em segundos: TIMEOUT_CREATE=900; TIMEOUT_ANALYZE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900",
+          "limites_conferidos": "sim",
+          "limite_do_lote_segundos": "9000 (teto 9000; decorrido no job ao iniciar 43; disponivel 9647)"
+        },
+        "imagem": {
+          "usada": "ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec",
+          "repodigest_conferido": "ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec",
+          "image_id": "sha256:61d5ab857af5b85b362c247a06dce837c94487a670eb0a0b3fb021f8efda6bef"
+        },
+        "portao_lote_sem_raw": "OK — 30 de 30 CVEs do lote com raw",
+        "sonda_home": "DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera",
+        "sonda_rede": null,
+        "disco": [
+          "=== df -h antes do lote, 2026-09-16T18:41:54Z",
+          "/dev/root       145G   61G   84G  43% /",
+          "=== df -h depois do lote, 2026-09-16T19:08:15Z",
+          "/dev/root       145G   61G   84G  43% /"
+        ],
+        "codeql_inventario": [
+          {
+            "cve": "CVE-2017-16114",
+            "notificacao": 112,
+            "artifacts_depurado": 112,
+            "bate": true,
+            "duracao_segundos": 48
+          },
+          {
+            "cve": "CVE-2017-16117",
+            "notificacao": 5,
+            "artifacts_depurado": 5,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2017-16118",
+            "notificacao": 7,
+            "artifacts_depurado": 7,
+            "bate": true,
+            "duracao_segundos": 43
+          },
+          {
+            "cve": "CVE-2017-16119",
+            "notificacao": 9,
+            "artifacts_depurado": 9,
+            "bate": true,
+            "duracao_segundos": 43
+          },
+          {
+            "cve": "CVE-2017-16136",
+            "notificacao": 6,
+            "artifacts_depurado": 6,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2017-16137",
+            "notificacao": 17,
+            "artifacts_depurado": 17,
+            "bate": true,
+            "duracao_segundos": 45
+          },
+          {
+            "cve": "CVE-2017-16138",
+            "notificacao": 8,
+            "artifacts_depurado": 8,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2017-16224",
+            "notificacao": 29,
+            "artifacts_depurado": 29,
+            "bate": true,
+            "duracao_segundos": 47
+          },
+          {
+            "cve": "CVE-2017-16226",
+            "notificacao": 8,
+            "artifacts_depurado": 8,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2017-16877",
+            "notificacao": 377,
+            "artifacts_depurado": 377,
+            "bate": true,
+            "duracao_segundos": 55
+          },
+          {
+            "cve": "CVE-2017-17461",
+            "notificacao": 113,
+            "artifacts_depurado": 113,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-18077",
+            "notificacao": 14,
+            "artifacts_depurado": 14,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2017-18214",
+            "notificacao": 554,
+            "artifacts_depurado": 554,
+            "bate": true,
+            "duracao_segundos": 162
+          },
+          {
+            "cve": "CVE-2017-18352",
+            "notificacao": 25,
+            "artifacts_depurado": 25,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-18353",
+            "notificacao": 25,
+            "artifacts_depurado": 25,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-18354",
+            "notificacao": 25,
+            "artifacts_depurado": 25,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-18355",
+            "notificacao": 25,
+            "artifacts_depurado": 25,
+            "bate": true,
+            "duracao_segundos": 46
+          },
+          {
+            "cve": "CVE-2017-18635",
+            "notificacao": 45,
+            "artifacts_depurado": 45,
+            "bate": true,
+            "duracao_segundos": 58
+          },
+          {
+            "cve": "CVE-2017-5954",
+            "notificacao": 9,
+            "artifacts_depurado": 9,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2018-1000086",
+            "notificacao": 113,
+            "artifacts_depurado": 113,
+            "bate": true,
+            "duracao_segundos": 83
+          },
+          {
+            "cve": "CVE-2018-1000096",
+            "notificacao": 8,
+            "artifacts_depurado": 8,
+            "bate": true,
+            "duracao_segundos": 45
+          },
+          {
+            "cve": "CVE-2018-1000620",
+            "notificacao": 4,
+            "artifacts_depurado": 4,
+            "bate": true,
+            "duracao_segundos": 42
+          },
+          {
+            "cve": "CVE-2018-1002203",
+            "notificacao": 27,
+            "artifacts_depurado": 27,
+            "bate": true,
+            "duracao_segundos": 43
+          },
+          {
+            "cve": "CVE-2018-1002204",
+            "notificacao": 19,
+            "artifacts_depurado": 19,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2018-11093",
+            "notificacao": 27,
+            "artifacts_depurado": 27,
+            "bate": true,
+            "duracao_segundos": 45
+          },
+          {
+            "cve": "CVE-2018-11615",
+            "notificacao": 61,
+            "artifacts_depurado": 61,
+            "bate": true,
+            "duracao_segundos": 48
+          },
+          {
+            "cve": "CVE-2018-11798",
+            "notificacao": 83,
+            "artifacts_depurado": 83,
+            "bate": true,
+            "duracao_segundos": 52
+          },
+          {
+            "cve": "CVE-2018-13797",
+            "notificacao": 8,
+            "artifacts_depurado": 8,
+            "bate": true,
+            "duracao_segundos": 44
+          },
+          {
+            "cve": "CVE-2018-13863",
+            "notificacao": 57,
+            "artifacts_depurado": 57,
+            "bate": true,
+            "duracao_segundos": 60
+          },
+          {
+            "cve": "CVE-2018-14040",
+            "notificacao": 174,
+            "artifacts_depurado": 174,
+            "bate": true,
+            "duracao_segundos": 79
+          }
+        ],
+        "codeql_inventario_batem": "30 de 30"
+      },
+      "semgrep": {
+        "cves_na_lista": 30,
+        "status": {
+          "OK": 22,
+          "SEM_ACHADOS": 8
+        },
+        "raws": 30,
+        "achados": 376,
+        "achados_sem_cwe": 0,
+        "normalize": {
+          "processados": 30,
+          "com_falha": 0,
+          "linhas_da_lista_sem_raw": 193,
+          "raws_sem_linha_na_lista": 0,
+          "pulados_por_idempotencia": 0,
+          "raws_ilegiveis": 0,
+          "analysis_date_fallback_mtime": 0,
+          "schema_version": "1.3"
+        },
+        "check_log": {
+          "conf_1_raw_com_status_de_erro": 0,
+          "conf_2_sucesso_sem_raw": 0,
+          "conf_3_sem_arquivo_analisavel": 0,
+          "conf_4_sumidos": 0,
+          "status_agregado": "{'OK': 22, 'SEM_ACHADOS': 8}",
+          "fallback_cves": 0,
+          "fallback_causa_fetch_estouro": 0,
+          "fallback_causa_fetch_outro": 0,
+          "clone_tambem_falhou": 0,
+          "nao_reconhecido": 0,
+          "anomalo": 0,
+          "incoerente": 0
+        },
+        "gt_file_scanned": {
+          "True": 30
+        },
+        "duracao": {
+          "soma_segundos": 522,
+          "container_segundos": 524,
+          "sobrecarga_do_laco_segundos": 2,
+          "mediana_segundos": 14.0,
+          "maximo_segundos": 54,
+          "maximo_cve": "CVE-2018-1000086"
+        },
+        "limites": {
+          "limites_pedidos": "-e TIMEOUT_ANALISE=900",
+          "limites_efetivos": "limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900",
+          "limites_conferidos": "sim",
+          "limite_do_lote_segundos": "5400 (teto 5400; decorrido no job ao iniciar 20; disponivel 5470)"
+        },
+        "imagem": {
+          "usada": "ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000",
+          "repodigest_conferido": "ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000",
+          "image_id": "sha256:87c196298d41e95c2f6a3887730aaa78f9744e88c96b8f093dbb9a884aeca3b7"
+        },
+        "portao_lote_sem_raw": "OK — 30 de 30 CVEs do lote com raw",
+        "sonda_home": "DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera",
+        "sonda_rede": "OPERA SEM REDE — scan com o pack vendorizado completou sob --network=none (rc=0, 1 arquivo(s) em paths.scanned, 109s).",
+        "disco": [
+          "=== df -h antes do lote, 2026-09-16T18:41:33Z",
+          "/dev/root        145G   59G   86G  41% /",
+          "=== df -h depois do lote, 2026-09-16T18:50:17Z",
+          "/dev/root        145G   59G   86G  41% /"
+        ]
+      },
+      "snyk-code": {
+        "cves_na_lista": 30,
+        "status": {
+          "OK": 17,
+          "SEM_ACHADOS": 13
+        },
+        "raws": 30,
+        "achados": 269,
+        "achados_sem_cwe": 0,
+        "normalize": {
+          "processados": 30,
+          "com_falha": 0,
+          "linhas_da_lista_sem_raw": 193,
+          "raws_sem_linha_na_lista": 0,
+          "pulados_por_idempotencia": 0,
+          "raws_ilegiveis": 0,
+          "analysis_date_fallback_mtime": 0,
+          "schema_version": "1.3"
+        },
+        "check_log": {
+          "conf_1_raw_com_status_de_erro": 0,
+          "conf_2_sucesso_sem_raw": 0,
+          "conf_3_sem_arquivo_analisavel": 0,
+          "conf_4_sumidos": 0,
+          "status_agregado": "{'OK': 17, 'SEM_ACHADOS': 13}",
+          "fallback_cves": 0,
+          "fallback_causa_fetch_estouro": 0,
+          "fallback_causa_fetch_outro": 0,
+          "clone_tambem_falhou": 0,
+          "nao_reconhecido": 0,
+          "anomalo": 0,
+          "incoerente": 0
+        },
+        "gt_file_scanned": {
+          "None": 30
+        },
+        "duracao": {
+          "soma_segundos": 450,
+          "container_segundos": 452,
+          "sobrecarga_do_laco_segundos": 2,
+          "mediana_segundos": 11.0,
+          "maximo_segundos": 66,
+          "maximo_cve": "CVE-2018-13863"
+        },
+        "limites": {
+          "limites_pedidos": "-e TIMEOUT_ANALISE=900",
+          "limites_efetivos": "limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900",
+          "limites_conferidos": "sim",
+          "limite_do_lote_segundos": "5400 (teto 5400; decorrido no job ao iniciar 15; disponivel 6075)"
+        },
+        "imagem": {
+          "usada": "ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7",
+          "repodigest_conferido": "ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7",
+          "image_id": "sha256:318db7224c1cbecb65cfa1967bd43a4e1196c61fec60c6fbb6404cb5f254ad55"
+        },
+        "portao_lote_sem_raw": "OK — 30 de 30 CVEs do lote com raw",
+        "sonda_home": "DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera",
+        "sonda_rede": null,
+        "disco": [
+          "=== df -h antes do lote, 2026-09-16T18:41:27Z",
+          "/dev/root       145G   59G   86G  41% /",
+          "=== df -h depois do lote, 2026-09-16T18:48:59Z",
+          "/dev/root       145G   59G   86G  41% /"
+        ]
+      }
+    }
+  },
+  "agregado_por_ferramenta": {
+    "codeql": {
+      "cves": 60,
+      "raws": 59,
+      "status": {
+        "ERRO_FETCH": 1,
+        "OK": 50,
+        "SEM_ACHADOS": 9
+      },
+      "achados": 444,
+      "fallback_cves": 1,
+      "duracao": {
+        "soma_segundos": 3225,
+        "mediana_segundos": 47,
+        "media_segundos": 54.7,
+        "maximo_segundos": 220
+      }
+    },
+    "semgrep": {
+      "cves": 60,
+      "raws": 59,
+      "status": {
+        "ERRO_FETCH": 1,
+        "OK": 46,
+        "SEM_ACHADOS": 13
+      },
+      "achados": 530,
+      "fallback_cves": 1,
+      "duracao": {
+        "soma_segundos": 1124,
+        "mediana_segundos": 18.0,
+        "media_segundos": 18.7,
+        "maximo_segundos": 54
+      }
+    },
+    "snyk-code": {
+      "cves": 60,
+      "raws": 59,
+      "status": {
+        "ERRO_FETCH": 1,
+        "OK": 35,
+        "SEM_ACHADOS": 24
+      },
+      "achados": 544,
+      "fallback_cves": 1,
+      "duracao": {
+        "soma_segundos": 862,
+        "mediana_segundos": 11,
+        "media_segundos": 14.6,
+        "maximo_segundos": 66
+      }
+    }
+  },
+  "por_cve": {
+    "cves-sast-batch-aa": {
+      "codeql": [
+        {
+          "cve": "CVE-2016-1000229",
+          "repo": "https://github.com/linxiaowu66/swagger-ui.git",
+          "commit": "14fad2b4c76efe249db515c98432eb609aa77691",
+          "status": "ERRO_FETCH",
+          "mensagem": "codeql 2.25.4; suite codeql/javascript-queries:codeql-suites/javascript-security-extended.qls; TIMEOUT_CREATE=900; TIMEOUT_ANALYZE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; clone completo saiu com 128; fetch raso saiu com 128",
+          "duracao_segundos": 0
+        },
+        {
+          "cve": "CVE-2016-10735",
+          "repo": "https://github.com/twbs/bootstrap.git",
+          "commit": "ba6a6f13691000ffaf22ef8e731513737659447f",
+          "status": "OK",
+          "mensagem": "48 achados; HEAD conferido",
+          "duracao_segundos": 63
+        },
+        {
+          "cve": "CVE-2017-0931",
+          "repo": "https://github.com/guardian/html-janitor.git",
+          "commit": "8c99e653a36a85edd740e756d7371ee47a9aee45",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 47
+        },
+        {
+          "cve": "CVE-2017-1000006",
+          "repo": "https://github.com/plotly/plotly.js.git",
+          "commit": "16e0fc29690c82282db91f99e651190afa0a9f87",
+          "status": "OK",
+          "mensagem": "25 achados; HEAD conferido",
+          "duracao_segundos": 220
+        },
+        {
+          "cve": "CVE-2017-1000219",
+          "repo": "https://github.com/KyleRoss/windows-cpu.git",
+          "commit": "da656c1a9d5edbf4e8bf0640f349aeb714a4f1a0",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 47
+        },
+        {
+          "cve": "CVE-2017-1000427",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "38f1727ffee0820975677027b8968bc1954e6637",
+          "status": "OK",
+          "mensagem": "4 achados; HEAD conferido",
+          "duracao_segundos": 47
+        },
+        {
+          "cve": "CVE-2017-1001004",
+          "repo": "https://github.com/josdejong/typed-function.git",
+          "commit": "9a8cac3cb8ae89fd0a9b3ae2dfde27cd1aa5a60a",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-10910",
+          "repo": "https://github.com/mqttjs/MQTT.js.git",
+          "commit": "800a4ddaaec80f3289b1aa249bf67584588611ff",
+          "status": "OK",
+          "mensagem": "2 achados; HEAD conferido",
+          "duracao_segundos": 51
+        },
+        {
+          "cve": "CVE-2017-15010",
+          "repo": "https://github.com/salesforce/tough-cookie.git",
+          "commit": "fcc8abfa3d3cab4f99da38f3f3749b1b186eb5a4",
+          "status": "OK",
+          "mensagem": "4 achados; HEAD conferido",
+          "duracao_segundos": 48
+        },
+        {
+          "cve": "CVE-2017-16003",
+          "repo": "https://github.com/felixrieseberg/windows-build-tools.git",
+          "commit": "3a97ea156d07aaccca101ed8f0a1606eea8dfc2d",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 45
+        },
+        {
+          "cve": "CVE-2017-16006",
+          "repo": "https://github.com/jonschlinkert/remarkable.git",
+          "commit": "a85cf32cd194d7a12d2155256bd38283e431b26b",
+          "status": "OK",
+          "mensagem": "8 achados; HEAD conferido",
+          "duracao_segundos": 55
+        },
+        {
+          "cve": "CVE-2017-16011",
+          "repo": "https://github.com/jquery/jquery.git",
+          "commit": "452e32769d514d835988c544492e4083df2bc1d6",
+          "status": "OK",
+          "mensagem": "13 achados; HEAD conferido",
+          "duracao_segundos": 69
+        },
+        {
+          "cve": "CVE-2017-16014",
+          "repo": "https://github.com/http-party/node-http-proxy.git",
+          "commit": "0c71119ee58ee84068120be72308ecb28cb3e532",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 49
+        },
+        {
+          "cve": "CVE-2017-16018",
+          "repo": "https://github.com/restify/node-restify.git",
+          "commit": "893895137b6a54a21ebf88cabe3f275636ef28d7",
+          "status": "OK",
+          "mensagem": "15 achados; HEAD conferido",
+          "duracao_segundos": 51
+        },
+        {
+          "cve": "CVE-2017-16023",
+          "repo": "https://github.com/sindresorhus/decamelize.git",
+          "commit": "18479821851414d91ad3d42d8560adff5969da4b",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 43
+        },
+        {
+          "cve": "CVE-2017-16026",
+          "repo": "https://github.com/request/request.git",
+          "commit": "85f8235c061f8d0d1697066290a34f43120cb77f",
+          "status": "OK",
+          "mensagem": "26 achados; HEAD conferido",
+          "duracao_segundos": 63
+        },
+        {
+          "cve": "CVE-2017-16028",
+          "repo": "https://github.com/jonschlinkert/randomatic.git",
+          "commit": "833f31a5aac0b8c2ddd3ae23ab41a0145c2974d0",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 45
+        },
+        {
+          "cve": "CVE-2017-16029",
+          "repo": "https://github.com/henrytseng/hostr.git",
+          "commit": "5827ba48fd4a08c26604b97798c57d45fe1cd51e",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2017-16030",
+          "repo": "https://github.com/3rd-Eden/useragent.git",
+          "commit": "50be8cbd7e3b9cbfeaab041de726b5438d07672e",
+          "status": "OK",
+          "mensagem": "7 achados; HEAD conferido",
+          "duracao_segundos": 54
+        },
+        {
+          "cve": "CVE-2017-16031",
+          "repo": "https://github.com/socketio/socket.io.git",
+          "commit": "fe6dd874437ccd13e4753c03d7a98e5382d0b0d5",
+          "status": "OK",
+          "mensagem": "20 achados; HEAD conferido",
+          "duracao_segundos": 54
+        },
+        {
+          "cve": "CVE-2017-16034",
+          "repo": "https://github.com/soyuka/pidusage.git",
+          "commit": "e3660d8a8e5e61afad9b02af67356a1e239d6bde",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-16042",
+          "repo": "https://github.com/tj/node-growl.git",
+          "commit": "dc8aae046df328edd32dd69f3cd2d6b114d7018e",
+          "status": "OK",
+          "mensagem": "24 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-16043",
+          "repo": "https://github.com/erming/shout.git",
+          "commit": "890c751bb624cde53dc392b2c851cdcd056033c6",
+          "status": "OK",
+          "mensagem": "15 achados; HEAD conferido",
+          "duracao_segundos": 68
+        },
+        {
+          "cve": "CVE-2017-16082",
+          "repo": "https://github.com/brianc/node-postgres.git",
+          "commit": "51a28c226519daaa3a2a3971128355d0440d3819",
+          "status": "OK",
+          "mensagem": "6 achados; HEAD conferido",
+          "duracao_segundos": 54
+        },
+        {
+          "cve": "CVE-2017-16083",
+          "repo": "https://github.com/sandy98/node-simple-router.git",
+          "commit": "91da4299aee0086cc1e0cc837763578af6f82cea",
+          "status": "OK",
+          "mensagem": "13 achados; HEAD conferido",
+          "duracao_segundos": 54
+        },
+        {
+          "cve": "CVE-2017-16084",
+          "repo": "https://github.com/KoryNunn/list-n-stream.git",
+          "commit": "87de3f13465e9d4d21eb75be8143cdc4085a19b3",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 47
+        },
+        {
+          "cve": "CVE-2017-16087",
+          "repo": "https://github.com/vvakame/fs-git.git",
+          "commit": "50b33e3faec0b08183a699efb9b154c0d1495bee",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 49
+        },
+        {
+          "cve": "CVE-2017-16098",
+          "repo": "https://github.com/node-modules/charset.git",
+          "commit": "5ba8a4942f069d40584cf5a1a7938ff8dc92bcc9",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 45
+        },
+        {
+          "cve": "CVE-2017-16100",
+          "repo": "https://github.com/skoranga/node-dns-sync.git",
+          "commit": "b748fe77a87749d95876028eda8e759109be4c73",
+          "status": "OK",
+          "mensagem": "2 achados; HEAD conferido",
+          "duracao_segundos": 47
+        },
+        {
+          "cve": "CVE-2017-16107",
+          "repo": "https://github.com/Eeems/PooledWebSocket.git",
+          "commit": "d51217a285c1dc5851743d0756cc43c35d12737c",
+          "status": "OK",
+          "mensagem": "7 achados; HEAD conferido",
+          "duracao_segundos": 48
+        }
+      ],
+      "semgrep": [
+        {
+          "cve": "CVE-2016-1000229",
+          "repo": "https://github.com/linxiaowu66/swagger-ui.git",
+          "commit": "14fad2b4c76efe249db515c98432eb609aa77691",
+          "status": "ERRO_FETCH",
+          "mensagem": "semgrep 1.171.0; pack sha256 1ddc9b0bd5ad9ee31f4727648cfdd4279317627b859c44ef56d77438a0f8b87b; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; clone completo saiu com 128; fetch raso saiu com 128",
+          "duracao_segundos": 1
+        },
+        {
+          "cve": "CVE-2016-10735",
+          "repo": "https://github.com/twbs/bootstrap.git",
+          "commit": "ba6a6f13691000ffaf22ef8e731513737659447f",
+          "status": "OK",
+          "mensagem": "18 achados; HEAD conferido",
+          "duracao_segundos": 21
+        },
+        {
+          "cve": "CVE-2017-0931",
+          "repo": "https://github.com/guardian/html-janitor.git",
+          "commit": "8c99e653a36a85edd740e756d7371ee47a9aee45",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-1000006",
+          "repo": "https://github.com/plotly/plotly.js.git",
+          "commit": "16e0fc29690c82282db91f99e651190afa0a9f87",
+          "status": "OK",
+          "mensagem": "6 achados; HEAD conferido",
+          "duracao_segundos": 31
+        },
+        {
+          "cve": "CVE-2017-1000219",
+          "repo": "https://github.com/KyleRoss/windows-cpu.git",
+          "commit": "da656c1a9d5edbf4e8bf0640f349aeb714a4f1a0",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-1000427",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "38f1727ffee0820975677027b8968bc1954e6637",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-1001004",
+          "repo": "https://github.com/josdejong/typed-function.git",
+          "commit": "9a8cac3cb8ae89fd0a9b3ae2dfde27cd1aa5a60a",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-10910",
+          "repo": "https://github.com/mqttjs/MQTT.js.git",
+          "commit": "800a4ddaaec80f3289b1aa249bf67584588611ff",
+          "status": "OK",
+          "mensagem": "5 achados; HEAD conferido",
+          "duracao_segundos": 20
+        },
+        {
+          "cve": "CVE-2017-15010",
+          "repo": "https://github.com/salesforce/tough-cookie.git",
+          "commit": "fcc8abfa3d3cab4f99da38f3f3749b1b186eb5a4",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 20
+        },
+        {
+          "cve": "CVE-2017-16003",
+          "repo": "https://github.com/felixrieseberg/windows-build-tools.git",
+          "commit": "3a97ea156d07aaccca101ed8f0a1606eea8dfc2d",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-16006",
+          "repo": "https://github.com/jonschlinkert/remarkable.git",
+          "commit": "a85cf32cd194d7a12d2155256bd38283e431b26b",
+          "status": "OK",
+          "mensagem": "16 achados; HEAD conferido",
+          "duracao_segundos": 20
+        },
+        {
+          "cve": "CVE-2017-16011",
+          "repo": "https://github.com/jquery/jquery.git",
+          "commit": "452e32769d514d835988c544492e4083df2bc1d6",
+          "status": "OK",
+          "mensagem": "15 achados; HEAD conferido",
+          "duracao_segundos": 26
+        },
+        {
+          "cve": "CVE-2017-16014",
+          "repo": "https://github.com/http-party/node-http-proxy.git",
+          "commit": "0c71119ee58ee84068120be72308ecb28cb3e532",
+          "status": "OK",
+          "mensagem": "23 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16018",
+          "repo": "https://github.com/restify/node-restify.git",
+          "commit": "893895137b6a54a21ebf88cabe3f275636ef28d7",
+          "status": "OK",
+          "mensagem": "6 achados; HEAD conferido",
+          "duracao_segundos": 20
+        },
+        {
+          "cve": "CVE-2017-16023",
+          "repo": "https://github.com/sindresorhus/decamelize.git",
+          "commit": "18479821851414d91ad3d42d8560adff5969da4b",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16026",
+          "repo": "https://github.com/request/request.git",
+          "commit": "85f8235c061f8d0d1697066290a34f43120cb77f",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16028",
+          "repo": "https://github.com/jonschlinkert/randomatic.git",
+          "commit": "833f31a5aac0b8c2ddd3ae23ab41a0145c2974d0",
+          "status": "OK",
+          "mensagem": "2 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16029",
+          "repo": "https://github.com/henrytseng/hostr.git",
+          "commit": "5827ba48fd4a08c26604b97798c57d45fe1cd51e",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16030",
+          "repo": "https://github.com/3rd-Eden/useragent.git",
+          "commit": "50be8cbd7e3b9cbfeaab041de726b5438d07672e",
+          "status": "OK",
+          "mensagem": "5 achados; HEAD conferido",
+          "duracao_segundos": 27
+        },
+        {
+          "cve": "CVE-2017-16031",
+          "repo": "https://github.com/socketio/socket.io.git",
+          "commit": "fe6dd874437ccd13e4753c03d7a98e5382d0b0d5",
+          "status": "OK",
+          "mensagem": "7 achados; HEAD conferido",
+          "duracao_segundos": 20
+        },
+        {
+          "cve": "CVE-2017-16034",
+          "repo": "https://github.com/soyuka/pidusage.git",
+          "commit": "e3660d8a8e5e61afad9b02af67356a1e239d6bde",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16042",
+          "repo": "https://github.com/tj/node-growl.git",
+          "commit": "dc8aae046df328edd32dd69f3cd2d6b114d7018e",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-16043",
+          "repo": "https://github.com/erming/shout.git",
+          "commit": "890c751bb624cde53dc392b2c851cdcd056033c6",
+          "status": "OK",
+          "mensagem": "16 achados; HEAD conferido",
+          "duracao_segundos": 37
+        },
+        {
+          "cve": "CVE-2017-16082",
+          "repo": "https://github.com/brianc/node-postgres.git",
+          "commit": "51a28c226519daaa3a2a3971128355d0440d3819",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16083",
+          "repo": "https://github.com/sandy98/node-simple-router.git",
+          "commit": "91da4299aee0086cc1e0cc837763578af6f82cea",
+          "status": "OK",
+          "mensagem": "14 achados; HEAD conferido",
+          "duracao_segundos": 23
+        },
+        {
+          "cve": "CVE-2017-16084",
+          "repo": "https://github.com/KoryNunn/list-n-stream.git",
+          "commit": "87de3f13465e9d4d21eb75be8143cdc4085a19b3",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-16087",
+          "repo": "https://github.com/vvakame/fs-git.git",
+          "commit": "50b33e3faec0b08183a699efb9b154c0d1495bee",
+          "status": "OK",
+          "mensagem": "4 achados; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-16098",
+          "repo": "https://github.com/node-modules/charset.git",
+          "commit": "5ba8a4942f069d40584cf5a1a7938ff8dc92bcc9",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-16100",
+          "repo": "https://github.com/skoranga/node-dns-sync.git",
+          "commit": "b748fe77a87749d95876028eda8e759109be4c73",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-16107",
+          "repo": "https://github.com/Eeems/PooledWebSocket.git",
+          "commit": "d51217a285c1dc5851743d0756cc43c35d12737c",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 19
+        }
+      ],
+      "snyk-code": [
+        {
+          "cve": "CVE-2016-1000229",
+          "repo": "https://github.com/linxiaowu66/swagger-ui.git",
+          "commit": "14fad2b4c76efe249db515c98432eb609aa77691",
+          "status": "ERRO_FETCH",
+          "mensagem": "snyk 1.1306.1; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; clone completo saiu com 128; fetch raso saiu com 128",
+          "duracao_segundos": 0
+        },
+        {
+          "cve": "CVE-2016-10735",
+          "repo": "https://github.com/twbs/bootstrap.git",
+          "commit": "ba6a6f13691000ffaf22ef8e731513737659447f",
+          "status": "OK",
+          "mensagem": "7 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 23
+        },
+        {
+          "cve": "CVE-2017-0931",
+          "repo": "https://github.com/guardian/html-janitor.git",
+          "commit": "8c99e653a36a85edd740e756d7371ee47a9aee45",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 17
+        },
+        {
+          "cve": "CVE-2017-1000006",
+          "repo": "https://github.com/plotly/plotly.js.git",
+          "commit": "16e0fc29690c82282db91f99e651190afa0a9f87",
+          "status": "OK",
+          "mensagem": "11 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2017-1000219",
+          "repo": "https://github.com/KyleRoss/windows-cpu.git",
+          "commit": "da656c1a9d5edbf4e8bf0640f349aeb714a4f1a0",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2017-1000427",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "38f1727ffee0820975677027b8968bc1954e6637",
+          "status": "OK",
+          "mensagem": "2 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-1001004",
+          "repo": "https://github.com/josdejong/typed-function.git",
+          "commit": "9a8cac3cb8ae89fd0a9b3ae2dfde27cd1aa5a60a",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 11
+        },
+        {
+          "cve": "CVE-2017-10910",
+          "repo": "https://github.com/mqttjs/MQTT.js.git",
+          "commit": "800a4ddaaec80f3289b1aa249bf67584588611ff",
+          "status": "OK",
+          "mensagem": "7 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2017-15010",
+          "repo": "https://github.com/salesforce/tough-cookie.git",
+          "commit": "fcc8abfa3d3cab4f99da38f3f3749b1b186eb5a4",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16003",
+          "repo": "https://github.com/felixrieseberg/windows-build-tools.git",
+          "commit": "3a97ea156d07aaccca101ed8f0a1606eea8dfc2d",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 11
+        },
+        {
+          "cve": "CVE-2017-16006",
+          "repo": "https://github.com/jonschlinkert/remarkable.git",
+          "commit": "a85cf32cd194d7a12d2155256bd38283e431b26b",
+          "status": "OK",
+          "mensagem": "2 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16011",
+          "repo": "https://github.com/jquery/jquery.git",
+          "commit": "452e32769d514d835988c544492e4083df2bc1d6",
+          "status": "OK",
+          "mensagem": "25 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 17
+        },
+        {
+          "cve": "CVE-2017-16014",
+          "repo": "https://github.com/http-party/node-http-proxy.git",
+          "commit": "0c71119ee58ee84068120be72308ecb28cb3e532",
+          "status": "OK",
+          "mensagem": "28 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16018",
+          "repo": "https://github.com/restify/node-restify.git",
+          "commit": "893895137b6a54a21ebf88cabe3f275636ef28d7",
+          "status": "OK",
+          "mensagem": "25 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 16
+        },
+        {
+          "cve": "CVE-2017-16023",
+          "repo": "https://github.com/sindresorhus/decamelize.git",
+          "commit": "18479821851414d91ad3d42d8560adff5969da4b",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 8
+        },
+        {
+          "cve": "CVE-2017-16026",
+          "repo": "https://github.com/request/request.git",
+          "commit": "85f8235c061f8d0d1697066290a34f43120cb77f",
+          "status": "OK",
+          "mensagem": "82 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16028",
+          "repo": "https://github.com/jonschlinkert/randomatic.git",
+          "commit": "833f31a5aac0b8c2ddd3ae23ab41a0145c2974d0",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16029",
+          "repo": "https://github.com/henrytseng/hostr.git",
+          "commit": "5827ba48fd4a08c26604b97798c57d45fe1cd51e",
+          "status": "OK",
+          "mensagem": "7 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 12
+        },
+        {
+          "cve": "CVE-2017-16030",
+          "repo": "https://github.com/3rd-Eden/useragent.git",
+          "commit": "50be8cbd7e3b9cbfeaab041de726b5438d07672e",
+          "status": "OK",
+          "mensagem": "1 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 11
+        },
+        {
+          "cve": "CVE-2017-16031",
+          "repo": "https://github.com/socketio/socket.io.git",
+          "commit": "fe6dd874437ccd13e4753c03d7a98e5382d0b0d5",
+          "status": "OK",
+          "mensagem": "26 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16034",
+          "repo": "https://github.com/soyuka/pidusage.git",
+          "commit": "e3660d8a8e5e61afad9b02af67356a1e239d6bde",
+          "status": "OK",
+          "mensagem": "1 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16042",
+          "repo": "https://github.com/tj/node-growl.git",
+          "commit": "dc8aae046df328edd32dd69f3cd2d6b114d7018e",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 16
+        },
+        {
+          "cve": "CVE-2017-16043",
+          "repo": "https://github.com/erming/shout.git",
+          "commit": "890c751bb624cde53dc392b2c851cdcd056033c6",
+          "status": "OK",
+          "mensagem": "3 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 27
+        },
+        {
+          "cve": "CVE-2017-16082",
+          "repo": "https://github.com/brianc/node-postgres.git",
+          "commit": "51a28c226519daaa3a2a3971128355d0440d3819",
+          "status": "OK",
+          "mensagem": "12 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16083",
+          "repo": "https://github.com/sandy98/node-simple-router.git",
+          "commit": "91da4299aee0086cc1e0cc837763578af6f82cea",
+          "status": "OK",
+          "mensagem": "26 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16084",
+          "repo": "https://github.com/KoryNunn/list-n-stream.git",
+          "commit": "87de3f13465e9d4d21eb75be8143cdc4085a19b3",
+          "status": "OK",
+          "mensagem": "5 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2017-16087",
+          "repo": "https://github.com/vvakame/fs-git.git",
+          "commit": "50b33e3faec0b08183a699efb9b154c0d1495bee",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2017-16098",
+          "repo": "https://github.com/node-modules/charset.git",
+          "commit": "5ba8a4942f069d40584cf5a1a7938ff8dc92bcc9",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 12
+        },
+        {
+          "cve": "CVE-2017-16100",
+          "repo": "https://github.com/skoranga/node-dns-sync.git",
+          "commit": "b748fe77a87749d95876028eda8e759109be4c73",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16107",
+          "repo": "https://github.com/Eeems/PooledWebSocket.git",
+          "commit": "d51217a285c1dc5851743d0756cc43c35d12737c",
+          "status": "OK",
+          "mensagem": "5 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 11
+        }
+      ]
+    },
+    "cves-sast-batch-ab": {
+      "codeql": [
+        {
+          "cve": "CVE-2017-16114",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "49b7eaca76d14ccd91f87decc11bbe213a6e0af4",
+          "status": "OK",
+          "mensagem": "codeql 2.25.4; suite codeql/javascript-queries:codeql-suites/javascript-security-extended.qls; TIMEOUT_CREATE=900; TIMEOUT_ANALYZE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 5 achados; HEAD conferido",
+          "duracao_segundos": 48
+        },
+        {
+          "cve": "CVE-2017-16117",
+          "repo": "https://github.com/Trott/node-slug.git",
+          "commit": "85ded30a95760b19cd223abe668eade0279a21f2",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2017-16118",
+          "repo": "https://github.com/jshttp/forwarded.git",
+          "commit": "ad1efeaf2315c1ccd25c1e5bccb21df626c1d12c",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 43
+        },
+        {
+          "cve": "CVE-2017-16119",
+          "repo": "https://github.com/jshttp/fresh.git",
+          "commit": "ff5f257b575a70fae6268b9283f7d5796bcfde71",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 43
+        },
+        {
+          "cve": "CVE-2017-16136",
+          "repo": "https://github.com/expressjs/method-override.git",
+          "commit": "5a7d6a1f2f16ba4ec2bbab3d67b98b30e1d8a0fe",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2017-16137",
+          "repo": "https://github.com/visionmedia/debug.git",
+          "commit": "47747f329fe159e94262318b52b87a48f6c0acd4",
+          "status": "OK",
+          "mensagem": "2 achados; HEAD conferido",
+          "duracao_segundos": 45
+        },
+        {
+          "cve": "CVE-2017-16138",
+          "repo": "https://github.com/broofa/node-mime.git",
+          "commit": "4a375abebfa3900921217daa270302e01a1c67ae",
+          "status": "OK",
+          "mensagem": "2 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2017-16224",
+          "repo": "https://github.com/isaacs/st.git",
+          "commit": "ae7b6768c1d91dd48b368b2b921193fc2b36cff1",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 47
+        },
+        {
+          "cve": "CVE-2017-16226",
+          "repo": "https://github.com/browserify/static-eval.git",
+          "commit": "ab81134a43431457508bc2ead500f2d93ac0a71d",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2017-16877",
+          "repo": "https://github.com/zeit/next.js.git",
+          "commit": "442c611d4956496afc8f32c3bb881f2d37e63960",
+          "status": "OK",
+          "mensagem": "15 achados; HEAD conferido",
+          "duracao_segundos": 55
+        },
+        {
+          "cve": "CVE-2017-17461",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "900e50e22a9a8165e6de4df6a91265343fd584d9",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-18077",
+          "repo": "https://github.com/juliangruber/brace-expansion.git",
+          "commit": "265f6cd6586383eebebbfc3c45da2eaa153d9e63",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2017-18214",
+          "repo": "https://github.com/moment/moment.git",
+          "commit": "328d51e7235b7a2d443bfdf69c1844939c115660",
+          "status": "OK",
+          "mensagem": "21 achados; HEAD conferido",
+          "duracao_segundos": 162
+        },
+        {
+          "cve": "CVE-2017-18352",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "11 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-18353",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "11 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-18354",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "11 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-18355",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "11 achados; HEAD conferido",
+          "duracao_segundos": 46
+        },
+        {
+          "cve": "CVE-2017-18635",
+          "repo": "https://github.com/novnc/noVNC.git",
+          "commit": "41f476a86357f1404fcca078212c702599bbcc57",
+          "status": "OK",
+          "mensagem": "12 achados; HEAD conferido",
+          "duracao_segundos": 58
+        },
+        {
+          "cve": "CVE-2017-5954",
+          "repo": "https://github.com/commenthol/serialize-to-js.git",
+          "commit": "a1e8140ed1a07013f644b5b76025f4eaab7fb9d8",
+          "status": "OK",
+          "mensagem": "4 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2018-1000086",
+          "repo": "https://github.com/nprapps/pym.js.git",
+          "commit": "4b9016c30a930608e68dcd831176e1d089fab55b",
+          "status": "OK",
+          "mensagem": "38 achados; HEAD conferido",
+          "duracao_segundos": 83
+        },
+        {
+          "cve": "CVE-2018-1000096",
+          "repo": "https://github.com/brianleroux/tiny-json-http.git",
+          "commit": "41468a2ba952aa4d59c2fae20a7a7394d3b6d5d7",
+          "status": "OK",
+          "mensagem": "4 achados; HEAD conferido",
+          "duracao_segundos": 45
+        },
+        {
+          "cve": "CVE-2018-1000620",
+          "repo": "https://github.com/hapijs/cryptiles.git",
+          "commit": "96e63fd1605d5a85b19281e4741e28568d8c9822",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 42
+        },
+        {
+          "cve": "CVE-2018-1002203",
+          "repo": "https://github.com/ZJONSSON/node-unzipper.git",
+          "commit": "48bd69eaa3cbd30558bd218327ac103d1457e919",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 43
+        },
+        {
+          "cve": "CVE-2018-1002204",
+          "repo": "https://github.com/cthackers/adm-zip.git",
+          "commit": "e116bc18df51e4e50c493cede82ae7696954b511",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2018-11093",
+          "repo": "https://github.com/ckeditor/ckeditor5-link.git",
+          "commit": "992bd11d68e0e6d37b5cb4be36afabe7b4b3e9eb",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 45
+        },
+        {
+          "cve": "CVE-2018-11615",
+          "repo": "https://github.com/moscajs/mosca.git",
+          "commit": "e61f7491519ff69732e91f5afa107cda4c4d271e",
+          "status": "OK",
+          "mensagem": "4 achados; HEAD conferido",
+          "duracao_segundos": 48
+        },
+        {
+          "cve": "CVE-2018-11798",
+          "repo": "https://github.com/apache/thrift.git",
+          "commit": "d566da7739c9aae63fe7fc9d267887fa73e5dda7",
+          "status": "OK",
+          "mensagem": "13 achados; HEAD conferido",
+          "duracao_segundos": 52
+        },
+        {
+          "cve": "CVE-2018-13797",
+          "repo": "https://github.com/scravy/node-macaddress.git",
+          "commit": "dd079620d11c91957ac897e88d539dfceec41d56",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 44
+        },
+        {
+          "cve": "CVE-2018-13863",
+          "repo": "https://github.com/mongodb/js-bson.git",
+          "commit": "e403bd94faadee80cd82bae888e28b8b4d6d1e8d",
+          "status": "OK",
+          "mensagem": "5 achados; HEAD conferido",
+          "duracao_segundos": 60
+        },
+        {
+          "cve": "CVE-2018-14040",
+          "repo": "https://github.com/twbs/bootstrap.git",
+          "commit": "13bf8aeae3db71e28af69782328c22215795c169",
+          "status": "OK",
+          "mensagem": "12 achados; HEAD conferido",
+          "duracao_segundos": 79
+        }
+      ],
+      "semgrep": [
+        {
+          "cve": "CVE-2017-16114",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "49b7eaca76d14ccd91f87decc11bbe213a6e0af4",
+          "status": "OK",
+          "mensagem": "semgrep 1.171.0; pack sha256 1ddc9b0bd5ad9ee31f4727648cfdd4279317627b859c44ef56d77438a0f8b87b; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 3 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2017-16117",
+          "repo": "https://github.com/Trott/node-slug.git",
+          "commit": "85ded30a95760b19cd223abe668eade0279a21f2",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16118",
+          "repo": "https://github.com/jshttp/forwarded.git",
+          "commit": "ad1efeaf2315c1ccd25c1e5bccb21df626c1d12c",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16119",
+          "repo": "https://github.com/jshttp/fresh.git",
+          "commit": "ff5f257b575a70fae6268b9283f7d5796bcfde71",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16136",
+          "repo": "https://github.com/expressjs/method-override.git",
+          "commit": "5a7d6a1f2f16ba4ec2bbab3d67b98b30e1d8a0fe",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16137",
+          "repo": "https://github.com/visionmedia/debug.git",
+          "commit": "47747f329fe159e94262318b52b87a48f6c0acd4",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16138",
+          "repo": "https://github.com/broofa/node-mime.git",
+          "commit": "4a375abebfa3900921217daa270302e01a1c67ae",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2017-16224",
+          "repo": "https://github.com/isaacs/st.git",
+          "commit": "ae7b6768c1d91dd48b368b2b921193fc2b36cff1",
+          "status": "OK",
+          "mensagem": "4 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-16226",
+          "repo": "https://github.com/browserify/static-eval.git",
+          "commit": "ab81134a43431457508bc2ead500f2d93ac0a71d",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2017-16877",
+          "repo": "https://github.com/zeit/next.js.git",
+          "commit": "442c611d4956496afc8f32c3bb881f2d37e63960",
+          "status": "OK",
+          "mensagem": "35 achados; HEAD conferido",
+          "duracao_segundos": 17
+        },
+        {
+          "cve": "CVE-2017-17461",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "900e50e22a9a8165e6de4df6a91265343fd584d9",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2017-18077",
+          "repo": "https://github.com/juliangruber/brace-expansion.git",
+          "commit": "265f6cd6586383eebebbfc3c45da2eaa153d9e63",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-18214",
+          "repo": "https://github.com/moment/moment.git",
+          "commit": "328d51e7235b7a2d443bfdf69c1844939c115660",
+          "status": "OK",
+          "mensagem": "20 achados; HEAD conferido",
+          "duracao_segundos": 24
+        },
+        {
+          "cve": "CVE-2017-18352",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2017-18353",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-18354",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2017-18355",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2017-18635",
+          "repo": "https://github.com/novnc/noVNC.git",
+          "commit": "41f476a86357f1404fcca078212c702599bbcc57",
+          "status": "OK",
+          "mensagem": "6 achados; HEAD conferido",
+          "duracao_segundos": 15
+        },
+        {
+          "cve": "CVE-2017-5954",
+          "repo": "https://github.com/commenthol/serialize-to-js.git",
+          "commit": "a1e8140ed1a07013f644b5b76025f4eaab7fb9d8",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2018-1000086",
+          "repo": "https://github.com/nprapps/pym.js.git",
+          "commit": "4b9016c30a930608e68dcd831176e1d089fab55b",
+          "status": "OK",
+          "mensagem": "61 achados; HEAD conferido",
+          "duracao_segundos": 54
+        },
+        {
+          "cve": "CVE-2018-1000096",
+          "repo": "https://github.com/brianleroux/tiny-json-http.git",
+          "commit": "41468a2ba952aa4d59c2fae20a7a7394d3b6d5d7",
+          "status": "OK",
+          "mensagem": "7 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2018-1000620",
+          "repo": "https://github.com/hapijs/cryptiles.git",
+          "commit": "96e63fd1605d5a85b19281e4741e28568d8c9822",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2018-1002203",
+          "repo": "https://github.com/ZJONSSON/node-unzipper.git",
+          "commit": "48bd69eaa3cbd30558bd218327ac103d1457e919",
+          "status": "OK",
+          "mensagem": "3 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2018-1002204",
+          "repo": "https://github.com/cthackers/adm-zip.git",
+          "commit": "e116bc18df51e4e50c493cede82ae7696954b511",
+          "status": "OK",
+          "mensagem": "16 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2018-11093",
+          "repo": "https://github.com/ckeditor/ckeditor5-link.git",
+          "commit": "992bd11d68e0e6d37b5cb4be36afabe7b4b3e9eb",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2018-11615",
+          "repo": "https://github.com/moscajs/mosca.git",
+          "commit": "e61f7491519ff69732e91f5afa107cda4c4d271e",
+          "status": "OK",
+          "mensagem": "7 achados; HEAD conferido",
+          "duracao_segundos": 14
+        },
+        {
+          "cve": "CVE-2018-11798",
+          "repo": "https://github.com/apache/thrift.git",
+          "commit": "d566da7739c9aae63fe7fc9d267887fa73e5dda7",
+          "status": "OK",
+          "mensagem": "52 achados; HEAD conferido",
+          "duracao_segundos": 34
+        },
+        {
+          "cve": "CVE-2018-13797",
+          "repo": "https://github.com/scravy/node-macaddress.git",
+          "commit": "dd079620d11c91957ac897e88d539dfceec41d56",
+          "status": "OK",
+          "mensagem": "1 achados; HEAD conferido",
+          "duracao_segundos": 13
+        },
+        {
+          "cve": "CVE-2018-13863",
+          "repo": "https://github.com/mongodb/js-bson.git",
+          "commit": "e403bd94faadee80cd82bae888e28b8b4d6d1e8d",
+          "status": "OK",
+          "mensagem": "22 achados; HEAD conferido",
+          "duracao_segundos": 53
+        },
+        {
+          "cve": "CVE-2018-14040",
+          "repo": "https://github.com/twbs/bootstrap.git",
+          "commit": "13bf8aeae3db71e28af69782328c22215795c169",
+          "status": "OK",
+          "mensagem": "119 achados; HEAD conferido",
+          "duracao_segundos": 17
+        }
+      ],
+      "snyk-code": [
+        {
+          "cve": "CVE-2017-16114",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "49b7eaca76d14ccd91f87decc11bbe213a6e0af4",
+          "status": "OK",
+          "mensagem": "snyk 1.1306.1; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 2 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16117",
+          "repo": "https://github.com/Trott/node-slug.git",
+          "commit": "85ded30a95760b19cd223abe668eade0279a21f2",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 8
+        },
+        {
+          "cve": "CVE-2017-16118",
+          "repo": "https://github.com/jshttp/forwarded.git",
+          "commit": "ad1efeaf2315c1ccd25c1e5bccb21df626c1d12c",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 15
+        },
+        {
+          "cve": "CVE-2017-16119",
+          "repo": "https://github.com/jshttp/fresh.git",
+          "commit": "ff5f257b575a70fae6268b9283f7d5796bcfde71",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 8
+        },
+        {
+          "cve": "CVE-2017-16136",
+          "repo": "https://github.com/expressjs/method-override.git",
+          "commit": "5a7d6a1f2f16ba4ec2bbab3d67b98b30e1d8a0fe",
+          "status": "OK",
+          "mensagem": "2 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 15
+        },
+        {
+          "cve": "CVE-2017-16137",
+          "repo": "https://github.com/visionmedia/debug.git",
+          "commit": "47747f329fe159e94262318b52b87a48f6c0acd4",
+          "status": "OK",
+          "mensagem": "1 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16138",
+          "repo": "https://github.com/broofa/node-mime.git",
+          "commit": "4a375abebfa3900921217daa270302e01a1c67ae",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 22
+        },
+        {
+          "cve": "CVE-2017-16224",
+          "repo": "https://github.com/isaacs/st.git",
+          "commit": "ae7b6768c1d91dd48b368b2b921193fc2b36cff1",
+          "status": "OK",
+          "mensagem": "11 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-16226",
+          "repo": "https://github.com/browserify/static-eval.git",
+          "commit": "ab81134a43431457508bc2ead500f2d93ac0a71d",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 11
+        },
+        {
+          "cve": "CVE-2017-16877",
+          "repo": "https://github.com/zeit/next.js.git",
+          "commit": "442c611d4956496afc8f32c3bb881f2d37e63960",
+          "status": "OK",
+          "mensagem": "22 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 11
+        },
+        {
+          "cve": "CVE-2017-17461",
+          "repo": "https://github.com/markedjs/marked.git",
+          "commit": "900e50e22a9a8165e6de4df6a91265343fd584d9",
+          "status": "OK",
+          "mensagem": "2 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 18
+        },
+        {
+          "cve": "CVE-2017-18077",
+          "repo": "https://github.com/juliangruber/brace-expansion.git",
+          "commit": "265f6cd6586383eebebbfc3c45da2eaa153d9e63",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 8
+        },
+        {
+          "cve": "CVE-2017-18214",
+          "repo": "https://github.com/moment/moment.git",
+          "commit": "328d51e7235b7a2d443bfdf69c1844939c115660",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 25
+        },
+        {
+          "cve": "CVE-2017-18352",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "12 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2017-18353",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "12 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 15
+        },
+        {
+          "cve": "CVE-2017-18354",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "12 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2017-18355",
+          "repo": "https://github.com/GoogleChrome/rendertron.git",
+          "commit": "16ade3208c80c3de8f8e36a05ad8242af1eeb7f4",
+          "status": "OK",
+          "mensagem": "12 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2017-18635",
+          "repo": "https://github.com/novnc/noVNC.git",
+          "commit": "41f476a86357f1404fcca078212c702599bbcc57",
+          "status": "OK",
+          "mensagem": "9 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 20
+        },
+        {
+          "cve": "CVE-2017-5954",
+          "repo": "https://github.com/commenthol/serialize-to-js.git",
+          "commit": "a1e8140ed1a07013f644b5b76025f4eaab7fb9d8",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 19
+        },
+        {
+          "cve": "CVE-2018-1000086",
+          "repo": "https://github.com/nprapps/pym.js.git",
+          "commit": "4b9016c30a930608e68dcd831176e1d089fab55b",
+          "status": "OK",
+          "mensagem": "12 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 17
+        },
+        {
+          "cve": "CVE-2018-1000096",
+          "repo": "https://github.com/brianleroux/tiny-json-http.git",
+          "commit": "41468a2ba952aa4d59c2fae20a7a7394d3b6d5d7",
+          "status": "OK",
+          "mensagem": "3 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2018-1000620",
+          "repo": "https://github.com/hapijs/cryptiles.git",
+          "commit": "96e63fd1605d5a85b19281e4741e28568d8c9822",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 10
+        },
+        {
+          "cve": "CVE-2018-1002203",
+          "repo": "https://github.com/ZJONSSON/node-unzipper.git",
+          "commit": "48bd69eaa3cbd30558bd218327ac103d1457e919",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2018-1002204",
+          "repo": "https://github.com/cthackers/adm-zip.git",
+          "commit": "e116bc18df51e4e50c493cede82ae7696954b511",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 12
+        },
+        {
+          "cve": "CVE-2018-11093",
+          "repo": "https://github.com/ckeditor/ckeditor5-link.git",
+          "commit": "992bd11d68e0e6d37b5cb4be36afabe7b4b3e9eb",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 12
+        },
+        {
+          "cve": "CVE-2018-11615",
+          "repo": "https://github.com/moscajs/mosca.git",
+          "commit": "e61f7491519ff69732e91f5afa107cda4c4d271e",
+          "status": "OK",
+          "mensagem": "10 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 11
+        },
+        {
+          "cve": "CVE-2018-11798",
+          "repo": "https://github.com/apache/thrift.git",
+          "commit": "d566da7739c9aae63fe7fc9d267887fa73e5dda7",
+          "status": "OK",
+          "mensagem": "137 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 29
+        },
+        {
+          "cve": "CVE-2018-13797",
+          "repo": "https://github.com/scravy/node-macaddress.git",
+          "commit": "dd079620d11c91957ac897e88d539dfceec41d56",
+          "status": "SEM_ACHADOS",
+          "mensagem": "0 achados; snyk exit 0; HEAD conferido",
+          "duracao_segundos": 9
+        },
+        {
+          "cve": "CVE-2018-13863",
+          "repo": "https://github.com/mongodb/js-bson.git",
+          "commit": "e403bd94faadee80cd82bae888e28b8b4d6d1e8d",
+          "status": "OK",
+          "mensagem": "1 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 66
+        },
+        {
+          "cve": "CVE-2018-14040",
+          "repo": "https://github.com/twbs/bootstrap.git",
+          "commit": "13bf8aeae3db71e28af69782328c22215795c169",
+          "status": "OK",
+          "mensagem": "9 achados; snyk exit 1; HEAD conferido",
+          "duracao_segundos": 13
+        }
+      ]
+    }
+  }
+}

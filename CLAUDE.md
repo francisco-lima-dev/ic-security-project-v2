@@ -980,6 +980,54 @@ lotes.
 Sobrecarga do laço — container menos a soma das durações por CVE: **1 a 4 s por
 lote**, nas três ferramentas.
 
+### Volume dos resultados, e o que fica fora do git
+
+Medido sobre os artifacts dos oito lotes, descomprimido:
+
+| Ferramenta | raws | total | médio | tratados | total |
+|---|---:|---:|---:|---:|---:|
+| CodeQL | 221 | 59,1 MiB | 274 KiB | 221 | 2,3 MiB |
+| Semgrep | 221 | 547,7 MiB | 2,5 MiB | 221 | 10,7 MiB |
+| Snyk Code | 216 | 16,4 MiB | 78 KiB | 216 | 2,4 MiB |
+| **Total** | **658** | **623,1 MiB** | | **658** | **15,5 MiB** |
+
+**O Semgrep responde por 88% do volume bruto** — 547,7 dos 623,1 MiB —, e o
+raw médio dele é **9× o do CodeQL e 32× o do Snyk Code**. Os **oito maiores
+raws do conjunto são todos do Semgrep** e somam cerca de **341 MiB**, mais da
+metade de tudo. O maior é o `CVE-2018-20801`, com **144,1 MiB** — o **mesmo CVE
+dos 5850 achados** registrado acima. Volume de arquivo e volume de alerta não
+são dois fatos: são o mesmo fato medido por dois instrumentos, a regra
+disparando em massa num repositório.
+
+**Os tratados somam 15,5 MiB, 40× menos que os raws**, com a mesma cobertura de
+CVE. É o que a política de versionamento comprou: o tratado sustenta o
+argumento, o raw é perícia.
+
+**Os raws não são versionados, e não é só política.** `results/*/raw/` está
+ignorado desde o início, mas o `CVE-2018-20801.json` de 144,1 MiB seria recusado
+no push ainda que não estivesse — excede o limite de 100 MB por arquivo do
+GitHub. **LFS foi decidido contra**: acrescentaria dependência de infraestrutura
+e cota para guardar exatamente aquilo que a política classifica como
+descartável.
+
+**Onde os raws estão, e até quando.** Nos artifacts das oito execuções, com
+retenção de 90 dias contados do **início da execução**, não da publicação do
+artifact:
+
+| Lotes | Execuções de | Artifacts expiram em |
+|---|---|---|
+| `aa`, `ab` | 16/09/2026 | **15/12/2026** |
+| `ac` a `ah` | 17/09/2026 | **16/12/2026** |
+
+Depois dessas datas, **reproduzir qualquer coisa a partir do raw depende de
+cópia externa** — ao repositório e ao GitHub. Refazer a campanha não recupera o
+raw antigo: reprocessa tudo, já que a idempotência é inerte no ambiente do
+Actions. A cópia existe, comprimida por ferramenta e fora da árvore do projeto;
+o caminho dela não vai a este arquivo, porque diretório na máquina do operador
+não é registro reproduzível. Comprimida com `zstd`, ela cabe em **6,4 MiB** —
+**1,0%** dos 623,1 MiB (CodeQL 54×, Semgrep 114×, Snyk Code 35×), o que por si
+já diz da natureza do volume: JSON de achado repetido é quase todo redundância.
+
 ## Obtenção do código — comportamento medido
 
 Fetch raso por SHA, com fallback para clone completo. Medições de
