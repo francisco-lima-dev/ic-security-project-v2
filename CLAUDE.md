@@ -536,9 +536,26 @@ um SARIF que a ferramenta não emitiu seria pior.
 
 **Denominador quando `SEM_ARQUIVO_ANALISAVEL` ocorre.** Exit 3 é causa
 **interna à ferramenta**, como o `gt_file_scanned: false` e ao contrário do
-repositório que não existe. O CVE **permanece no denominador** (221/222) nas
+repositório que não existe. O CVE **permanece no denominador** (220/222) nas
 duas modalidades e conta como não-detecção do Snyk Code. Nunca se cria
 denominador por ferramenta.
+
+O 220 são os 222 pares afirmados menos as **duas** baixas por código
+indisponível, nominadas nos defeitos conhecidos: `CVE-2016-1000229`
+(repositório inexistente), medida no lote `aa` em 16/09/2026, e
+`CVE-2018-8035` (commit inexistente no repositório), medida no lote `ad` em
+17/09/2026. Até a campanha o valor era 221, com uma baixa só.
+
+**SUPERADO PELA CAMPANHA (17/09/2026), e o original fica abaixo intacto.** O
+estado ocorreu **5 vezes nos 223**, o que cai no terceiro ramo previsto: deixa
+de ser borda e vira resultado de cobertura do Snyk Code, com sentença própria
+na comparação. Duas frases do texto original deixam de valer: a de que o ramo
+"segue coberto apenas por stub" — ele foi exercitado por execução real — e a
+dúvida sobre correlação com os cinco arquivos sem extensão, que a campanha
+resolve: **a correlação é exata, 5 de 5**. Os CVEs são `CVE-2018-16479`,
+`CVE-2018-16480`, `CVE-2018-3731`, `CVE-2018-3747` e `CVE-2019-5423`, cujos
+arquivos de ground truth são `bin/http-live` e `bin/public`. O denominador não
+se move, como o próprio ramo previa. Ver "Campanha SAST — resultados".
 
 Escrito **antes** da campanha, deliberadamente, para que a escolha não pareça
 posterior aos números. Três ramos previstos:
@@ -795,6 +812,174 @@ script. É o que H0b comprou: mudar o limite não exige rebuild nem digest novo.
 O valor efetivo de cada lote fica na primeira linha do log e no README do
 artifact, e o passo do lote o confere contra o pedido.
 
+## Campanha SAST — resultados (17/09/2026)
+
+Oito lotes, os 223 CVEs do benchmark, commit `579f383` em todos, três limites
+em **900 s** conferidos pela linha que o **container** imprime em **24 de 24
+jobs**. Nenhum lote precisou ser refeito.
+
+| Lote | Execução | | Lote | Execução |
+|---|---|---|---|---|
+| `aa` | `35106944490` | | `ae` | `35169207030` |
+| `ab` | `35135927579` | | `af` | `35169209525` |
+| `ac` | `35169202777` | | `ag` | `35169211662` |
+| `ad` | `35169205115` | | `ah` | `35169213227` |
+
+`aa` e `ab` correram em série, com leitura entre eles, porque carregavam risco
+desconhecido — o `aa` congelava o tamanho de lote e o `ab` tinha o
+`zeit/next.js`. Os seis restantes correram em paralelo: **34 minutos de relógio
+para 163 CVEs**. Custo total da campanha: cerca de **1 h 30** de relógio.
+
+**A campanha atravessou a meia-noite UTC, e as datas diferem entre lotes.** Não
+é inconsistência do registro: `aa` e `ab` rodaram em **16/09/2026** (14:12 e
+18:41 UTC), e `ac` a `ah` em **17/09/2026** (01:05 a 01:39 UTC), disparados
+juntos. O ensaio de fumaça, anterior a tudo, é de 16/09 às 13:25 UTC. Por isso
+o `CVE-2016-1000229` sai datado de 16/09 (lote `aa`) e o `CVE-2018-8035` de
+17/09 (lote `ad`), e por isso os cinco `SEM_ARQUIVO_ANALISAVEL`, vindos de
+`ac`, `ad` e `af`, são de 17/09.
+
+### As quatro grandezas, que não são a mesma
+
+Confundi-las é fácil, e já ocorreu na redação deste registro. Elas são
+distintas e todas necessárias:
+
+| Grandeza | Valor |
+|---|---:|
+| CVEs no conjunto | **223** |
+| Pares (CWE, arquivo) afirmados | **222** |
+| Pares no denominador, após as duas baixas | **220** |
+| CVEs com raw no CodeQL e no Semgrep | **221** |
+| CVEs com raw no Snyk Code | **216** |
+
+**222 e não 223 porque o `CVE-2018-1000096` não tem CWE** e já estava fora da
+matriz antes de qualquer execução — ele rodou normalmente na campanha, com raw
+nas três ferramentas. **220 e não 221** porque as baixas por código
+indisponível são duas, e cada uma tira um par. **221 é contagem de CVE com
+raw**, não de pares: 223 menos as duas baixas.
+
+### Cobertura
+
+As duas baixas, ambas fora do denominador e **nenhuma delas falso negativo**:
+
+| CVE | Repositório | Causa |
+|---|---|---|
+| `CVE-2016-1000229` | `linxiaowu66/swagger-ui` | repositório inexistente; fetch e clone com rc 128 |
+| `CVE-2018-8035` | `apache/uima-ducc` | commit inexistente; `upload-pack: not our ref`, depois `reference is not a tree` |
+
+O Snyk Code tem cinco CVEs a menos porque saiu com `SEM_ARQUIVO_ANALISAVEL`
+(exit 3) em `CVE-2018-16479`, `CVE-2018-16480`, `CVE-2018-3731`,
+`CVE-2018-3747` e `CVE-2019-5423`. **São exatamente os cinco cujo arquivo de
+ground truth não tem extensão** — `bin/http-live` e `bin/public` —, o que o
+documento já registrava como peculiaridade do conjunto. Correlação **5 de 5**.
+O ramo saiu do stub e tem ocorrência real; os CVEs **permanecem no
+denominador**, e o estado conta como não-detecção do Snyk Code.
+
+### Duração
+
+| Ferramenta | mediana | média | máximo | q1–q3 | soma |
+|---|---:|---:|---:|---|---:|
+| CodeQL | 47 s | 58,8 s | 304 s | 43–60 s | 3,63 h |
+| Semgrep | 18 s | 21,9 s | 202 s | 14–21 s | 1,36 h |
+| Snyk Code | 13 s | 18,5 s | 135 s | 10–19 s | 1,14 h |
+
+**Os 900 s nunca foram exercidos:** o máximo dos 223 é 304 s, um terço do
+limite, e nenhum log traz `excedeu`. O que se pode dizer é que a decisão de H4
+**não foi posta à prova** — não que ela estava certa.
+
+### Porte × custo no CodeQL, 221 pontos
+
+| arquivos extraídos | n | mediana | mín | máx |
+|---|---:|---:|---:|---:|
+| 0–10 | 72 | 43 s | 35 s | 49 s |
+| 11–50 | 57 | 45 s | 34 s | 58 s |
+| 51–100 | 27 | 54 s | 39 s | 105 s |
+| 101–200 | 26 | 61 s | 44 s | 83 s |
+| 201–500 | 19 | 69 s | 49 s | 120 s |
+| 501–1000 | 10 | 92 s | 59 s | 220 s |
+| >1000 | 10 | 158 s | 60 s | 304 s |
+
+Há um **piso de ~43 s** que domina até cerca de 50 arquivos, e a curva sobe de
+forma monótona depois. O **joelho está entre 500 e 1000 arquivos**, onde a
+mediana dobra em relação ao piso; acima de 1000 ela triplica. A relação entre
+porte e custo **existe**, mas fica escondida sob o custo fixo de invocação na
+faixa em que está a maior parte do conjunto — **129 dos 221 CVEs têm 50
+arquivos ou menos**. O maior caso, **5693 arquivos**, custou 296 s.
+
+**Isto REFINA, e não apaga, a formulação de 16/09/2026** ("porte do repositório
+não prediz custo de análise"), registrada na leitura do ensaio de fumaça com 6
+pontos e depois com 59. Aquela redação valia para a amostra que se tinha: nas
+faixas então observadas o piso realmente domina, e foi o que se viu. Com 221
+pontos a relação aparece — o que a amostra pequena não continha eram os casos
+acima de 500 arquivos.
+
+### Fallback de obtenção
+
+**2 em 223**, ambos por **rc 128 do git**, **zero por estouro de limite**: um
+no `aa`, um no `ad`, zero nos outros seis lotes. São os mesmos dois CVEs de
+código indisponível. A taxa é **estável ao longo dos oito lotes**, sem a
+elevação súbita que a métrica de vigilância existe para detectar.
+
+### `gt_file_scanned`
+
+CodeQL **221 `true`**, Semgrep **221 `true`**, Snyk Code **216 `null`**.
+
+**Nenhum `false` nos 223.** O ramo continua sem exercício no laço depois da
+campanha inteira, coberto só por fixture — limitação que sobreviveu ao conjunto
+completo. O `null` do Snyk é o já registrado (`coverage[]` agregada, sem
+inventário de caminhos), e a consequência para a análise é que **cobertura por
+arquivo está disponível em duas das três ferramentas**.
+
+### Inventário do CodeQL
+
+**211 batem de 221.** Maior extração observada: **5693 arquivos**.
+
+Dez divergentes: `CVE-2018-18282`, `CVE-2018-3738`, `CVE-2019-13127`,
+`CVE-2019-15532`, `CVE-2019-15657`, `CVE-2019-18350`, `CVE-2019-18818`,
+`CVE-2020-27666`, `CVE-2020-7638`, `CVE-2021-31712`.
+
+**A divergência é sempre no mesmo sentido:** o `artifacts[]` depurado tem de 1
+a 4 arquivos **a mais** que a notificação, e a notificação **nunca** tem nada
+que o `artifacts[]` não tenha. Os 22 extras somados são todos JS/TS — 19 `.js`,
+2 `.mjs`, 1 `.ts` — concentrados em `docs/.vuepress/`, `.storybook/`,
+`examples/` e `tests/`.
+
+**Isto não é teto de enumeração**, e a razão é a direção: teto faria a
+*notificação* perder arquivos, e ela não perde nenhum. A escolha de usar a
+notificação como fonte única — feita antes de existir raw real, contra a opção
+mais óbvia do `artifacts[]` — **nunca superestimou cobertura** nos 221 casos.
+
+**Hipótese, declarada como hipótese:** os extras são arquivos que o extrator
+conheceu mas não extraiu — configuração de ferramenta de documentação e
+exemplos. Confirmá-la exige cruzar com `js/diagnostics/extraction-errors` e
+`js/parse-error`, que aparecem nos ids de notificação de dois desses SARIFs.
+**Verificação disponível, não feita.**
+
+### Achados brutos — volume reportado, NÃO detecção
+
+CodeQL **3230**, Semgrep **11768**, Snyk Code **3666**. **Nada foi cruzado com
+o ground truth**, e a comparação entre ferramentas **não se faz por este
+número**: ele mede quantos alertas cada uma emitiu, não quantos CVEs cada uma
+detectou.
+
+O volume do Semgrep é **concentrado**: nos seis últimos lotes, 10 CVEs somam
+**77%** do total, e só o **`CVE-2018-20801` responde por 5850 achados** — perfil
+de regra disparando em massa num repositório, e não de detecção densa. O
+cruzamento precisa saber disso antes de calcular precisão, sob pena de um único
+CVE dominar a métrica da ferramenta.
+
+### Portões
+
+Nos 24 jobs: conferências (1), (2) e (4) do `check-log.py` em **zero**; a (3)
+igual ao número de `SEM_ARQUIVO_ANALISAVEL` de cada lote, como previsto;
+`normalize.py` com **zero** falhas, **zero** órfãos e **zero** raws ilegíveis;
+portão de lote sem raw OK em todos; **zero** `ANOMALO`, `INCOERENTE` ou `NAO
+RECONHECIDO`; nenhum `excedeu`; `df -h` inalterado antes e depois; sonda de
+`HOME` com `DEFEITO MEDIDO` e rede do Semgrep `OPERA SEM REDE` em todos os
+lotes.
+
+Sobrecarga do laço — container menos a soma das durações por CVE: **1 a 4 s por
+lote**, nas três ferramentas.
+
 ## Obtenção do código — comportamento medido
 
 Fetch raso por SHA, com fallback para clone completo. Medições de
@@ -883,11 +1068,28 @@ sondar.
   primeira coisa que a Fase E roda contém um `ERRO_FETCH` **esperado**, em
   1 dos 5. Não é defeito do script.
   Não é falso negativo: nenhuma ferramenta foi confrontada com o código,
-  porque não houve código. Categoria própria, fora da matriz —
-  **denominador cai de 222 para 221 pares**, em ambas as modalidades.
+  porque não houve código. Categoria própria, fora da matriz.
   Reconferir na hora da campanha: repositório pode voltar, outro pode cair.
   Ironia registrada: é justamente um dos dois homônimos que motivaram a
   regra de nomear saídas pelo CVE
+- **`CVE-2018-8035` — commit inexistente no repositório.** Medido na campanha
+  em 17/09/2026, lote `ad`, nas três ferramentas: em `apache/uima-ducc`, o
+  fetch raso saiu 128 com `upload-pack: not our ref`, o clone completo veio, e
+  o `git checkout` falhou com `reference is not a tree` — o commit
+  `4c20c4fc00d5605ba40fac235df3ccf7dc38cb52` que o benchmark declara não existe
+  ali. Status `ERRO_CHECKOUT`, sem raw.
+  É a **segunda** baixa por indisponibilidade de código, da mesma categoria da
+  anterior: nenhuma ferramenta foi confrontada com o código, logo não é falso
+  negativo. Note que o SHA é bem formado — 40 hex — e que aqui nem a boa
+  formação nem a asserção de HEAD estão em causa: o objeto simplesmente não
+  está no repositório
+- **Denominador da campanha, consolidado em 17/09/2026.** As duas baixas acima
+  tiram um par cada: **222 pares afirmados → 220 no denominador**, em ambas as
+  modalidades. Até a campanha o documento registrava 221, com uma baixa só.
+  **Não confundir com a contagem em CVEs:** 223 CVEs no conjunto, 221 com raw
+  no CodeQL e no Semgrep. Os dois números não coincidem porque o
+  `CVE-2018-1000096` não tem CWE e já estava fora da matriz antes de qualquer
+  execução — é ele que faz 222 e não 223
 
 ## Arquitetura — normalização fora dos containers
 
