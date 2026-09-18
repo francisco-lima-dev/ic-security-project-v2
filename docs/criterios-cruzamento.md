@@ -52,7 +52,7 @@ e o texto discute o que os números mostrarem.
 
 | Nível | Critério | O que estabelece |
 |---|---|---|
-| **0** | a ferramenta produziu ao menos um achado no repositório | limite superior; quase sem valor isolado |
+| **0** | a ferramenta produziu ao menos um achado na árvore analisada | limite superior; quase sem valor isolado |
 | **1** | ao menos um achado com `file_path` = `gt_file_path` | a ferramenta olhou o arquivo certo |
 | **2** | nível 1 **e** o CWE casa | arquivo certo, natureza certa |
 | **3** | nível 1 **e** a linha casa | arquivo certo, ponto certo |
