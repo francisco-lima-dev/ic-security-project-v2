@@ -15,8 +15,11 @@ Cada asserção nomeia a invariante que protege. Saída não nula = alguma falho
 """
 from __future__ import annotations
 
+import hashlib
+import importlib.util
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -27,6 +30,8 @@ RAIZ = Path(__file__).resolve().parent.parent
 FIXTURES = RAIZ / "tests" / "fixtures"
 NORMALIZE = RAIZ / "tools" / "normalize.py"
 CHECK_LOG = RAIZ / "tools" / "check-log.py"
+CRUZA = RAIZ / "tools" / "cruza-deteccao.py"
+LISTA_REAL = RAIZ / "datasets" / "listas" / "cves-sast.txt"
 
 falhas = []
 verificacoes = 0
@@ -1381,11 +1386,519 @@ def main():
            "(5) avisa que a contagem e PISO quando ha PULADO: sem isso a "
            "metrica de vigilancia cairia a zero sem sinal", pd.stdout)
 
+    secao_cruzamento(tmp)
+
     print("\n%d verificacoes, %d falha(s)" % (verificacoes, len(falhas)))
     for descricao in falhas:
         print("  FALHOU: %s" % descricao)
     print("temporarios em %s" % tmp)
     return 1 if falhas else 0
+
+
+# ============================================================ cruza-deteccao.py
+# Universo sintetico sobre a LISTA REAL: as constantes do script (223 CVEs, 220
+# pares, tres exclusoes nominadas) nao sao sobrescreviveis, entao a fixture
+# tem de ter a forma do conjunto real. Os achados vem de
+# tests/fixtures/cruzamento/casos.json; todo (ferramenta, CVE) sem caso recebe
+# tratado sem achados. Nada aqui le results/*/treated/.
+FERRAMENTAS_CRUZ = ("codeql", "semgrep", "snyk-code")
+NIVEIS_CRUZ = ("nivel_0", "nivel_1", "nivel_2_generosa", "nivel_2_estrita",
+               "nivel_3", "nivel_4_generosa", "nivel_4_estrita")
+ESTRITOS_CRUZ = ("nivel_2_estrita", "nivel_4_estrita")
+BAIXAS_CRUZ = {"CVE-2016-1000229": "ERRO_FETCH", "CVE-2018-8035": "ERRO_CHECKOUT"}
+SEM_CWE_CRUZ = "CVE-2018-1000096"
+# Os cinco da campanha; aqui sao dado da FIXTURE. O script nao os tem como
+# constante: tira da lista o denominador, da ausencia do arquivo quais CVEs
+# dele ficaram sem tratado, e do registro a causa que admite cada ausencia.
+SNYK_SEM_ARQUIVO_CRUZ = ("CVE-2018-16479", "CVE-2018-16480", "CVE-2018-3731",
+                         "CVE-2018-3747", "CVE-2019-5423")
+
+
+def _importar(nome, caminho):
+    sys.dont_write_bytecode = True
+    spec = importlib.util.spec_from_file_location(nome, caminho)
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+def _gt_da_lista():
+    """Mesmo carregador que o normalize.py usa para gravar os tratados."""
+    norm = _importar("normalize", NORMALIZE)
+    gt, _ = norm.carregar_lista(LISTA_REAL)
+    tabela = norm.carregar_tabela_primario(norm.TABELA_PRIMARIO)
+    relatorio = norm.relatorio_vazio("codeql")
+    for cve, g in gt.items():
+        g["gt_cwe_primary"] = norm.resolver_primario(g["gt_cwes"], tabela, relatorio, cve)
+    return gt
+
+
+def _achados_sinteticos(ferramenta, cve, especificacao):
+    achados = []
+    for posicao, item in enumerate(especificacao, 1):
+        achados.append({
+            "finding_id": "%s:%s:%04d" % (ferramenta, cve, posicao),
+            "rule_id": "fixture/regra", "cwe": list(item["cwe"]),
+            "has_cwe": bool(item["cwe"]), "severity_original": "warning",
+            "severity_normalized": "medium", "security_severity": None,
+            "file_path": item["file_path"], "line_start": item["line_start"],
+            "line_end": item["line_end"], "column_start": 1, "column_end": 2,
+            "message": "fixture"})
+    return achados
+
+
+def _tratado_sintetico(ferramenta, g, achados, varrido="padrao"):
+    meta = {"schema_version": "1.3", "cve_id": g["cve_id"], "repository": g["repository"],
+            "commit": g["commit"], "tool": ferramenta, "tool_version": "fixture",
+            "ruleset": None, "rules_applied": None,
+            "analysis_date": "2026-09-18T00:00:00Z", "analysis_date_source": "file_mtime",
+            "gt_cwes": list(g["gt_cwes"]), "gt_cwe_primary": g["gt_cwe_primary"],
+            "gt_file_path": g["gt_file_path"], "gt_file_lines": list(g["gt_file_lines"]),
+            "gt_file_scanned": ((None if ferramenta == "snyk-code" else True)
+                                if varrido == "padrao" else varrido),
+            "tool_diagnostics": None, "gt_file_scanned_reason": "fixture sintetica"}
+    if g["gt_file_path_original"]:
+        meta["gt_file_path_original"] = g["gt_file_path_original"]
+    if ferramenta == "snyk-code":
+        meta["coverage"] = []
+    return {"metadata": meta, "findings": achados}
+
+
+def _escrever_json(caminho, dados):
+    caminho.write_text(json.dumps(dados, indent=2) + "\n", encoding="utf-8")
+
+
+def _celula(valor):
+    return "" if valor is None else ("true" if valor is True else
+                                     "false" if valor is False else str(valor))
+
+
+def _chaves_recursivas(objeto):
+    if isinstance(objeto, dict):
+        for chave, valor in objeto.items():
+            yield chave
+            yield from _chaves_recursivas(valor)
+    elif isinstance(objeto, list):
+        for valor in objeto:
+            yield from _chaves_recursivas(valor)
+
+
+def secao_cruzamento(tmp):
+    print("\n== cruza-deteccao.py: universo sintetico sobre a lista real ==")
+    gt = _gt_da_lista()
+    casos = ler(FIXTURES / "cruzamento" / "casos.json")["casos"]
+    por_caso = {(c["ferramenta"], c["cve"]): c for c in casos}
+    checar(len(por_caso) == len(casos), "casos: cada (ferramenta, CVE) aparece uma vez")
+
+    # gt_assumido do caso x gt derivado da lista: caso sobre premissa velha
+    # falha aqui, em vez de passar.
+    for caso in casos:
+        g = gt[caso["cve"]]
+        derivado = {chave: g[chave] for chave in caso["gt_assumido"]}
+        checar(derivado == caso["gt_assumido"],
+               "caso %s: gt_assumido confere com a lista e a tabela" % caso["id"],
+               "%s x %s" % (derivado, caso["gt_assumido"]))
+        if caso.get("sem_tratado"):
+            checar(caso["ferramenta"] == "snyk-code" and caso["cve"] in SNYK_SEM_ARQUIVO_CRUZ,
+                   "caso %s: sem_tratado so em SEM_ARQUIVO_ANALISAVEL do Snyk" % caso["id"])
+
+    universo = tmp / "cruz-universo"
+    registro = {"por_cve": {f: [] for f in FERRAMENTAS_CRUZ}}
+    for ferramenta in FERRAMENTAS_CRUZ:
+        destino = universo / ferramenta / "treated"
+        destino.mkdir(parents=True)
+        (destino / ".gitkeep").write_text("")
+        for cve in sorted(gt):
+            if cve in BAIXAS_CRUZ:
+                registro["por_cve"][ferramenta].append([cve, BAIXAS_CRUZ[cve], 0])
+                continue
+            if ferramenta == "snyk-code" and cve in SNYK_SEM_ARQUIVO_CRUZ:
+                registro["por_cve"][ferramenta].append([cve, "SEM_ARQUIVO_ANALISAVEL", 1])
+                continue
+            caso = por_caso.get((ferramenta, cve))
+            achados = _achados_sinteticos(ferramenta, cve, caso["achados"] if caso else [])
+            varrido = caso.get("gt_file_scanned", "padrao") if caso else "padrao"
+            _escrever_json(destino / (cve + ".json"),
+                           _tratado_sintetico(ferramenta, gt[cve], achados, varrido))
+            registro["por_cve"][ferramenta].append(
+                [cve, "OK" if achados else "SEM_ACHADOS", 1])
+    caminho_registro = tmp / "cruz-registro.json"
+    _escrever_json(caminho_registro, registro)
+
+    def rodar(saida, lista=None, reg=caminho_registro):
+        comando = [sys.executable, str(CRUZA), "--treated-root", str(universo),
+                   "--registro", str(reg), "--saida-dir", str(saida)]
+        if lista is not None:
+            comando += ["--lista", str(lista)]
+        return subprocess.run(comando, capture_output=True, text=True)
+
+    # ------------------------------------------------ execucao valida
+    saida = tmp / "cruz-saida"
+    p = rodar(saida)
+    checar(p.returncode == 0, "cruzamento sobre o universo sintetico sai com 0",
+           p.stderr[-1500:])
+    if p.returncode != 0:
+        return
+    finais = sorted(x.name for x in saida.iterdir())
+    checar(finais == ["cruzamento-codeql.json", "cruzamento-semgrep.json",
+                      "cruzamento-snyk-code.json", "matriz-deteccao.csv"],
+           "exatamente as quatro saidas, sem residuo temporario", finais)
+
+    texto = (saida / "matriz-deteccao.csv").read_text(encoding="utf-8")
+    checar(texto.endswith("\n"), "CSV termina com quebra de linha final")
+    brutas = texto[:-1].split("\n")
+    cabecalho = brutas[0].split(",")
+    checar(all(len(b.split(",")) == len(cabecalho) for b in brutas),
+           "CSV: toda linha com o numero de campos do cabecalho (nenhuma virgula em campo)")
+    linhas = [dict(zip(cabecalho, b.split(","))) for b in brutas[1:]]
+    checar(len(linhas) == 223 * 3, "CSV com uma linha por (CVE, ferramenta): 669",
+           len(linhas))
+    rel = {f: ler(saida / ("cruzamento-%s.json" % f)) for f in FERRAMENTAS_CRUZ}
+    linha_de = {(l["ferramenta"], l["cve"]): l for l in linhas}
+
+    for ferramenta in FERRAMENTAS_CRUZ:
+        dentro = [l for l in linhas if l["ferramenta"] == ferramenta
+                  and l["no_denominador"] == "true"]
+        checar(len(dentro) == 220, "%s: 220 pares no denominador" % ferramenta, len(dentro))
+        fora = {l["cve"]: l["motivo_fora_denominador"] for l in linhas
+                if l["ferramenta"] == ferramenta and l["no_denominador"] == "false"}
+        checar(fora == {"CVE-2016-1000229": "codigo_indisponivel_repositorio_inexistente",
+                        "CVE-2018-8035": "codigo_indisponivel_commit_inexistente",
+                        SEM_CWE_CRUZ: "sem_cwe_no_ground_truth"},
+               "%s: as tres exclusoes, cada uma com seu motivo" % ferramenta, fora)
+        checar(all(all(linha_de[(ferramenta, c)][n] == "" for n in NIVEIS_CRUZ) for c in fora),
+               "%s: fora do denominador nenhuma coluna de nivel e preenchida" % ferramenta)
+        checar(linha_de[(ferramenta, SEM_CWE_CRUZ)]["tratado_presente"] == "true",
+               "%s: CVE-2018-1000096 fora da matriz mas COM tratado" % ferramenta)
+        evidencia = [i for i in rel[ferramenta]["denominador"]["fora"]
+                     if i["cve"] == SEM_CWE_CRUZ]
+        checar(evidencia and evidencia[0]["gt_cwes_no_tratado"] == [],
+               "%s: gt_cwes do CVE-2018-1000096 lido do tratado e vazio" % ferramenta,
+               evidencia)
+
+    # ------------------------------------------------ caso a caso
+    for caso in casos:
+        f, cve, esp = caso["ferramenta"], caso["cve"], caso["esperado"]
+        linha = linha_de[(f, cve)]
+        entrada = rel[f]["por_cve"][cve]
+        obtido_csv = {n: linha[n] for n in NIVEIS_CRUZ}
+        esperado_csv = {n: _celula(esp["niveis"][n]) for n in NIVEIS_CRUZ}
+        checar(obtido_csv == esperado_csv,
+               "caso %s (%s %s) CSV: niveis [%s]" % (caso["id"], f, cve,
+                                                     ", ".join(caso["exercita"])),
+               "%s x %s" % (obtido_csv, esperado_csv))
+        checar(entrada["niveis"] == esp["niveis"],
+               "caso %s JSON: niveis, com null onde a estrita nao se aplica" % caso["id"],
+               "%s x %s" % (entrada["niveis"], esp["niveis"]))
+        checar(entrada["achados_casados"] == esp["casados"],
+               "caso %s JSON: achados casados por finding_id, nivel a nivel" % caso["id"],
+               "%s x %s" % (entrada["achados_casados"], esp["casados"]))
+        escalares = ("estrita_aplicavel", "achados_no_arquivo_gt",
+                     "distancia_min_linha", "distancia_min_intervalo")
+        checar(all(entrada[k] == esp[k] for k in escalares)
+               and all(linha[k] == _celula(esp[k]) for k in escalares),
+               "caso %s: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)"
+               % caso["id"],
+               "%s x %s" % ({k: entrada[k] for k in escalares}, {k: esp[k] for k in escalares}))
+        checar(linha["tratado_presente"] == ("false" if caso.get("sem_tratado") else "true"),
+               "caso %s: tratado_presente" % caso["id"])
+
+    # ------------------------------------------------ agregados
+    # Esperado derivado dos casos: todo par sem caso tem tratado sem achados
+    # (tudo false), e a estrita e null onde o primario e nulo.
+    denominador = sorted(c for c in gt if c not in BAIXAS_CRUZ and c != SEM_CWE_CRUZ)
+    for ferramenta in FERRAMENTAS_CRUZ:
+        valores = {}
+        for cve in denominador:
+            caso = por_caso.get((ferramenta, cve))
+            if caso:
+                valores[cve] = caso["esperado"]["niveis"]
+            else:
+                nulo = gt[cve]["gt_cwe_primary"] is None
+                valores[cve] = {n: (None if n in ESTRITOS_CRUZ and nulo else False)
+                                for n in NIVEIS_CRUZ}
+        esperado = {}
+        for n in NIVEIS_CRUZ:
+            vs = [v[n] for v in valores.values()]
+            esperado[n] = {"acertos": vs.count(True), "nao_acertos": vs.count(False)}
+            if n in ESTRITOS_CRUZ:
+                esperado[n]["nao_se_aplica"] = sum(v is None for v in vs)
+        checar(rel[ferramenta]["agregados"] == esperado,
+               "%s: agregados iguais aos derivados dos casos" % ferramenta,
+               "%s x %s" % (rel[ferramenta]["agregados"], esperado))
+        # Recontagem independente, a partir do CSV relido aqui.
+        dentro = [l for l in linhas if l["ferramenta"] == ferramenta
+                  and l["no_denominador"] == "true"]
+        recontado = {}
+        for n in NIVEIS_CRUZ:
+            recontado[n] = {"acertos": sum(l[n] == "true" for l in dentro),
+                            "nao_acertos": sum(l[n] == "false" for l in dentro)}
+            if n in ESTRITOS_CRUZ:
+                recontado[n]["nao_se_aplica"] = sum(l[n] == "" for l in dentro)
+        checar(recontado == rel[ferramenta]["agregados"],
+               "%s: recontagem independente do CSV = agregados do JSON" % ferramenta)
+        checar(all(celula == _celula(rel[ferramenta]["por_cve"][l["cve"]]["niveis"][n])
+                   for l in dentro for n, celula in ((n, l[n]) for n in NIVEIS_CRUZ)),
+               "%s: CSV e JSON concordam em cada (CVE, nivel) do denominador" % ferramenta)
+        n1 = [c for c, v in valores.items() if v["nivel_1"]]
+        checar(rel[ferramenta]["nivel_1_e_nivel_3"] ==
+               {"cves_nivel_1": len(n1),
+                "destes_nivel_3": sum(1 for c in n1 if valores[c]["nivel_3"]),
+                "destes_sem_nivel_3": sum(1 for c in n1 if not valores[c]["nivel_3"])},
+               "%s: dos que acertam nivel 1, quantos acertam nivel 3" % ferramenta,
+               rel[ferramenta]["nivel_1_e_nivel_3"])
+        checar([i["cve"] for i in rel[ferramenta]["estrita_nao_se_aplica"]]
+               == ["CVE-2018-16472"],
+               "%s: estrita nao se aplica so ao CVE-2018-16472, contado a parte" % ferramenta,
+               rel[ferramenta]["estrita_nao_se_aplica"])
+        esperados_sem = list(SNYK_SEM_ARQUIVO_CRUZ) if ferramenta == "snyk-code" else []
+        checar(sorted(i["cve"] for i in rel[ferramenta]["sem_tratado_no_denominador"])
+               == sorted(esperados_sem),
+               "%s: sem tratado no denominador = %d" % (ferramenta, len(esperados_sem)),
+               rel[ferramenta]["sem_tratado_no_denominador"])
+        validacao = rel[ferramenta]["validacao"]
+        guardas = {m["guarda"] for m in validacao["autoteste"]}
+        checar(len(validacao["autoteste"]) >= 30
+               and guardas == {"validar_tratado", "conferir_presenca"}
+               and all(m["guarda_pretendida_disparou"] for m in validacao["autoteste"]),
+               "%s: autoteste embutido, %d mutantes em %s, cada um pela guarda pretendida"
+               % (ferramenta, len(validacao["autoteste"]), sorted(guardas)))
+        checar(rel[ferramenta]["validacao"]["tratados_validados"]
+               == (216 if ferramenta == "snyk-code" else 221),   # 223 - 2 baixas (- 5 no Snyk)
+               "%s: tratados_validados e contagem da propria ferramenta" % ferramenta,
+               rel[ferramenta]["validacao"]["tratados_validados"])
+        checar(rel[ferramenta]["csv_da_mesma_execucao"]["sha256"]
+               == hashlib.sha256((saida / "matriz-deteccao.csv").read_bytes()).hexdigest(),
+               "%s: o JSON carrega o sha256 do CSV da mesma execucao" % ferramenta)
+        checar(validacao["controle_positivo"]["divergencias"] == [],
+               "%s: controle positivo embutido sem divergencia" % ferramenta)
+        conferencia = rel[ferramenta]["conferencia_csv"]
+        checar(conferencia["divergencias"] == 0
+               and conferencia["controle_csv_adulterado_divergencias_acusadas"] > 0,
+               "%s: conferencia CSV x JSON zero, e a mesma conferencia acusa CSV adulterado"
+               % ferramenta, conferencia)
+        proibidas = sorted({k for k in _chaves_recursivas(rel[ferramenta])
+                            if re.search(r"precis|falso|false_pos|fp_|total", k)})
+        checar(proibidas == [],
+               "%s: nenhuma chave de precisao, falso positivo ou total de achados"
+               % ferramenta, proibidas)
+    # gt_file_scanned false (caso C19): o balde conta, e o CVE NAO sai do
+    # denominador — a causa e interna a ferramenta.
+    c19 = linha_de[("codeql", "CVE-2017-1000219")]
+    checar(c19["gt_file_scanned"] == "false" and c19["no_denominador"] == "true",
+           "gt_file_scanned false sai 'false' no CSV e o CVE permanece no denominador", c19)
+    esperado_estados = {
+        "codeql": {"true": 219, "false": 1, "null": 0, "sem_tratado": 0},
+        "semgrep": {"true": 220, "false": 0, "null": 0, "sem_tratado": 0},
+        "snyk-code": {"true": 0, "false": 0, "null": 215, "sem_tratado": 5}}
+    for ferramenta in FERRAMENTAS_CRUZ:
+        obtido = rel[ferramenta]["ressalvas"]["gt_file_scanned_no_denominador"]
+        checar(obtido == esperado_estados[ferramenta],
+               "%s: gt_file_scanned por estado, balde false exercitado" % ferramenta, obtido)
+    checar(all(l["gt_file_scanned"] == "null" for l in linhas
+               if l["ferramenta"] == "snyk-code" and l["tratado_presente"] == "true"
+               and l["no_denominador"] == "true"),
+           "gt_file_scanned null do Snyk sai 'null', distinto de vazio (sem tratado)")
+    checar(all(l["gt_file_scanned"] == "" for l in linhas
+               if l["tratado_presente"] == "false"),
+           "gt_file_scanned vazio onde nao ha tratado")
+
+    # ------------------------------------------------ determinismo e interface
+    saida2 = tmp / "cruz-saida-2"
+    p2 = rodar(saida2)
+    checar(p2.returncode == 0
+           and (saida2 / "matriz-deteccao.csv").read_bytes()
+           == (saida / "matriz-deteccao.csv").read_bytes(),
+           "segunda execucao: CSV byte-identico")
+    if p2.returncode == 0:
+        def sem_data(d):
+            return {k: v for k, v in d.items() if k != "gerado_em"}
+        checar(all(sem_data(ler(saida2 / ("cruzamento-%s.json" % f))) == sem_data(rel[f])
+                   for f in FERRAMENTAS_CRUZ),
+               "segunda execucao: JSON identico a menos de gerado_em")
+    ajuda = subprocess.run([sys.executable, str(CRUZA), "--help"],
+                           capture_output=True, text=True).stdout
+    checar(set(re.findall(r"--[a-z][a-z-]*", ajuda))
+           == {"--help", "--lista", "--treated-root", "--registro", "--saida-dir"},
+           "interface: so opcoes de caminho, nenhuma que selecione recorte",
+           sorted(set(re.findall(r"--[a-z][a-z-]*", ajuda))))
+
+    # ------------------------------------------------ mutantes: validador contra positivo
+    print("\n== cruza-deteccao.py: mutantes (cada um tem de PARAR sem escrever saida) ==")
+    alvo = universo / "codeql" / "treated" / "CVE-2018-14040.json"   # caso C03, 1 achado
+    original_alvo = alvo.read_bytes()
+    original_registro = caminho_registro.read_bytes()
+    contador = [0]
+
+    def restaurar(caminho, conteudo):
+        caminho.write_bytes(conteudo)
+
+    def editar(caminho, mutacao):
+        """JSON editado no lugar; o desfazer devolve os bytes originais."""
+        guardado = caminho.read_bytes()
+
+        def preparar():
+            dados = json.loads(guardado)
+            mutacao(dados)
+            _escrever_json(caminho, dados)
+        return preparar, lambda: restaurar(caminho, guardado)
+
+    def editar_alvo(mutacao):
+        return editar(alvo, mutacao)
+
+    def editar_registro(mutacao):
+        return editar(caminho_registro, lambda d: mutacao(d["por_cve"]))
+
+    def criar(caminho, conteudo):
+        return (lambda: caminho.write_text(conteudo, encoding="utf-8"),
+                lambda: caminho.unlink())
+
+    def remover(caminho):
+        guardado = caminho.read_bytes()
+        return lambda: caminho.unlink(), lambda: caminho.write_bytes(guardado)
+
+    def combinar(*pares):
+        return (lambda: [p[0]() for p in pares], lambda: [p[1]() for p in reversed(pares)])
+
+    def lista_mutada(mutacao):
+        linhas_lista = LISTA_REAL.read_text(encoding="utf-8").splitlines(keepends=True)
+        caminho = tmp / ("cruz-lista-%02d.txt" % (contador[0] + 1))
+        caminho.write_text("".join(mutacao(linhas_lista)), encoding="utf-8")
+        return caminho
+
+    def mutante(nome, fragmento, preparar_desfazer=None, lista=None, saida_mut=None):
+        contador[0] += 1
+        destino = saida_mut or tmp / ("cruz-mutante-%02d" % contador[0])
+        antes = ({x.name: x.read_bytes() for x in destino.iterdir()}
+                 if destino.is_dir() else {})
+        if preparar_desfazer:
+            preparar_desfazer[0]()
+        try:
+            proc = rodar(destino, lista=lista)
+        finally:
+            if preparar_desfazer:
+                preparar_desfazer[1]()
+        depois = ({x.name: x.read_bytes() for x in destino.iterdir()}
+                  if destino.is_dir() else {})
+        checar(proc.returncode == 2 and "PARADO" in proc.stderr and fragmento in proc.stderr,
+               "mutante acusado: %s" % nome, "rc=%d %s" % (proc.returncode, proc.stderr[-500:]))
+        checar(depois == antes, "mutante '%s': nenhuma saida escrita nem alterada" % nome)
+        return proc
+
+    def tratado_de(ferramenta, cve, achados=()):
+        return json.dumps(_tratado_sintetico(ferramenta, gt[cve], list(achados)))
+
+    def achado0(chave, valor):
+        return editar_alvo(lambda d: d["findings"][0].__setitem__(chave, valor))
+
+    def meta(chave, valor):
+        return editar_alvo(lambda d: d["metadata"].__setitem__(chave, valor))
+
+    def status(ferramenta, cve, novo):
+        def mudar(por_cve):
+            for entrada in por_cve[ferramenta]:
+                if entrada[0] == cve:
+                    entrada[1] = novo
+        return mudar
+
+    treated = {f: universo / f / "treated" for f in FERRAMENTAS_CRUZ}
+
+    # Denominador e exclusoes
+    mutante("tratado presente de CVE-2016-1000229 (repositorio inexistente)",
+            "excluido por codigo indisponivel e TEM tratado",
+            criar(treated["codeql"] / "CVE-2016-1000229.json",
+                  tratado_de("codeql", "CVE-2016-1000229")))
+    mutante("tratado presente de CVE-2018-8035 (commit inexistente)",
+            "excluido por codigo indisponivel e TEM tratado",
+            criar(treated["semgrep"] / "CVE-2018-8035.json",
+                  tratado_de("semgrep", "CVE-2018-8035")))
+    mutante("baixa com status OK no registro", "excluido por codigo indisponivel, mas o registro diz OK",
+            editar_registro(status("codeql", "CVE-2016-1000229", "OK")))
+    mutante("baixa com o status do outro motivo (repositorio inexistente com ERRO_CHECKOUT)",
+            "o motivo exige ERRO_FETCH",
+            editar_registro(status("semgrep", "CVE-2016-1000229", "ERRO_CHECKOUT")))
+    mutante("CVE-2018-1000096 com gt_cwes nao vazio no tratado",
+            "premissa dos 222 pares esta errada",
+            editar(treated["snyk-code"] / (SEM_CWE_CRUZ + ".json"),
+                   lambda d: d["metadata"].__setitem__("gt_cwes", ["CWE-079"])))
+    mutante("lista em que CVE-2018-1000096 tem CWE", "CVEs com gt_cwes vazio na lista",
+            lista=lista_mutada(lambda ls: [l.replace(",,_read.js,", ",CWE-079,_read.js,")
+                                           for l in ls]))
+    mutante("lista com 222 CVEs", "a lista tem 222 CVEs",
+            lista=lista_mutada(lambda ls: [l for l in ls if not l.startswith("CVE-2017-0931,")]))
+    mutante("lista com FileLine vazio num CVE do denominador", "gt_file_lines vazio",
+            lista=lista_mutada(lambda ls: [re.sub(r",43\n$", ",\n", l)
+                                           if l.startswith("CVE-2017-0931,") else l
+                                           for l in ls]))
+
+    # Presenca de tratado x registro
+    mutante("codeql sem tratado e registro diz SEM_ACHADOS", "tratado AUSENTE",
+            remover(treated["codeql"] / "CVE-2017-0931.json"))
+    mutante("codeql sem tratado com ERRO_ANALISE", "nao ha regra que o admita",
+            combinar(remover(treated["codeql"] / "CVE-2017-0931.json"),
+                     editar_registro(status("codeql", "CVE-2017-0931", "ERRO_ANALISE"))))
+    mutante("semgrep sem tratado com SEM_ARQUIVO_ANALISAVEL (so o Snyk o admite)",
+            "nao ha regra que o admita",
+            combinar(remover(treated["semgrep"] / "CVE-2017-0931.json"),
+                     editar_registro(status("semgrep", "CVE-2017-0931",
+                                            "SEM_ARQUIVO_ANALISAVEL"))))
+    mutante("snyk com tratado para CVE SEM_ARQUIVO_ANALISAVEL",
+            "tratado presente com status SEM_ARQUIVO_ANALISAVEL",
+            criar(treated["snyk-code"] / "CVE-2018-16480.json",
+                  tratado_de("snyk-code", "CVE-2018-16480")))
+    mutante("registro sem um CVE", "sem status no registro",
+            editar_registro(lambda pc: pc["semgrep"].pop()))
+    mutante("registro com status desconhecido", "status desconhecido",
+            editar_registro(status("semgrep", "CVE-2017-0931", "QUEBRADO")))
+
+    # Arquivos no diretorio de tratados
+    mutante("tratado orfao", "tratado orfao",
+            criar(treated["codeql"] / "CVE-2099-99999.json", "{}"))
+    mutante("arquivo inesperado no diretorio", "arquivo inesperado",
+            criar(treated["codeql"] / "notas.txt", "x"))
+    proc = mutante("tratado ilegivel", "tratado ilegivel",
+                   (lambda: alvo.write_bytes(original_alvo[:len(original_alvo) // 2]),
+                    lambda: restaurar(alvo, original_alvo)))
+    checar("AUSENTE" not in proc.stderr,
+           "tratado ilegivel nao reaparece como 'tratado AUSENTE': presenca e do arquivo",
+           proc.stderr[-400:])
+
+    # Estrutura e tipos
+    mutante("topo com chave extra", "chaves do topo",
+            editar_alvo(lambda d: d.__setitem__("extra", 1)))
+    mutante("schema_version 1.2", "schema_version '1.2'", meta("schema_version", "1.2"))
+    mutante("metadata do snyk sem coverage", "metadata sem ['coverage']",
+            editar(treated["snyk-code"] / "CVE-2017-0931.json",
+                   lambda d: d["metadata"].pop("coverage")))
+    mutante("tool divergente", "difere do diretorio", meta("tool", "semgrep"))
+    mutante("gt_file_path divergente", "gt_file_path 'js/outro.js' difere",
+            meta("gt_file_path", "js/outro.js"))
+    mutante("gt_cwe_primary divergente", "gt_cwe_primary 'CWE-116' difere",
+            meta("gt_cwe_primary", "CWE-116"))
+    mutante("commit divergente", "difere do PrePatchCommit", meta("commit", "b" * 40))
+    mutante("achado sem chave", "chaves divergentes",
+            editar_alvo(lambda d: d["findings"][0].pop("message")))
+    mutante("cwe fora da forma canonica", "cwe fora da forma canonica",
+            achado0("cwe", ["CWE-79"]))
+    mutante("has_cwe incoerente", "has_cwe", achado0("has_cwe", False))
+    mutante("line_start em texto", "line_start nao e inteiro", achado0("line_start", "10"))
+    mutante("line_end menor que line_start", "line_end 5 menor que line_start",
+            achado0("line_end", 5))
+    mutante("file_path absoluto", "file_path fora da forma canonica",
+            achado0("file_path", "/js/collapse.js"))
+    mutante("finding_id de outro CVE", "fora da forma <tool>:<CVE>:<NNNN>",
+            achado0("finding_id", "codeql:CVE-2016-10735:0001"))
+    mutante("finding_id repetido", "repetido",
+            editar_alvo(lambda d: d["findings"].append(dict(d["findings"][0]))))
+
+    # PARADA nao mexe em saida pre-existente, e o diz.
+    proc = mutante("parada com saida pre-existente", "schema_version",
+                   meta("schema_version", "1.2"), saida_mut=saida)
+    checar("NAO foram atualizadas" in proc.stderr,
+           "parada avisa que as saidas pre-existentes nao foram atualizadas")
+    checar(alvo.read_bytes() == original_alvo
+           and caminho_registro.read_bytes() == original_registro,
+           "mutantes desfeitos: universo restaurado")
 
 
 if __name__ == "__main__":

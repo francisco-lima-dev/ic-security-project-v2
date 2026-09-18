@@ -1,0 +1,337 @@
+{
+  "_leia": [
+    "Casos sinteticos do tools/cruza-deteccao.py. Cada caso e um (ferramenta, CVE) com achados escritos a mao sobre o ground truth REAL daquele CVE.",
+    "O corredor (tests/run-fixtures.py) monta um universo com os 223 CVEs da lista real: tratado sem achados para todo (ferramenta, CVE) que nao tenha caso aqui, nenhum tratado para as duas baixas por codigo indisponivel nem para os cinco SEM_ARQUIVO_ANALISAVEL do Snyk Code, e um registro de campanha sintetico coerente com isso.",
+    "gt_assumido e conferido pelo corredor contra o gt derivado da lista e da tabela: se a lista mudar, o caso falha em vez de passar sobre premissa velha.",
+    "gt_file_scanned, opcional no caso: sobrescreve o valor do tratado (padrao: true no CodeQL e no Semgrep, null no Snyk Code).",
+    "achados: so os campos que o cruzamento le. finding_id = <ferramenta>:<CVE>:<posicao de 1 a N, quatro digitos>, na ordem desta lista. O corredor completa as demais chaves do schema 1.3.",
+    "esperado.niveis: true, false, ou null quando a variante estrita nao se aplica. distancia_min_linha = |line_start - L|; distancia_min_intervalo = distancia do intervalo a L, 0 exatamente quando nivel_3 e true.",
+    "exercita: <nivel>+ e caso positivo daquele nivel/variante, <nivel>- e caso negativo."
+  ],
+  "casos": [
+    {
+      "id": "C01", "ferramenta": "codeql", "cve": "CVE-2017-16011",
+      "exercita": ["nivel_0-"],
+      "descricao": "tratado presente e sem achado algum",
+      "gt_assumido": {"gt_file_path": "src/core.js", "gt_file_lines": [52], "gt_cwes": ["CWE-079"], "gt_cwe_primary": "CWE-079"},
+      "achados": [],
+      "esperado": {
+        "niveis": {"nivel_0": false, "nivel_1": false, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 0, "distancia_min_linha": null, "distancia_min_intervalo": null,
+        "casados": {"nivel_1": [], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C02", "ferramenta": "codeql", "cve": "CVE-2016-10735",
+      "exercita": ["nivel_0+", "nivel_1-"],
+      "descricao": "linha e CWE do ground truth, mas em outro arquivo",
+      "gt_assumido": {"gt_file_path": "js/src/util.js", "gt_file_lines": [120], "gt_cwes": ["CWE-079", "CWE-116"], "gt_cwe_primary": "CWE-079"},
+      "achados": [
+        {"file_path": "js/src/outro.js", "line_start": 120, "line_end": 120, "cwe": ["CWE-079"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": false, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 0, "distancia_min_linha": null, "distancia_min_intervalo": null,
+        "casados": {"nivel_1": [], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C03", "ferramenta": "codeql", "cve": "CVE-2018-14040",
+      "exercita": ["nivel_1+", "nivel_2_generosa-", "nivel_2_estrita-", "nivel_3-"],
+      "descricao": "arquivo certo, CWE fora do conjunto, linha longe",
+      "gt_assumido": {"gt_file_path": "js/collapse.js", "gt_file_lines": [140], "gt_cwes": ["CWE-079", "CWE-116"], "gt_cwe_primary": "CWE-079"},
+      "achados": [
+        {"file_path": "js/collapse.js", "line_start": 10, "line_end": 12, "cwe": ["CWE-020"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 130, "distancia_min_intervalo": 128,
+        "casados": {"nivel_1": ["codeql:CVE-2018-14040:0001"], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C04", "ferramenta": "codeql", "cve": "CVE-2017-16042",
+      "exercita": ["nivel_2_generosa-", "nivel_2_estrita-"],
+      "descricao": "o MESMO achado: arquivo certo num achado, CWE certo (e linha certa) em outro, de outro arquivo",
+      "gt_assumido": {"gt_file_path": "lib/growl.js", "gt_file_lines": [289], "gt_cwes": ["CWE-078", "CWE-088"], "gt_cwe_primary": "CWE-078"},
+      "achados": [
+        {"file_path": "lib/growl.js", "line_start": 500, "line_end": null, "cwe": ["CWE-020"]},
+        {"file_path": "lib/outro.js", "line_start": 289, "line_end": null, "cwe": ["CWE-078"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 211, "distancia_min_intervalo": 211,
+        "casados": {"nivel_1": ["codeql:CVE-2017-16042:0001"], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C05", "ferramenta": "codeql", "cve": "CVE-2018-16472",
+      "exercita": ["estrita nao se aplica"],
+      "descricao": "gt_cwe_primary nulo (CWE-250|CWE-400, primario indefinido na tabela), com acerto generoso completo: a estrita e null, nem acerto nem nao-acerto",
+      "gt_assumido": {"gt_file_path": "lib/index.js", "gt_file_lines": [39], "gt_cwes": ["CWE-250", "CWE-400"], "gt_cwe_primary": null},
+      "achados": [
+        {"file_path": "lib/index.js", "line_start": 39, "line_end": null, "cwe": ["CWE-400"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": null, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": null},
+        "estrita_aplicavel": false, "achados_no_arquivo_gt": 1, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["codeql:CVE-2018-16472:0001"], "nivel_2_generosa": ["codeql:CVE-2018-16472:0001"], "nivel_2_estrita": [], "nivel_3": ["codeql:CVE-2018-16472:0001"], "nivel_4_generosa": ["codeql:CVE-2018-16472:0001"], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C06", "ferramenta": "semgrep", "cve": "CVE-2016-10735",
+      "exercita": ["nivel_2_generosa+", "nivel_2_estrita-"],
+      "descricao": "CWE do conjunto que nao e o primario: generosa sim, estrita nao",
+      "gt_assumido": {"gt_file_path": "js/src/util.js", "gt_file_lines": [120], "gt_cwes": ["CWE-079", "CWE-116"], "gt_cwe_primary": "CWE-079"},
+      "achados": [
+        {"file_path": "js/src/util.js", "line_start": 300, "line_end": 305, "cwe": ["CWE-116"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": false, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 180, "distancia_min_intervalo": 180,
+        "casados": {"nivel_1": ["semgrep:CVE-2016-10735:0001"], "nivel_2_generosa": ["semgrep:CVE-2016-10735:0001"], "nivel_2_estrita": [], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C07", "ferramenta": "semgrep", "cve": "CVE-2018-14040",
+      "exercita": ["nivel_2_generosa+", "nivel_2_estrita+", "nivel_4_generosa-", "nivel_4_estrita-"],
+      "descricao": "arquivo e CWE certos, linha longe",
+      "gt_assumido": {"gt_file_path": "js/collapse.js", "gt_file_lines": [140], "gt_cwes": ["CWE-079", "CWE-116"], "gt_cwe_primary": "CWE-079"},
+      "achados": [
+        {"file_path": "js/collapse.js", "line_start": 200, "line_end": 200, "cwe": ["CWE-079", "CWE-116"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 60, "distancia_min_intervalo": 60,
+        "casados": {"nivel_1": ["semgrep:CVE-2018-14040:0001"], "nivel_2_generosa": ["semgrep:CVE-2018-14040:0001"], "nivel_2_estrita": ["semgrep:CVE-2018-14040:0001"], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C08", "ferramenta": "semgrep", "cve": "CVE-2017-16042",
+      "exercita": ["nivel_3+", "nivel_4_generosa-", "nivel_4_estrita-"],
+      "descricao": "line_end nulo tratado como o ponto [line_start, line_start], que e a linha do ground truth; CWE fora do conjunto",
+      "gt_assumido": {"gt_file_path": "lib/growl.js", "gt_file_lines": [289], "gt_cwes": ["CWE-078", "CWE-088"], "gt_cwe_primary": "CWE-078"},
+      "achados": [
+        {"file_path": "lib/growl.js", "line_start": 289, "line_end": null, "cwe": ["CWE-020"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": true, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["semgrep:CVE-2017-16042:0001"], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": ["semgrep:CVE-2017-16042:0001"], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C09", "ferramenta": "semgrep", "cve": "CVE-2017-16011",
+      "exercita": ["nivel_3-", "nivel_2_estrita+"],
+      "descricao": "line_end nulo e ponto, nao intervalo aberto: [40, infinito) conteria a linha 52, [40, 40] nao contem",
+      "gt_assumido": {"gt_file_path": "src/core.js", "gt_file_lines": [52], "gt_cwes": ["CWE-079"], "gt_cwe_primary": "CWE-079"},
+      "achados": [
+        {"file_path": "src/core.js", "line_start": 40, "line_end": null, "cwe": ["CWE-079"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 12, "distancia_min_intervalo": 12,
+        "casados": {"nivel_1": ["semgrep:CVE-2017-16011:0001"], "nivel_2_generosa": ["semgrep:CVE-2017-16011:0001"], "nivel_2_estrita": ["semgrep:CVE-2017-16011:0001"], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C10", "ferramenta": "semgrep", "cve": "CVE-2017-1000219",
+      "exercita": ["nivel_3+"],
+      "descricao": "sobreposicao: intervalo [80, 85] contem a linha 82 sem comecar nela",
+      "gt_assumido": {"gt_file_path": "index.js", "gt_file_lines": [82], "gt_cwes": ["CWE-078", "CWE-088"], "gt_cwe_primary": "CWE-078"},
+      "achados": [
+        {"file_path": "index.js", "line_start": 80, "line_end": 85, "cwe": ["CWE-020"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": true, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 2, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["semgrep:CVE-2017-1000219:0001"], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": ["semgrep:CVE-2017-1000219:0001"], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C11", "ferramenta": "semgrep", "cve": "CVE-2017-16029",
+      "exercita": ["nivel_3-"],
+      "descricao": "sem banda de tolerancia: [25, 30] e [32, 40] ficam a uma linha da 31, um de cada lado",
+      "gt_assumido": {"gt_file_path": "lib/routes/statics.js", "gt_file_lines": [31], "gt_cwes": ["CWE-022", "CWE-023", "CWE-036", "CWE-073", "CWE-099"], "gt_cwe_primary": "CWE-022"},
+      "achados": [
+        {"file_path": "lib/routes/statics.js", "line_start": 25, "line_end": 30, "cwe": ["CWE-022"]},
+        {"file_path": "lib/routes/statics.js", "line_start": 32, "line_end": 40, "cwe": ["CWE-022"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 2, "distancia_min_linha": 1, "distancia_min_intervalo": 1,
+        "casados": {"nivel_1": ["semgrep:CVE-2017-16029:0001", "semgrep:CVE-2017-16029:0002"], "nivel_2_generosa": ["semgrep:CVE-2017-16029:0001", "semgrep:CVE-2017-16029:0002"], "nivel_2_estrita": ["semgrep:CVE-2017-16029:0001", "semgrep:CVE-2017-16029:0002"], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C12", "ferramenta": "semgrep", "cve": "CVE-2017-16028",
+      "exercita": ["nivel_3+", "nivel_4_generosa+", "nivel_4_estrita+"],
+      "descricao": "borda inicial do intervalo: line_start igual a linha do ground truth",
+      "gt_assumido": {"gt_file_path": "index.js", "gt_file_lines": [81], "gt_cwes": ["CWE-338"], "gt_cwe_primary": "CWE-338"},
+      "achados": [
+        {"file_path": "index.js", "line_start": 81, "line_end": 90, "cwe": ["CWE-338"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": true},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["semgrep:CVE-2017-16028:0001"], "nivel_2_generosa": ["semgrep:CVE-2017-16028:0001"], "nivel_2_estrita": ["semgrep:CVE-2017-16028:0001"], "nivel_3": ["semgrep:CVE-2017-16028:0001"], "nivel_4_generosa": ["semgrep:CVE-2017-16028:0001"], "nivel_4_estrita": ["semgrep:CVE-2017-16028:0001"]}
+      }
+    },
+    {
+      "id": "C13", "ferramenta": "snyk-code", "cve": "CVE-2017-16028",
+      "exercita": ["nivel_3+", "nivel_4_generosa+", "nivel_4_estrita+"],
+      "descricao": "borda final do intervalo: line_end igual a linha do ground truth",
+      "gt_assumido": {"gt_file_path": "index.js", "gt_file_lines": [81], "gt_cwes": ["CWE-338"], "gt_cwe_primary": "CWE-338"},
+      "achados": [
+        {"file_path": "index.js", "line_start": 70, "line_end": 81, "cwe": ["CWE-338"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": true},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 11, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["snyk-code:CVE-2017-16028:0001"], "nivel_2_generosa": ["snyk-code:CVE-2017-16028:0001"], "nivel_2_estrita": ["snyk-code:CVE-2017-16028:0001"], "nivel_3": ["snyk-code:CVE-2017-16028:0001"], "nivel_4_generosa": ["snyk-code:CVE-2017-16028:0001"], "nivel_4_estrita": ["snyk-code:CVE-2017-16028:0001"]}
+      }
+    },
+    {
+      "id": "C14", "ferramenta": "snyk-code", "cve": "CVE-2016-10735",
+      "exercita": ["nivel_2_generosa+", "nivel_2_estrita+", "nivel_3+", "nivel_4_generosa-", "nivel_4_estrita-"],
+      "descricao": "o MESMO achado: linha certa num achado, CWE primario noutro, ambos no arquivo certo. Niveis 2 e 3 verdadeiros, nivel 4 falso",
+      "gt_assumido": {"gt_file_path": "js/src/util.js", "gt_file_lines": [120], "gt_cwes": ["CWE-079", "CWE-116"], "gt_cwe_primary": "CWE-079"},
+      "achados": [
+        {"file_path": "js/src/util.js", "line_start": 120, "line_end": 120, "cwe": ["CWE-020"]},
+        {"file_path": "js/src/util.js", "line_start": 300, "line_end": 300, "cwe": ["CWE-079"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": true, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 2, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["snyk-code:CVE-2016-10735:0001", "snyk-code:CVE-2016-10735:0002"], "nivel_2_generosa": ["snyk-code:CVE-2016-10735:0002"], "nivel_2_estrita": ["snyk-code:CVE-2016-10735:0002"], "nivel_3": ["snyk-code:CVE-2016-10735:0001"], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C15", "ferramenta": "snyk-code", "cve": "CVE-2018-14040",
+      "exercita": ["nivel_4_generosa+", "nivel_4_estrita-"],
+      "descricao": "arquivo, linha e CWE do conjunto no mesmo achado, mas o CWE nao e o primario",
+      "gt_assumido": {"gt_file_path": "js/collapse.js", "gt_file_lines": [140], "gt_cwes": ["CWE-079", "CWE-116"], "gt_cwe_primary": "CWE-079"},
+      "achados": [
+        {"file_path": "js/collapse.js", "line_start": 138, "line_end": 142, "cwe": ["CWE-116"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": false, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 2, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["snyk-code:CVE-2018-14040:0001"], "nivel_2_generosa": ["snyk-code:CVE-2018-14040:0001"], "nivel_2_estrita": [], "nivel_3": ["snyk-code:CVE-2018-14040:0001"], "nivel_4_generosa": ["snyk-code:CVE-2018-14040:0001"], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C16", "ferramenta": "snyk-code", "cve": "CVE-2017-16042",
+      "exercita": ["nivel_4_generosa+", "nivel_4_estrita+"],
+      "descricao": "arquivo, linha e CWE primario no mesmo achado",
+      "gt_assumido": {"gt_file_path": "lib/growl.js", "gt_file_lines": [289], "gt_cwes": ["CWE-078", "CWE-088"], "gt_cwe_primary": "CWE-078"},
+      "achados": [
+        {"file_path": "lib/growl.js", "line_start": 289, "line_end": 289, "cwe": ["CWE-078", "CWE-088"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": true},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["snyk-code:CVE-2017-16042:0001"], "nivel_2_generosa": ["snyk-code:CVE-2017-16042:0001"], "nivel_2_estrita": ["snyk-code:CVE-2017-16042:0001"], "nivel_3": ["snyk-code:CVE-2017-16042:0001"], "nivel_4_generosa": ["snyk-code:CVE-2017-16042:0001"], "nivel_4_estrita": ["snyk-code:CVE-2017-16042:0001"]}
+      }
+    },
+    {
+      "id": "C17", "ferramenta": "codeql", "cve": "CVE-2021-23364",
+      "exercita": ["nivel_3+", "nivel_4_generosa+", "nivel_4_estrita+"],
+      "descricao": "gt_file_lines multivalorado (6 linhas): acerto na terceira, nao na primeira; um segundo achado a 5 linhas dela nao casa",
+      "gt_assumido": {"gt_file_path": "index.js", "gt_file_lines": [802, 827, 855, 890, 921, 925], "gt_cwes": ["CWE-400"], "gt_cwe_primary": "CWE-400"},
+      "achados": [
+        {"file_path": "index.js", "line_start": 855, "line_end": null, "cwe": ["CWE-400"]},
+        {"file_path": "index.js", "line_start": 860, "line_end": null, "cwe": ["CWE-400"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": true},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 2, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["codeql:CVE-2021-23364:0001", "codeql:CVE-2021-23364:0002"], "nivel_2_generosa": ["codeql:CVE-2021-23364:0001", "codeql:CVE-2021-23364:0002"], "nivel_2_estrita": ["codeql:CVE-2021-23364:0001", "codeql:CVE-2021-23364:0002"], "nivel_3": ["codeql:CVE-2021-23364:0001"], "nivel_4_generosa": ["codeql:CVE-2021-23364:0001"], "nivel_4_estrita": ["codeql:CVE-2021-23364:0001"]}
+      }
+    },
+    {
+      "id": "C18", "ferramenta": "codeql", "cve": "CVE-2019-12041",
+      "exercita": ["nivel_1+", "nivel_4_estrita+"],
+      "descricao": "gt_file_path normalizado: o benchmark declara /index.js, o achado vem index.js, e o nivel 1 casa",
+      "gt_assumido": {"gt_file_path": "index.js", "gt_file_lines": [726], "gt_cwes": ["CWE-399"], "gt_cwe_primary": "CWE-399"},
+      "achados": [
+        {"file_path": "index.js", "line_start": 726, "line_end": null, "cwe": ["CWE-399"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": true},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["codeql:CVE-2019-12041:0001"], "nivel_2_generosa": ["codeql:CVE-2019-12041:0001"], "nivel_2_estrita": ["codeql:CVE-2019-12041:0001"], "nivel_3": ["codeql:CVE-2019-12041:0001"], "nivel_4_generosa": ["codeql:CVE-2019-12041:0001"], "nivel_4_estrita": ["codeql:CVE-2019-12041:0001"]}
+      }
+    },
+    {
+      "id": "C19", "ferramenta": "codeql", "cve": "CVE-2017-1000219",
+      "exercita": ["nivel_0+", "nivel_1-", "gt_file_scanned false"],
+      "descricao": "igualdade exata de caminho: mesmo basename (index.js), outro diretorio, linha e CWE certos. O tratado declara gt_file_scanned false: o CVE permanece no denominador",
+      "gt_file_scanned": false,
+      "gt_assumido": {"gt_file_path": "index.js", "gt_file_lines": [82], "gt_cwes": ["CWE-078", "CWE-088"], "gt_cwe_primary": "CWE-078"},
+      "achados": [
+        {"file_path": "test/index.js", "line_start": 82, "line_end": null, "cwe": ["CWE-078"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": false, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 0, "distancia_min_linha": null, "distancia_min_intervalo": null,
+        "casados": {"nivel_1": [], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C20", "ferramenta": "codeql", "cve": "CVE-2017-16029",
+      "exercita": ["nivel_3-", "nivel_2_estrita+"],
+      "descricao": "achado sem line_start: nao casa linha, fica fora das distancias e entra em line_start_nulo_no_arquivo_gt",
+      "gt_assumido": {"gt_file_path": "lib/routes/statics.js", "gt_file_lines": [31], "gt_cwes": ["CWE-022", "CWE-023", "CWE-036", "CWE-073", "CWE-099"], "gt_cwe_primary": "CWE-022"},
+      "achados": [
+        {"file_path": "lib/routes/statics.js", "line_start": null, "line_end": null, "cwe": ["CWE-022"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": null, "distancia_min_intervalo": null,
+        "casados": {"nivel_1": ["codeql:CVE-2017-16029:0001"], "nivel_2_generosa": ["codeql:CVE-2017-16029:0001"], "nivel_2_estrita": ["codeql:CVE-2017-16029:0001"], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C21", "ferramenta": "codeql", "cve": "CVE-2018-3725",
+      "exercita": ["nivel_3-"],
+      "descricao": "gt_file_lines multivalorado: [139, 140] fica entre 138 e 141 e nao contem nenhuma das cinco linhas",
+      "gt_assumido": {"gt_file_path": "bin/hekto.js", "gt_file_lines": [116, 138, 141, 152, 194], "gt_cwes": ["CWE-022", "CWE-023", "CWE-036", "CWE-073", "CWE-099"], "gt_cwe_primary": "CWE-022"},
+      "achados": [
+        {"file_path": "bin/hekto.js", "line_start": 139, "line_end": 140, "cwe": ["CWE-022"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": true, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 1, "distancia_min_intervalo": 1,
+        "casados": {"nivel_1": ["codeql:CVE-2018-3725:0001"], "nivel_2_generosa": ["codeql:CVE-2018-3725:0001"], "nivel_2_estrita": ["codeql:CVE-2018-3725:0001"], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C22", "ferramenta": "snyk-code", "cve": "CVE-2017-15010",
+      "exercita": ["nivel_4_generosa+", "nivel_4_estrita-", "nivel_2_estrita-"],
+      "descricao": "conjunto declarado na ordem CWE-730|CWE-400: gt_cwes preserva a ordem, o primario (CWE-400) sai da chave canonica; o achado traz so CWE-730",
+      "gt_assumido": {"gt_file_path": "lib/cookie.js", "gt_file_lines": [61], "gt_cwes": ["CWE-730", "CWE-400"], "gt_cwe_primary": "CWE-400"},
+      "achados": [
+        {"file_path": "lib/cookie.js", "line_start": 61, "line_end": null, "cwe": ["CWE-730"]}
+      ],
+      "esperado": {
+        "niveis": {"nivel_0": true, "nivel_1": true, "nivel_2_generosa": true, "nivel_2_estrita": false, "nivel_3": true, "nivel_4_generosa": true, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": 1, "distancia_min_linha": 0, "distancia_min_intervalo": 0,
+        "casados": {"nivel_1": ["snyk-code:CVE-2017-15010:0001"], "nivel_2_generosa": ["snyk-code:CVE-2017-15010:0001"], "nivel_2_estrita": [], "nivel_3": ["snyk-code:CVE-2017-15010:0001"], "nivel_4_generosa": ["snyk-code:CVE-2017-15010:0001"], "nivel_4_estrita": []}
+      }
+    },
+    {
+      "id": "C23", "ferramenta": "snyk-code", "cve": "CVE-2018-16479",
+      "exercita": ["nivel_0-", "sem tratado no denominador"],
+      "descricao": "SEM_ARQUIVO_ANALISAVEL: nao ha tratado, o CVE fica no denominador e conta como nao-deteccao em todos os niveis",
+      "sem_tratado": true,
+      "gt_assumido": {"gt_file_path": "bin/http-live", "gt_file_lines": [94], "gt_cwes": ["CWE-022", "CWE-023", "CWE-036", "CWE-073", "CWE-099"], "gt_cwe_primary": "CWE-022"},
+      "achados": [],
+      "esperado": {
+        "niveis": {"nivel_0": false, "nivel_1": false, "nivel_2_generosa": false, "nivel_2_estrita": false, "nivel_3": false, "nivel_4_generosa": false, "nivel_4_estrita": false},
+        "estrita_aplicavel": true, "achados_no_arquivo_gt": null, "distancia_min_linha": null, "distancia_min_intervalo": null,
+        "casados": {"nivel_1": [], "nivel_2_generosa": [], "nivel_2_estrita": [], "nivel_3": [], "nivel_4_generosa": [], "nivel_4_estrita": []}
+      }
+    }
+  ]
+}

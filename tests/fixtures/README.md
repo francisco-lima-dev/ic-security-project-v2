@@ -10,7 +10,7 @@ Vivem **fora** de `results/*/raw/` de propósito — aquele diretório é ignora
 pelo git, e os nomes ali dentro casariam com os globs do normalizador.
 
 ```
-python3 tests/run-fixtures.py     # 130 asserções, saída não nula se alguma falhar
+python3 tests/run-fixtures.py     # saída não nula se alguma asserção falhar
 ```
 
 O corredor usa `--raw-dir`, `--treated-dir`, `--report-path` e `--lista`
@@ -127,3 +127,85 @@ Só a Fase E alcança:
   fixture. São defesas contra o que não se espera ver
 - **encoding**: todas as fixtures são ASCII. Raw com UTF-8 inválido cairia no
   `UnicodeDecodeError` já tratado como raw ilegível, mas não foi exercitado
+
+## `cruzamento/` — fixtures do `tools/cruza-deteccao.py`
+
+Um arquivo só, `casos.json`, com 23 casos. Não são tratados prontos: cada caso
+declara os achados de um (ferramenta, CVE) e o resultado esperado em cada
+nível e variante, e o corredor monta os tratados em diretório temporário.
+
+**O universo tem a forma do conjunto real.** As constantes do script — 223
+CVEs, 220 pares, as três exclusões nominadas — não são sobrescrevíveis, então
+a fixture usa a **lista real** e gera um tratado sem achados para todo
+(ferramenta, CVE) sem caso; nenhum tratado para as duas baixas por código
+indisponível nem para os cinco `SEM_ARQUIVO_ANALISAVEL` do Snyk Code; e um
+registro de campanha sintético coerente com isso. O `gt_assumido` de cada caso
+é conferido contra o gt derivado da lista: se a lista mudar, o caso falha em
+vez de passar sobre premissa velha. **Nada lê `results/*/treated/`.**
+
+`+` é caso positivo daquele nível ou variante; `−` é negativo.
+
+| Caso | Ferramenta, CVE | Exercita |
+|---|---|---|
+| C01 | codeql `CVE-2017-16011` | nível 0 − (tratado sem achado) |
+| C02 | codeql `CVE-2016-10735` | nível 0 +, nível 1 − (linha e CWE certos, outro arquivo) |
+| C03 | codeql `CVE-2018-14040` | nível 1 +; nível 2 generosa − e estrita − (CWE fora do conjunto); nível 3 − |
+| C04 | codeql `CVE-2017-16042` | nível 2 − nas duas variantes: arquivo certo num achado, CWE certo **noutro** |
+| C05 | codeql `CVE-2018-16472` | estrita **não se aplica** (primário nulo), com acerto generoso completo |
+| C06 | semgrep `CVE-2016-10735` | nível 2 generosa +, estrita − (CWE do conjunto que não é o primário) |
+| C07 | semgrep `CVE-2018-14040` | nível 2 estrita +; nível 4 − nas duas (linha longe) |
+| C08 | semgrep `CVE-2017-16042` | nível 3 + por `line_end` nulo tratado como ponto; nível 4 − (CWE errado) |
+| C09 | semgrep `CVE-2017-16011` | nível 3 −: `line_end` nulo é ponto, não intervalo aberto |
+| C10 | semgrep `CVE-2017-1000219` | nível 3 + por intervalo que contém a linha sem começar nela |
+| C11 | semgrep `CVE-2017-16029` | nível 3 −: sem banda, intervalos a uma linha de distância dos dois lados |
+| C12 | semgrep `CVE-2017-16028` | nível 3 e 4 + na borda inicial (`line_start` = linha) |
+| C13 | snyk-code `CVE-2017-16028` | nível 3 e 4 + na borda final (`line_end` = linha) |
+| C14 | snyk-code `CVE-2016-10735` | nível 4 − nas duas: linha num achado, CWE primário **noutro**, ambos no arquivo |
+| C15 | snyk-code `CVE-2018-14040` | nível 4 generosa +, estrita − |
+| C16 | snyk-code `CVE-2017-16042` | nível 4 estrita + |
+| C17 | codeql `CVE-2021-23364` | `gt_file_lines` multivalorado: acerto na terceira linha, não na primeira |
+| C18 | codeql `CVE-2019-12041` | `gt_file_path` normalizado (`/index.js` no benchmark) casa no nível 1 |
+| C19 | codeql `CVE-2017-1000219` | nível 1 − por igualdade exata: mesmo basename, outro diretório; `gt_file_scanned: false`, e o CVE **permanece** no denominador |
+| C20 | codeql `CVE-2017-16029` | nível 3 −: achado sem `line_start` |
+| C21 | codeql `CVE-2018-3725` | nível 3 −: intervalo entre duas linhas do gt sem conter nenhuma |
+| C22 | snyk-code `CVE-2017-15010` | estrita −, com o primário resolvido pela chave canônica (ordem declarada 730\|400) |
+| C23 | snyk-code `CVE-2018-16479` | sem tratado no denominador: não-detecção em todos os níveis |
+
+Cobertura por nível e variante, positivo / negativo:
+
+| | positivo | negativo |
+|---|---|---|
+| nível 0 | C02 e todos com achado | C01, C23 |
+| nível 1 | C03, C18 | C02, C19 |
+| nível 2 generosa | C06, C07, C14 | C03, C04, C08 |
+| nível 2 estrita | C07, C09, C14 | C04, C06, C22 |
+| nível 3 | C08, C10, C12, C13, C17 | C03, C09, C11, C20, C21 |
+| nível 4 generosa | C12, C13, C15, C22 | C07, C08, C14 |
+| nível 4 estrita | C16, C17, C18 | C14, C15, C22 |
+| estrita não se aplica | C05 (e o mesmo CVE, sem achado, nas outras duas) | — |
+
+Além dos casos, o corredor exercita **33 mutantes** do universo — tratado de
+CVE excluído, baixa com o status do outro motivo, `gt_cwes` não vazio no CVE
+sem CWE, lista com 222 CVEs, ausência de tratado sem causa admitida, tratado
+órfão, schema, tipos, caminho absoluto, `finding_id` repetido, parada sobre
+saída pré-existente, entre outros — exigindo de cada um `PARADO`, código 2 e
+nenhuma saída escrita ou alterada. E confere determinismo (CSV byte-idêntico
+entre execuções) e a interface (só opções de caminho).
+
+O script tem ainda **duas camadas embutidas**, que rodam a cada execução antes
+de qualquer número: autoteste com 31 mutantes (25 do validador de tratado, 6
+das regras de presença × registro × denominador), cada um exigido pela guarda
+**pretendida** e não por outra qualquer; e controle positivo da apuração, um
+conjunto sintético de resposta conhecida em que todo contador tem valor
+esperado não nulo. O corredor confere que ambas passaram.
+
+**Verificado por mutação do próprio script, em 18/09/2026, não versionado:**
+sete defeitos plantados no `cruza-deteccao.py` — intervalo aberto para
+`line_end` nulo, banda de ±1, nível 1 por basename, estrita não aplicável
+virando `false`, nível 4 por CVE e não por achado, ausência de tratado
+admitida fora do Snyk, baixa com tratado não conferida — foram todos acusados
+pela suíte. Seis deles as camadas embutidas já paravam; com elas desligadas,
+os casos e os mutantes do corredor os acusaram sozinhos — esses seis são
+pegos por duas camadas independentes. O sétimo, nível 1 por basename, as
+camadas embutidas **não** veem (a apuração fica coerente consigo mesma): só o
+caso C19 o pega.
