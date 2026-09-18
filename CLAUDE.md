@@ -280,9 +280,22 @@ O gerador exige a flag `--force` para remover lotes existentes.
 
 **Versionados:** `datasets/` (incluindo `cwe-primario.csv` e
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
-`results/*/treated/`, `results/zap/`, `logs/` (incluindo
-`normalize-report-<ferramenta>.json`), o pack vendorizado do Semgrep e seu
-descritor, Dockerfiles, scripts, workflows.
+`results/*/treated/`, `results/cruzamento/`, `results/zap/`, `logs/`
+(incluindo `normalize-report-<ferramenta>.json`), o pack vendorizado do
+Semgrep e seu descritor, Dockerfiles, scripts, workflows.
+
+**`results/cruzamento/` entra no repositório ao lado de `results/*/treated/`,
+e pela mesma razão:** é o que sustenta o argumento, não perícia. São as
+saídas do `tools/cruza-deteccao.py` — a matriz por (CVE, ferramenta) e um
+JSON por ferramenta —, decidido em 18/09/2026. São pequenas (cerca de
+720 KiB) e determinísticas: não gravam carimbo de execução. Cada JSON traz o
+sha256 do CSV, o de cada entrada e o dos três scripts que moldam o resultado
+(`cruza-deteccao.py`, `normalize.py`, `check-log.py`). Reexecutar sobre as
+mesmas entradas e o mesmo código reproduz os mesmos bytes, então diferença no
+diff é mudança de entrada ou de código, nunca de relógio; e
+`git diff --exit-code results/cruzamento/` depois de reexecutar denuncia saída
+desatualizada. O script recusa gravar ali se alguma entrada estiver fora do
+repositório, porque o caminho da máquina do operador iria para os JSON.
 
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
 databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`.
@@ -1069,6 +1082,84 @@ o caminho dela não vai a este arquivo, porque diretório na máquina do operado
 não é registro reproduzível. Comprimida com `zstd`, ela cabe em **6,4 MiB** —
 **1,0%** dos 623,1 MiB (CodeQL 54×, Semgrep 114×, Snyk Code 35×), o que por si
 já diz da natureza do volume: JSON de achado repetido é quase todo redundância.
+
+## Cruzamento SAST — resultados (18/09/2026)
+
+Números sem leitura. Os critérios — o que cada nível exige, as duas variantes
+de CWE, o casamento de linha, o denominador — estão em
+`docs/criterios-cruzamento.md`, que é a fonte; aqui só os números.
+
+Produzidos por `tools/cruza-deteccao.py` sobre os 658 tratados, com as saídas
+em `results/cruzamento/`: `matriz-deteccao.csv` (uma linha por (CVE,
+ferramenta), 223 × 3) e `cruzamento-<ferramenta>.json` (agregados, achados
+casados por `finding_id`, ressalvas). O CSV desta execução tem sha256
+
+```
+f80158b730794c3135701a8631e551d89610775562577322b806fcc180452825
+```
+
+gravado também em cada JSON (`csv_da_mesma_execucao`), ao lado do sha256
+dos três scripts que o produziram (`fontes.codigo`). As saídas são
+determinísticas — duas execuções dão os mesmos bytes — e não levam carimbo de
+execução.
+
+**Validação: nenhuma parada.** 0 anomalias em 658 tratados; autoteste
+embutido com 34 de 34 mutantes acusados pela guarda pretendida; controle
+positivo sem divergência; conferência CSV × JSON em 669 linhas, 0
+divergências.
+
+**Denominador: 220 pares**, o mesmo nas três ferramentas. Fora:
+`CVE-2016-1000229` e `CVE-2018-8035` (código indisponível) e
+`CVE-2018-1000096` (sem CWE).
+
+### Matriz — acertos / não-acertos / não se aplica
+
+| | CodeQL | Semgrep | Snyk Code |
+|---|---|---|---|
+| nível 0 | 190 / 30 | 183 / 37 | 132 / 88 |
+| nível 1 | 140 / 80 | 98 / 122 | 45 / 175 |
+| nível 2 generosa | 126 / 94 | 48 / 172 | 16 / 204 |
+| nível 2 estrita | 124 / 95 / 1 | 46 / 173 / 1 | 9 / 210 / 1 |
+| nível 3 | 101 / 119 | 25 / 195 | 22 / 198 |
+| nível 4 generosa | 95 / 125 | 20 / 200 | 10 / 210 |
+| nível 4 estrita | 94 / 125 / 1 | 20 / 199 / 1 | 6 / 213 / 1 |
+
+A terceira parcela só existe nas variantes estritas.
+
+### Nível 1 × nível 3
+
+| | CodeQL | Semgrep | Snyk Code |
+|---|---|---|---|
+| CVEs no nível 1 | 140 | 98 | 45 |
+| destes, no nível 3 | 101 | 25 | 22 |
+| destes, sem nível 3 | 39 | 73 | 23 |
+
+### Contagens à parte
+
+**Estrita não se aplica:** `CVE-2018-16472` (`CWE-250|CWE-400`, primário
+indefinido na tabela), nas três ferramentas — contado em `não se aplica`,
+nunca como não-acerto.
+
+**Sem tratado no denominador, contados como não-detecção:** CodeQL 0,
+Semgrep 0, Snyk Code 5 — `CVE-2018-16479`, `CVE-2018-16480`,
+`CVE-2018-3731`, `CVE-2018-3747` e `CVE-2019-5423`, todos
+`SEM_ARQUIVO_ANALISAVEL` nos logs da campanha.
+
+**`gt_file_scanned` nos 220 pares:**
+
+| | CodeQL | Semgrep | Snyk Code |
+|---|---|---|---|
+| `true` | 220 | 220 | 0 |
+| `false` | 0 | 0 | 0 |
+| `null` | 0 | 0 | 215 |
+| `sem_tratado` | 0 | 0 | 5 |
+
+**Achados no arquivo do ground truth sem fim ou sem início de linha:**
+
+| | CodeQL | Semgrep | Snyk Code |
+|---|---|---|---|
+| achados no arquivo do gt com `line_end` nulo | 661 | 0 | 0 |
+| achados no arquivo do gt com `line_start` nulo | 0 | 0 | 0 |
 
 ## Obtenção do código — comportamento medido
 

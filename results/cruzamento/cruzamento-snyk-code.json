@@ -1,0 +1,6620 @@
+{
+  "ferramenta": "snyk-code",
+  "versao_cruzamento": "1",
+  "schema_tratado": "1.3",
+  "criterios": {
+    "documento": "docs/criterios-cruzamento.md",
+    "sha256": "8d390a9f979174bb003ae0a08cea6f339bd03b1a8ef4117812997cd3d913587c"
+  },
+  "fontes": {
+    "lista": {
+      "caminho": "datasets/listas/cves-sast.txt",
+      "sha256": "7b300e43c561470a7d4952cdd0789cd231fab2f3b38a00f047967bb6ab49b277"
+    },
+    "tabela_primario": {
+      "caminho": "datasets/cwe-primario.csv",
+      "sha256": "cf77014f582170df920bbe7200aa8e68c7e7c90f9d561a36f9ac39320dcf9fbe"
+    },
+    "logs_campanha": {
+      "diretorio": "logs/campanha-2026-09-17",
+      "arquivos": 24,
+      "sha256_conjunto": "7f0cb807a57875c77934aeca76c1fac000ce8e8e9bdb51475f65656afe7eb464"
+    },
+    "listas_de_lote": {
+      "diretorio": "datasets/listas",
+      "arquivos": 8,
+      "sha256_conjunto": "050a44a0598af3367b1dac8bffeecdb7eba35bdfc4bd76c291531290713395b4"
+    },
+    "tratados": {
+      "diretorio": "results/snyk-code/treated",
+      "arquivos": 216,
+      "sha256_conjunto": "5c4aa8ea6f34e023d23faf01b1b8aab1e1d33334a4eb82b2a1e9711f8df726a9"
+    },
+    "gt_file_path_normalizado": [
+      {
+        "cve": "CVE-2019-12041",
+        "antes": "/index.js",
+        "depois": "index.js",
+        "motivos": [
+          "barra inicial (defeito do ground truth)"
+        ]
+      }
+    ],
+    "codigo": {
+      "tools/cruza-deteccao.py": "8fea5aaba3202b019b92fd27ad6472b7c9ef7eab31dfa5a3130f1e266053c44c",
+      "tools/normalize.py": "0e2a0b1229762732a62579fac1a1411a9549249cd5fccd32e17caf45b258b1d0",
+      "tools/check-log.py": "7a94d809b8d733b2751f97ce8fe2241627f26e0e14db4f6a0dfda2d8b879e0eb"
+    }
+  },
+  "denominador": {
+    "cves_na_lista": 223,
+    "pares": 220,
+    "fora": [
+      {
+        "cve": "CVE-2016-1000229",
+        "motivo": "codigo_indisponivel_repositorio_inexistente",
+        "status_campanha": "ERRO_FETCH",
+        "tratado_presente": false,
+        "gt_cwes_no_tratado": null
+      },
+      {
+        "cve": "CVE-2018-1000096",
+        "motivo": "sem_cwe_no_ground_truth",
+        "status_campanha": "OK",
+        "tratado_presente": true,
+        "gt_cwes_no_tratado": []
+      },
+      {
+        "cve": "CVE-2018-8035",
+        "motivo": "codigo_indisponivel_commit_inexistente",
+        "status_campanha": "ERRO_CHECKOUT",
+        "tratado_presente": false,
+        "gt_cwes_no_tratado": null
+      }
+    ]
+  },
+  "sem_tratado_no_denominador": [
+    {
+      "cve": "CVE-2018-16479",
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratamento": "nao-deteccao em todos os niveis"
+    },
+    {
+      "cve": "CVE-2018-16480",
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratamento": "nao-deteccao em todos os niveis"
+    },
+    {
+      "cve": "CVE-2018-3731",
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratamento": "nao-deteccao em todos os niveis"
+    },
+    {
+      "cve": "CVE-2018-3747",
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratamento": "nao-deteccao em todos os niveis"
+    },
+    {
+      "cve": "CVE-2019-5423",
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratamento": "nao-deteccao em todos os niveis"
+    }
+  ],
+  "agregados": {
+    "nivel_0": {
+      "acertos": 132,
+      "nao_acertos": 88
+    },
+    "nivel_1": {
+      "acertos": 45,
+      "nao_acertos": 175
+    },
+    "nivel_2_generosa": {
+      "acertos": 16,
+      "nao_acertos": 204
+    },
+    "nivel_2_estrita": {
+      "acertos": 9,
+      "nao_acertos": 210,
+      "nao_se_aplica": 1
+    },
+    "nivel_3": {
+      "acertos": 22,
+      "nao_acertos": 198
+    },
+    "nivel_4_generosa": {
+      "acertos": 10,
+      "nao_acertos": 210
+    },
+    "nivel_4_estrita": {
+      "acertos": 6,
+      "nao_acertos": 213,
+      "nao_se_aplica": 1
+    }
+  },
+  "nivel_1_e_nivel_3": {
+    "cves_nivel_1": 45,
+    "destes_nivel_3": 22,
+    "destes_sem_nivel_3": 23
+  },
+  "estrita_nao_se_aplica": [
+    {
+      "cve": "CVE-2018-16472",
+      "gt_cwes": [
+        "CWE-250",
+        "CWE-400"
+      ],
+      "motivo": "gt_cwe_primary nulo: primario indefinido na tabela"
+    }
+  ],
+  "ressalvas": {
+    "contagens": {
+      "sem_tratado": 5,
+      "line_end_nulo_no_arquivo_gt": 0,
+      "line_start_nulo_no_arquivo_gt": 0
+    },
+    "gt_file_scanned_no_denominador": {
+      "true": 0,
+      "false": 0,
+      "null": 215,
+      "sem_tratado": 5
+    },
+    "notas": [
+      "Nenhuma metrica de precisao nem de falso positivo: achado fora do arquivo do ground truth nao e classificavel (criterios, secao 1).",
+      "achados_no_arquivo_gt e as listas de casados tambem nao formam precisao: a razao entre casados e achados no arquivo pressuporia que o resto do arquivo e limpo, o que o benchmark nao afirma.",
+      "nivel_0 e satisfeito por qualquer achado do tratado; a lista de finding_id dele nao e replicada.",
+      "Os niveis 2, 3 e 4 exigem que o MESMO achado satisfaca todas as condicoes; as listas de casados sao por achado.",
+      "Casamento de linha por sobreposicao de [line_start, line_end] com alguma gt_file_lines, sem banda; line_end nulo vale [line_start, line_start]; achado sem line_start nao casa linha.",
+      "distancia_min_linha e |line_start - L| (a grandeza da caracterizacao); distancia_min_intervalo e a distancia do intervalo a L, e vale 0 exatamente quando nivel_3 e verdadeiro.",
+      "Variante estrita com gt_cwe_primary nulo: nao se aplica, contada em nao_se_aplica, nunca como nao-acerto. Qual base usar para ela e decisao do texto; o script nao emite fracao.",
+      "CVE do denominador sem tratado so e admitido com status SEM_ARQUIVO_ANALISAVEL nos logs de execucao da campanha, e conta como nao-deteccao em todos os niveis. Se o proprio log trouxer esse status indevidamente, a ausencia e aceita: nao ha segunda fonte da causa no repositorio.",
+      "O gt usado na apuracao vem da lista e da tabela de primario; o gt gravado em cada tratado foi conferido igual a ele."
+    ]
+  },
+  "por_cve": {
+    "CVE-2016-10735": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-0931": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-1000006": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-1000219": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-1000427": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-1001004": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-10910": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-15010": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16003": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16006": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16011": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16014": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-16014:0022"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 115,
+      "distancia_min_intervalo": 115
+    },
+    "CVE-2017-16018": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-16018:0008",
+          "snyk-code:CVE-2017-16018:0009",
+          "snyk-code:CVE-2017-16018:0010"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2017-16018:0008"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 3,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2017-16023": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16026": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16028": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16029": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-16029:0001",
+          "snyk-code:CVE-2017-16029:0002",
+          "snyk-code:CVE-2017-16029:0003",
+          "snyk-code:CVE-2017-16029:0004"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2017-16029:0002",
+          "snyk-code:CVE-2017-16029:0004"
+        ],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2017-16029:0001",
+          "snyk-code:CVE-2017-16029:0002"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2017-16029:0002"
+        ],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 4,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2017-16030": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16031": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16034": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16042": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16043": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16082": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16083": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16084": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-16084:0001",
+          "snyk-code:CVE-2017-16084:0002",
+          "snyk-code:CVE-2017-16084:0003",
+          "snyk-code:CVE-2017-16084:0004",
+          "snyk-code:CVE-2017-16084:0005"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2017-16084:0004"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 5,
+      "distancia_min_linha": 2,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2017-16087": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16098": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16100": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16107": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-16107:0002",
+          "snyk-code:CVE-2017-16107:0003",
+          "snyk-code:CVE-2017-16107:0004",
+          "snyk-code:CVE-2017-16107:0005"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2017-16107:0004"
+        ],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2017-16107:0003",
+          "snyk-code:CVE-2017-16107:0004"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2017-16107:0004"
+        ],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 4,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2017-16114": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16117": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16118": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16119": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16136": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16137": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16138": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16224": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16226": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-16877": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-16877:0020",
+          "snyk-code:CVE-2017-16877:0021"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 35,
+      "distancia_min_intervalo": 35
+    },
+    "CVE-2017-17461": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-18077": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-18214": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-18352": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": true
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-18352:0007",
+          "snyk-code:CVE-2017-18352:0008",
+          "snyk-code:CVE-2017-18352:0009",
+          "snyk-code:CVE-2017-18352:0010",
+          "snyk-code:CVE-2017-18352:0011"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2017-18352:0009",
+          "snyk-code:CVE-2017-18352:0010"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2017-18352:0009",
+          "snyk-code:CVE-2017-18352:0010"
+        ],
+        "nivel_3": [
+          "snyk-code:CVE-2017-18352:0010"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2017-18352:0010"
+        ],
+        "nivel_4_estrita": [
+          "snyk-code:CVE-2017-18352:0010"
+        ]
+      },
+      "achados_no_arquivo_gt": 5,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2017-18353": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2017-18353:0007",
+          "snyk-code:CVE-2017-18353:0008",
+          "snyk-code:CVE-2017-18353:0009",
+          "snyk-code:CVE-2017-18353:0010",
+          "snyk-code:CVE-2017-18353:0011"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2017-18353:0009",
+          "snyk-code:CVE-2017-18353:0010"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2017-18353:0009",
+          "snyk-code:CVE-2017-18353:0010"
+        ],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 5,
+      "distancia_min_linha": 6,
+      "distancia_min_intervalo": 6
+    },
+    "CVE-2017-18354": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-18355": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-18635": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2017-5954": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-1000086": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-1000086:0002"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 61,
+      "distancia_min_intervalo": 61
+    },
+    "CVE-2018-1000620": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-1002203": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-1002204": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-11093": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-11615": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-11798": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-11798:0116",
+          "snyk-code:CVE-2018-11798:0117",
+          "snyk-code:CVE-2018-11798:0118",
+          "snyk-code:CVE-2018-11798:0119",
+          "snyk-code:CVE-2018-11798:0120",
+          "snyk-code:CVE-2018-11798:0121"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2018-11798:0119"
+        ],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 6,
+      "distancia_min_linha": 11,
+      "distancia_min_intervalo": 11
+    },
+    "CVE-2018-13797": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-13863": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-14040": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-14041": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-14042": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-14380": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16460": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16461": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16462": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16472": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": false,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": null,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": null
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16478": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-16478:0002",
+          "snyk-code:CVE-2018-16478:0003",
+          "snyk-code:CVE-2018-16478:0004",
+          "snyk-code:CVE-2018-16478:0005",
+          "snyk-code:CVE-2018-16478:0006",
+          "snyk-code:CVE-2018-16478:0007",
+          "snyk-code:CVE-2018-16478:0008"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2018-16478:0004",
+          "snyk-code:CVE-2018-16478:0005",
+          "snyk-code:CVE-2018-16478:0006",
+          "snyk-code:CVE-2018-16478:0008"
+        ],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2018-16478:0003",
+          "snyk-code:CVE-2018-16478:0006"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2018-16478:0006"
+        ],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 7,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-16479": {
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratado_presente": false,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": null,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16480": {
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratado_presente": false,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": null,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16484": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-16484:0001",
+          "snyk-code:CVE-2018-16484:0002",
+          "snyk-code:CVE-2018-16484:0003",
+          "snyk-code:CVE-2018-16484:0004"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2018-16484:0002"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 4,
+      "distancia_min_linha": 16,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-16485": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-16485:0001",
+          "snyk-code:CVE-2018-16485:0002",
+          "snyk-code:CVE-2018-16485:0003",
+          "snyk-code:CVE-2018-16485:0004"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2018-16485:0003",
+          "snyk-code:CVE-2018-16485:0004"
+        ],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2018-16485:0002"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 4,
+      "distancia_min_linha": 2,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-16487": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16489": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16490": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16491": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-16492": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-18282": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-19048": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-20164": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-20676": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-20677": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-20801": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-20834": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-20835": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": true
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-20835:0001",
+          "snyk-code:CVE-2018-20835:0002",
+          "snyk-code:CVE-2018-20835:0003",
+          "snyk-code:CVE-2018-20835:0004",
+          "snyk-code:CVE-2018-20835:0005",
+          "snyk-code:CVE-2018-20835:0006",
+          "snyk-code:CVE-2018-20835:0007",
+          "snyk-code:CVE-2018-20835:0008"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2018-20835:0001",
+          "snyk-code:CVE-2018-20835:0002",
+          "snyk-code:CVE-2018-20835:0003",
+          "snyk-code:CVE-2018-20835:0004",
+          "snyk-code:CVE-2018-20835:0005",
+          "snyk-code:CVE-2018-20835:0006",
+          "snyk-code:CVE-2018-20835:0007",
+          "snyk-code:CVE-2018-20835:0008"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2018-20835:0001",
+          "snyk-code:CVE-2018-20835:0002",
+          "snyk-code:CVE-2018-20835:0003",
+          "snyk-code:CVE-2018-20835:0004",
+          "snyk-code:CVE-2018-20835:0005",
+          "snyk-code:CVE-2018-20835:0006",
+          "snyk-code:CVE-2018-20835:0007",
+          "snyk-code:CVE-2018-20835:0008"
+        ],
+        "nivel_3": [
+          "snyk-code:CVE-2018-20835:0006"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2018-20835:0006"
+        ],
+        "nivel_4_estrita": [
+          "snyk-code:CVE-2018-20835:0006"
+        ]
+      },
+      "achados_no_arquivo_gt": 8,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-21036": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3712": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-3712:0001",
+          "snyk-code:CVE-2018-3712:0002"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2018-3712:0001"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 32,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-3713": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-3713:0001",
+          "snyk-code:CVE-2018-3713:0002"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 25,
+      "distancia_min_intervalo": 25
+    },
+    "CVE-2018-3718": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-3718:0001",
+          "snyk-code:CVE-2018-3718:0002"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2018-3718:0001"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 33,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-3719": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3721": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3722": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3725": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3726": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": true
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-3726:0001",
+          "snyk-code:CVE-2018-3726:0002",
+          "snyk-code:CVE-2018-3726:0003",
+          "snyk-code:CVE-2018-3726:0004",
+          "snyk-code:CVE-2018-3726:0005",
+          "snyk-code:CVE-2018-3726:0006",
+          "snyk-code:CVE-2018-3726:0007",
+          "snyk-code:CVE-2018-3726:0008",
+          "snyk-code:CVE-2018-3726:0009",
+          "snyk-code:CVE-2018-3726:0010",
+          "snyk-code:CVE-2018-3726:0011",
+          "snyk-code:CVE-2018-3726:0012",
+          "snyk-code:CVE-2018-3726:0013",
+          "snyk-code:CVE-2018-3726:0014",
+          "snyk-code:CVE-2018-3726:0015"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2018-3726:0002",
+          "snyk-code:CVE-2018-3726:0007",
+          "snyk-code:CVE-2018-3726:0009"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2018-3726:0002",
+          "snyk-code:CVE-2018-3726:0007",
+          "snyk-code:CVE-2018-3726:0009"
+        ],
+        "nivel_3": [
+          "snyk-code:CVE-2018-3726:0007"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2018-3726:0007"
+        ],
+        "nivel_4_estrita": [
+          "snyk-code:CVE-2018-3726:0007"
+        ]
+      },
+      "achados_no_arquivo_gt": 15,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-3728": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3731": {
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratado_presente": false,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": null,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3732": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3733": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-3733:0001",
+          "snyk-code:CVE-2018-3733:0002",
+          "snyk-code:CVE-2018-3733:0003",
+          "snyk-code:CVE-2018-3733:0004",
+          "snyk-code:CVE-2018-3733:0005",
+          "snyk-code:CVE-2018-3733:0006",
+          "snyk-code:CVE-2018-3733:0007",
+          "snyk-code:CVE-2018-3733:0008",
+          "snyk-code:CVE-2018-3733:0009",
+          "snyk-code:CVE-2018-3733:0010",
+          "snyk-code:CVE-2018-3733:0011",
+          "snyk-code:CVE-2018-3733:0012",
+          "snyk-code:CVE-2018-3733:0013",
+          "snyk-code:CVE-2018-3733:0014",
+          "snyk-code:CVE-2018-3733:0015"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2018-3733:0003",
+          "snyk-code:CVE-2018-3733:0004",
+          "snyk-code:CVE-2018-3733:0005",
+          "snyk-code:CVE-2018-3733:0006",
+          "snyk-code:CVE-2018-3733:0008",
+          "snyk-code:CVE-2018-3733:0010",
+          "snyk-code:CVE-2018-3733:0011",
+          "snyk-code:CVE-2018-3733:0012",
+          "snyk-code:CVE-2018-3733:0013",
+          "snyk-code:CVE-2018-3733:0014",
+          "snyk-code:CVE-2018-3733:0015"
+        ],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2018-3733:0003"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2018-3733:0003"
+        ],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 15,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2018-3736": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3737": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3738": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3743": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3746": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3747": {
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratado_presente": false,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": null,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3750": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3752": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3757": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3770": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3772": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-3783": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-3783:0008",
+          "snyk-code:CVE-2018-3783:0009",
+          "snyk-code:CVE-2018-3783:0010"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 3,
+      "distancia_min_linha": 25,
+      "distancia_min_intervalo": 25
+    },
+    "CVE-2018-3786": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-6184": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-6184:0031",
+          "snyk-code:CVE-2018-6184:0032"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 35,
+      "distancia_min_intervalo": 35
+    },
+    "CVE-2018-6333": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2018-6333:0047"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2018-6333:0047"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2018-6333:0047"
+        ],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 2,
+      "distancia_min_intervalo": 2
+    },
+    "CVE-2018-6341": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-6342": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-7560": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2018-7651": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10061": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": true
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-10061:0019"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2019-10061:0019"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2019-10061:0019"
+        ],
+        "nivel_3": [
+          "snyk-code:CVE-2019-10061:0019"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2019-10061:0019"
+        ],
+        "nivel_4_estrita": [
+          "snyk-code:CVE-2019-10061:0019"
+        ]
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2019-10090": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-1010091": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-1010266": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-1020012": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10742": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-10742:0014"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 34,
+      "distancia_min_intervalo": 34
+    },
+    "CVE-2019-10744": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10745": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10746": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10747": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10750": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10757": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-10757:0004"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 90,
+      "distancia_min_intervalo": 90
+    },
+    "CVE-2019-10758": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10759": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10761": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10765": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-10765:0007",
+          "snyk-code:CVE-2019-10765:0008",
+          "snyk-code:CVE-2019-10765:0009",
+          "snyk-code:CVE-2019-10765:0010",
+          "snyk-code:CVE-2019-10765:0011",
+          "snyk-code:CVE-2019-10765:0012",
+          "snyk-code:CVE-2019-10765:0013",
+          "snyk-code:CVE-2019-10765:0014",
+          "snyk-code:CVE-2019-10765:0015",
+          "snyk-code:CVE-2019-10765:0016",
+          "snyk-code:CVE-2019-10765:0017",
+          "snyk-code:CVE-2019-10765:0018",
+          "snyk-code:CVE-2019-10765:0019",
+          "snyk-code:CVE-2019-10765:0020",
+          "snyk-code:CVE-2019-10765:0021",
+          "snyk-code:CVE-2019-10765:0022",
+          "snyk-code:CVE-2019-10765:0023"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2019-10765:0007",
+          "snyk-code:CVE-2019-10765:0014",
+          "snyk-code:CVE-2019-10765:0021",
+          "snyk-code:CVE-2019-10765:0022"
+        ],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2019-10765:0013"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 17,
+      "distancia_min_linha": 3,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2019-10767": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10771": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": true
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-10771:0001",
+          "snyk-code:CVE-2019-10771:0002",
+          "snyk-code:CVE-2019-10771:0003",
+          "snyk-code:CVE-2019-10771:0004",
+          "snyk-code:CVE-2019-10771:0005",
+          "snyk-code:CVE-2019-10771:0006",
+          "snyk-code:CVE-2019-10771:0007",
+          "snyk-code:CVE-2019-10771:0008"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2019-10771:0008"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2019-10771:0008"
+        ],
+        "nivel_3": [
+          "snyk-code:CVE-2019-10771:0006",
+          "snyk-code:CVE-2019-10771:0008"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2019-10771:0008"
+        ],
+        "nivel_4_estrita": [
+          "snyk-code:CVE-2019-10771:0008"
+        ]
+      },
+      "achados_no_arquivo_gt": 8,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2019-10775": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-10775:0006",
+          "snyk-code:CVE-2019-10775:0007",
+          "snyk-code:CVE-2019-10775:0008",
+          "snyk-code:CVE-2019-10775:0009",
+          "snyk-code:CVE-2019-10775:0010",
+          "snyk-code:CVE-2019-10775:0011",
+          "snyk-code:CVE-2019-10775:0012",
+          "snyk-code:CVE-2019-10775:0013",
+          "snyk-code:CVE-2019-10775:0014"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 9,
+      "distancia_min_linha": 34,
+      "distancia_min_intervalo": 34
+    },
+    "CVE-2019-10776": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10777": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10778": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-10778:0001",
+          "snyk-code:CVE-2019-10778:0002"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 11,
+      "distancia_min_intervalo": 11
+    },
+    "CVE-2019-10781": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-10785": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-11358": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-12041": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-12043": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-12313": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-13127": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-13173": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-13506": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-14772": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-14862": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-15478": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-15478:0002",
+          "snyk-code:CVE-2019-15478:0003"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2019-15478:0002"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2019-15479": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-15479:0006"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2019-15479:0006"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2019-15482": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-15532": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-15657": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-15658": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-15782": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-15782:0001",
+          "snyk-code:CVE-2019-15782:0002",
+          "snyk-code:CVE-2019-15782:0003"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 3,
+      "distancia_min_linha": 55,
+      "distancia_min_intervalo": 55
+    },
+    "CVE-2019-16763": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-16769": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-17495": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-17592": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-18350": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-18818": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-18818:0007",
+          "snyk-code:CVE-2019-18818:0008"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 122,
+      "distancia_min_intervalo": 122
+    },
+    "CVE-2019-18954": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-19507": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-20149": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-20174": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-5413": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-5414": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-5423": {
+      "status_campanha": "SEM_ARQUIVO_ANALISAVEL",
+      "tratado_presente": false,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": null,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-5444": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-5444:0001",
+          "snyk-code:CVE-2019-5444:0002"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2019-5444:0002"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 9,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2019-5479": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-5479:0001"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2019-5479:0001"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 76,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2019-5483": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-5484": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-8331": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2019-8903": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2019-8903:0002",
+          "snyk-code:CVE-2019-8903:0003",
+          "snyk-code:CVE-2019-8903:0004",
+          "snyk-code:CVE-2019-8903:0005",
+          "snyk-code:CVE-2019-8903:0006",
+          "snyk-code:CVE-2019-8903:0007",
+          "snyk-code:CVE-2019-8903:0008",
+          "snyk-code:CVE-2019-8903:0009",
+          "snyk-code:CVE-2019-8903:0010",
+          "snyk-code:CVE-2019-8903:0011",
+          "snyk-code:CVE-2019-8903:0012",
+          "snyk-code:CVE-2019-8903:0013",
+          "snyk-code:CVE-2019-8903:0014",
+          "snyk-code:CVE-2019-8903:0015",
+          "snyk-code:CVE-2019-8903:0016",
+          "snyk-code:CVE-2019-8903:0017",
+          "snyk-code:CVE-2019-8903:0018"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 17,
+      "distancia_min_linha": 1475,
+      "distancia_min_intervalo": 1475
+    },
+    "CVE-2019-9844": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-11021": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-11022": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-11059": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-11079": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-12265": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-14000": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-15092": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-15092:0007"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 199,
+      "distancia_min_intervalo": 199
+    },
+    "CVE-2020-15095": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-15119": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-15123": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-15135": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-15135:0005",
+          "snyk-code:CVE-2020-15135:0006",
+          "snyk-code:CVE-2020-15135:0007",
+          "snyk-code:CVE-2020-15135:0008",
+          "snyk-code:CVE-2020-15135:0009"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 5,
+      "distancia_min_linha": 27,
+      "distancia_min_intervalo": 27
+    },
+    "CVE-2020-15138": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": true,
+        "nivel_4_generosa": true,
+        "nivel_4_estrita": true
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-15138:0004"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2020-15138:0004"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2020-15138:0004"
+        ],
+        "nivel_3": [
+          "snyk-code:CVE-2020-15138:0004"
+        ],
+        "nivel_4_generosa": [
+          "snyk-code:CVE-2020-15138:0004"
+        ],
+        "nivel_4_estrita": [
+          "snyk-code:CVE-2020-15138:0004"
+        ]
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 7,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2020-15152": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-15156": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-15156:0001",
+          "snyk-code:CVE-2020-15156:0002",
+          "snyk-code:CVE-2020-15156:0003",
+          "snyk-code:CVE-2020-15156:0004"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 4,
+      "distancia_min_linha": 58,
+      "distancia_min_intervalo": 58
+    },
+    "CVE-2020-15256": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-26226": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-26256": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-27666": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-4051": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-4059": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-4066": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-5251": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-5258": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-6836": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7638": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7656": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": true,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-7656:0004"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [
+          "snyk-code:CVE-2020-7656:0004"
+        ],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 1,
+      "distancia_min_linha": 0,
+      "distancia_min_intervalo": 0
+    },
+    "CVE-2020-7660": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7662": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7676": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7699": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7720": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-7720:0007",
+          "snyk-code:CVE-2020-7720:0008",
+          "snyk-code:CVE-2020-7720:0009"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 3,
+      "distancia_min_linha": 390,
+      "distancia_min_intervalo": 390
+    },
+    "CVE-2020-7750": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7752": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-7763": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-8116": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-8135": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-8135:0035",
+          "snyk-code:CVE-2020-8135:0036"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 2,
+      "distancia_min_linha": 85,
+      "distancia_min_intervalo": 85
+    },
+    "CVE-2020-8149": {
+      "status_campanha": "SEM_ACHADOS",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": false,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-8192": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-8203": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-8205": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": true,
+        "nivel_2_estrita": true,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2020-8205:0028",
+          "snyk-code:CVE-2020-8205:0029",
+          "snyk-code:CVE-2020-8205:0030"
+        ],
+        "nivel_2_generosa": [
+          "snyk-code:CVE-2020-8205:0028",
+          "snyk-code:CVE-2020-8205:0029",
+          "snyk-code:CVE-2020-8205:0030"
+        ],
+        "nivel_2_estrita": [
+          "snyk-code:CVE-2020-8205:0028",
+          "snyk-code:CVE-2020-8205:0029",
+          "snyk-code:CVE-2020-8205:0030"
+        ],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 3,
+      "distancia_min_linha": 6,
+      "distancia_min_intervalo": 6
+    },
+    "CVE-2020-8244": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2020-9038": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2021-23344": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": true,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [
+          "snyk-code:CVE-2021-23344:0034",
+          "snyk-code:CVE-2021-23344:0035",
+          "snyk-code:CVE-2021-23344:0036",
+          "snyk-code:CVE-2021-23344:0037",
+          "snyk-code:CVE-2021-23344:0038",
+          "snyk-code:CVE-2021-23344:0039",
+          "snyk-code:CVE-2021-23344:0040",
+          "snyk-code:CVE-2021-23344:0041",
+          "snyk-code:CVE-2021-23344:0042",
+          "snyk-code:CVE-2021-23344:0043",
+          "snyk-code:CVE-2021-23344:0044"
+        ],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 11,
+      "distancia_min_linha": 2037,
+      "distancia_min_intervalo": 2037
+    },
+    "CVE-2021-23364": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    },
+    "CVE-2021-31712": {
+      "status_campanha": "OK",
+      "tratado_presente": true,
+      "gt_file_scanned": null,
+      "estrita_aplicavel": true,
+      "niveis": {
+        "nivel_0": true,
+        "nivel_1": false,
+        "nivel_2_generosa": false,
+        "nivel_2_estrita": false,
+        "nivel_3": false,
+        "nivel_4_generosa": false,
+        "nivel_4_estrita": false
+      },
+      "achados_casados": {
+        "nivel_1": [],
+        "nivel_2_generosa": [],
+        "nivel_2_estrita": [],
+        "nivel_3": [],
+        "nivel_4_generosa": [],
+        "nivel_4_estrita": []
+      },
+      "achados_no_arquivo_gt": 0,
+      "distancia_min_linha": null,
+      "distancia_min_intervalo": null
+    }
+  },
+  "validacao": {
+    "anomalias": 0,
+    "tratados_validados": 216,
+    "autoteste": [
+      {
+        "guarda": "validar_tratado",
+        "mutante": "topo com chave extra",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "schema_version divergente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "metadata sem chave",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "metadata com chave inesperada",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "tool divergente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "cve_id divergente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "commit divergente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "gt_file_path divergente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "gt_file_path_original inesperado",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "gt_cwes divergente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "gt_cwes fora da forma canonica",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "gt_cwe_primary divergente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "gt_file_lines com texto",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "gt_file_scanned fora do tri-estado",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "achado sem chave",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "finding_id de outro CVE",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "finding_id repetido",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "cwe fora da forma canonica",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "has_cwe incoerente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "file_path absoluto",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "file_path com ./",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "line_start em texto",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "line_end menor que line_start",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "line_end sem line_start",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "validar_tratado",
+        "mutante": "severity fora do vocabulario",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_presenca",
+        "mutante": "baixa com tratado",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_presenca",
+        "mutante": "baixa com o status do outro motivo",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_presenca",
+        "mutante": "tratado presente com status sem tratado",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_presenca",
+        "mutante": "status OK e tratado ausente",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_presenca",
+        "mutante": "ausencia sem causa admitida",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_presenca",
+        "mutante": "SEM_ARQUIVO_ANALISAVEL fora do Snyk Code",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_presenca",
+        "mutante": "CVE sem CWE sem tratado",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_status_achados",
+        "mutante": "OK com tratado sem achado",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      },
+      {
+        "guarda": "conferir_status_achados",
+        "mutante": "SEM_ACHADOS com tratado com achado",
+        "anomalias": 1,
+        "guarda_pretendida_disparou": true
+      }
+    ],
+    "controle_positivo": {
+      "esperado": {
+        "nivel_0": {
+          "acertos": 8,
+          "nao_acertos": 2
+        },
+        "nivel_1": {
+          "acertos": 7,
+          "nao_acertos": 3
+        },
+        "nivel_2_generosa": {
+          "acertos": 5,
+          "nao_acertos": 5
+        },
+        "nivel_2_estrita": {
+          "acertos": 3,
+          "nao_acertos": 6,
+          "nao_se_aplica": 1
+        },
+        "nivel_3": {
+          "acertos": 5,
+          "nao_acertos": 5
+        },
+        "nivel_4_generosa": {
+          "acertos": 3,
+          "nao_acertos": 7
+        },
+        "nivel_4_estrita": {
+          "acertos": 1,
+          "nao_acertos": 8,
+          "nao_se_aplica": 1
+        },
+        "nivel_1_e_nivel_3": {
+          "cves_nivel_1": 7,
+          "destes_nivel_3": 5,
+          "destes_sem_nivel_3": 2
+        },
+        "ressalvas": {
+          "sem_tratado": 1,
+          "line_end_nulo_no_arquivo_gt": 4,
+          "line_start_nulo_no_arquivo_gt": 1
+        }
+      },
+      "obtido": {
+        "nivel_0": {
+          "acertos": 8,
+          "nao_acertos": 2
+        },
+        "nivel_1": {
+          "acertos": 7,
+          "nao_acertos": 3
+        },
+        "nivel_2_generosa": {
+          "acertos": 5,
+          "nao_acertos": 5
+        },
+        "nivel_2_estrita": {
+          "acertos": 3,
+          "nao_acertos": 6,
+          "nao_se_aplica": 1
+        },
+        "nivel_3": {
+          "acertos": 5,
+          "nao_acertos": 5
+        },
+        "nivel_4_generosa": {
+          "acertos": 3,
+          "nao_acertos": 7
+        },
+        "nivel_4_estrita": {
+          "acertos": 1,
+          "nao_acertos": 8,
+          "nao_se_aplica": 1
+        },
+        "nivel_1_e_nivel_3": {
+          "cves_nivel_1": 7,
+          "destes_nivel_3": 5,
+          "destes_sem_nivel_3": 2
+        },
+        "ressalvas": {
+          "sem_tratado": 1,
+          "line_end_nulo_no_arquivo_gt": 4,
+          "line_start_nulo_no_arquivo_gt": 1
+        }
+      },
+      "divergencias": []
+    }
+  },
+  "csv_da_mesma_execucao": {
+    "arquivo": "matriz-deteccao.csv",
+    "sha256": "f80158b730794c3135701a8631e551d89610775562577322b806fcc180452825"
+  },
+  "conferencia_csv": {
+    "linhas_conferidas": 669,
+    "divergencias": 0,
+    "controle_csv_adulterado_divergencias_acusadas": 2
+  }
+}

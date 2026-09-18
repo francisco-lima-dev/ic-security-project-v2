@@ -31,9 +31,17 @@ sem causa registrada — ver "sem tratado", adiante. Limite declarado: se o
 proprio log trouxer um SEM_ARQUIVO_ANALISAVEL indevido, a ausencia e aceita,
 porque nao ha no repositorio segunda fonte da causa.
 
-SAIDAS — em results/cruzamento/, escritas so depois de todas as conferencias
+SAIDAS — em results/cruzamento/, versionadas, escritas so depois de todas as
+conferencias
   matriz-deteccao.csv          uma linha por (CVE, ferramenta): 223 x 3
   cruzamento-<ferramenta>.json agregados, achados casados, ressalvas
+
+As saidas sao deterministicas: mesmas entradas e mesmo codigo, mesmos bytes.
+Nenhum carimbo de execucao e gravado. Em `fontes` vao o sha256 de cada entrada
+e o dos tres scripts que moldam o resultado (este, normalize.py e
+check-log.py); o sha256 do CSV vai em cada JSON. Gravar em results/cruzamento/
+exige que todas as entradas estejam no repositorio: caminho da maquina do
+operador nao e registro reproduzivel, e iria para a saida versionada.
 
 O GROUND TRUTH vem da lista e da tabela, lidas pelas funcoes do proprio
 tools/normalize.py (carregar_lista, carregar_tabela_primario,
@@ -67,7 +75,6 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -1029,6 +1036,13 @@ def executar(args):
     logs_campanha = Path(args.logs_campanha) if args.logs_campanha else LOGS_CAMPANHA_PADRAO
     saida = Path(args.saida_dir) if args.saida_dir else SAIDA_PADRAO
 
+    if saida.resolve() == SAIDA_PADRAO.resolve():
+        fora = [str(caminho) for caminho in (lista, raiz_tratados, logs_campanha)
+                if not Path(caminho).resolve().is_relative_to(RAIZ)]
+        if fora:
+            raise Parada("a saida versionada exige entradas dentro do repositorio: "
+                         "o caminho de fora iria para os JSON", fora)
+
     norm = importar("normalize", NORMALIZE)
     check_log = importar("check_log", CHECK_LOG)
     if norm.SCHEMA_VERSION != SCHEMA_ESPERADO:
@@ -1086,7 +1100,6 @@ def executar(args):
                                     tratados[ferramenta].get(cve)))
     csv_texto = texto_csv(linhas)
 
-    agora = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     relatorios = {}
     for ferramenta in FERRAMENTAS:
         res_f = resultados[ferramenta]
@@ -1106,7 +1119,6 @@ def executar(args):
             "ferramenta": ferramenta,
             "versao_cruzamento": VERSAO_CRUZAMENTO,
             "schema_tratado": SCHEMA_ESPERADO,
-            "gerado_em": agora,
             "criterios": {"documento": rotulo_caminho(CRITERIOS),
                           "sha256": sha256_arquivo(CRITERIOS)},
             "fontes": {
@@ -1125,6 +1137,10 @@ def executar(args):
                              "arquivos": len(tratados[ferramenta]),
                              "sha256_conjunto": resumos[ferramenta]},
                 "gt_file_path_normalizado": transformacoes,
+                # O codigo que molda o resultado: o cruzamento, e as funcoes do
+                # normalize.py e do check-log.py que ele usa.
+                "codigo": {rotulo_caminho(caminho): sha256_arquivo(caminho)
+                           for caminho in (Path(__file__).resolve(), NORMALIZE, CHECK_LOG)},
             },
             "denominador": {
                 "cves_na_lista": len(gt),

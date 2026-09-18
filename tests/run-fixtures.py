@@ -1687,6 +1687,12 @@ def secao_cruzamento(tmp):
         checar(rel[ferramenta]["csv_da_mesma_execucao"]["sha256"]
                == hashlib.sha256((saida / "matriz-deteccao.csv").read_bytes()).hexdigest(),
                "%s: o JSON carrega o sha256 do CSV da mesma execucao" % ferramenta)
+        codigo = rel[ferramenta]["fontes"]["codigo"]
+        checar(codigo == {"tools/cruza-deteccao.py": hashlib.sha256(CRUZA.read_bytes()).hexdigest(),
+                          "tools/normalize.py": hashlib.sha256(NORMALIZE.read_bytes()).hexdigest(),
+                          "tools/check-log.py": hashlib.sha256(CHECK_LOG.read_bytes()).hexdigest()},
+               "%s: fontes.codigo traz o sha256 dos tres scripts que moldam o resultado"
+               % ferramenta, codigo)
         checar(rel[ferramenta]["fontes"]["logs_campanha"]["arquivos"] == 24
                and rel[ferramenta]["fontes"]["listas_de_lote"]["arquivos"] == 8
                and "registro_campanha" not in rel[ferramenta]["fontes"],
@@ -1733,11 +1739,44 @@ def secao_cruzamento(tmp):
            == (saida / "matriz-deteccao.csv").read_bytes(),
            "segunda execucao: CSV byte-identico")
     if p2.returncode == 0:
-        def sem_data(d):
-            return {k: v for k, v in d.items() if k != "gerado_em"}
-        checar(all(sem_data(ler(saida2 / ("cruzamento-%s.json" % f))) == sem_data(rel[f])
+        checar(all((saida2 / ("cruzamento-%s.json" % f)).read_bytes()
+                   == (saida / ("cruzamento-%s.json" % f)).read_bytes()
                    for f in FERRAMENTAS_CRUZ),
-               "segunda execucao: JSON identico a menos de gerado_em")
+               "segunda execucao na mesma maquina: os tres JSON byte-identicos")
+    carimbo = (r"gerado|generated|criado|created|executado|data|date|hora|time|"
+               r"instante|dia|host|usuario|user")
+    checar(all(re.search(carimbo, k) for k in ("gerado_em", "generated_at", "timestamp",
+                                               "executado_em", "host", "usuario")),
+           "controle: o padrao de carimbo casa com os nomes que deveria pegar")
+    # Controle do PERCURSO: uma chave aninhada em lista dentro de dict tem de
+    # ser visitada, senao o zero abaixo seria zero por nao ter perguntado.
+    injetado = json.loads(json.dumps(rel["codeql"]))
+    injetado["fontes"]["x"] = [{"y": [{"gerado_em": 1}]}]
+    checar(any(re.search(carimbo, k) for k in _chaves_recursivas(injetado)),
+           "controle: o percurso das chaves alcanca chave aninhada em lista")
+    checar(not any(re.search(carimbo, k)
+                   for f in FERRAMENTAS_CRUZ for k in _chaves_recursivas(rel[f])),
+           "nenhuma chave com nome de carimbo de execucao nos JSON")
+    versionada = RAIZ / "results" / "cruzamento"
+
+    def retrato_versionada():
+        return ({x.name: x.read_bytes() for x in versionada.iterdir() if x.is_file()}
+                if versionada.is_dir() else None)
+    antes_versionada = retrato_versionada()
+    try:
+        pv = subprocess.run([sys.executable, str(CRUZA), "--treated-root", str(universo),
+                             "--logs-campanha", str(logs_dir)],
+                            capture_output=True, text=True)
+    finally:
+        depois_versionada = retrato_versionada()
+        if depois_versionada != antes_versionada and antes_versionada is not None:
+            for nome, conteudo in antes_versionada.items():
+                (versionada / nome).write_bytes(conteudo)
+    checar(pv.returncode == 2 and "exige entradas dentro do repositorio" in pv.stderr,
+           "saida versionada recusa entradas de fora do repositorio",
+           "rc=%d %s" % (pv.returncode, pv.stderr[-300:]))
+    checar(depois_versionada == antes_versionada,
+           "results/cruzamento/ intocado pela recusa")
     ajuda = subprocess.run([sys.executable, str(CRUZA), "--help"],
                            capture_output=True, text=True).stdout
     checar(set(re.findall(r"--[a-z][a-z-]*", ajuda))
