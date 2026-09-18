@@ -177,6 +177,26 @@ traversal comparecem juntos porque são as tags da consulta `js/path-injection`.
 O problema é tratado na origem, pela seleção do CWE primário, e não por
 critério de agrupamento na comparação.
 
+## Critérios do cruzamento — o documento
+
+`docs/criterios-cruzamento.md`, escrito em 18/09/2026, **antes de qualquer
+código de cruzamento e de qualquer número de detecção**. É a fonte; isto é
+ponteiro, não cópia — duplicar o conteúdo criaria duas versões para divergirem.
+
+Fixa os **cinco níveis de acerto** (0 repositório, 1 arquivo, 2 arquivo + CWE,
+3 arquivo + linha, 4 os três), com o mesmo achado satisfazendo todas as
+condições do nível; o **casamento de linha por sobreposição** de
+`[line_start, line_end]` com alguma `gt_file_lines`, sem banda de tolerância,
+`line_end` nulo valendo `[line_start, line_start]`; as **duas variantes de
+CWE**, generosa (intersecta `gt_cwes`) e estrita (contém `gt_cwe_primary`); e o
+**denominador de 220 pares**, o mesmo para as três ferramentas.
+
+Registra também que **não haverá métrica de precisão nem de falso positivo**: o
+benchmark afirma o par (CWE, arquivo) de cada CVE e não afirma que o resto do
+código é limpo, então achado fora do arquivo do CVE não é classificável.
+Reporta-se detecção; volume de alerta entra como caracterização descritiva,
+nunca como medida de qualidade.
+
 ## Formato das listas de entrada
 
 Seis campos, sem cabeçalho:
