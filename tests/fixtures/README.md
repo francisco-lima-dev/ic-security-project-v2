@@ -139,7 +139,8 @@ CVEs, 220 pares, as três exclusões nominadas — não são sobrescrevíveis, e
 a fixture usa a **lista real** e gera um tratado sem achados para todo
 (ferramenta, CVE) sem caso; nenhum tratado para as duas baixas por código
 indisponível nem para os cinco `SEM_ARQUIVO_ANALISAVEL` do Snyk Code; e um
-registro de campanha sintético coerente com isso. O `gt_assumido` de cada caso
+log de execução sintético por (lote, ferramenta), nos oito lotes reais de
+`datasets/listas/`, coerente com isso. O `gt_assumido` de cada caso
 é conferido contra o gt derivado da lista: se a lista mudar, o caso falha em
 vez de passar sobre premissa velha. **Nada lê `results/*/treated/`.**
 
@@ -184,17 +185,20 @@ Cobertura por nível e variante, positivo / negativo:
 | nível 4 estrita | C16, C17, C18 | C14, C15, C22 |
 | estrita não se aplica | C05 (e o mesmo CVE, sem achado, nas outras duas) | — |
 
-Além dos casos, o corredor exercita **33 mutantes** do universo — tratado de
+Além dos casos, o corredor exercita **41 mutantes** do universo — tratado de
 CVE excluído, baixa com o status do outro motivo, `gt_cwes` não vazio no CVE
-sem CWE, lista com 222 CVEs, ausência de tratado sem causa admitida, tratado
-órfão, schema, tipos, caminho absoluto, `finding_id` repetido, parada sobre
-saída pré-existente, entre outros — exigindo de cada um `PARADO`, código 2 e
+sem CWE, CVE sem CWE sem tratado, lista com 222 CVEs, ausência de tratado sem
+causa admitida, log de lote sem um CVE, sem cabeçalho ou ausente, CVE em dois
+lotes, CVE repetido no log, `OK` com tratado sem achado e `SEM_ACHADOS` com
+tratado com achado, tratado órfão, schema, tipos, caminho absoluto, `finding_id`
+repetido, parada sobre saída pré-existente, entre outros — exigindo de cada um `PARADO`, código 2 e
 nenhuma saída escrita ou alterada. E confere determinismo (CSV byte-idêntico
 entre execuções) e a interface (só opções de caminho).
 
 O script tem ainda **duas camadas embutidas**, que rodam a cada execução antes
-de qualquer número: autoteste com 31 mutantes (25 do validador de tratado, 6
-das regras de presença × registro × denominador), cada um exigido pela guarda
+de qualquer número: autoteste com 34 mutantes (25 do validador de tratado, 7
+das regras de presença × registro × denominador, 2 de status × achados), cada
+um exigido pela guarda
 **pretendida** e não por outra qualquer; e controle positivo da apuração, um
 conjunto sintético de resposta conhecida em que todo contador tem valor
 esperado não nulo. O corredor confere que ambas passaram.

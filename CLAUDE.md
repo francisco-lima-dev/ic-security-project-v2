@@ -78,6 +78,11 @@ do CodeQL que identificou o caso.
 | Divergências não explicadas | 0 |
 | Controle: `explanation` idêntica a mensagem de regra do Semgrep (2.228 regras) | 0 (0,0%) |
 
+**Ressalva a esta tabela:** os 185 se reproduzem em `9ff6d68a` (11/12/2020);
+contra a referência que o `tools/ground-truth/README.md` fixou, `ec573b51`
+(08/12/2020), são 163 de 223. Ver "Reprodução", adiante — divergência
+registrada e pendente.
+
 O cotejo contra o CodeQL **atual** dá 108 idênticos, 75 subconjuntos e 2
 divergentes; as três situações se resolvem pela evolução posterior do
 catálogo. Usar sempre o estado de **9 de dezembro de 2020**, data do anúncio
@@ -97,17 +102,26 @@ Isso invalida qualquer tratamento que assuma um CWE por defeito.
 
 ### Reprodução
 
-**Os scripts de proveniência ainda NÃO estão no repositório.** Estão
-previstos em `tools/ground-truth/`, diretório que hoje não existe — conferido
-em 10/09/2026. Enquanto isso valer, este é **o único achado do estudo que um
-terceiro não reproduz**, e é o mais forte deles: a constatação de que 83% do
-ground truth herdou `explanation` e `CWEs` da consulta do CodeQL que
-identificou o caso.
+**Os scripts de proveniência estão versionados em `tools/ground-truth/`**
+desde a Fase P (`db26b4c`, 13/09/2026), com o estado de referência fixado na
+Fase P-2 (`1a7d3a3`, 14/09/2026). O `README.md` do diretório traz os comandos
+que reproduzem o cotejo a partir de um clone limpo, e o achado deixou de ser o
+único do estudo que um terceiro não reproduz. Até 18/09/2026 este parágrafo
+afirmava o contrário, com conferência de 10/09 — anterior aos dois commits.
 
-O procedimento, porém, está descrito: o CWE pretendido pelo benchmark para
-qualquer CVE do núcleo é recuperável consultando as tags
-`external/cwe/` da consulta correspondente no CodeQL no estado de
-**9 de dezembro de 2020**.
+**Divergência com a tabela acima, registrada e não resolvida aqui.** O README
+fixa a referência em `ec573b51`, merge do main de 08/12/2020 e o último antes
+do commit do release do benchmark. Contra ela, o casamento é **163 de 223
+(73,1%)**, com 163 de 163 idênticos. Os **185 de 223** da tabela se reproduzem
+em `9ff6d68a` (11/12/2020), que o README trata como **medida de
+sensibilidade**, não como âncora; a diferença são os 22 CVEs de prototype
+pollution. A tabela, os 83% e a instrução de usar o estado de 9 de dezembro
+são anteriores a essa decisão e não foram atualizados. Qual número vai ao
+texto é decisão pendente.
+
+O procedimento: o CWE pretendido pelo benchmark para qualquer CVE do núcleo é
+recuperável consultando as tags `external/cwe/` da consulta correspondente no
+CodeQL de dezembro de 2020 — o estado exato é o da divergência acima.
 
 ## Caracterização estrutural do ground truth
 
@@ -305,9 +319,9 @@ O script de sondagem de disponibilidade **foi trazido na Fase E**:
 `tools/probe-repos.sh`, com a saída datada em
 `datasets/sondagens/sondagem-repos-<AAAA-MM-DD>.csv`.
 
-Ainda **não** trazidos: os scripts de proveniência do ground truth,
-previstos em `tools/ground-truth/`, diretório que **não existe** no
-repositório.
+Os scripts de proveniência do ground truth **foram trazidos na Fase P**
+(`db26b4c`), em `tools/ground-truth/`; ver "Reprodução", na seção de
+proveniência.
 
 Motivo: o repositório precisa permitir verificar os números do estudo sem
 depender de artifacts do GitHub Actions, cuja retenção padrão é de **90
@@ -1018,6 +1032,14 @@ metade de tudo. O maior é o `CVE-2018-20801`, com **144,1 MiB** — o **mesmo C
 dos 5850 achados** registrado acima. Volume de arquivo e volume de alerta não
 são dois fatos: são o mesmo fato medido por dois instrumentos, a regra
 disparando em massa num repositório.
+
+**Os 24 logs de execução dos lotes estão versionados desde 18/09/2026**, em
+`logs/campanha-2026-09-17/cves-sast-batch-<lote>/`, como cópia byte a byte dos
+artifacts, com procedência e sha256 no `README.md` do diretório. Até então só
+os dois agregados estavam no repositório, e o script que os gerou não está. O
+`por_cve` do `campanha-223.json` é reconstituível dos 24 logs com **zero
+divergências**, em status e duração, nos 223 × 3 pares. O
+`tools/cruza-deteccao.py` lê os logs, e não o agregado.
 
 **Os tratados somam 15,5 MiB, 40× menos que os raws**, com a mesma cobertura de
 CVE. É o que a política de versionamento comprou: o tratado sustenta o

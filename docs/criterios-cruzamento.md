@@ -277,6 +277,23 @@ Requisitos de implementação, na disciplina que o projeto já aplica:
   pelo que são.
 - O script lê `results/*/treated/`, versionados, e **não depende de artifact**:
   um terceiro reproduz os números a partir do repositório sozinho.
+- **O script lê também o registro de status da campanha**, para que a
+  ausência de um tratado nunca seja interpretada sem causa registrada. O
+  registro sai dos 24 logs de execução dos lotes, versionados em
+  `logs/campanha-2026-09-17/cves-sast-batch-<lote>/` como cópia byte a byte
+  dos artifacts. A leitura é a do `check-log.py`, em que vale a última linha
+  de cada CVE. Nenhum arquivo intermediário entra: o `campanha-223.json` é
+  reconstituível desses logs, com zero divergências, e não é lido.
+
+  O registro **não define o denominador**, que vem da lista menos as três
+  exclusões nominadas. Serve de conferência: CVE do denominador sem tratado
+  só é admitido com `SEM_ARQUIVO_ANALISAVEL` do Snyk Code no log, e as duas
+  baixas têm de trazer `ERRO_FETCH` e `ERRO_CHECKOUT`, cada uma o status do
+  seu motivo. Qualquer outra combinação para o script.
+
+  **Limite, declarado:** se o próprio log trouxer um `SEM_ARQUIVO_ANALISAVEL`
+  indevido, a ausência é aceita como não-detecção. Não há, no repositório,
+  segunda fonte da causa contra a qual conferi-lo.
 
 ---
 

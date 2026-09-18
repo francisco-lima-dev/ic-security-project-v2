@@ -1409,7 +1409,8 @@ BAIXAS_CRUZ = {"CVE-2016-1000229": "ERRO_FETCH", "CVE-2018-8035": "ERRO_CHECKOUT
 SEM_CWE_CRUZ = "CVE-2018-1000096"
 # Os cinco da campanha; aqui sao dado da FIXTURE. O script nao os tem como
 # constante: tira da lista o denominador, da ausencia do arquivo quais CVEs
-# dele ficaram sem tratado, e do registro a causa que admite cada ausencia.
+# dele ficaram sem tratado, e dos logs de execucao a causa que admite cada
+# ausencia.
 SNYK_SEM_ARQUIVO_CRUZ = ("CVE-2018-16479", "CVE-2018-16480", "CVE-2018-3731",
                          "CVE-2018-3747", "CVE-2019-5423")
 
@@ -1503,31 +1504,46 @@ def secao_cruzamento(tmp):
                    "caso %s: sem_tratado so em SEM_ARQUIVO_ANALISAVEL do Snyk" % caso["id"])
 
     universo = tmp / "cruz-universo"
-    registro = {"por_cve": {f: [] for f in FERRAMENTAS_CRUZ}}
+    status_de = {f: {} for f in FERRAMENTAS_CRUZ}
     for ferramenta in FERRAMENTAS_CRUZ:
         destino = universo / ferramenta / "treated"
         destino.mkdir(parents=True)
         (destino / ".gitkeep").write_text("")
         for cve in sorted(gt):
             if cve in BAIXAS_CRUZ:
-                registro["por_cve"][ferramenta].append([cve, BAIXAS_CRUZ[cve], 0])
+                status_de[ferramenta][cve] = BAIXAS_CRUZ[cve]
                 continue
             if ferramenta == "snyk-code" and cve in SNYK_SEM_ARQUIVO_CRUZ:
-                registro["por_cve"][ferramenta].append([cve, "SEM_ARQUIVO_ANALISAVEL", 1])
+                status_de[ferramenta][cve] = "SEM_ARQUIVO_ANALISAVEL"
                 continue
             caso = por_caso.get((ferramenta, cve))
             achados = _achados_sinteticos(ferramenta, cve, caso["achados"] if caso else [])
             varrido = caso.get("gt_file_scanned", "padrao") if caso else "padrao"
             _escrever_json(destino / (cve + ".json"),
                            _tratado_sintetico(ferramenta, gt[cve], achados, varrido))
-            registro["por_cve"][ferramenta].append(
-                [cve, "OK" if achados else "SEM_ACHADOS", 1])
-    caminho_registro = tmp / "cruz-registro.json"
-    _escrever_json(caminho_registro, registro)
+            status_de[ferramenta][cve] = "OK" if achados else "SEM_ACHADOS"
 
-    def rodar(saida, lista=None, reg=caminho_registro):
+    # Logs de execucao sinteticos, um por (lote, ferramenta), nos lotes REAIS
+    # de datasets/listas/ — o script confere cada log contra a lista do lote.
+    logs_dir = tmp / "cruz-logs"
+    lote_de = {}
+    for lista_lote in sorted((RAIZ / "datasets" / "listas").glob("cves-sast-batch-*")):
+        cves_lote = [l.split(",")[0] for l in
+                     lista_lote.read_text(encoding="utf-8").splitlines() if l.strip()]
+        (logs_dir / lista_lote.name).mkdir(parents=True)
+        for cve in cves_lote:
+            lote_de[cve] = lista_lote.name
+        for ferramenta in FERRAMENTAS_CRUZ:
+            corpo = "".join("%s,%s,%s,%s,fixture,1\n" % (
+                cve, gt[cve]["repository"], gt[cve]["commit"], status_de[ferramenta][cve])
+                for cve in cves_lote)
+            (logs_dir / lista_lote.name / ("execution-log-%s.csv" % ferramenta)).write_text(
+                "cve,repo,commit,status,mensagem,duracao_segundos\n" + corpo, encoding="utf-8")
+    checar(sorted(lote_de) == sorted(gt), "fixture: os oito lotes reais cobrem a lista")
+
+    def rodar(saida, lista=None):
         comando = [sys.executable, str(CRUZA), "--treated-root", str(universo),
-                   "--registro", str(reg), "--saida-dir", str(saida)]
+                   "--logs-campanha", str(logs_dir), "--saida-dir", str(saida)]
         if lista is not None:
             comando += ["--lista", str(lista)]
         return subprocess.run(comando, capture_output=True, text=True)
@@ -1659,7 +1675,8 @@ def secao_cruzamento(tmp):
         validacao = rel[ferramenta]["validacao"]
         guardas = {m["guarda"] for m in validacao["autoteste"]}
         checar(len(validacao["autoteste"]) >= 30
-               and guardas == {"validar_tratado", "conferir_presenca"}
+               and guardas == {"validar_tratado", "conferir_presenca",
+                               "conferir_status_achados"}
                and all(m["guarda_pretendida_disparou"] for m in validacao["autoteste"]),
                "%s: autoteste embutido, %d mutantes em %s, cada um pela guarda pretendida"
                % (ferramenta, len(validacao["autoteste"]), sorted(guardas)))
@@ -1670,6 +1687,11 @@ def secao_cruzamento(tmp):
         checar(rel[ferramenta]["csv_da_mesma_execucao"]["sha256"]
                == hashlib.sha256((saida / "matriz-deteccao.csv").read_bytes()).hexdigest(),
                "%s: o JSON carrega o sha256 do CSV da mesma execucao" % ferramenta)
+        checar(rel[ferramenta]["fontes"]["logs_campanha"]["arquivos"] == 24
+               and rel[ferramenta]["fontes"]["listas_de_lote"]["arquivos"] == 8
+               and "registro_campanha" not in rel[ferramenta]["fontes"],
+               "%s: status derivado dos 24 logs de lote, sem arquivo intermediario"
+               % ferramenta, rel[ferramenta]["fontes"].get("logs_campanha"))
         checar(validacao["controle_positivo"]["divergencias"] == [],
                "%s: controle positivo embutido sem divergencia" % ferramenta)
         conferencia = rel[ferramenta]["conferencia_csv"]
@@ -1719,7 +1741,7 @@ def secao_cruzamento(tmp):
     ajuda = subprocess.run([sys.executable, str(CRUZA), "--help"],
                            capture_output=True, text=True).stdout
     checar(set(re.findall(r"--[a-z][a-z-]*", ajuda))
-           == {"--help", "--lista", "--treated-root", "--registro", "--saida-dir"},
+           == {"--help", "--lista", "--treated-root", "--logs-campanha", "--saida-dir"},
            "interface: so opcoes de caminho, nenhuma que selecione recorte",
            sorted(set(re.findall(r"--[a-z][a-z-]*", ajuda))))
 
@@ -1727,7 +1749,10 @@ def secao_cruzamento(tmp):
     print("\n== cruza-deteccao.py: mutantes (cada um tem de PARAR sem escrever saida) ==")
     alvo = universo / "codeql" / "treated" / "CVE-2018-14040.json"   # caso C03, 1 achado
     original_alvo = alvo.read_bytes()
-    original_registro = caminho_registro.read_bytes()
+    def retrato_logs():
+        return {str(x.relative_to(logs_dir)): x.read_bytes()
+                for x in sorted(logs_dir.rglob("*")) if x.is_file()}
+    original_logs = retrato_logs()
     contador = [0]
 
     def restaurar(caminho, conteudo):
@@ -1746,8 +1771,14 @@ def secao_cruzamento(tmp):
     def editar_alvo(mutacao):
         return editar(alvo, mutacao)
 
-    def editar_registro(mutacao):
-        return editar(caminho_registro, lambda d: mutacao(d["por_cve"]))
+    def caminho_log(ferramenta, cve):
+        return logs_dir / lote_de[cve] / ("execution-log-%s.csv" % ferramenta)
+
+    def editar_texto(caminho, transformar):
+        guardado = caminho.read_bytes()
+        return (lambda: caminho.write_text(transformar(guardado.decode("utf-8")),
+                                           encoding="utf-8"),
+                lambda: restaurar(caminho, guardado))
 
     def criar(caminho, conteudo):
         return (lambda: caminho.write_text(conteudo, encoding="utf-8"),
@@ -1795,11 +1826,17 @@ def secao_cruzamento(tmp):
         return editar_alvo(lambda d: d["metadata"].__setitem__(chave, valor))
 
     def status(ferramenta, cve, novo):
-        def mudar(por_cve):
-            for entrada in por_cve[ferramenta]:
-                if entrada[0] == cve:
-                    entrada[1] = novo
-        return mudar
+        """Troca o status do CVE no log do seu lote."""
+        def trocar(texto):
+            saida_linhas = []
+            for linha in texto.splitlines(keepends=True):
+                if linha.startswith(cve + ","):
+                    partes = linha.split(",")
+                    partes[3] = novo
+                    linha = ",".join(partes)
+                saida_linhas.append(linha)
+            return "".join(saida_linhas)
+        return editar_texto(caminho_log(ferramenta, cve), trocar)
 
     treated = {f: universo / f / "treated" for f in FERRAMENTAS_CRUZ}
 
@@ -1812,11 +1849,11 @@ def secao_cruzamento(tmp):
             "excluido por codigo indisponivel e TEM tratado",
             criar(treated["semgrep"] / "CVE-2018-8035.json",
                   tratado_de("semgrep", "CVE-2018-8035")))
-    mutante("baixa com status OK no registro", "excluido por codigo indisponivel, mas o registro diz OK",
-            editar_registro(status("codeql", "CVE-2016-1000229", "OK")))
+    mutante("baixa com status OK no log", "excluido por codigo indisponivel, mas o registro diz OK",
+            status("codeql", "CVE-2016-1000229", "OK"))
     mutante("baixa com o status do outro motivo (repositorio inexistente com ERRO_CHECKOUT)",
             "o motivo exige ERRO_FETCH",
-            editar_registro(status("semgrep", "CVE-2016-1000229", "ERRO_CHECKOUT")))
+            status("semgrep", "CVE-2016-1000229", "ERRO_CHECKOUT"))
     mutante("CVE-2018-1000096 com gt_cwes nao vazio no tratado",
             "premissa dos 222 pares esta errada",
             editar(treated["snyk-code"] / (SEM_CWE_CRUZ + ".json"),
@@ -1836,20 +1873,45 @@ def secao_cruzamento(tmp):
             remover(treated["codeql"] / "CVE-2017-0931.json"))
     mutante("codeql sem tratado com ERRO_ANALISE", "nao ha regra que o admita",
             combinar(remover(treated["codeql"] / "CVE-2017-0931.json"),
-                     editar_registro(status("codeql", "CVE-2017-0931", "ERRO_ANALISE"))))
+                     status("codeql", "CVE-2017-0931", "ERRO_ANALISE")))
     mutante("semgrep sem tratado com SEM_ARQUIVO_ANALISAVEL (so o Snyk o admite)",
             "nao ha regra que o admita",
             combinar(remover(treated["semgrep"] / "CVE-2017-0931.json"),
-                     editar_registro(status("semgrep", "CVE-2017-0931",
-                                            "SEM_ARQUIVO_ANALISAVEL"))))
+                     status("semgrep", "CVE-2017-0931", "SEM_ARQUIVO_ANALISAVEL")))
     mutante("snyk com tratado para CVE SEM_ARQUIVO_ANALISAVEL",
             "tratado presente com status SEM_ARQUIVO_ANALISAVEL",
             criar(treated["snyk-code"] / "CVE-2018-16480.json",
                   tratado_de("snyk-code", "CVE-2018-16480")))
-    mutante("registro sem um CVE", "sem status no registro",
-            editar_registro(lambda pc: pc["semgrep"].pop()))
-    mutante("registro com status desconhecido", "status desconhecido",
-            editar_registro(status("semgrep", "CVE-2017-0931", "QUEBRADO")))
+    # Logs de execucao
+    log_aa = logs_dir / "cves-sast-batch-aa" / "execution-log-semgrep.csv"
+    mutante("log de lote sem um CVE", "CVEs do log diferem da lista do lote",
+            editar_texto(log_aa, lambda t: "".join(t.splitlines(keepends=True)[:-1])))
+    mutante("log com status desconhecido", "'status': 'QUEBRADO'",
+            status("semgrep", "CVE-2017-0931", "QUEBRADO"))
+    mutante("log com linha fora do formato", "menos de 4 campos",
+            editar_texto(log_aa, lambda t: t + "CVE-2017-0931,x\n"))
+    mutante("log sem cabecalho", "nao e o cabecalho do log",
+            editar_texto(log_aa, lambda t: "".join(t.splitlines(keepends=True)[1:])))
+    mutante("log ausente", "log ausente",
+            remover(logs_dir / "cves-sast-batch-ac" / "execution-log-snyk-code.csv"))
+    outro = next(c for c in sorted(lote_de) if lote_de[c] == "cves-sast-batch-aa")
+    mutante("CVE em dois lotes", "CVE em dois lotes",
+            editar_texto(logs_dir / "cves-sast-batch-ab" / "execution-log-codeql.csv",
+                         lambda t: t + "%s,r,c,SEM_ACHADOS,fixture,1\n" % outro))
+    # Segunda linha do mesmo CVE (log concatenado de duas execucoes): o
+    # ler_log ficaria com a ultima, e o script exige uma linha por CVE.
+    mutante("CVE repetido no log", "CVE repetido no log",
+            editar_texto(caminho_log("codeql", "CVE-2017-0931"),
+                         lambda t: t + "CVE-2017-0931,r,c,SEM_ACHADOS,reexecucao,0\n"))
+    # Status x achados: pega log trocado entre ferramentas e achado descartado.
+    mutante("OK no log e tratado sem achado", "OK no registro e tratado sem achado",
+            status("codeql", "CVE-2017-0931", "OK"))
+    mutante("SEM_ACHADOS no log e tratado com achado (caso C03)",
+            "SEM_ACHADOS no registro e tratado com 1 achados",
+            status("codeql", "CVE-2018-14040", "SEM_ACHADOS"))
+    mutante("CVE sem CWE sem tratado", "exige o tratado",
+            combinar(remover(treated["codeql"] / (SEM_CWE_CRUZ + ".json")),
+                     status("codeql", SEM_CWE_CRUZ, "ERRO_ANALISE")))
 
     # Arquivos no diretorio de tratados
     mutante("tratado orfao", "tratado orfao",
@@ -1896,8 +1958,7 @@ def secao_cruzamento(tmp):
                    meta("schema_version", "1.2"), saida_mut=saida)
     checar("NAO foram atualizadas" in proc.stderr,
            "parada avisa que as saidas pre-existentes nao foram atualizadas")
-    checar(alvo.read_bytes() == original_alvo
-           and caminho_registro.read_bytes() == original_registro,
+    checar(alvo.read_bytes() == original_alvo and retrato_logs() == original_logs,
            "mutantes desfeitos: universo restaurado")
 
 

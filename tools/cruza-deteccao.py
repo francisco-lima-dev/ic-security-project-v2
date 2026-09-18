@@ -6,7 +6,7 @@ ground truth e apura, por (CVE, ferramenta), os cinco niveis de acerto e as
 duas variantes de CWE fixados em docs/criterios-cruzamento.md.
 
     python3 tools/cruza-deteccao.py [--lista ARQ] [--treated-root DIR]
-                                    [--registro ARQ] [--saida-dir DIR]
+                                    [--logs-campanha DIR] [--saida-dir DIR]
 
 As quatro opcoes sao CAMINHOS e existem para exercitar fixtures. Nenhuma
 seleciona recorte: toda execucao apura os cinco niveis e as duas variantes,
@@ -17,12 +17,19 @@ ENTRADAS — todas versionadas; nada depende de artifact
   datasets/listas/cves-sast.txt          universo dos 223 CVEs e ground truth
   datasets/cwe-primario.csv              primario dos conjuntos multivalorados
   results/<ferramenta>/treated/*.json    os tratados, schema 1.3
-  logs/campanha-2026-09-17/campanha-223.json
-                                         status de cada (CVE, ferramenta)
+  logs/campanha-2026-09-17/cves-sast-batch-<lote>/execution-log-<ferramenta>.csv
+                                         os 24 logs de execucao da campanha,
+                                         copia byte a byte dos artifacts
+  datasets/listas/cves-sast-batch-<lote> a lista de cada lote, contra a qual o
+                                         log do lote e conferido
 
-O registro da campanha NAO define o denominador: ele e conferido. Serve para
-que a ausencia de um tratado nunca seja interpretada sem causa registrada —
-ver "sem tratado", adiante.
+Dos logs sai o REGISTRO de status de cada (CVE, ferramenta), lido pelo
+ler_log() do check-log.py — uma implementacao so da leitura do log, com a
+mesma deduplicacao (vale a ultima linha de cada CVE). O registro NAO define o
+denominador: serve para que a ausencia de um tratado nunca seja interpretada
+sem causa registrada — ver "sem tratado", adiante. Limite declarado: se o
+proprio log trouxer um SEM_ARQUIVO_ANALISAVEL indevido, a ausencia e aceita,
+porque nao ha no repositorio segunda fonte da causa.
 
 SAIDAS — em results/cruzamento/, escritas so depois de todas as conferencias
   matriz-deteccao.csv          uma linha por (CVE, ferramenta): 223 x 3
@@ -67,7 +74,9 @@ RAIZ = Path(__file__).resolve().parent.parent
 FERRAMENTAS = ("codeql", "semgrep", "snyk-code")
 
 LISTA_PADRAO = RAIZ / "datasets" / "listas" / "cves-sast.txt"
-REGISTRO_PADRAO = RAIZ / "logs" / "campanha-2026-09-17" / "campanha-223.json"
+LOGS_CAMPANHA_PADRAO = RAIZ / "logs" / "campanha-2026-09-17"
+LISTAS_DE_LOTE = RAIZ / "datasets" / "listas"
+CHECK_LOG = RAIZ / "tools" / "check-log.py"
 TREATED_ROOT_PADRAO = RAIZ / "results"
 SAIDA_PADRAO = RAIZ / "results" / "cruzamento"
 CRITERIOS = RAIZ / "docs" / "criterios-cruzamento.md"
@@ -94,8 +103,7 @@ STATUS_DA_BAIXA = {"CVE-2016-1000229": "ERRO_FETCH", "CVE-2018-8035": "ERRO_CHEC
 FORA_SEM_CWE = {"CVE-2018-1000096": "sem_cwe_no_ground_truth"}
 FORA_DO_DENOMINADOR = {**FORA_POR_CODIGO_INDISPONIVEL, **FORA_SEM_CWE}
 
-STATUS_CONHECIDOS = {"OK", "SEM_ACHADOS", "PULADO", "ERRO_LINHA", "ERRO_FETCH",
-                     "ERRO_CHECKOUT", "ERRO_ANALISE", "SEM_ARQUIVO_ANALISAVEL"}
+_RE_LOTE = re.compile(r"^cves-sast-batch-[a-z]{2}$")
 STATUS_COM_TRATADO = {"OK", "SEM_ACHADOS"}
 # Unica ausencia de tratado admitida no denominador, e so no Snyk Code: exit 3
 # e causa interna a ferramenta, o CVE permanece e conta como nao-deteccao
@@ -152,8 +160,10 @@ NOTAS = [
     "nao_se_aplica, nunca como nao-acerto. Qual base usar para ela e decisao "
     "do texto; o script nao emite fracao.",
     "CVE do denominador sem tratado so e admitido com status "
-    "SEM_ARQUIVO_ANALISAVEL no registro da campanha, e conta como "
-    "nao-deteccao em todos os niveis.",
+    "SEM_ARQUIVO_ANALISAVEL nos logs de execucao da campanha, e conta como "
+    "nao-deteccao em todos os niveis. Se o proprio log trouxer esse status "
+    "indevidamente, a ausencia e aceita: nao ha segunda fonte da causa no "
+    "repositorio.",
     "O gt usado na apuracao vem da lista e da tabela de primario; o gt "
     "gravado em cada tratado foi conferido igual a ele.",
 ]
@@ -171,11 +181,11 @@ class Parada(Exception):
 # ---------------------------------------------------------------------------
 # normalize.py como biblioteca
 # ---------------------------------------------------------------------------
-def carregar_normalize():
+def importar(nome, caminho):
     # Sem .pyc em tools/__pycache__: importar nao pode deixar residuo no
     # repositorio.
     sys.dont_write_bytecode = True
-    spec = importlib.util.spec_from_file_location("normalize", NORMALIZE)
+    spec = importlib.util.spec_from_file_location(nome, caminho)
     modulo = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(modulo)
     return modulo
@@ -269,46 +279,86 @@ def carregar_gt(norm, lista):
     return gt, denominador, transformacoes
 
 
-def carregar_registro(caminho, gt):
-    """Status de cada (CVE, ferramenta) na campanha. Levanta Parada."""
-    try:
-        dados = json.loads(Path(caminho).read_text(encoding="utf-8"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as erro:
-        raise Parada("registro da campanha ilegivel", ["%s: %s" % (caminho, erro)])
-    por_cve = dados.get("por_cve") if isinstance(dados, dict) else None
-    if not isinstance(por_cve, dict):
-        raise Parada("registro da campanha sem por_cve", [str(caminho)])
+def carregar_registro(diretorio, gt, check_log):
+    """Status de cada (CVE, ferramenta), derivado dos logs de execucao dos lotes.
 
-    motivos, registro = [], {}
-    for ferramenta in FERRAMENTAS:
-        entradas = por_cve.get(ferramenta)
-        if not isinstance(entradas, list):
-            motivos.append("registro sem a lista de %s" % ferramenta)
+    Um log por (lote, ferramenta) em <diretorio>/<lote>/. Cada log tem de
+    cobrir exatamente os CVEs da lista do seu lote (datasets/listas/<lote>),
+    nenhum CVE pode aparecer em dois lotes, e a uniao tem de ser a lista
+    completa. Devolve (registro, arquivos lidos). Levanta Parada.
+    """
+    diretorio = Path(diretorio)
+    if not diretorio.is_dir():
+        raise Parada("diretorio dos logs da campanha ausente", [str(diretorio)])
+    lotes = sorted(p for p in diretorio.iterdir() if p.is_dir() and _RE_LOTE.match(p.name))
+    if not lotes:
+        raise Parada("nenhum diretorio de lote em %s" % diretorio, [])
+
+    motivos, arquivos, listas = [], [], []
+    registro = {ferramenta: {} for ferramenta in FERRAMENTAS}
+    lote_de = {ferramenta: {} for ferramenta in FERRAMENTAS}
+    for lote in lotes:
+        lista_lote = LISTAS_DE_LOTE / lote.name
+        if not lista_lote.is_file():
+            motivos.append("lote %s sem lista em %s" % (lote.name, LISTAS_DE_LOTE))
             continue
-        registro[ferramenta] = {}
-        for entrada in entradas:
-            if not (isinstance(entrada, list) and len(entrada) == 3
-                    and isinstance(entrada[0], str) and isinstance(entrada[1], str)):
-                motivos.append("%s: entrada fora da forma [cve, status, duracao]: %r"
-                               % (ferramenta, entrada))
+        listas.append(lista_lote)
+        cves_lote = sorted(linha.split(",")[0] for linha in
+                           lista_lote.read_text(encoding="utf-8").splitlines() if linha.strip())
+        for ferramenta in FERRAMENTAS:
+            log = lote / ("execution-log-%s.csv" % ferramenta)
+            if not log.is_file():
+                motivos.append("%s: log ausente: %s" % (ferramenta, log))
                 continue
-            cve, status = entrada[0], entrada[1]
-            if cve in registro[ferramenta]:
-                motivos.append("%s: %s repetido no registro" % (ferramenta, cve))
-            if status not in STATUS_CONHECIDOS:
-                motivos.append("%s %s: status desconhecido %r" % (ferramenta, cve, status))
-            registro[ferramenta][cve] = status
+            arquivos.append(log)
+            try:
+                primeira = log.read_text(encoding="utf-8").split("\n", 1)[0]
+                ultimo, _, linhas, desconhecidos = check_log.ler_log(log)
+            except (OSError, UnicodeDecodeError) as erro:
+                motivos.append("%s: log ilegivel %s: %s" % (ferramenta, log, erro))
+                continue
+            if primeira != check_log.CABECALHO:
+                motivos.append("%s %s: primeira linha nao e o cabecalho do log: %r"
+                               % (ferramenta, lote.name, primeira[:80]))
+            for item in desconhecidos:
+                motivos.append("%s %s: linha do log fora do formato ou status "
+                               "desconhecido: %s" % (ferramenta, lote.name, item))
+            # ler_log fica com a ultima linha de cada CVE e pula cabecalho em
+            # qualquer posicao: um log concatenado de duas execucoes passaria
+            # com o status da segunda. Na campanha cada log e de uma execucao
+            # so, com uma linha por CVE, e isso e exigido aqui.
+            if linhas != len(ultimo):
+                motivos.append("%s %s: %d linhas para %d CVEs — CVE repetido no log"
+                               % (ferramenta, lote.name, linhas, len(ultimo)))
+            if sorted(ultimo) != cves_lote:
+                motivos.append("%s %s: CVEs do log diferem da lista do lote (%d x %d)"
+                               % (ferramenta, lote.name, len(ultimo), len(cves_lote)))
+            for cve, status in ultimo.items():
+                if cve in registro[ferramenta]:
+                    motivos.append("%s %s: CVE em dois lotes, %s e %s"
+                                   % (ferramenta, cve, lote_de[ferramenta][cve], lote.name))
+                registro[ferramenta][cve] = status
+                lote_de[ferramenta][cve] = lote.name
+    for ferramenta in FERRAMENTAS:
         faltam = sorted(set(gt) - set(registro[ferramenta]))
         sobram = sorted(set(registro[ferramenta]) - set(gt))
         if faltam:
-            motivos.append("%s: %d CVEs da lista sem status no registro: %s"
+            motivos.append("%s: %d CVEs da lista sem status nos logs: %s"
                            % (ferramenta, len(faltam), faltam[:10]))
         if sobram:
-            motivos.append("%s: %d CVEs no registro fora da lista: %s"
+            motivos.append("%s: %d CVEs nos logs fora da lista: %s"
                            % (ferramenta, len(sobram), sobram[:10]))
     if motivos:
-        raise Parada("registro da campanha nao confere com a lista", motivos)
-    return registro
+        raise Parada("logs da campanha nao conferem com a lista", motivos)
+    return registro, arquivos, listas
+
+
+def sha256_conjunto(arquivos, raiz):
+    resumo = hashlib.sha256()
+    for caminho in sorted(arquivos):
+        resumo.update(("%s\0%s\n" % (Path(caminho).relative_to(raiz),
+                                       sha256_arquivo(caminho))).encode())
+    return resumo.hexdigest()
 
 
 # ---------------------------------------------------------------------------
@@ -505,6 +555,28 @@ def conferir_presenca(ferramenta, presentes, registro, gt, denominador):
         elif not tem and cve in no_denominador and status not in admitidos:
             anomalias.append("%s %s: CVE do denominador sem tratado, status %s — nao ha "
                              "regra que o admita como nao-deteccao" % (ferramenta, cve, status))
+        elif not tem and cve in FORA_SEM_CWE:
+            anomalias.append("%s %s: CVE sem CWE sem tratado, status %s — a conferencia "
+                             "do gt_cwes vazio exige o tratado" % (ferramenta, cve, status))
+    return anomalias
+
+
+def conferir_status_achados(ferramenta, tratados, registro):
+    """SEM_ACHADOS no log sse o tratado nao tem achado; OK sse tem.
+
+    Conferencia estrutural entre log e tratado, sem ler a prosa da mensagem.
+    Pega log trocado entre ferramentas do mesmo lote e normalizador que
+    descarte achados — falso negativo sem erro visivel.
+    """
+    anomalias = []
+    for cve, tratado in sorted(tratados.items()):
+        status = registro[ferramenta][cve]
+        vazio = not tratado["findings"]
+        if status == "SEM_ACHADOS" and not vazio:
+            anomalias.append("%s %s: SEM_ACHADOS no registro e tratado com %d achados"
+                             % (ferramenta, cve, len(tratado["findings"])))
+        elif status == "OK" and vazio:
+            anomalias.append("%s %s: OK no registro e tratado sem achado" % (ferramenta, cve))
     return anomalias
 
 
@@ -730,11 +802,12 @@ def autoteste_validacao(norm):
 def autoteste_presenca():
     """Controle positivo de conferir_presenca, com as regras do denominador."""
     baixa = "CVE-2016-1000229"
-    gt = {baixa: {}, "CVE-2000-0001": {}, "CVE-2000-0002": {}}
+    sem_cwe = next(iter(FORA_SEM_CWE))
+    gt = {baixa: {}, sem_cwe: {}, "CVE-2000-0001": {}, "CVE-2000-0002": {}}
     denominador = ["CVE-2000-0001", "CVE-2000-0002"]
-    registro = {baixa: STATUS_DA_BAIXA[baixa], "CVE-2000-0001": "OK",
-                "CVE-2000-0002": "SEM_ARQUIVO_ANALISAVEL"}
-    presentes = {"CVE-2000-0001"}
+    registro = {baixa: STATUS_DA_BAIXA[baixa], sem_cwe: "SEM_ACHADOS",
+                "CVE-2000-0001": "OK", "CVE-2000-0002": "SEM_ARQUIVO_ANALISAVEL"}
+    presentes = {"CVE-2000-0001", sem_cwe}
 
     def rodar(ferramenta="snyk-code", mudar_registro=None, mudar_presentes=None):
         reg = dict(registro, **(mudar_registro or {}))
@@ -752,12 +825,28 @@ def autoteste_presenca():
         ("ausencia sem causa admitida", "nao ha regra",
          {"CVE-2000-0002": "ERRO_ANALISE"}, None, "snyk-code"),
         ("SEM_ARQUIVO_ANALISAVEL fora do Snyk Code", "nao ha regra", {}, None, "codeql"),
+        ("CVE sem CWE sem tratado", "exige o tratado", {sem_cwe: "ERRO_ANALISE"},
+         lambda p: p - {sem_cwe}, "snyk-code"),
     )
     limpo = rodar()
     casos = []
     for nome, trecho, mudar_registro, mudar_presentes, ferramenta in mutantes:
         encontradas = rodar(ferramenta, mudar_registro, mudar_presentes)
         casos.append({"guarda": "conferir_presenca", "mutante": nome,
+                      "anomalias": len(encontradas),
+                      "guarda_pretendida_disparou": any(trecho in a for a in encontradas)})
+
+    # conferir_status_achados, na mesma forma
+    tratados = {"CVE-2000-0001": {"findings": [{}]}, "CVE-2000-0003": {"findings": []}}
+    reg_status = {"CVE-2000-0001": "OK", "CVE-2000-0003": "SEM_ACHADOS"}
+    limpo += conferir_status_achados("codeql", tratados, {"codeql": reg_status})
+    for nome, trecho, mudanca in (
+            ("OK com tratado sem achado", "tratado sem achado", {"CVE-2000-0003": "OK"}),
+            ("SEM_ACHADOS com tratado com achado", "tratado com 1 achados",
+             {"CVE-2000-0001": "SEM_ACHADOS"})):
+        encontradas = conferir_status_achados("codeql", tratados,
+                                              {"codeql": dict(reg_status, **mudanca)})
+        casos.append({"guarda": "conferir_status_achados", "mutante": nome,
                       "anomalias": len(encontradas),
                       "guarda_pretendida_disparou": any(trecho in a for a in encontradas)})
     return limpo, casos
@@ -937,10 +1026,11 @@ def controle_da_conferencia(linhas, relatorios):
 def executar(args):
     lista = Path(args.lista) if args.lista else LISTA_PADRAO
     raiz_tratados = Path(args.treated_root) if args.treated_root else TREATED_ROOT_PADRAO
-    caminho_registro = Path(args.registro) if args.registro else REGISTRO_PADRAO
+    logs_campanha = Path(args.logs_campanha) if args.logs_campanha else LOGS_CAMPANHA_PADRAO
     saida = Path(args.saida_dir) if args.saida_dir else SAIDA_PADRAO
 
-    norm = carregar_normalize()
+    norm = importar("normalize", NORMALIZE)
+    check_log = importar("check_log", CHECK_LOG)
     if norm.SCHEMA_VERSION != SCHEMA_ESPERADO:
         raise Parada("normalize.py grava schema diferente do que este script le",
                      ["normalize.SCHEMA_VERSION = %r, esperado %r"
@@ -961,7 +1051,7 @@ def executar(args):
         raise Parada("autoteste do proprio script falhou", falhas)
 
     gt, denominador, transformacoes = carregar_gt(norm, lista)
-    registro = carregar_registro(caminho_registro, gt)
+    registro, logs_lidos, listas_lidas = carregar_registro(logs_campanha, gt, check_log)
 
     tratados, presentes, resumos, anomalias = {}, {}, {}, []
     for ferramenta in FERRAMENTAS:
@@ -971,6 +1061,7 @@ def executar(args):
     for ferramenta in FERRAMENTAS:
         anomalias.extend(conferir_presenca(ferramenta, presentes[ferramenta], registro,
                                            gt, denominador))
+        anomalias.extend(conferir_status_achados(ferramenta, tratados[ferramenta], registro))
     if anomalias:
         raise Parada("validacao estrutural nao passou (%d anomalias)" % len(anomalias),
                      anomalias)
@@ -1022,8 +1113,14 @@ def executar(args):
                 "lista": {"caminho": rotulo_caminho(lista), "sha256": sha256_arquivo(lista)},
                 "tabela_primario": {"caminho": rotulo_caminho(norm.TABELA_PRIMARIO),
                                     "sha256": sha256_arquivo(norm.TABELA_PRIMARIO)},
-                "registro_campanha": {"caminho": rotulo_caminho(caminho_registro),
-                                      "sha256": sha256_arquivo(caminho_registro)},
+                "logs_campanha": {"diretorio": rotulo_caminho(logs_campanha),
+                                  "arquivos": len(logs_lidos),
+                                  "sha256_conjunto": sha256_conjunto(logs_lidos,
+                                                                     logs_campanha)},
+                "listas_de_lote": {"diretorio": rotulo_caminho(LISTAS_DE_LOTE),
+                                   "arquivos": len(listas_lidas),
+                                   "sha256_conjunto": sha256_conjunto(listas_lidas,
+                                                                      LISTAS_DE_LOTE)},
                 "tratados": {"diretorio": rotulo_caminho(raiz_tratados / ferramenta / "treated"),
                              "arquivos": len(tratados[ferramenta]),
                              "sha256_conjunto": resumos[ferramenta]},
@@ -1179,8 +1276,9 @@ def main(argv=None):
     analisador.add_argument("--lista", help="padrao: datasets/listas/cves-sast.txt")
     analisador.add_argument("--treated-root",
                             help="diretorio com <ferramenta>/treated/; padrao: results/")
-    analisador.add_argument("--registro",
-                            help="padrao: logs/campanha-2026-09-17/campanha-223.json")
+    analisador.add_argument("--logs-campanha",
+                            help="diretorio com <lote>/execution-log-<ferramenta>.csv; "
+                                 "padrao: logs/campanha-2026-09-17/")
     analisador.add_argument("--saida-dir", help="padrao: results/cruzamento/")
     args = analisador.parse_args(argv)
     try:

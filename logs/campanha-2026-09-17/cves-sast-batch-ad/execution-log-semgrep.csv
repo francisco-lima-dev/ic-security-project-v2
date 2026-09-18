@@ -1,0 +1,31 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2018-3721,https://github.com/lodash/lodash.git,5a3ff73997b773a28a5a160b95acfd133a8162e7,OK,semgrep 1.171.0; pack sha256 1ddc9b0bd5ad9ee31f4727648cfdd4279317627b859c44ef56d77438a0f8b87b; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 25 achados; HEAD conferido,29
+CVE-2018-3722,https://github.com/jonschlinkert/merge-deep.git,7be7e50163dc4ef467ace5371186a77028a66cc9,SEM_ACHADOS,0 achados; HEAD conferido,13
+CVE-2018-3725,https://github.com/herber/hekto.git,a3d942d8398a0907d0bbf2682f2fbd54ce73764e,SEM_ACHADOS,0 achados; HEAD conferido,14
+CVE-2018-3726,https://github.com/omphalos/crud-file-server.git,0c45fc64f0c0aeb23fe515c95e29f6485803de65,OK,1 achados; HEAD conferido,13
+CVE-2018-3728,https://github.com/hapijs/hoek.git,dfadda70b192adbcdf9a33ccc3caecfeb3dbe528,OK,8 achados; HEAD conferido,13
+CVE-2018-3731,https://github.com/tnantoka/public.git,c5c14107c00eb37c677eabcc5566938a0dee685c,OK,1 achados; HEAD conferido,13
+CVE-2018-3732,https://github.com/pillarjs/resolve-path.git,7330f714649ae4f10de73837f5c9fcfdc7979697,SEM_ACHADOS,0 achados; HEAD conferido,13
+CVE-2018-3733,https://github.com/omphalos/crud-file-server.git,833e7fcc2bc8406b9c76836a51ae173f50c56bf0,OK,1 achados; HEAD conferido,13
+CVE-2018-3736,https://github.com/TooTallNate/node-https-proxy-agent.git,c58d365dd153104d1147967a0a6b4e1dd1698e50,OK,1 achados; HEAD conferido,13
+CVE-2018-3737,https://github.com/joyent/node-sshpk.git,4d01aede236ddfefa55ba9bef07308dca315603d,OK,1 achados; HEAD conferido,14
+CVE-2018-3738,https://github.com/protobufjs/protobuf.js.git,b912005cae64176a296baa20b1f56de8a10105b1,OK,19 achados; HEAD conferido,15
+CVE-2018-3743,https://github.com/herber/hekto.git,c33aaae609c7236a7cb555a62d8b99dfbcb5da09,SEM_ACHADOS,0 achados; HEAD conferido,14
+CVE-2018-3746,https://github.com/fagbokforlaget/pdfinfojs.git,379c0e14db8298b465269653b9ac308d83eb6d4e,SEM_ACHADOS,0 achados; HEAD conferido,13
+CVE-2018-3747,https://github.com/tnantoka/public.git,6d152eb12b368df70c789aba84d27d01b854ee47,OK,1 achados; HEAD conferido,13
+CVE-2018-3750,https://github.com/unclechu/node-deep-extend.git,9653940a75c2ef2b1a503b24cbadd707cccffa8c,OK,1 achados; HEAD conferido,13
+CVE-2018-3752,https://github.com/schnittstabil/merge-options.git,45a889b92251c342453af40c5f8e3fad063b7ef6,SEM_ACHADOS,0 achados; HEAD conferido,13
+CVE-2018-3757,https://github.com/roest01/node-pdf-image.git,5803471830e0227df33a4b645aefd6521ff441e0,OK,1 achados; HEAD conferido,13
+CVE-2018-3770,https://github.com/alanshaw/markdown-pdf.git,118c5c558b06d6bc950e92a01881417d996aecc6,OK,5 achados; HEAD conferido,13
+CVE-2018-3772,https://github.com/vvo/node-whereis.git,b8b642b1163baa37f15ed49b4064dcbdb6e1876c,OK,4 achados; HEAD conferido,13
+CVE-2018-3783,https://github.com/JasonEtco/flintcms.git,49e4b6a49e8ba378313845162cd32ba06a2681d6,OK,25 achados; HEAD conferido,17
+CVE-2018-3786,https://github.com/eggjs/egg-scripts.git,08f8ea9429ee9727f5047af856d41c67de8ba23c,OK,6 achados; HEAD conferido,13
+CVE-2018-6184,https://github.com/zeit/next.js.git,b5739d53614de76b937435ae1ef7867d40c9dac3,OK,81 achados; HEAD conferido,19
+CVE-2018-6333,https://github.com/facebookarchive/nuclide.git,ee8e058c8b90cb008f3ee151c52aec40cad1174a,OK,271 achados; HEAD conferido,84
+CVE-2018-6341,https://github.com/facebook/react.git,c44c2a21614ed2e5d3078dcb24dc7ef086df24be,OK,54 achados; HEAD conferido,29
+CVE-2018-6342,https://github.com/facebook/create-react-app.git,69c3d4b04c233ba9fb9d16691056bd09076177b1,OK,48 achados; HEAD conferido,16
+CVE-2018-7560,https://github.com/myshenin/aws-lambda-multipart-parser.git,573ade8f4bf41acc7d78029d288f37104a650447,OK,1 achados; HEAD conferido,13
+CVE-2018-7651,https://github.com/npm/ssri.git,427f4233b0b3dd8c338e69e5cb0a6641df263603,SEM_ACHADOS,0 achados; HEAD conferido,13
+CVE-2018-8035,https://github.com/apache/uima-ducc.git,4c20c4fc00d5605ba40fac235df3ccf7dc38cb52,ERRO_CHECKOUT,checkout de 4c20c4fc00d5605ba40fac235df3ccf7dc38cb52 falhou; fallback de clone completo; fetch raso saiu com 128,4
+CVE-2019-10061,https://github.com/peterbraden/node-opencv.git,cfc96ba0af8c13d017d9c72f2c61ec968f1c15fb,OK,3 achados; HEAD conferido,15
+CVE-2019-10090,https://github.com/apache/jspwiki.git,447b5a634dfb6adcc7ff28181cb174aaa1920577,OK,63 achados; HEAD conferido,37

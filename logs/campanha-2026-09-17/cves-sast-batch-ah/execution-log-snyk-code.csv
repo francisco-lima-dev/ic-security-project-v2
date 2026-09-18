@@ -1,0 +1,14 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2020-7752,https://github.com/sebhildebrandt/systeminformation.git,147550532ab11cac4b609844a519a1d945f5c103,OK,snyk 1.1306.1; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 1 achados; snyk exit 1; HEAD conferido,26
+CVE-2020-7763,https://github.com/pofider/phantom-html-to-pdf.git,c1c4d4df05f3d019e74ed209bae345d2c38d8962,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,13
+CVE-2020-8116,https://github.com/sindresorhus/dot-prop.git,e0f8abf71164321caf1b20109000b08be506f227,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2020-8135,https://github.com/transloadit/uppy.git,4aeef4dac0490ebb1d1fccd5582ba42c6c0fb87d,OK,55 achados; snyk exit 1; HEAD conferido,18
+CVE-2020-8149,https://github.com/zamotany/logkitty.git,e1e229687472d8c9266d17f2969ff7431a78db86,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2020-8192,https://github.com/fastify/fastify.git,854e150c0d78e7c31f4f6eca57908f9da19c379f,OK,34 achados; snyk exit 1; HEAD conferido,23
+CVE-2020-8203,https://github.com/lodash/lodash.git,e7b28ea6cb17b4ca021e7c9d66218c8c89782f32,OK,15 achados; snyk exit 1; HEAD conferido,51
+CVE-2020-8205,https://github.com/transloadit/uppy.git,ab88612dff3ce24b001acb3b626516f0e2f7fd0c,OK,51 achados; snyk exit 1; HEAD conferido,30
+CVE-2020-8244,https://github.com/rvagg/bl.git,ecc0cc51ef62f41ae151e82d61a8eac71c2ca672,OK,1 achados; snyk exit 1; HEAD conferido,8
+CVE-2020-9038,https://github.com/laurent22/joplin.git,06d807d9ff86527151fd219b98e11b76adfb8068,OK,43 achados; snyk exit 1; HEAD conferido,17
+CVE-2021-23344,https://github.com/totaljs/framework.git,b3f901561d66ab799a4a99279893b94cad7ae4ff,OK,46 achados; snyk exit 1; HEAD conferido,45
+CVE-2021-23364,https://github.com/browserslist/browserslist.git,209adf9e0051fa39a2b25354cffd493300f34b02,OK,1 achados; snyk exit 1; HEAD conferido,10
+CVE-2021-31712,https://github.com/jpuri/react-draft-wysiwyg.git,f59ee8419cdbd45aab3bdfdf1995f112b09bbb6a,OK,2 achados; snyk exit 1; HEAD conferido,9
