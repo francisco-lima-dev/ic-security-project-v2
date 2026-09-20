@@ -68,28 +68,52 @@ repositório e colisão entre repositórios homônimos
 **Medido em setembro de 2026. Condiciona todo o cruzamento.**
 
 Os rótulos do ground truth não resultam de classificação independente dos
-CVEs: em 83% do conjunto, `explanation` e `CWEs` foram herdados da consulta
-do CodeQL que identificou o caso.
+CVEs: em **73,1%** do conjunto, `explanation` e `CWEs` foram herdados da
+consulta do CodeQL que identificou o caso.
+
+**Âncora: `ec573b51` (08/12/2020). Decidido em 20/09/2026.**
 
 | Verificação | Resultado |
 |---|---|
-| `explanation` idêntica ao `@name` de consulta do pacote JS do CodeQL | 185 de 223 (83,0%) |
-| Destas, com `CWEs` idêntico às tags `external/cwe/` da consulta (estado de dez/2020) | 185 de 185 (100%) |
+| `explanation` idêntica ao `@name` de consulta do pacote JS do CodeQL | **163 de 223 (73,1%)** |
+| Destas, com `CWEs` idêntico às tags `external/cwe/` da consulta | 163 de 163 (100%) |
 | Divergências não explicadas | 0 |
 | Controle: `explanation` idêntica a mensagem de regra do Semgrep (2.228 regras) | 0 (0,0%) |
 
-**Ressalva a esta tabela:** os 185 se reproduzem em `9ff6d68a` (11/12/2020);
-contra a referência que o `tools/ground-truth/README.md` fixou, `ec573b51`
-(08/12/2020), são 163 de 223. Ver "Reprodução", adiante — divergência
-registrada e pendente.
+**Por que `ec573b51`, e não `9ff6d68a`.** `ec573b51` é o último merge do main
+anterior ao commit do release do benchmark (`2020-12-09T13:27:12Z`).
+`9ff6d68a` é de `2020-12-11T21:58:09Z`, **posterior** — e um estado do CodeQL
+que veio depois do benchmark não pode ser a fonte das etiquetas dele. A tese é
+herança, e herança exige que a consulta exista antes do rótulo; a contagem é
+conservadora por construção, porque não credita como herança o rótulo que
+corresponde a código ainda não integrado ao main.
 
-O cotejo contra o CodeQL **atual** dá 108 idênticos, 75 subconjuntos e 2
-divergentes; as três situações se resolvem pela evolução posterior do
-catálogo. Usar sempre o estado de **9 de dezembro de 2020**, data do anúncio
-do benchmark.
+**Os 185 de 223 (83,0%) ficam como medida de sensibilidade**, contra
+`9ff6d68a`, com 185 de 185 idênticos. **A diferença é inteira e exatamente os
+22 CVEs de prototype pollution**, todos por
+`Security/CWE-915/PrototypePollutingFunction.ql`, nomeados em
+`results/proveniencia/compara-ref-x-sens.txt`: `CVE-2018-16487`,
+`CVE-2018-16489`, `CVE-2018-16490`, `CVE-2018-16491`, `CVE-2018-16492`,
+`CVE-2018-3719`, `CVE-2018-3721`, `CVE-2018-3722`, `CVE-2018-3728`,
+`CVE-2018-3750`, `CVE-2018-3752`, `CVE-2019-10746`, `CVE-2019-10747`,
+`CVE-2019-10750`, `CVE-2019-11358`, `CVE-2020-15256`, `CVE-2020-5258`,
+`CVE-2020-7638`, `CVE-2020-7699`, `CVE-2020-7720`, `CVE-2020-8116`,
+`CVE-2020-8203`. Zero casados só na referência, e os 163 comuns não mudam de
+consulta nem de relação.
 
-Os 38 sem correspondência têm `explanation` em prosa, escrita à mão — outra
-camada de proveniência.
+Isso **não** afirma que a correspondência com `9ff6d68a` seja coincidência: o
+achado temporal do `tools/ground-truth/README.md` documenta que, no commit do
+release, o estado de consulta que esses 22 rótulos reproduzem já era público
+num PR aberto e não integrado. A âncora deixa esses casos fora da contagem;
+não os nega.
+
+O cotejo contra o CodeQL **atual** dá 185 casados, com 108 idênticos, 74
+subconjuntos e 3 divergentes; as três situações se resolvem pela evolução
+posterior do catálogo, e ele não serve de âncora por ser seis anos posterior
+ao benchmark.
+
+Os 60 sem correspondência contra a âncora têm `explanation` em prosa, escrita
+à mão — outra camada de proveniência. Contra `9ff6d68a` são 38.
 
 ### Consequência prática
 
@@ -109,19 +133,25 @@ que reproduzem o cotejo a partir de um clone limpo, e o achado deixou de ser o
 único do estudo que um terceiro não reproduz. Até 18/09/2026 este parágrafo
 afirmava o contrário, com conferência de 10/09 — anterior aos dois commits.
 
-**Divergência com a tabela acima, registrada e não resolvida aqui.** O README
-fixa a referência em `ec573b51`, merge do main de 08/12/2020 e o último antes
-do commit do release do benchmark. Contra ela, o casamento é **163 de 223
-(73,1%)**, com 163 de 163 idênticos. Os **185 de 223** da tabela se reproduzem
-em `9ff6d68a` (11/12/2020), que o README trata como **medida de
-sensibilidade**, não como âncora; a diferença são os 22 CVEs de prototype
-pollution. A tabela, os 83% e a instrução de usar o estado de 9 de dezembro
-são anteriores a essa decisão e não foram atualizados. Qual número vai ao
-texto é decisão pendente.
+**A divergência que este parágrafo registrava está resolvida.** Até
+20/09/2026 a tabela acima afirmava 185 de 223 (83,0%) e mandava usar o estado
+de 9 de dezembro, enquanto o README do diretório fixava `ec573b51`; os dois
+números conviviam sem que se dissesse qual ia ao texto. **Vai o 163 de 223
+(73,1%), contra `ec573b51`**, pela razão de precedência temporal registrada
+acima. A tabela foi corrigida, e os 185 passaram a medida de sensibilidade.
+
+**As saídas do cotejo estão versionadas em `results/proveniencia/`** desde
+20/09/2026 — os sete relatórios, as cinco comparações nominais e o controle do
+Semgrep, com o `README.md` do diretório trazendo os comandos exatos. Até então
+só os scripts estavam no repositório, e conferir qualquer número do cotejo
+exigia obter os catálogos externos e reexecutar. Os catálogos seguem fora do
+versionamento, obtidos por `obter-catalogos.sh` em `catalogos/`, ignorado; os
+caminhos gravados nos relatórios são relativos ao repositório de propósito,
+para que o diretório da máquina do operador não entre em arquivo versionado.
 
 O procedimento: o CWE pretendido pelo benchmark para qualquer CVE do núcleo é
 recuperável consultando as tags `external/cwe/` da consulta correspondente no
-CodeQL de dezembro de 2020 — o estado exato é o da divergência acima.
+CodeQL em **`ec573b51`**.
 
 ## Caracterização estrutural do ground truth
 
@@ -280,7 +310,8 @@ O gerador exige a flag `--force` para remover lotes existentes.
 
 **Versionados:** `datasets/` (incluindo `cwe-primario.csv` e
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
-`results/*/treated/`, `results/cruzamento/`, `results/zap/`, `logs/`
+`results/*/treated/`, `results/cruzamento/`, `results/proveniencia/`,
+`results/circularidade/`, `results/zap/`, `logs/`
 (incluindo `normalize-report-<ferramenta>.json`), o pack vendorizado do
 Semgrep e seu descritor, Dockerfiles, scripts, workflows.
 
@@ -297,8 +328,29 @@ diff é mudança de entrada ou de código, nunca de relógio; e
 desatualizada. O script recusa gravar ali se alguma entrada estiver fora do
 repositório, porque o caminho da máquina do operador iria para os JSON.
 
+**`results/proveniencia/` e `results/circularidade/` entram pela mesma razão,
+em 20/09/2026.** São as saídas de `tools/ground-truth/` — sete relatórios do
+cotejo, cinco comparações nominais e o controle do Semgrep — e as da apuração
+de circularidade. Até então só os scripts estavam versionados, e conferir
+qualquer número do cotejo exigia obter os catálogos externos e reexecutar.
+Somam cerca de 800 KiB, são determinísticas e não gravam carimbo de execução:
+conferido em três execuções com `PYTHONHASHSEED` distinto, para JSON e texto,
+com controle positivo de que o teste acusa diferença real. Cada `README.md` de
+diretório traz os comandos exatos e a procedência.
+
+**Caminho relativo não é cosmética nessas duas.** O `cruza-codeql.py` grava em
+`consultas_dir` e `fonte_ground_truth` o caminho que recebeu, e os defaults
+dele são absolutos: invocar sem `--csv` e `--clone` explícitos levaria o
+diretório da máquina do operador para dentro de arquivo versionado. Por isso
+os catálogos são obtidos em `catalogos/`, **dentro da árvore e ignorado** — de
+fora dela não há caminho relativo a dar. O
+`tools/circularidade-proveniencia.py` fecha o mesmo buraco com guarda
+explícita, na forma do `cruza-deteccao.py`: recusa gravar em
+`results/circularidade/` se alguma entrada estiver fora do repositório.
+
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
-databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`.
+databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`, os
+catálogos externos do cotejo (`catalogos/`).
 
 `results/zap/` guarda os oito relatórios da campanha DAST de julho de 2026
 (JSON e HTML por aplicação e modo) mais o plano de automação. São os
@@ -1160,6 +1212,163 @@ Semgrep 0, Snyk Code 5 — `CVE-2018-16479`, `CVE-2018-16480`,
 |---|---|---|---|
 | achados no arquivo do gt com `line_end` nulo | 661 | 0 | 0 |
 | achados no arquivo do gt com `line_start` nulo | 0 | 0 | 0 |
+
+## Circularidade da proveniência — apuração (20/09/2026)
+
+Números sem leitura, como no cruzamento. Produzidos por
+`tools/circularidade-proveniencia.py` sobre a matriz de
+`results/cruzamento/` e os relatórios de `results/proveniencia/`; saídas em
+`results/circularidade/`. O script consome `por_relacao` e `sem_casar` do
+cotejo e **não reimplementa** critério algum.
+
+**O que se mede.** Os níveis 2 e 4 dependem de casamento de CWE, e o CodeQL é
+medido contra etiquetas herdadas dele próprio em 163 dos 223. A apuração parte
+o denominador de 220 pela proveniência da etiqueta e compara as três
+ferramentas nos sete níveis, para que se veja se a vantagem do CodeQL varia
+com a proveniência ou com o conjunto.
+
+**Partição, contra a âncora `ec573b51`:** herdado **161**, não herdado **59**,
+soma 220. Fora do denominador: `CVE-2016-1000229` e `CVE-2018-1000096`
+(herdados) e `CVE-2018-8035` (não herdado).
+
+**Controle da partição:** a soma dos dois grupos reconstrói a matriz de
+detecção publicada acima em **21 células × 2 partições, zero divergências**.
+
+### Ressalva do método — a partição é por `explanation`
+
+**O grupo não é definido pela etiqueta de CWE, e sim pela `explanation`.** O
+cotejo casa `explanation` ≡ `@name` da consulta; a relação entre os conjuntos
+de CWE é consequência reportada, não critério. Na âncora as duas coincidem —
+163 casados, 163 `identico` —, **mas a recíproca não vale**: CVE de
+`explanation` em prosa pode carregar conjunto de CWEs igual ao de uma consulta,
+e cai em "não herdado" mesmo assim.
+
+**Medido.** No grupo não herdado, **6 de 59** têm conjunto de 2+ CWEs idêntico
+ao de alguma consulta do catálogo: `CVE-2019-10765`, `CVE-2020-11022`,
+`CVE-2020-11059`, `CVE-2020-26256`, `CVE-2020-27666`, `CVE-2020-7752`.
+Conjuntos unitários — 8 de 59 — são contados à parte, porque `CWE-079` sozinho
+coincide com muitas consultas por banalidade e não por herança.
+
+**O caso exemplar é `CVE-2019-10745`:** conjunto `CWE-078|079|094|400|915`,
+idêntico ao dos 22 de prototype pollution, e `explanation` em prosa. É não
+herdado nas **duas** referências, e é o 23º CVE com `gt_cwe_primary` CWE-915.
+
+Registro de origem: o enunciado desta apuração definiu o grupo herdado como
+"CVEs cuja etiqueta de CWE casa com a consulta". **Está errado**, e a correção
+é esta seção. O número não muda — as duas afirmações coincidem em 163 de 163
+na âncora —, mas as afirmações são distintas, e os 6 casos acima são a prova
+de que a coincidência não é identidade.
+
+### Tabela — grupo herdado (161) × não herdado (59)
+
+`acertos/base`; a base das variantes estritas desconta o `CVE-2018-16472`,
+cujo primário é indefinido.
+
+| nível | CodeQL herd. | CodeQL n.herd. | Semgrep herd. | Semgrep n.herd. | Snyk herd. | Snyk n.herd. |
+|---|---|---|---|---|---|---|
+| 0 | 144/161 (89,4%) | 46/59 (78,0%) | 134/161 (83,2%) | 49/59 (83,1%) | 100/161 (62,1%) | 32/59 (54,2%) |
+| 1 | 110/161 (68,3%) | 30/59 (50,8%) | 77/161 (47,8%) | 21/59 (35,6%) | 39/161 (24,2%) | 6/59 (10,2%) |
+| 2 generosa | 101/161 (62,7%) | 25/59 (42,4%) | 35/161 (21,7%) | 13/59 (22,0%) | 15/161 (9,3%) | 1/59 (1,7%) |
+| 2 estrita | 100/160 (62,5%) | 24/59 (40,7%) | 33/160 (20,6%) | 13/59 (22,0%) | 9/160 (5,6%) | 0/59 (0,0%) |
+| 3 | 80/161 (49,7%) | 21/59 (35,6%) | 22/161 (13,7%) | 3/59 (5,1%) | 21/161 (13,0%) | 1/59 (1,7%) |
+| 4 generosa | 76/161 (47,2%) | 19/59 (32,2%) | 17/161 (10,6%) | 3/59 (5,1%) | 10/161 (6,2%) | 0/59 (0,0%) |
+| 4 estrita | 76/160 (47,5%) | 18/59 (30,5%) | 17/160 (10,6%) | 3/59 (5,1%) | 6/160 (3,8%) | 0/59 (0,0%) |
+
+**Numerador e denominador vão sempre juntos, e não há teste estatístico.** Os
+grupos são de tamanhos muito desiguais — 161 contra 59 —, e diferença de
+poucos pontos percentuais no grupo menor não significa nada.
+
+**Os três zeros são do Snyk Code, no grupo não herdado.** O controle é que o
+mesmo caminho de contagem dá 9, 10 e 6 nas células herdadas dos mesmos níveis,
+e que o autoteste do script exercita mutação de zero para um antes de tocar o
+conjunto real.
+
+### Deltas (herdado − não herdado, em pontos percentuais)
+
+**Os níveis 1 e 3 não usam CWE e são o controle interno.** Diferença que
+apareça neles não pode ser circularidade de etiqueta.
+
+| nível | CodeQL | Semgrep | Snyk Code |
+|---|---:|---:|---:|
+| 0 | +11,5 | +0,2 | +7,9 |
+| **1 (sem CWE)** | **+17,5** | **+12,2** | **+14,1** |
+| 2 generosa | +20,4 | −0,3 | +7,6 |
+| 2 estrita | +21,8 | −1,4 | +5,6 |
+| **3 (sem CWE)** | **+14,1** | **+8,6** | **+11,3** |
+| 4 generosa | +15,0 | +5,5 | +6,2 |
+| 4 estrita | +17,0 | +5,5 | +3,8 |
+
+### Composição de CWE dos dois grupos — os grupos não são comparáveis
+
+`gt_cwe_primary`, os oito maiores:
+
+| CWE primário | herdado | não herdado |
+|---|---:|---:|
+| **CWE-915** | **0** | **23** |
+| CWE-079 | 39 | 8 |
+| CWE-022 | 27 | 2 |
+| CWE-078 | 24 | 1 |
+| CWE-400 | 24 | 2 |
+| CWE-094 | 8 | 6 |
+| CWE-116 | 8 | 1 |
+| CWE-770 | 0 | 4 |
+| CWE-730 | 0 | 3 |
+| CWE-601 | 7 | 0 |
+
+Conjunto `gt_cwes` completo, os maiores:
+
+| conjunto | herdado | não herdado |
+|---|---:|---:|
+| `CWE-078\|CWE-079\|CWE-094\|CWE-400\|CWE-915` | **0** | **23** |
+| `CWE-079\|CWE-116` | 38 | 2 |
+| `CWE-078\|CWE-088` | 24 | 1 |
+| `CWE-730\|CWE-400` | 24 | 1 |
+| `CWE-022\|CWE-023\|CWE-036\|CWE-073\|CWE-099` | 20 | 1 |
+| `CWE-094\|CWE-079\|CWE-116` | 8 | 0 |
+| `CWE-022` | 7 | 1 |
+| `CWE-116\|CWE-020` | 7 | 0 |
+| `CWE-079` | 0 | 6 |
+
+**39% do grupo não herdado é prototype pollution**, ausente por completo do
+herdado. Enquanto for assim, proveniência da etiqueta e tipo de vulnerabilidade
+variam juntos, e nenhuma das duas explica a diferença sozinha. É a confusão
+que a apuração torna visível, e que ela **não** resolve.
+
+### Os 22 de prototype pollution
+
+Todos com `gt_cwe_primary` CWE-915, todos com o mesmo conjunto `gt_cwes`,
+todos no denominador. **Não herdados sob `ec573b51`, herdados sob `9ff6d68a`.**
+
+No cruzamento, sobre os 22:
+
+| nível | CodeQL | Semgrep | Snyk Code |
+|---|---:|---:|---:|
+| 1 | 17 | 12 | 1 |
+| 2 estrita | 16 | 11 | 0 |
+| 3 | 14 | 1 | 0 |
+| 4 estrita | **13** | 1 | 0 |
+
+**Excluindo-os dos dois grupos, as duas partições passam a ser o mesmo
+conjunto** — 161 e 37, conferido por igualdade de conjuntos — e as tabelas
+ficam idênticas. Os deltas do CodeQL viram +33,2 / +40,9 / +30,8 / +34,0 nos
+níveis 1 / 2 estrita / 3 / 4 estrita.
+
+**Consequência para a escolha da âncora:** ela não é crítica para esta
+análise. A diferença inteira entre as duas leituras são os 22, e fora deles as
+duas referências dizem a mesma coisa. Sob `9ff6d68a` (183 contra 37) os deltas
+do CodeQL são +34,3 / +42,1 / +32,4 / +35,4 nos mesmos níveis.
+
+### Composição dos grupos por ferramenta
+
+| | herdado | não herdado |
+|---|---|---|
+| CodeQL | 161/161 | 59/59 |
+| Semgrep | 161/161 | 59/59 |
+| Snyk Code | **156/161** | 59/59 |
+
+Os cinco `SEM_ARQUIVO_ANALISAVEL` do Snyk Code caem **todos no grupo
+herdado**, nas duas referências. Permanecem no denominador e contam como
+não-detecção, pela regra fixada antes da campanha.
 
 ## Obtenção do código — comportamento medido
 
@@ -2100,9 +2309,16 @@ Declaradas na monografia, não corrigíveis por código:
   correspondência ainda menor que a nula medida.
 - **A seleção do CWE primário herda a proveniência.** A evidência de
   primeira ordem para escolher o primário é o `explanation`, que é o
-  `@name` de consulta do CodeQL em 83% dos casos. A modalidade por
+  `@name` de consulta do CodeQL em **73,1%** dos casos. A modalidade por
   primário acrescenta uma segunda camada da mesma proveniência; a
   modalidade por conjunto não depende da escolha e serve de contraprova.
+- **Circularidade da etiqueta, MEDIDA e não só declarada.** A ameaça de
+  assimetria acima deixou de ser apenas argumentada: a partição do
+  denominador pela proveniência da etiqueta está apurada e registrada na
+  seção "Circularidade da proveniência". O que a apuração **não** resolve é
+  a confusão com o tipo de vulnerabilidade, porque os grupos diferem em
+  composição de CWE; e o controle interno dos níveis 1 e 3 é o que permite
+  separar as duas coisas. A leitura fica ao texto.
 - **Ordem não determinística do pack.** O sha256 não permite a terceiro
   verificar se o pack vendorizado corresponde ao que o registry serve
   noutro momento. Mitigado por `rules_id_sha256`; resta que o conjunto é

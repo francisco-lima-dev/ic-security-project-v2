@@ -1,0 +1,52 @@
+Arquivos YAML lidos : 2162  (erro de parse: 16)
+Regras extraidas    : 2228
+
+Fonte dos CVEs      : CSV versionado (datasets/cve-metadata.csv)
+Equivalencia CSV x clone do benchmark: CONFERIDA em 223 CVEs
+CVEs com explanation: 223
+
+--- Match contra Semgrep ---
+  T1 igual a message da regra    : 0  (0.0%)
+  T2 igual ao final do id da regra: 1  (0.4%)
+  T3 contida em alguma message   : 37  (16.6%)
+
+  Uniao dos tres testes          : 38  (17.0%)
+
+--- T2: exemplos (ate 10) ---
+  CVE-2018-16472  "Remote property injection"
+     regra: remote-property-injection
+
+--- T3: exemplos (ate 10) ---
+  CVE-2017-1001004  "Code injection"
+     regra: llm-output-to-exec-javascript
+  CVE-2017-16011  "Cross-site scripting"
+     regra: html-raw-json
+  CVE-2017-16114  "Inefficient regular expression"
+     regra: regex_dos
+  CVE-2017-18077  "Inefficient regular expression"
+     regra: regex_dos
+  CVE-2017-5954  "Code injection"
+     regra: llm-output-to-exec-javascript
+  CVE-2018-16487  "Prototype-polluting function"
+     regra: prototype-pollution-loop
+  CVE-2018-16489  "Prototype-polluting function"
+     regra: prototype-pollution-loop
+  CVE-2018-16490  "Prototype-polluting function"
+     regra: prototype-pollution-loop
+  CVE-2018-16491  "Prototype-polluting function"
+     regra: prototype-pollution-loop
+  CVE-2018-16492  "Prototype-polluting function"
+     regra: prototype-pollution-loop
+
+--- Amostra de messages do Semgrep (formato, para comparacao) ---
+  [agent-unbounded-loop-python]
+     LLM API call inside a `while True` loop without a break condition. This creates an unbounded agent loop that m...
+  [ai-config-hidden-unicode-generic]
+     Invisible or zero-width Unicode character detected in AI coding assistant config file. These characters can be...
+  [anthropic-hardcoded-api-key-go]
+     Anthropic API key is hardcoded in source code. Use environment variables or a secrets manager instead.
+  [anthropic-hardcoded-api-key-java]
+     Anthropic API key is hardcoded in source code. Use environment variables or a secrets manager instead.
+  [anthropic-hardcoded-api-key-javascript]
+     Anthropic API key is hardcoded in source code. Use environment variables or a secrets manager instead.
+

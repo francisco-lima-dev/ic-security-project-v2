@@ -73,6 +73,7 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
 MATRIZ_PADRAO = RAIZ / "results" / "cruzamento" / "matriz-deteccao.csv"
+SAIDA_VERSIONADA = RAIZ / "results" / "circularidade"
 
 # Ordem fixa. Os níveis 1 e 3 não usam CWE e são o controle interno da
 # análise: diferença entre grupos que apareça neles não pode ser
@@ -93,6 +94,17 @@ FERRAMENTAS = ["codeql", "semgrep", "snyk-code"]
 # nome. Ancoram a leitura da matriz: contagem que bate com o total errado
 # pelos CVEs errados nao e contagem que bate.
 EXCLUSOES_ESPERADAS = {"CVE-2016-1000229", "CVE-2018-1000096", "CVE-2018-8035"}
+
+
+def rotulo_caminho(caminho):
+    """Caminho relativo ao repositorio quando estiver dentro dele; absoluto,
+    caso contrario. Mesma funcao do `cruza-deteccao.py`, e pelo mesmo motivo:
+    caminho da maquina do operador nao vai para JSON versionado."""
+    caminho = Path(caminho).resolve()
+    try:
+        return str(caminho.relative_to(RAIZ))
+    except ValueError:
+        return str(caminho)
 
 
 def sha256(caminho):
@@ -388,12 +400,21 @@ def distribuicao_cwe(linhas_por_cve, cves):
     """gt_cwe_primary e conjunto gt_cwes completo, contados sobre os CVEs do
     grupo. Uma linha por CVE basta: os campos de ground truth sao iguais nas
     tres ferramentas."""
+    # `sorted`, e nao a iteracao do conjunto: a ordem de insercao do Counter
+    # vira ordem de chave no JSON, e conjunto do Python nao tem ordem estavel
+    # entre processos. Sem isto a saida versionada nao e reproduzivel byte a
+    # byte, que e a propriedade que a politica de versionamento exige dela.
     prim, conj = collections.Counter(), collections.Counter()
-    for cve in cves:
+    for cve in sorted(cves):
         r = linhas_por_cve[(cve, "codeql")]
         prim[r["gt_cwe_primary"] or "(nulo)"] += 1
         conj[r["gt_cwes"] or "(vazio)"] += 1
     return prim, conj
+
+
+def ordenado(contador):
+    """Counter -> dict com chaves ordenadas, para o JSON sair deterministico."""
+    return {k: contador[k] for k in sorted(contador)}
 
 
 def analisar(prov, linhas, linhas_por_cve, cves_denominador, saida):
@@ -407,7 +428,7 @@ def analisar(prov, linhas, linhas_por_cve, cves_denominador, saida):
     p("=" * 78)
     p("PARTICAO PELA PROVENIENCIA DA ETIQUETA  [%s]" % prov["rotulo"])
     p("=" * 78)
-    p("  relatorio do cotejo : %s" % prov["caminho"])
+    p("  relatorio do cotejo : %s" % rotulo_caminho(prov["caminho"]))
     p("  catalogo CodeQL     : %s" % prov["consultas_dir"])
     p("  ground truth        : %s" % prov["fonte_gt"])
     p("")
@@ -567,7 +588,7 @@ def analisar(prov, linhas, linhas_por_cve, cves_denominador, saida):
     dados = {
         "rotulo": prov["rotulo"],
         "ressalva_da_particao": vaz,
-        "relatorio_proveniencia": prov["caminho"],
+        "relatorio_proveniencia": rotulo_caminho(prov["caminho"]),
         "relatorio_proveniencia_sha256": prov.get("sha256"),
         "catalogo": prov["consultas_dir"],
         "grupos": {"herdado": sorted(h_den), "nao_herdado": sorted(n_den)},
@@ -579,8 +600,10 @@ def analisar(prov, linhas, linhas_por_cve, cves_denominador, saida):
             for c in sorted(fora)},
         "tabela": {"%s|%s" % (f, n): v for (f, n), v in resultado.items()},
         "composicao_tratado": {"%s|%s" % (f, g): v for (f, g), v in comp.items()},
-        "distribuicao_gt_cwe_primary": {"herdado": dict(ph), "nao_herdado": dict(pn)},
-        "distribuicao_gt_cwes": {"herdado": dict(ch), "nao_herdado": dict(cn)},
+        "distribuicao_gt_cwe_primary": {"herdado": ordenado(ph),
+                                        "nao_herdado": ordenado(pn)},
+        "distribuicao_gt_cwes": {"herdado": ordenado(ch),
+                                 "nao_herdado": ordenado(cn)},
         "celulas_zero": [{"ferramenta": f, "nivel": n, "grupo": g, "base": b}
                          for f, n, g, b in zeros],
     }
@@ -655,7 +678,7 @@ def prototype_pollution(provs, linhas_por_cve, cves_denominador, saida):
     p("  gt_cwe_primary destes %d: %s" % (len(so_em_b), dict(prim)))
     return {"so_em_" + a["rotulo"]: so_em_a,
             "so_em_" + b["rotulo"]: so_em_b,
-            "consultas": dict(consultas),
+            "consultas": ordenado(consultas),
             "detalhe": detalhe}
 
 
@@ -819,12 +842,24 @@ def main(argv=None):
             print("  " + f, file=sys.stderr)
         return 2
 
+    # GUARDA DA SAIDA VERSIONADA, na mesma forma do cruza-deteccao.py.
+    # `results/circularidade/` entra no repositorio; entrada de fora faria o
+    # caminho da maquina do operador ir para o JSON.
+    if args.json and Path(args.json).resolve().is_relative_to(SAIDA_VERSIONADA):
+        fora = [c for c in [args.matriz] + list(args.proveniencia)
+                if not Path(c).resolve().is_relative_to(RAIZ)]
+        if fora:
+            print("ERRO: a saida versionada exige entradas dentro do "
+                  "repositorio: o caminho de fora iria para os JSON: %s"
+                  % fora, file=sys.stderr)
+            return 2
+
     saida = []
     p = saida.append
     p("--- circularidade da proveniencia do ground truth ---")
     p("  autoteste do caminho de contagem: OK "
       "(acerto, nao-acerto, nao-se-aplica, malformado, base zero, mutacao)")
-    p("  matriz : %s" % args.matriz)
+    p("  matriz : %s" % rotulo_caminho(args.matriz))
     if not Path(args.matriz).is_file():
         print("\n".join(saida), file=sys.stderr)
         print("ERRO: matriz ausente: %s" % args.matriz, file=sys.stderr)
@@ -879,7 +914,7 @@ def main(argv=None):
                 print(e, file=sys.stderr)
             return 2
         prov["sha256"] = sha256(caminho)
-        p("  proveniencia [%s]: %s" % (prov["rotulo"], caminho))
+        p("  proveniencia [%s]: %s" % (prov["rotulo"], rotulo_caminho(caminho)))
         p("           sha256 %s" % prov["sha256"])
         provs.append(prov)
 
@@ -914,14 +949,14 @@ def main(argv=None):
     print("\n".join(saida))
     if args.json:
         Path(args.json).write_text(json.dumps({
-            "matriz": args.matriz,
+            "matriz": rotulo_caminho(args.matriz),
             "matriz_sha256": matriz_sha,
             "proveniencia_sha256": {x["rotulo"]: x["sha256"] for x in provs},
             "particoes": dados,
             "trocas_entre_referencias": trocas,
             "auxiliar_sem_as_trocas": aux,
         }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print("\n  relatorio JSON: %s" % args.json)
+        print("\n  relatorio JSON: %s" % rotulo_caminho(args.json))
     return 0
 
 

@@ -1,0 +1,35 @@
+--- A: [ref]
+      ground truth: datasets/cve-metadata.csv
+      consultas   : catalogos/codeql-2020/javascript/ql/src
+--- B: [atual]
+      ground truth: datasets/cve-metadata.csv
+      consultas   : catalogos/codeql-atual/javascript/ql/src
+
+  1. ground truth
+     CVEs em A: 223 | em B: 223 | nos dois: 223
+     so em A: 0 
+     so em B: 0 
+     nos dois, com rotulo diferente: 0
+
+  2. casamento
+     casados em A: 163 | em B: 185
+     casados so em A: 7
+       7  Security/CWE-022/ZipSlip.ql
+          CVE-2018-1002203 CVE-2018-1002204 CVE-2018-20834 CVE-2018-20835 CVE-2019-13173 CVE-2019-5484 CVE-2020-12265
+     casados so em B: 29
+       22  Security/CWE-915/PrototypePollutingFunction.ql
+          CVE-2018-16487 CVE-2018-16489 CVE-2018-16490 CVE-2018-16491 CVE-2018-16492 CVE-2018-3719 CVE-2018-3721 CVE-2018-3722 CVE-2018-3728 CVE-2018-3750 CVE-2018-3752 CVE-2019-10746 CVE-2019-10747 CVE-2019-10750 CVE-2019-11358 CVE-2020-15256 CVE-2020-5258 CVE-2020-7638 CVE-2020-7699 CVE-2020-7720 CVE-2020-8116 CVE-2020-8203
+       4  Security/CWE-770/ResourceExhaustion.ql
+          CVE-2017-10910 CVE-2017-16026 CVE-2018-3736 CVE-2020-8192
+       3  Security/CWE-730/ServerCrash.ql
+          CVE-2017-16014 CVE-2018-21036 CVE-2019-10775
+
+  3. casados nos dois: 156
+     com consulta diferente: 3
+       3  Security/CWE-918/RequestForgery.ql -> experimental/Security/CWE-918/SSRF.ql
+          CVE-2017-18354 CVE-2020-15152 CVE-2020-8205
+     com relacao diferente: 48
+       45  identico -> gt_subconjunto_da_consulta
+          CVE-2017-1000427 CVE-2017-1001004 CVE-2017-15010 CVE-2017-16006 CVE-2017-16030 CVE-2017-16082 CVE-2017-16098 CVE-2017-16114 CVE-2017-16117 CVE-2017-16118 CVE-2017-16119 CVE-2017-16136 CVE-2017-16137 CVE-2017-16138 CVE-2017-17461 CVE-2017-18077 CVE-2017-18214 CVE-2017-18355 CVE-2017-5954 CVE-2018-11615 CVE-2018-13863 CVE-2018-20164 CVE-2018-20801 CVE-2018-3737 CVE-2018-3738 CVE-2018-3783 CVE-2018-7651 CVE-2019-1010091 CVE-2019-1010266 CVE-2019-10744 CVE-2019-10758 CVE-2019-10785 CVE-2019-15658 CVE-2019-16763 CVE-2019-17592 CVE-2019-18818 CVE-2019-5413 CVE-2019-5423 CVE-2019-8903 CVE-2019-9844 CVE-2020-5251 CVE-2020-6836 CVE-2020-7656 CVE-2020-7662 CVE-2020-9038
+       3  identico -> divergente
+          CVE-2018-1000096 CVE-2019-5483 CVE-2020-15095

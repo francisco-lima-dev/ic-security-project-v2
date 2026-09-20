@@ -1,0 +1,62 @@
+--- cotejo ground truth x CodeQL [previo-ref] ---
+  consultas: catalogos/codeql-2020/javascript/ql/src
+  ground truth: catalogos/benchmark-previo/CVEs
+  .ql lidos com @name: 296 | com tag external/cwe/: 126
+  CVEs no ground truth: 214
+  CVEs sem explanation (nao casam): 0 
+  CVEs em forma antiga do schema (patchBase): 1 ['CVE-2019-14863']
+  equivalencia CSV x clone do benchmark: nao se aplica (ground truth lido do JSON)
+
+  explanation identica ao @name de consulta:
+     normalizado : 181 de 214 (84.6%)
+     exato       : 181 de 214 (84.6%)
+     via consulta experimental/: 0 
+
+  dos casados, relacao entre o conjunto CWEs do benchmark e as
+  tags external/cwe/ da consulta:
+     identico                     181
+     gt_subconjunto_da_consulta   0
+     consulta_subconjunto_do_gt   0
+     divergente                   0
+     identicos com os dois conjuntos vazios: 1 ['CVE-2018-1000096']
+     com vazio tratado como subconjunto: gt_subconjunto 0, divergente 0
+
+  tags external/cwe fora da forma canonica (fora do conjunto): 1
+     Security/CWE-295/DisablingCertificateValidation.ql  external/cwe-295
+
+  --- sem casar (33), nominal:
+     CVE-2017-10910  "Resource exhaustion"
+     CVE-2017-16011  "Cross-site scripting"
+     CVE-2017-16014  "Server crash"
+     CVE-2017-16026  "Resource exhaustion"
+     CVE-2017-16226  "sandbox escape / arbitrary code execution"
+     CVE-2018-21036  "Server crash"
+     CVE-2018-3732  "Lack of file path sanitization for windows based paths"
+     CVE-2018-3736  "Resource exhaustion"
+     CVE-2018-3770  "Insecure default value: HTML supported by default"
+     CVE-2018-6341  "Cross-site scripting due to incomplete sanitization of HTML attribute names"
+     CVE-2018-8035  "XSS through the `value` property of a DOM element which was supposed to be plain text"
+     CVE-2019-1020012  "Denial of Service for any subsequent POST requests"
+     CVE-2019-10742  "Unclosed stream"
+     CVE-2019-10745  "Prototype pollution in recursive merge function due to missing filtering of property names"
+     CVE-2019-10759  "sandbox escape / arbitrary code execution"
+     CVE-2019-10761  "sandbox escape / arbitrary code execution"
+     CVE-2019-10765  "Access to log files is vulnerable to path injection due to a missing directory containment"
+     CVE-2019-10775  "Server crash"
+     CVE-2019-10781  "A maliciously crafted JavaScript object can bypass the sanitize() and the validate() funct"
+     CVE-2019-12041  "Regular expression denial of service (redos)"
+     CVE-2019-12043  "Incomplete sanitization of control characters"
+     CVE-2019-14863  "Cross-site scripting"
+     CVE-2019-15657  "Arbitrary Code Execution"
+     CVE-2019-16769  "cross-site scripting due to unsafe characters in serialized regular expressions"
+     CVE-2019-17495  "Cascading Style Sheets injection"
+     CVE-2019-20149  "improper input validation"
+     CVE-2020-11021  "Authorization headers are sent to untrusted host"
+     CVE-2020-11022  "Expansion of *sanitsed* self-closing HTML tags may introduce new mXSS vulnerabilities"
+     CVE-2020-11059  "Build artifact created by `webpack.DefinePlugin` includes sensitive `process.env` values"
+     CVE-2020-27666  "XSS in markdown WYSIWYG previewer due to lack of HTML sanitization."
+     CVE-2020-7660  "Remote code execution"
+     CVE-2020-7752  "Command injection in library function that dynamically builds a `netstat` shell command wi"
+     CVE-2020-8192  "Resource exhaustion"
+
+  relatorio JSON: results/proveniencia/cotejo-previo-ref.json

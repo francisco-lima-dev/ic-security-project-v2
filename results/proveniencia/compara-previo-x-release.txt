@@ -1,0 +1,33 @@
+--- A: [previo-ref]
+      ground truth: catalogos/benchmark-previo/CVEs
+      consultas   : catalogos/codeql-2020/javascript/ql/src
+--- B: [release-ref]
+      ground truth: catalogos/benchmark-release/CVEs
+      consultas   : catalogos/codeql-2020/javascript/ql/src
+
+  1. ground truth
+     CVEs em A: 214 | em B: 219 | nos dois: 213
+     so em A: 1 CVE-2019-14863
+     so em B: 6 CVE-2020-15256 CVE-2020-26226 CVE-2020-7750 CVE-2020-7763 CVE-2020-8244 CVE-2020-9038
+     nos dois, com rotulo diferente: 22
+       21  "Prototype pollution in utility function" ['CWE-400', 'CWE-471']  ->  "Prototype-polluting function" ['CWE-078', 'CWE-079', 'CWE-094', 'CWE-400', 'CWE-915']
+          CVE-2018-16487 CVE-2018-16489 CVE-2018-16490 CVE-2018-16491 CVE-2018-16492 CVE-2018-3719 CVE-2018-3721 CVE-2018-3722 CVE-2018-3728 CVE-2018-3750 CVE-2018-3752 CVE-2019-10746 CVE-2019-10747 CVE-2019-10750 CVE-2019-11358 CVE-2020-5258 CVE-2020-7638 CVE-2020-7699 CVE-2020-7720 CVE-2020-8116 CVE-2020-8203
+       1  "Prototype pollution in recursive merge function due to missing filtering of property names `__proto__` and `constructor`" ['CWE-400', 'CWE-471']  ->  "Prototype pollution in recursive merge function due to missing filtering of property names `__proto__` and `constructor`" ['CWE-078', 'CWE-079', 'CWE-094', 'CWE-400', 'CWE-915']
+          CVE-2019-10745
+
+  2. casamento
+     casados em A: 181 | em B: 163
+     casados so em A: 21
+       21  Security/CWE-400/PrototypePollutionUtility.ql
+          CVE-2018-16487 CVE-2018-16489 CVE-2018-16490 CVE-2018-16491 CVE-2018-16492 CVE-2018-3719 CVE-2018-3721 CVE-2018-3722 CVE-2018-3728 CVE-2018-3750 CVE-2018-3752 CVE-2019-10746 CVE-2019-10747 CVE-2019-10750 CVE-2019-11358 CVE-2020-5258 CVE-2020-7638 CVE-2020-7699 CVE-2020-7720 CVE-2020-8116 CVE-2020-8203
+     casados so em B: 3
+       1  Security/CWE-020/IncompleteUrlSchemeCheck.ql
+          CVE-2020-9038
+       1  Security/CWE-022/TaintedPath.ql
+          CVE-2020-7763
+       1  Security/CWE-079/Xss.ql
+          CVE-2020-7750
+
+  3. casados nos dois: 160
+     com consulta diferente: 0
+     com relacao diferente: 0

@@ -1,0 +1,67 @@
+--- cotejo ground truth x CodeQL [sens] ---
+  consultas: catalogos/codeql-2020-12-11/javascript/ql/src
+  ground truth: datasets/cve-metadata.csv
+  .ql lidos com @name: 297 | com tag external/cwe/: 127
+  CVEs no ground truth: 223
+  CVEs sem explanation (nao casam): 0 
+  CVEs em forma antiga do schema (patchBase): 0 
+  equivalencia CSV x clone do benchmark: CONFERIDA em 223 CVEs
+
+  explanation identica ao @name de consulta:
+     normalizado : 185 de 223 (83.0%)
+     exato       : 185 de 223 (83.0%)
+     via consulta experimental/: 0 
+
+  dos casados, relacao entre o conjunto CWEs do benchmark e as
+  tags external/cwe/ da consulta:
+     identico                     185
+     gt_subconjunto_da_consulta   0
+     consulta_subconjunto_do_gt   0
+     divergente                   0
+     identicos com os dois conjuntos vazios: 1 ['CVE-2018-1000096']
+     com vazio tratado como subconjunto: gt_subconjunto 0, divergente 0
+
+  tags external/cwe fora da forma canonica (fora do conjunto): 1
+     Security/CWE-295/DisablingCertificateValidation.ql  external/cwe-295
+
+  --- sem casar (38), nominal:
+     CVE-2017-10910  "Resource exhaustion"
+     CVE-2017-16011  "Cross-site scripting"
+     CVE-2017-16014  "Server crash"
+     CVE-2017-16026  "Resource exhaustion"
+     CVE-2017-16226  "sandbox escape / arbitrary code execution"
+     CVE-2018-21036  "Server crash"
+     CVE-2018-3732  "Lack of file path sanitization for windows based paths"
+     CVE-2018-3736  "Resource exhaustion"
+     CVE-2018-3770  "Insecure default value: HTML supported by default"
+     CVE-2018-6341  "Cross-site scripting due to incomplete sanitization of HTML attribute names"
+     CVE-2018-8035  "XSS through the `value` property of a DOM element which was supposed to be plain text"
+     CVE-2019-1020012  "Denial of Service for any subsequent POST requests"
+     CVE-2019-10742  "Unclosed stream"
+     CVE-2019-10745  "Prototype pollution in recursive merge function due to missing filtering of property names"
+     CVE-2019-10759  "sandbox escape / arbitrary code execution"
+     CVE-2019-10761  "sandbox escape / arbitrary code execution"
+     CVE-2019-10765  "Access to log files is vulnerable to path injection due to a missing directory containment"
+     CVE-2019-10775  "Server crash"
+     CVE-2019-10781  "A maliciously crafted JavaScript object can bypass the sanitize() and the validate() funct"
+     CVE-2019-12041  "Regular expression denial of service (redos)"
+     CVE-2019-12043  "Incomplete sanitization of control characters"
+     CVE-2019-15657  "Arbitrary Code Execution"
+     CVE-2019-16769  "cross-site scripting due to unsafe characters in serialized regular expressions"
+     CVE-2019-17495  "Cascading Style Sheets injection"
+     CVE-2019-20149  "improper input validation"
+     CVE-2020-11021  "Authorization headers are sent to untrusted host"
+     CVE-2020-11022  "Expansion of *sanitsed* self-closing HTML tags may introduce new mXSS vulnerabilities"
+     CVE-2020-11059  "Build artifact created by `webpack.DefinePlugin` includes sensitive `process.env` values"
+     CVE-2020-26226  "Incomplete sanitization of of sensitive values in the presence of url-encoding."
+     CVE-2020-26256  "Inefficient regular expression for strings containing many repetitions of ' ,'."
+     CVE-2020-27666  "XSS in markdown WYSIWYG previewer due to lack of HTML sanitization."
+     CVE-2020-7660  "Remote code execution"
+     CVE-2020-7752  "Command injection in library function that dynamically builds a `netstat` shell command wi"
+     CVE-2020-8192  "Resource exhaustion"
+     CVE-2020-8244  "Buffer over-read vulnerability resulting in exposure of uninitialized memory"
+     CVE-2021-23344  "The package total.js before 3.4.8 are vulnerable to Remote Code Execution (RCE) via set."
+     CVE-2021-23364  "The package browserslist from 4.0.0 and before 4.16.5 are vulnerable to Regular Expression"
+     CVE-2021-31712  "react-draft-wysiwyg (aka React Draft Wysiwyg) before 1.14.6 allows a javascript: URi in a "
+
+  relatorio JSON: results/proveniencia/cotejo-sens.json

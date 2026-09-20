@@ -1,0 +1,4122 @@
+{
+  "rotulo": "release-sens",
+  "consultas_dir": "catalogos/codeql-2020-12-11/javascript/ql/src",
+  "fonte_ground_truth": "catalogos/benchmark-release/CVEs",
+  "ql_lidos": 297,
+  "ql_com_cwe": 127,
+  "cves": 219,
+  "gt_sem_explanation": [],
+  "gt_forma_antiga": [],
+  "equivalencia_clone_cves": "nao_se_aplica",
+  "casados_normalizado": 185,
+  "casados_exato": 185,
+  "casados_via_experimental": [],
+  "relacao_cwes": {
+    "identico": 185
+  },
+  "identicos_vazios": [
+    "CVE-2018-1000096"
+  ],
+  "vazio_contra_tags": [],
+  "tags_nao_canonicas": [
+    {
+      "arquivo": "Security/CWE-295/DisablingCertificateValidation.ql",
+      "tag": "external/cwe-295"
+    }
+  ],
+  "sem_casar": [
+    "CVE-2017-10910",
+    "CVE-2017-16011",
+    "CVE-2017-16014",
+    "CVE-2017-16026",
+    "CVE-2017-16226",
+    "CVE-2018-21036",
+    "CVE-2018-3732",
+    "CVE-2018-3736",
+    "CVE-2018-3770",
+    "CVE-2018-6341",
+    "CVE-2018-8035",
+    "CVE-2019-1020012",
+    "CVE-2019-10742",
+    "CVE-2019-10745",
+    "CVE-2019-10759",
+    "CVE-2019-10761",
+    "CVE-2019-10765",
+    "CVE-2019-10775",
+    "CVE-2019-10781",
+    "CVE-2019-12041",
+    "CVE-2019-12043",
+    "CVE-2019-15657",
+    "CVE-2019-16769",
+    "CVE-2019-17495",
+    "CVE-2019-20149",
+    "CVE-2020-11021",
+    "CVE-2020-11022",
+    "CVE-2020-11059",
+    "CVE-2020-26226",
+    "CVE-2020-27666",
+    "CVE-2020-7660",
+    "CVE-2020-7752",
+    "CVE-2020-8192",
+    "CVE-2020-8244"
+  ],
+  "por_relacao": {
+    "identico": [
+      {
+        "cve": "CVE-2016-1000229",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2016-10735",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/XssThroughDom.ql"
+      },
+      {
+        "cve": "CVE-2017-0931",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2017-1000006",
+        "gt": [
+          "CWE-020",
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteHtmlAttributeSanitization.ql"
+      },
+      {
+        "cve": "CVE-2017-1000219",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2017-1000427",
+        "gt": [
+          "CWE-020"
+        ],
+        "consulta": [
+          "CWE-020"
+        ],
+        "arquivo": "Security/CWE-020/IncompleteUrlSchemeCheck.ql"
+      },
+      {
+        "cve": "CVE-2017-1001004",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/CodeInjection.ql"
+      },
+      {
+        "cve": "CVE-2017-15010",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16003",
+        "gt": [
+          "CWE-829"
+        ],
+        "consulta": [
+          "CWE-829"
+        ],
+        "arquivo": "Security/CWE-829/InsecureDownload.ql"
+      },
+      {
+        "cve": "CVE-2017-16006",
+        "gt": [
+          "CWE-020"
+        ],
+        "consulta": [
+          "CWE-020"
+        ],
+        "arquivo": "Security/CWE-020/IncompleteUrlSchemeCheck.ql"
+      },
+      {
+        "cve": "CVE-2017-16018",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ReflectedXss.ql"
+      },
+      {
+        "cve": "CVE-2017-16023",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Security/CWE-730/RegExpInjection.ql"
+      },
+      {
+        "cve": "CVE-2017-16028",
+        "gt": [
+          "CWE-338"
+        ],
+        "consulta": [
+          "CWE-338"
+        ],
+        "arquivo": "Security/CWE-338/InsecureRandomness.ql"
+      },
+      {
+        "cve": "CVE-2017-16029",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2017-16030",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16031",
+        "gt": [
+          "CWE-338"
+        ],
+        "consulta": [
+          "CWE-338"
+        ],
+        "arquivo": "Security/CWE-338/InsecureRandomness.ql"
+      },
+      {
+        "cve": "CVE-2017-16034",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2017-16042",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2017-16043",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2017-16082",
+        "gt": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteSanitization.ql"
+      },
+      {
+        "cve": "CVE-2017-16083",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2017-16084",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2017-16087",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2017-16098",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16100",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2017-16107",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2017-16114",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/ReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16117",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16118",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16119",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16136",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16137",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16138",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-16224",
+        "gt": [
+          "CWE-601"
+        ],
+        "consulta": [
+          "CWE-601"
+        ],
+        "arquivo": "Security/CWE-601/ServerSideUrlRedirect.ql"
+      },
+      {
+        "cve": "CVE-2017-16877",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2017-17461",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-18077",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/ReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-18214",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2017-18352",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ReflectedXss.ql"
+      },
+      {
+        "cve": "CVE-2017-18353",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ReflectedXss.ql"
+      },
+      {
+        "cve": "CVE-2017-18354",
+        "gt": [
+          "CWE-918"
+        ],
+        "consulta": [
+          "CWE-918"
+        ],
+        "arquivo": "Security/CWE-918/RequestForgery.ql"
+      },
+      {
+        "cve": "CVE-2017-18355",
+        "gt": [
+          "CWE-200"
+        ],
+        "consulta": [
+          "CWE-200"
+        ],
+        "arquivo": "Security/CWE-200/PrivateFileExposure.ql"
+      },
+      {
+        "cve": "CVE-2017-18635",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ExceptionXss.ql"
+      },
+      {
+        "cve": "CVE-2017-5954",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/CodeInjection.ql"
+      },
+      {
+        "cve": "CVE-2018-1000086",
+        "gt": [
+          "CWE-079",
+          "CWE-116",
+          "CWE-601"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116",
+          "CWE-601"
+        ],
+        "arquivo": "Security/CWE-601/ClientSideUrlRedirect.ql"
+      },
+      {
+        "cve": "CVE-2018-1000096",
+        "gt": [],
+        "consulta": [],
+        "arquivo": "Security/CWE-295/DisablingCertificateValidation.ql"
+      },
+      {
+        "cve": "CVE-2018-1000620",
+        "gt": [
+          "CWE-327"
+        ],
+        "consulta": [
+          "CWE-327"
+        ],
+        "arquivo": "Security/CWE-327/BadRandomness.ql"
+      },
+      {
+        "cve": "CVE-2018-1002203",
+        "gt": [
+          "CWE-022"
+        ],
+        "consulta": [
+          "CWE-022"
+        ],
+        "arquivo": "Security/CWE-022/ZipSlip.ql"
+      },
+      {
+        "cve": "CVE-2018-1002204",
+        "gt": [
+          "CWE-022"
+        ],
+        "consulta": [
+          "CWE-022"
+        ],
+        "arquivo": "Security/CWE-022/ZipSlip.ql"
+      },
+      {
+        "cve": "CVE-2018-11093",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2018-11615",
+        "gt": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteSanitization.ql"
+      },
+      {
+        "cve": "CVE-2018-11798",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-13797",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-13863",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2018-14040",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/UnsafeJQueryPlugin.ql"
+      },
+      {
+        "cve": "CVE-2018-14041",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/UnsafeJQueryPlugin.ql"
+      },
+      {
+        "cve": "CVE-2018-14042",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/UnsafeJQueryPlugin.ql"
+      },
+      {
+        "cve": "CVE-2018-14380",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2018-16460",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-16461",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-16462",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-16472",
+        "gt": [
+          "CWE-250",
+          "CWE-400"
+        ],
+        "consulta": [
+          "CWE-250",
+          "CWE-400"
+        ],
+        "arquivo": "Security/CWE-400/RemotePropertyInjection.ql"
+      },
+      {
+        "cve": "CVE-2018-16478",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-16479",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-16480",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/StoredXss.ql"
+      },
+      {
+        "cve": "CVE-2018-16484",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/StoredXss.ql"
+      },
+      {
+        "cve": "CVE-2018-16485",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-16487",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-16489",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-16490",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-16491",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-16492",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-18282",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/ImproperCodeSanitization.ql"
+      },
+      {
+        "cve": "CVE-2018-19048",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/XssThroughDom.ql"
+      },
+      {
+        "cve": "CVE-2018-20164",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/ReDoS.ql"
+      },
+      {
+        "cve": "CVE-2018-20676",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/UnsafeJQueryPlugin.ql"
+      },
+      {
+        "cve": "CVE-2018-20677",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/UnsafeJQueryPlugin.ql"
+      },
+      {
+        "cve": "CVE-2018-20801",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2018-20834",
+        "gt": [
+          "CWE-022"
+        ],
+        "consulta": [
+          "CWE-022"
+        ],
+        "arquivo": "Security/CWE-022/ZipSlip.ql"
+      },
+      {
+        "cve": "CVE-2018-20835",
+        "gt": [
+          "CWE-022"
+        ],
+        "consulta": [
+          "CWE-022"
+        ],
+        "arquivo": "Security/CWE-022/ZipSlip.ql"
+      },
+      {
+        "cve": "CVE-2018-3712",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-3713",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-3718",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-3719",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-3721",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-3722",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-3725",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-3726",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/StoredXss.ql"
+      },
+      {
+        "cve": "CVE-2018-3728",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-3731",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-3733",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-3737",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2018-3738",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/ReDoS.ql"
+      },
+      {
+        "cve": "CVE-2018-3743",
+        "gt": [
+          "CWE-601"
+        ],
+        "consulta": [
+          "CWE-601"
+        ],
+        "arquivo": "Security/CWE-601/ServerSideUrlRedirect.ql"
+      },
+      {
+        "cve": "CVE-2018-3746",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-3747",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/StoredXss.ql"
+      },
+      {
+        "cve": "CVE-2018-3750",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-3752",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2018-3757",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-3772",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-3783",
+        "gt": [
+          "CWE-089"
+        ],
+        "consulta": [
+          "CWE-089"
+        ],
+        "arquivo": "Security/CWE-089/SqlInjection.ql"
+      },
+      {
+        "cve": "CVE-2018-3786",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2018-6184",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2018-6333",
+        "gt": [
+          "CWE-601"
+        ],
+        "consulta": [
+          "CWE-601"
+        ],
+        "arquivo": "Security/CWE-601/ServerSideUrlRedirect.ql"
+      },
+      {
+        "cve": "CVE-2018-6342",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/CommandInjection.ql"
+      },
+      {
+        "cve": "CVE-2018-7560",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Security/CWE-730/RegExpInjection.ql"
+      },
+      {
+        "cve": "CVE-2018-7651",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2019-10061",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/IndirectCommandInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-10090",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2019-1010091",
+        "gt": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteMultiCharacterSanitization.ql"
+      },
+      {
+        "cve": "CVE-2019-1010266",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2019-10744",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/CodeInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-10746",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2019-10747",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2019-10750",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2019-10757",
+        "gt": [
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-116"
+        ],
+        "arquivo": "RegExp/IdentityReplacement.ql"
+      },
+      {
+        "cve": "CVE-2019-10758",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/CodeInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-10767",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2019-10771",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ReflectedXss.ql"
+      },
+      {
+        "cve": "CVE-2019-10776",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2019-10777",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/CommandInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-10778",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2019-10785",
+        "gt": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteSanitization.ql"
+      },
+      {
+        "cve": "CVE-2019-11358",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2019-12313",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/XssThroughDom.ql"
+      },
+      {
+        "cve": "CVE-2019-13127",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2019-13173",
+        "gt": [
+          "CWE-022"
+        ],
+        "consulta": [
+          "CWE-022"
+        ],
+        "arquivo": "Security/CWE-022/ZipSlip.ql"
+      },
+      {
+        "cve": "CVE-2019-13506",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/ImproperCodeSanitization.ql"
+      },
+      {
+        "cve": "CVE-2019-14772",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2019-14862",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/XssThroughDom.ql"
+      },
+      {
+        "cve": "CVE-2019-15478",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ReflectedXss.ql"
+      },
+      {
+        "cve": "CVE-2019-15479",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ReflectedXss.ql"
+      },
+      {
+        "cve": "CVE-2019-15482",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/XssThroughDom.ql"
+      },
+      {
+        "cve": "CVE-2019-15532",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2019-15658",
+        "gt": [
+          "CWE-089"
+        ],
+        "consulta": [
+          "CWE-089"
+        ],
+        "arquivo": "Security/CWE-089/SqlInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-15782",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/ReflectedXss.ql"
+      },
+      {
+        "cve": "CVE-2019-16763",
+        "gt": [
+          "CWE-020"
+        ],
+        "consulta": [
+          "CWE-020"
+        ],
+        "arquivo": "Security/CWE-020/IncompleteUrlSchemeCheck.ql"
+      },
+      {
+        "cve": "CVE-2019-17592",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/PolynomialReDoS.ql"
+      },
+      {
+        "cve": "CVE-2019-18350",
+        "gt": [
+          "CWE-079",
+          "CWE-116",
+          "CWE-601"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116",
+          "CWE-601"
+        ],
+        "arquivo": "Security/CWE-601/ClientSideUrlRedirect.ql"
+      },
+      {
+        "cve": "CVE-2019-18818",
+        "gt": [
+          "CWE-089"
+        ],
+        "consulta": [
+          "CWE-089"
+        ],
+        "arquivo": "Security/CWE-089/SqlInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-18954",
+        "gt": [
+          "CWE-754"
+        ],
+        "consulta": [
+          "CWE-754"
+        ],
+        "arquivo": "Security/CWE-754/UnvalidatedDynamicMethodCall.ql"
+      },
+      {
+        "cve": "CVE-2019-19507",
+        "gt": [
+          "CWE-290",
+          "CWE-807"
+        ],
+        "consulta": [
+          "CWE-290",
+          "CWE-807"
+        ],
+        "arquivo": "Security/CWE-807/ConditionalBypass.ql"
+      },
+      {
+        "cve": "CVE-2019-20174",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2019-5413",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/CodeInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-5414",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/IndirectCommandInjection.ql"
+      },
+      {
+        "cve": "CVE-2019-5423",
+        "gt": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteSanitization.ql"
+      },
+      {
+        "cve": "CVE-2019-5444",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2019-5479",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2019-5483",
+        "gt": [
+          "CWE-312",
+          "CWE-315",
+          "CWE-359"
+        ],
+        "consulta": [
+          "CWE-312",
+          "CWE-315",
+          "CWE-359"
+        ],
+        "arquivo": "Security/CWE-312/CleartextLogging.ql"
+      },
+      {
+        "cve": "CVE-2019-5484",
+        "gt": [
+          "CWE-022"
+        ],
+        "consulta": [
+          "CWE-022"
+        ],
+        "arquivo": "Security/CWE-022/ZipSlip.ql"
+      },
+      {
+        "cve": "CVE-2019-8331",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/XssThroughDom.ql"
+      },
+      {
+        "cve": "CVE-2019-8903",
+        "gt": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteMultiCharacterSanitization.ql"
+      },
+      {
+        "cve": "CVE-2019-9844",
+        "gt": [
+          "CWE-020"
+        ],
+        "consulta": [
+          "CWE-020"
+        ],
+        "arquivo": "Security/CWE-020/IncompleteUrlSchemeCheck.ql"
+      },
+      {
+        "cve": "CVE-2020-11079",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2020-12265",
+        "gt": [
+          "CWE-022"
+        ],
+        "consulta": [
+          "CWE-022"
+        ],
+        "arquivo": "Security/CWE-022/ZipSlip.ql"
+      },
+      {
+        "cve": "CVE-2020-14000",
+        "gt": [
+          "CWE-079",
+          "CWE-116",
+          "CWE-601"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116",
+          "CWE-601"
+        ],
+        "arquivo": "Security/CWE-601/ClientSideUrlRedirect.ql"
+      },
+      {
+        "cve": "CVE-2020-15092",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/StoredXss.ql"
+      },
+      {
+        "cve": "CVE-2020-15095",
+        "gt": [
+          "CWE-312",
+          "CWE-315",
+          "CWE-359"
+        ],
+        "consulta": [
+          "CWE-312",
+          "CWE-315",
+          "CWE-359"
+        ],
+        "arquivo": "Security/CWE-312/CleartextLogging.ql"
+      },
+      {
+        "cve": "CVE-2020-15119",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2020-15123",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2020-15135",
+        "gt": [
+          "CWE-352"
+        ],
+        "consulta": [
+          "CWE-352"
+        ],
+        "arquivo": "Security/CWE-352/MissingCsrfMiddleware.ql"
+      },
+      {
+        "cve": "CVE-2020-15138",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2020-15152",
+        "gt": [
+          "CWE-918"
+        ],
+        "consulta": [
+          "CWE-918"
+        ],
+        "arquivo": "Security/CWE-918/RequestForgery.ql"
+      },
+      {
+        "cve": "CVE-2020-15156",
+        "gt": [
+          "CWE-352"
+        ],
+        "consulta": [
+          "CWE-352"
+        ],
+        "arquivo": "Security/CWE-352/MissingCsrfMiddleware.ql"
+      },
+      {
+        "cve": "CVE-2020-15256",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2020-4051",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2020-4059",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2020-4066",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/UnsafeShellCommandConstruction.ql"
+      },
+      {
+        "cve": "CVE-2020-5251",
+        "gt": [
+          "CWE-089"
+        ],
+        "consulta": [
+          "CWE-089"
+        ],
+        "arquivo": "Security/CWE-089/SqlInjection.ql"
+      },
+      {
+        "cve": "CVE-2020-5258",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2020-6836",
+        "gt": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-094",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-094/CodeInjection.ql"
+      },
+      {
+        "cve": "CVE-2020-7638",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2020-7656",
+        "gt": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-020",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/IncompleteMultiCharacterSanitization.ql"
+      },
+      {
+        "cve": "CVE-2020-7662",
+        "gt": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "consulta": [
+          "CWE-400",
+          "CWE-730"
+        ],
+        "arquivo": "Performance/ReDoS.ql"
+      },
+      {
+        "cve": "CVE-2020-7676",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-116/UnsafeHtmlExpansion.ql"
+      },
+      {
+        "cve": "CVE-2020-7699",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2020-7720",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2020-7750",
+        "gt": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "consulta": [
+          "CWE-079",
+          "CWE-116"
+        ],
+        "arquivo": "Security/CWE-079/Xss.ql"
+      },
+      {
+        "cve": "CVE-2020-7763",
+        "gt": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "consulta": [
+          "CWE-022",
+          "CWE-023",
+          "CWE-036",
+          "CWE-073",
+          "CWE-099"
+        ],
+        "arquivo": "Security/CWE-022/TaintedPath.ql"
+      },
+      {
+        "cve": "CVE-2020-8116",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2020-8135",
+        "gt": [
+          "CWE-601"
+        ],
+        "consulta": [
+          "CWE-601"
+        ],
+        "arquivo": "Security/CWE-601/ServerSideUrlRedirect.ql"
+      },
+      {
+        "cve": "CVE-2020-8149",
+        "gt": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-088"
+        ],
+        "arquivo": "Security/CWE-078/IndirectCommandInjection.ql"
+      },
+      {
+        "cve": "CVE-2020-8203",
+        "gt": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "consulta": [
+          "CWE-078",
+          "CWE-079",
+          "CWE-094",
+          "CWE-400",
+          "CWE-915"
+        ],
+        "arquivo": "Security/CWE-915/PrototypePollutingFunction.ql"
+      },
+      {
+        "cve": "CVE-2020-8205",
+        "gt": [
+          "CWE-918"
+        ],
+        "consulta": [
+          "CWE-918"
+        ],
+        "arquivo": "Security/CWE-918/RequestForgery.ql"
+      },
+      {
+        "cve": "CVE-2020-9038",
+        "gt": [
+          "CWE-020"
+        ],
+        "consulta": [
+          "CWE-020"
+        ],
+        "arquivo": "Security/CWE-020/IncompleteUrlSchemeCheck.ql"
+      }
+    ]
+  },
+  "gt": {
+    "CVE-2016-1000229": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2016-10735": {
+      "explanation": "DOM text reinterpreted as HTML",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-0931": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-1000006": {
+      "explanation": "Incomplete HTML attribute sanitization",
+      "cwes": [
+        "CWE-020",
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-1000219": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2017-1000427": {
+      "explanation": "Incomplete URL scheme check",
+      "cwes": [
+        "CWE-020"
+      ]
+    },
+    "CVE-2017-1001004": {
+      "explanation": "Code injection",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-10910": {
+      "explanation": "Resource exhaustion",
+      "cwes": [
+        "CWE-770"
+      ]
+    },
+    "CVE-2017-15010": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16003": {
+      "explanation": "Download of sensitive file through insecure connection",
+      "cwes": [
+        "CWE-829"
+      ]
+    },
+    "CVE-2017-16006": {
+      "explanation": "Incomplete URL scheme check",
+      "cwes": [
+        "CWE-020"
+      ]
+    },
+    "CVE-2017-16011": {
+      "explanation": "Cross-site scripting",
+      "cwes": [
+        "CWE-079"
+      ]
+    },
+    "CVE-2017-16014": {
+      "explanation": "Server crash",
+      "cwes": [
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16018": {
+      "explanation": "Reflected cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-16023": {
+      "explanation": "Regular expression injection",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16026": {
+      "explanation": "Resource exhaustion",
+      "cwes": [
+        "CWE-770"
+      ]
+    },
+    "CVE-2017-16028": {
+      "explanation": "Insecure randomness",
+      "cwes": [
+        "CWE-338"
+      ]
+    },
+    "CVE-2017-16029": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2017-16030": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16031": {
+      "explanation": "Insecure randomness",
+      "cwes": [
+        "CWE-338"
+      ]
+    },
+    "CVE-2017-16034": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2017-16042": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2017-16043": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-16082": {
+      "explanation": "Incomplete string escaping or encoding",
+      "cwes": [
+        "CWE-020",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-16083": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2017-16084": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2017-16087": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2017-16098": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16100": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2017-16107": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2017-16114": {
+      "explanation": "Inefficient regular expression",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16117": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16118": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16119": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16136": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16137": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16138": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-16224": {
+      "explanation": "Server-side URL redirect",
+      "cwes": [
+        "CWE-601"
+      ]
+    },
+    "CVE-2017-16226": {
+      "explanation": "sandbox escape / arbitrary code execution",
+      "cwes": [
+        "CWE-020",
+        "CWE-094"
+      ]
+    },
+    "CVE-2017-16877": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2017-17461": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-18077": {
+      "explanation": "Inefficient regular expression",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-18214": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2017-18352": {
+      "explanation": "Reflected cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-18353": {
+      "explanation": "Reflected cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-18354": {
+      "explanation": "Uncontrolled data used in network request",
+      "cwes": [
+        "CWE-918"
+      ]
+    },
+    "CVE-2017-18355": {
+      "explanation": "Exposure of private files",
+      "cwes": [
+        "CWE-200"
+      ]
+    },
+    "CVE-2017-18635": {
+      "explanation": "Exception text reinterpreted as HTML",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2017-5954": {
+      "explanation": "Code injection",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-1000086": {
+      "explanation": "Client-side URL redirect",
+      "cwes": [
+        "CWE-079",
+        "CWE-116",
+        "CWE-601"
+      ]
+    },
+    "CVE-2018-1000096": {
+      "explanation": "Disabling certificate validation",
+      "cwes": []
+    },
+    "CVE-2018-1000620": {
+      "explanation": "Creating biased random numbers from a cryptographically secure source.",
+      "cwes": [
+        "CWE-327"
+      ]
+    },
+    "CVE-2018-1002203": {
+      "explanation": "Arbitrary file write during zip extraction (\"Zip Slip\")",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2018-1002204": {
+      "explanation": "Arbitrary file write during zip extraction (\"Zip Slip\")",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2018-11093": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-11615": {
+      "explanation": "Incomplete string escaping or encoding",
+      "cwes": [
+        "CWE-020",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-11798": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-13797": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-13863": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-14040": {
+      "explanation": "Unsafe jQuery plugin",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-14041": {
+      "explanation": "Unsafe jQuery plugin",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-14042": {
+      "explanation": "Unsafe jQuery plugin",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-14380": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-16460": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-16461": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-16462": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-16472": {
+      "explanation": "Remote property injection",
+      "cwes": [
+        "CWE-250",
+        "CWE-400"
+      ]
+    },
+    "CVE-2018-16478": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-16479": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-16480": {
+      "explanation": "Stored cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-16484": {
+      "explanation": "Stored cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-16485": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-16487": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-16489": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-16490": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-16491": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-16492": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-18282": {
+      "explanation": "Improper code sanitization",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-19048": {
+      "explanation": "DOM text reinterpreted as HTML",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-20164": {
+      "explanation": "Inefficient regular expression",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-20676": {
+      "explanation": "Unsafe jQuery plugin",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-20677": {
+      "explanation": "Unsafe jQuery plugin",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-20801": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-20834": {
+      "explanation": "Arbitrary file write during zip extraction (\"Zip Slip\")",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2018-20835": {
+      "explanation": "Arbitrary file write during zip extraction (\"Zip Slip\")",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2018-21036": {
+      "explanation": "Server crash",
+      "cwes": [
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-3712": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-3713": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-3718": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-3719": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-3721": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-3722": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-3725": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-3726": {
+      "explanation": "Stored cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-3728": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-3731": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-3732": {
+      "explanation": "Lack of file path sanitization for windows based paths",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2018-3733": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-3736": {
+      "explanation": "Resource exhaustion",
+      "cwes": [
+        "CWE-770"
+      ]
+    },
+    "CVE-2018-3737": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-3738": {
+      "explanation": "Inefficient regular expression",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-3743": {
+      "explanation": "Server-side URL redirect",
+      "cwes": [
+        "CWE-601"
+      ]
+    },
+    "CVE-2018-3746": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-3747": {
+      "explanation": "Stored cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2018-3750": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-3752": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2018-3757": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-3770": {
+      "explanation": "Insecure default value: HTML supported by default",
+      "cwes": [
+        "CWE-094"
+      ]
+    },
+    "CVE-2018-3772": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-3783": {
+      "explanation": "Database query built from user-controlled sources",
+      "cwes": [
+        "CWE-089"
+      ]
+    },
+    "CVE-2018-3786": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-6184": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2018-6333": {
+      "explanation": "Server-side URL redirect",
+      "cwes": [
+        "CWE-601"
+      ]
+    },
+    "CVE-2018-6341": {
+      "explanation": "Cross-site scripting due to incomplete sanitization of HTML attribute names",
+      "cwes": [
+        "CWE-079"
+      ]
+    },
+    "CVE-2018-6342": {
+      "explanation": "Uncontrolled command line",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2018-7560": {
+      "explanation": "Regular expression injection",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-7651": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2018-8035": {
+      "explanation": "XSS through the `value` property of a DOM element which was supposed to be plain text",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-10061": {
+      "explanation": "Indirect uncontrolled command line",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2019-10090": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-1010091": {
+      "explanation": "Incomplete multi-character sanitization",
+      "cwes": [
+        "CWE-020",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-1010266": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2019-1020012": {
+      "explanation": "Denial of Service for any subsequent POST requests",
+      "cwes": [
+        "CWE-444"
+      ]
+    },
+    "CVE-2019-10742": {
+      "explanation": "Unclosed stream",
+      "cwes": [
+        "CWE-404",
+        "CWE-730"
+      ]
+    },
+    "CVE-2019-10744": {
+      "explanation": "Code injection",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-10745": {
+      "explanation": "Prototype pollution in recursive merge function due to missing filtering of property names `__proto__` and `constructor`",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2019-10746": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2019-10747": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2019-10750": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2019-10757": {
+      "explanation": "Replacement of a substring with itself",
+      "cwes": [
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-10758": {
+      "explanation": "Code injection",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-10759": {
+      "explanation": "sandbox escape / arbitrary code execution",
+      "cwes": [
+        "CWE-094"
+      ]
+    },
+    "CVE-2019-10761": {
+      "explanation": "sandbox escape / arbitrary code execution",
+      "cwes": [
+        "CWE-074",
+        "CWE-094"
+      ]
+    },
+    "CVE-2019-10765": {
+      "explanation": "Access to log files is vulnerable to path injection due to a missing directory containment check",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2019-10767": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2019-10771": {
+      "explanation": "Reflected cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-10775": {
+      "explanation": "Server crash",
+      "cwes": [
+        "CWE-730"
+      ]
+    },
+    "CVE-2019-10776": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2019-10777": {
+      "explanation": "Uncontrolled command line",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2019-10778": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2019-10781": {
+      "explanation": "A maliciously crafted JavaScript object can bypass the sanitize() and the validate() function.",
+      "cwes": [
+        "CWE-668"
+      ]
+    },
+    "CVE-2019-10785": {
+      "explanation": "Incomplete string escaping or encoding",
+      "cwes": [
+        "CWE-020",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-11358": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2019-12041": {
+      "explanation": "Regular expression denial of service (redos)",
+      "cwes": [
+        "CWE-399"
+      ]
+    },
+    "CVE-2019-12043": {
+      "explanation": "Incomplete sanitization of control characters",
+      "cwes": [
+        "CWE-079"
+      ]
+    },
+    "CVE-2019-12313": {
+      "explanation": "DOM text reinterpreted as HTML",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-13127": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-13173": {
+      "explanation": "Arbitrary file write during zip extraction (\"Zip Slip\")",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2019-13506": {
+      "explanation": "Improper code sanitization",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-14772": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-14862": {
+      "explanation": "DOM text reinterpreted as HTML",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-15478": {
+      "explanation": "Reflected cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-15479": {
+      "explanation": "Reflected cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-15482": {
+      "explanation": "DOM text reinterpreted as HTML",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-15532": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-15657": {
+      "explanation": "Arbitrary Code Execution",
+      "cwes": [
+        "CWE-094"
+      ]
+    },
+    "CVE-2019-15658": {
+      "explanation": "Database query built from user-controlled sources",
+      "cwes": [
+        "CWE-089"
+      ]
+    },
+    "CVE-2019-15782": {
+      "explanation": "Reflected cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-16763": {
+      "explanation": "Incomplete URL scheme check",
+      "cwes": [
+        "CWE-020"
+      ]
+    },
+    "CVE-2019-16769": {
+      "explanation": "cross-site scripting due to unsafe characters in serialized regular expressions",
+      "cwes": [
+        "CWE-079"
+      ]
+    },
+    "CVE-2019-17495": {
+      "explanation": "Cascading Style Sheets injection",
+      "cwes": [
+        "CWE-079"
+      ]
+    },
+    "CVE-2019-17592": {
+      "explanation": "Polynomial regular expression used on uncontrolled data",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2019-18350": {
+      "explanation": "Client-side URL redirect",
+      "cwes": [
+        "CWE-079",
+        "CWE-116",
+        "CWE-601"
+      ]
+    },
+    "CVE-2019-18818": {
+      "explanation": "Database query built from user-controlled sources",
+      "cwes": [
+        "CWE-089"
+      ]
+    },
+    "CVE-2019-18954": {
+      "explanation": "Unvalidated dynamic method call",
+      "cwes": [
+        "CWE-754"
+      ]
+    },
+    "CVE-2019-19507": {
+      "explanation": "User-controlled bypass of security check",
+      "cwes": [
+        "CWE-290",
+        "CWE-807"
+      ]
+    },
+    "CVE-2019-20149": {
+      "explanation": "improper input validation",
+      "cwes": [
+        "CWE-020",
+        "CWE-668"
+      ]
+    },
+    "CVE-2019-20174": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-5413": {
+      "explanation": "Code injection",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-5414": {
+      "explanation": "Indirect uncontrolled command line",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2019-5423": {
+      "explanation": "Incomplete string escaping or encoding",
+      "cwes": [
+        "CWE-020",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-5444": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2019-5479": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2019-5483": {
+      "explanation": "Clear-text logging of sensitive information",
+      "cwes": [
+        "CWE-312",
+        "CWE-315",
+        "CWE-359"
+      ]
+    },
+    "CVE-2019-5484": {
+      "explanation": "Arbitrary file write during zip extraction (\"Zip Slip\")",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2019-8331": {
+      "explanation": "DOM text reinterpreted as HTML",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-8903": {
+      "explanation": "Incomplete multi-character sanitization",
+      "cwes": [
+        "CWE-020",
+        "CWE-116"
+      ]
+    },
+    "CVE-2019-9844": {
+      "explanation": "Incomplete URL scheme check",
+      "cwes": [
+        "CWE-020"
+      ]
+    },
+    "CVE-2020-11021": {
+      "explanation": "Authorization headers are sent to untrusted host",
+      "cwes": [
+        "CWE-200"
+      ]
+    },
+    "CVE-2020-11022": {
+      "explanation": "Expansion of *sanitsed* self-closing HTML tags may introduce new mXSS vulnerabilities",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-11059": {
+      "explanation": "Build artifact created by `webpack.DefinePlugin` includes sensitive `process.env` values",
+      "cwes": [
+        "CWE-312",
+        "CWE-315",
+        "CWE-359"
+      ]
+    },
+    "CVE-2020-11079": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2020-12265": {
+      "explanation": "Arbitrary file write during zip extraction (\"Zip Slip\")",
+      "cwes": [
+        "CWE-022"
+      ]
+    },
+    "CVE-2020-14000": {
+      "explanation": "Client-side URL redirect",
+      "cwes": [
+        "CWE-079",
+        "CWE-116",
+        "CWE-601"
+      ]
+    },
+    "CVE-2020-15092": {
+      "explanation": "Stored cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-15095": {
+      "explanation": "Clear-text logging of sensitive information",
+      "cwes": [
+        "CWE-312",
+        "CWE-315",
+        "CWE-359"
+      ]
+    },
+    "CVE-2020-15119": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-15123": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2020-15135": {
+      "explanation": "Missing CSRF middleware",
+      "cwes": [
+        "CWE-352"
+      ]
+    },
+    "CVE-2020-15138": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-15152": {
+      "explanation": "Uncontrolled data used in network request",
+      "cwes": [
+        "CWE-918"
+      ]
+    },
+    "CVE-2020-15156": {
+      "explanation": "Missing CSRF middleware",
+      "cwes": [
+        "CWE-352"
+      ]
+    },
+    "CVE-2020-15256": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2020-26226": {
+      "explanation": "Incomplete sanitization of of sensitive values in the presence of url-encoding.",
+      "cwes": [
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-27666": {
+      "explanation": "XSS in markdown WYSIWYG previewer due to lack of HTML sanitization.",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-4051": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-4059": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2020-4066": {
+      "explanation": "Unsafe shell command constructed from library input",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2020-5251": {
+      "explanation": "Database query built from user-controlled sources",
+      "cwes": [
+        "CWE-089"
+      ]
+    },
+    "CVE-2020-5258": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2020-6836": {
+      "explanation": "Code injection",
+      "cwes": [
+        "CWE-079",
+        "CWE-094",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-7638": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2020-7656": {
+      "explanation": "Incomplete multi-character sanitization",
+      "cwes": [
+        "CWE-020",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-7660": {
+      "explanation": "Remote code execution",
+      "cwes": [
+        "CWE-502"
+      ]
+    },
+    "CVE-2020-7662": {
+      "explanation": "Inefficient regular expression",
+      "cwes": [
+        "CWE-400",
+        "CWE-730"
+      ]
+    },
+    "CVE-2020-7676": {
+      "explanation": "Unsafe expansion of self-closing HTML tag",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-7699": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2020-7720": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2020-7750": {
+      "explanation": "Client-side cross-site scripting",
+      "cwes": [
+        "CWE-079",
+        "CWE-116"
+      ]
+    },
+    "CVE-2020-7752": {
+      "explanation": "Command injection in library function that dynamically builds a `netstat` shell command without sanitizing the `iface` argument.",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2020-7763": {
+      "explanation": "Uncontrolled data used in path expression",
+      "cwes": [
+        "CWE-022",
+        "CWE-023",
+        "CWE-036",
+        "CWE-073",
+        "CWE-099"
+      ]
+    },
+    "CVE-2020-8116": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2020-8135": {
+      "explanation": "Server-side URL redirect",
+      "cwes": [
+        "CWE-601"
+      ]
+    },
+    "CVE-2020-8149": {
+      "explanation": "Indirect uncontrolled command line",
+      "cwes": [
+        "CWE-078",
+        "CWE-088"
+      ]
+    },
+    "CVE-2020-8192": {
+      "explanation": "Resource exhaustion",
+      "cwes": [
+        "CWE-770"
+      ]
+    },
+    "CVE-2020-8203": {
+      "explanation": "Prototype-polluting function",
+      "cwes": [
+        "CWE-078",
+        "CWE-079",
+        "CWE-094",
+        "CWE-400",
+        "CWE-915"
+      ]
+    },
+    "CVE-2020-8205": {
+      "explanation": "Uncontrolled data used in network request",
+      "cwes": [
+        "CWE-918"
+      ]
+    },
+    "CVE-2020-8244": {
+      "explanation": "Buffer over-read vulnerability resulting in exposure of uninitialized memory",
+      "cwes": [
+        "CWE-125",
+        "CWE-126"
+      ]
+    },
+    "CVE-2020-9038": {
+      "explanation": "Incomplete URL scheme check",
+      "cwes": [
+        "CWE-020"
+      ]
+    }
+  }
+}

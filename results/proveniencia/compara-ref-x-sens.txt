@@ -1,0 +1,23 @@
+--- A: [ref]
+      ground truth: datasets/cve-metadata.csv
+      consultas   : catalogos/codeql-2020/javascript/ql/src
+--- B: [sens]
+      ground truth: datasets/cve-metadata.csv
+      consultas   : catalogos/codeql-2020-12-11/javascript/ql/src
+
+  1. ground truth
+     CVEs em A: 223 | em B: 223 | nos dois: 223
+     so em A: 0 
+     so em B: 0 
+     nos dois, com rotulo diferente: 0
+
+  2. casamento
+     casados em A: 163 | em B: 185
+     casados so em A: 0
+     casados so em B: 22
+       22  Security/CWE-915/PrototypePollutingFunction.ql
+          CVE-2018-16487 CVE-2018-16489 CVE-2018-16490 CVE-2018-16491 CVE-2018-16492 CVE-2018-3719 CVE-2018-3721 CVE-2018-3722 CVE-2018-3728 CVE-2018-3750 CVE-2018-3752 CVE-2019-10746 CVE-2019-10747 CVE-2019-10750 CVE-2019-11358 CVE-2020-15256 CVE-2020-5258 CVE-2020-7638 CVE-2020-7699 CVE-2020-7720 CVE-2020-8116 CVE-2020-8203
+
+  3. casados nos dois: 163
+     com consulta diferente: 0
+     com relacao diferente: 0

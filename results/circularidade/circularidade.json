@@ -1,0 +1,3081 @@
+{
+  "matriz": "results/cruzamento/matriz-deteccao.csv",
+  "matriz_sha256": "f80158b730794c3135701a8631e551d89610775562577322b806fcc180452825",
+  "proveniencia_sha256": {
+    "ref": "ca8f0a897c17b601657b36f56a681ef3ce04bb1286d6731b01a75b08a8873df5",
+    "sens": "917ef8b87a4b4e5ea24228538d49722e75a233ee3dbeee0414d69720fb66bf65"
+  },
+  "particoes": [
+    {
+      "rotulo": "ref",
+      "ressalva_da_particao": {
+        "consultas_conjuntos_distintos": 67,
+        "nao_herdado_com_conjunto_de_consulta_multiplo": [
+          "CVE-2019-10765",
+          "CVE-2020-11022",
+          "CVE-2020-11059",
+          "CVE-2020-26256",
+          "CVE-2020-27666",
+          "CVE-2020-7752"
+        ],
+        "nao_herdado_com_conjunto_de_consulta_unitario": [
+          "CVE-2018-3732",
+          "CVE-2018-3770",
+          "CVE-2019-10759",
+          "CVE-2019-15657",
+          "CVE-2020-11021",
+          "CVE-2020-26226",
+          "CVE-2020-7660",
+          "CVE-2021-23344"
+        ],
+        "nao_herdado_total": 59
+      },
+      "relatorio_proveniencia": "results/proveniencia/cotejo-ref.json",
+      "relatorio_proveniencia_sha256": "ca8f0a897c17b601657b36f56a681ef3ce04bb1286d6731b01a75b08a8873df5",
+      "catalogo": "catalogos/codeql-2020/javascript/ql/src",
+      "grupos": {
+        "herdado": [
+          "CVE-2016-10735",
+          "CVE-2017-0931",
+          "CVE-2017-1000006",
+          "CVE-2017-1000219",
+          "CVE-2017-1000427",
+          "CVE-2017-1001004",
+          "CVE-2017-15010",
+          "CVE-2017-16003",
+          "CVE-2017-16006",
+          "CVE-2017-16018",
+          "CVE-2017-16023",
+          "CVE-2017-16028",
+          "CVE-2017-16029",
+          "CVE-2017-16030",
+          "CVE-2017-16031",
+          "CVE-2017-16034",
+          "CVE-2017-16042",
+          "CVE-2017-16043",
+          "CVE-2017-16082",
+          "CVE-2017-16083",
+          "CVE-2017-16084",
+          "CVE-2017-16087",
+          "CVE-2017-16098",
+          "CVE-2017-16100",
+          "CVE-2017-16107",
+          "CVE-2017-16114",
+          "CVE-2017-16117",
+          "CVE-2017-16118",
+          "CVE-2017-16119",
+          "CVE-2017-16136",
+          "CVE-2017-16137",
+          "CVE-2017-16138",
+          "CVE-2017-16224",
+          "CVE-2017-16877",
+          "CVE-2017-17461",
+          "CVE-2017-18077",
+          "CVE-2017-18214",
+          "CVE-2017-18352",
+          "CVE-2017-18353",
+          "CVE-2017-18354",
+          "CVE-2017-18355",
+          "CVE-2017-18635",
+          "CVE-2017-5954",
+          "CVE-2018-1000086",
+          "CVE-2018-1000620",
+          "CVE-2018-1002203",
+          "CVE-2018-1002204",
+          "CVE-2018-11093",
+          "CVE-2018-11615",
+          "CVE-2018-11798",
+          "CVE-2018-13797",
+          "CVE-2018-13863",
+          "CVE-2018-14040",
+          "CVE-2018-14041",
+          "CVE-2018-14042",
+          "CVE-2018-14380",
+          "CVE-2018-16460",
+          "CVE-2018-16461",
+          "CVE-2018-16462",
+          "CVE-2018-16472",
+          "CVE-2018-16478",
+          "CVE-2018-16479",
+          "CVE-2018-16480",
+          "CVE-2018-16484",
+          "CVE-2018-16485",
+          "CVE-2018-18282",
+          "CVE-2018-19048",
+          "CVE-2018-20164",
+          "CVE-2018-20676",
+          "CVE-2018-20677",
+          "CVE-2018-20801",
+          "CVE-2018-20834",
+          "CVE-2018-20835",
+          "CVE-2018-3712",
+          "CVE-2018-3713",
+          "CVE-2018-3718",
+          "CVE-2018-3725",
+          "CVE-2018-3726",
+          "CVE-2018-3731",
+          "CVE-2018-3733",
+          "CVE-2018-3737",
+          "CVE-2018-3738",
+          "CVE-2018-3743",
+          "CVE-2018-3746",
+          "CVE-2018-3747",
+          "CVE-2018-3757",
+          "CVE-2018-3772",
+          "CVE-2018-3783",
+          "CVE-2018-3786",
+          "CVE-2018-6184",
+          "CVE-2018-6333",
+          "CVE-2018-6342",
+          "CVE-2018-7560",
+          "CVE-2018-7651",
+          "CVE-2019-10061",
+          "CVE-2019-10090",
+          "CVE-2019-1010091",
+          "CVE-2019-1010266",
+          "CVE-2019-10744",
+          "CVE-2019-10757",
+          "CVE-2019-10758",
+          "CVE-2019-10767",
+          "CVE-2019-10771",
+          "CVE-2019-10776",
+          "CVE-2019-10777",
+          "CVE-2019-10778",
+          "CVE-2019-10785",
+          "CVE-2019-12313",
+          "CVE-2019-13127",
+          "CVE-2019-13173",
+          "CVE-2019-13506",
+          "CVE-2019-14772",
+          "CVE-2019-14862",
+          "CVE-2019-15478",
+          "CVE-2019-15479",
+          "CVE-2019-15482",
+          "CVE-2019-15532",
+          "CVE-2019-15658",
+          "CVE-2019-15782",
+          "CVE-2019-16763",
+          "CVE-2019-17592",
+          "CVE-2019-18350",
+          "CVE-2019-18818",
+          "CVE-2019-18954",
+          "CVE-2019-19507",
+          "CVE-2019-20174",
+          "CVE-2019-5413",
+          "CVE-2019-5414",
+          "CVE-2019-5423",
+          "CVE-2019-5444",
+          "CVE-2019-5479",
+          "CVE-2019-5483",
+          "CVE-2019-5484",
+          "CVE-2019-8331",
+          "CVE-2019-8903",
+          "CVE-2019-9844",
+          "CVE-2020-11079",
+          "CVE-2020-12265",
+          "CVE-2020-14000",
+          "CVE-2020-15092",
+          "CVE-2020-15095",
+          "CVE-2020-15119",
+          "CVE-2020-15123",
+          "CVE-2020-15135",
+          "CVE-2020-15138",
+          "CVE-2020-15152",
+          "CVE-2020-15156",
+          "CVE-2020-4051",
+          "CVE-2020-4059",
+          "CVE-2020-4066",
+          "CVE-2020-5251",
+          "CVE-2020-6836",
+          "CVE-2020-7656",
+          "CVE-2020-7662",
+          "CVE-2020-7676",
+          "CVE-2020-7750",
+          "CVE-2020-7763",
+          "CVE-2020-8135",
+          "CVE-2020-8149",
+          "CVE-2020-8205",
+          "CVE-2020-9038"
+        ],
+        "nao_herdado": [
+          "CVE-2017-10910",
+          "CVE-2017-16011",
+          "CVE-2017-16014",
+          "CVE-2017-16026",
+          "CVE-2017-16226",
+          "CVE-2018-16487",
+          "CVE-2018-16489",
+          "CVE-2018-16490",
+          "CVE-2018-16491",
+          "CVE-2018-16492",
+          "CVE-2018-21036",
+          "CVE-2018-3719",
+          "CVE-2018-3721",
+          "CVE-2018-3722",
+          "CVE-2018-3728",
+          "CVE-2018-3732",
+          "CVE-2018-3736",
+          "CVE-2018-3750",
+          "CVE-2018-3752",
+          "CVE-2018-3770",
+          "CVE-2018-6341",
+          "CVE-2019-1020012",
+          "CVE-2019-10742",
+          "CVE-2019-10745",
+          "CVE-2019-10746",
+          "CVE-2019-10747",
+          "CVE-2019-10750",
+          "CVE-2019-10759",
+          "CVE-2019-10761",
+          "CVE-2019-10765",
+          "CVE-2019-10775",
+          "CVE-2019-10781",
+          "CVE-2019-11358",
+          "CVE-2019-12041",
+          "CVE-2019-12043",
+          "CVE-2019-15657",
+          "CVE-2019-16769",
+          "CVE-2019-17495",
+          "CVE-2019-20149",
+          "CVE-2020-11021",
+          "CVE-2020-11022",
+          "CVE-2020-11059",
+          "CVE-2020-15256",
+          "CVE-2020-26226",
+          "CVE-2020-26256",
+          "CVE-2020-27666",
+          "CVE-2020-5258",
+          "CVE-2020-7638",
+          "CVE-2020-7660",
+          "CVE-2020-7699",
+          "CVE-2020-7720",
+          "CVE-2020-7752",
+          "CVE-2020-8116",
+          "CVE-2020-8192",
+          "CVE-2020-8203",
+          "CVE-2020-8244",
+          "CVE-2021-23344",
+          "CVE-2021-23364",
+          "CVE-2021-31712"
+        ]
+      },
+      "tamanhos": {
+        "herdado": 161,
+        "nao_herdado": 59,
+        "denominador": 220
+      },
+      "fora_do_denominador": {
+        "CVE-2016-1000229": {
+          "grupo": "herdado",
+          "motivo": "codigo_indisponivel_repositorio_inexistente"
+        },
+        "CVE-2018-1000096": {
+          "grupo": "herdado",
+          "motivo": "sem_cwe_no_ground_truth"
+        },
+        "CVE-2018-8035": {
+          "grupo": "nao_herdado",
+          "motivo": "codigo_indisponivel_commit_inexistente"
+        }
+      },
+      "tabela": {
+        "codeql|nivel_0": {
+          "herdado": {
+            "acertos": 144,
+            "nao_acertos": 17,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 89.44099378881988
+          },
+          "nao_herdado": {
+            "acertos": 46,
+            "nao_acertos": 13,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 77.96610169491525
+          },
+          "delta_pp": 11.474892093904629
+        },
+        "codeql|nivel_1": {
+          "herdado": {
+            "acertos": 110,
+            "nao_acertos": 51,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 68.32298136645963
+          },
+          "nao_herdado": {
+            "acertos": 30,
+            "nao_acertos": 29,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 50.847457627118644
+          },
+          "delta_pp": 17.475523739340986
+        },
+        "codeql|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 101,
+            "nao_acertos": 60,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 62.732919254658384
+          },
+          "nao_herdado": {
+            "acertos": 25,
+            "nao_acertos": 34,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 42.3728813559322
+          },
+          "delta_pp": 20.360037898726183
+        },
+        "codeql|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 100,
+            "nao_acertos": 60,
+            "nao_se_aplica": 1,
+            "base": 160,
+            "taxa": 62.5
+          },
+          "nao_herdado": {
+            "acertos": 24,
+            "nao_acertos": 35,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 40.67796610169491
+          },
+          "delta_pp": 21.822033898305087
+        },
+        "codeql|nivel_3": {
+          "herdado": {
+            "acertos": 80,
+            "nao_acertos": 81,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 49.68944099378882
+          },
+          "nao_herdado": {
+            "acertos": 21,
+            "nao_acertos": 38,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 35.59322033898305
+          },
+          "delta_pp": 14.09622065480577
+        },
+        "codeql|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 76,
+            "nao_acertos": 85,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 47.20496894409938
+          },
+          "nao_herdado": {
+            "acertos": 19,
+            "nao_acertos": 40,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 32.20338983050848
+          },
+          "delta_pp": 15.0015791135909
+        },
+        "codeql|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 76,
+            "nao_acertos": 84,
+            "nao_se_aplica": 1,
+            "base": 160,
+            "taxa": 47.5
+          },
+          "nao_herdado": {
+            "acertos": 18,
+            "nao_acertos": 41,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 30.508474576271187
+          },
+          "delta_pp": 16.991525423728813
+        },
+        "semgrep|nivel_0": {
+          "herdado": {
+            "acertos": 134,
+            "nao_acertos": 27,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 83.22981366459628
+          },
+          "nao_herdado": {
+            "acertos": 49,
+            "nao_acertos": 10,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 83.05084745762711
+          },
+          "delta_pp": 0.17896620696916443
+        },
+        "semgrep|nivel_1": {
+          "herdado": {
+            "acertos": 77,
+            "nao_acertos": 84,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 47.82608695652174
+          },
+          "nao_herdado": {
+            "acertos": 21,
+            "nao_acertos": 38,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 35.59322033898305
+          },
+          "delta_pp": 12.23286661753869
+        },
+        "semgrep|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 35,
+            "nao_acertos": 126,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 21.73913043478261
+          },
+          "nao_herdado": {
+            "acertos": 13,
+            "nao_acertos": 46,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 22.033898305084747
+          },
+          "delta_pp": -0.29476787030213814
+        },
+        "semgrep|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 33,
+            "nao_acertos": 127,
+            "nao_se_aplica": 1,
+            "base": 160,
+            "taxa": 20.625
+          },
+          "nao_herdado": {
+            "acertos": 13,
+            "nao_acertos": 46,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 22.033898305084747
+          },
+          "delta_pp": -1.4088983050847474
+        },
+        "semgrep|nivel_3": {
+          "herdado": {
+            "acertos": 22,
+            "nao_acertos": 139,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 13.664596273291925
+          },
+          "nao_herdado": {
+            "acertos": 3,
+            "nao_acertos": 56,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 5.084745762711864
+          },
+          "delta_pp": 8.579850510580062
+        },
+        "semgrep|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 17,
+            "nao_acertos": 144,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 10.559006211180124
+          },
+          "nao_herdado": {
+            "acertos": 3,
+            "nao_acertos": 56,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 5.084745762711864
+          },
+          "delta_pp": 5.47426044846826
+        },
+        "semgrep|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 17,
+            "nao_acertos": 143,
+            "nao_se_aplica": 1,
+            "base": 160,
+            "taxa": 10.625
+          },
+          "nao_herdado": {
+            "acertos": 3,
+            "nao_acertos": 56,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 5.084745762711864
+          },
+          "delta_pp": 5.540254237288136
+        },
+        "snyk-code|nivel_0": {
+          "herdado": {
+            "acertos": 100,
+            "nao_acertos": 61,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 62.11180124223603
+          },
+          "nao_herdado": {
+            "acertos": 32,
+            "nao_acertos": 27,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 54.23728813559322
+          },
+          "delta_pp": 7.874513106642809
+        },
+        "snyk-code|nivel_1": {
+          "herdado": {
+            "acertos": 39,
+            "nao_acertos": 122,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 24.22360248447205
+          },
+          "nao_herdado": {
+            "acertos": 6,
+            "nao_acertos": 53,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 10.169491525423728
+          },
+          "delta_pp": 14.054110959048321
+        },
+        "snyk-code|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 15,
+            "nao_acertos": 146,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 9.316770186335404
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "nao_acertos": 58,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 1.694915254237288
+          },
+          "delta_pp": 7.621854932098116
+        },
+        "snyk-code|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 9,
+            "nao_acertos": 151,
+            "nao_se_aplica": 1,
+            "base": 160,
+            "taxa": 5.625
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "nao_acertos": 59,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 0.0
+          },
+          "delta_pp": 5.625
+        },
+        "snyk-code|nivel_3": {
+          "herdado": {
+            "acertos": 21,
+            "nao_acertos": 140,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 13.043478260869565
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "nao_acertos": 58,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 1.694915254237288
+          },
+          "delta_pp": 11.348563006632276
+        },
+        "snyk-code|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 10,
+            "nao_acertos": 151,
+            "nao_se_aplica": 0,
+            "base": 161,
+            "taxa": 6.211180124223603
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "nao_acertos": 59,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 0.0
+          },
+          "delta_pp": 6.211180124223603
+        },
+        "snyk-code|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 6,
+            "nao_acertos": 154,
+            "nao_se_aplica": 1,
+            "base": 160,
+            "taxa": 3.75
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "nao_acertos": 59,
+            "nao_se_aplica": 0,
+            "base": 59,
+            "taxa": 0.0
+          },
+          "delta_pp": 3.75
+        }
+      },
+      "composicao_tratado": {
+        "codeql|herdado": {
+          "com_tratado": 161,
+          "total": 161
+        },
+        "codeql|nao_herdado": {
+          "com_tratado": 59,
+          "total": 59
+        },
+        "semgrep|herdado": {
+          "com_tratado": 161,
+          "total": 161
+        },
+        "semgrep|nao_herdado": {
+          "com_tratado": 59,
+          "total": 59
+        },
+        "snyk-code|herdado": {
+          "com_tratado": 156,
+          "total": 161
+        },
+        "snyk-code|nao_herdado": {
+          "com_tratado": 59,
+          "total": 59
+        }
+      },
+      "distribuicao_gt_cwe_primary": {
+        "herdado": {
+          "(nulo)": 1,
+          "CWE-020": 5,
+          "CWE-022": 27,
+          "CWE-078": 24,
+          "CWE-079": 39,
+          "CWE-089": 4,
+          "CWE-094": 8,
+          "CWE-116": 8,
+          "CWE-200": 1,
+          "CWE-312": 2,
+          "CWE-327": 1,
+          "CWE-338": 2,
+          "CWE-352": 2,
+          "CWE-400": 24,
+          "CWE-601": 7,
+          "CWE-754": 1,
+          "CWE-807": 1,
+          "CWE-829": 1,
+          "CWE-918": 3
+        },
+        "nao_herdado": {
+          "CWE-020": 1,
+          "CWE-022": 2,
+          "CWE-078": 1,
+          "CWE-079": 8,
+          "CWE-094": 6,
+          "CWE-116": 1,
+          "CWE-125": 1,
+          "CWE-200": 1,
+          "CWE-312": 1,
+          "CWE-399": 1,
+          "CWE-400": 2,
+          "CWE-404": 1,
+          "CWE-444": 1,
+          "CWE-502": 1,
+          "CWE-668": 1,
+          "CWE-730": 3,
+          "CWE-770": 4,
+          "CWE-915": 23
+        }
+      },
+      "distribuicao_gt_cwes": {
+        "herdado": {
+          "CWE-020": 5,
+          "CWE-022": 7,
+          "CWE-022|CWE-023|CWE-036|CWE-073|CWE-099": 20,
+          "CWE-078|CWE-088": 24,
+          "CWE-079|CWE-116": 38,
+          "CWE-079|CWE-116|CWE-020": 1,
+          "CWE-079|CWE-116|CWE-601": 3,
+          "CWE-089": 4,
+          "CWE-094|CWE-079|CWE-116": 8,
+          "CWE-116": 1,
+          "CWE-116|CWE-020": 7,
+          "CWE-200": 1,
+          "CWE-250|CWE-400": 1,
+          "CWE-312|CWE-315|CWE-359": 2,
+          "CWE-327": 1,
+          "CWE-338": 2,
+          "CWE-352": 2,
+          "CWE-601": 4,
+          "CWE-730|CWE-400": 24,
+          "CWE-754": 1,
+          "CWE-807|CWE-290": 1,
+          "CWE-829": 1,
+          "CWE-918": 3
+        },
+        "nao_herdado": {
+          "CWE-020|CWE-094": 1,
+          "CWE-022": 1,
+          "CWE-022|CWE-023|CWE-036|CWE-073|CWE-099": 1,
+          "CWE-074|CWE-094": 1,
+          "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915": 23,
+          "CWE-078|CWE-088": 1,
+          "CWE-079": 6,
+          "CWE-079|CWE-116": 2,
+          "CWE-094": 4,
+          "CWE-116": 1,
+          "CWE-125|CWE-126": 1,
+          "CWE-200": 1,
+          "CWE-312|CWE-315|CWE-359": 1,
+          "CWE-399": 1,
+          "CWE-400": 1,
+          "CWE-444": 1,
+          "CWE-502": 1,
+          "CWE-668": 1,
+          "CWE-668|CWE-020": 1,
+          "CWE-730": 3,
+          "CWE-730|CWE-400": 1,
+          "CWE-730|CWE-404": 1,
+          "CWE-770": 4
+        }
+      },
+      "celulas_zero": [
+        {
+          "ferramenta": "snyk-code",
+          "nivel": "nivel_2_estrita",
+          "grupo": "nao_herdado",
+          "base": 59
+        },
+        {
+          "ferramenta": "snyk-code",
+          "nivel": "nivel_4_generosa",
+          "grupo": "nao_herdado",
+          "base": 59
+        },
+        {
+          "ferramenta": "snyk-code",
+          "nivel": "nivel_4_estrita",
+          "grupo": "nao_herdado",
+          "base": 59
+        }
+      ]
+    },
+    {
+      "rotulo": "sens",
+      "ressalva_da_particao": {
+        "consultas_conjuntos_distintos": 67,
+        "nao_herdado_com_conjunto_de_consulta_multiplo": [
+          "CVE-2019-10745",
+          "CVE-2019-10765",
+          "CVE-2020-11022",
+          "CVE-2020-11059",
+          "CVE-2020-26256",
+          "CVE-2020-27666",
+          "CVE-2020-7752"
+        ],
+        "nao_herdado_com_conjunto_de_consulta_unitario": [
+          "CVE-2018-3732",
+          "CVE-2018-3770",
+          "CVE-2019-10759",
+          "CVE-2019-15657",
+          "CVE-2020-11021",
+          "CVE-2020-26226",
+          "CVE-2020-7660",
+          "CVE-2021-23344"
+        ],
+        "nao_herdado_total": 37
+      },
+      "relatorio_proveniencia": "results/proveniencia/cotejo-sens.json",
+      "relatorio_proveniencia_sha256": "917ef8b87a4b4e5ea24228538d49722e75a233ee3dbeee0414d69720fb66bf65",
+      "catalogo": "catalogos/codeql-2020-12-11/javascript/ql/src",
+      "grupos": {
+        "herdado": [
+          "CVE-2016-10735",
+          "CVE-2017-0931",
+          "CVE-2017-1000006",
+          "CVE-2017-1000219",
+          "CVE-2017-1000427",
+          "CVE-2017-1001004",
+          "CVE-2017-15010",
+          "CVE-2017-16003",
+          "CVE-2017-16006",
+          "CVE-2017-16018",
+          "CVE-2017-16023",
+          "CVE-2017-16028",
+          "CVE-2017-16029",
+          "CVE-2017-16030",
+          "CVE-2017-16031",
+          "CVE-2017-16034",
+          "CVE-2017-16042",
+          "CVE-2017-16043",
+          "CVE-2017-16082",
+          "CVE-2017-16083",
+          "CVE-2017-16084",
+          "CVE-2017-16087",
+          "CVE-2017-16098",
+          "CVE-2017-16100",
+          "CVE-2017-16107",
+          "CVE-2017-16114",
+          "CVE-2017-16117",
+          "CVE-2017-16118",
+          "CVE-2017-16119",
+          "CVE-2017-16136",
+          "CVE-2017-16137",
+          "CVE-2017-16138",
+          "CVE-2017-16224",
+          "CVE-2017-16877",
+          "CVE-2017-17461",
+          "CVE-2017-18077",
+          "CVE-2017-18214",
+          "CVE-2017-18352",
+          "CVE-2017-18353",
+          "CVE-2017-18354",
+          "CVE-2017-18355",
+          "CVE-2017-18635",
+          "CVE-2017-5954",
+          "CVE-2018-1000086",
+          "CVE-2018-1000620",
+          "CVE-2018-1002203",
+          "CVE-2018-1002204",
+          "CVE-2018-11093",
+          "CVE-2018-11615",
+          "CVE-2018-11798",
+          "CVE-2018-13797",
+          "CVE-2018-13863",
+          "CVE-2018-14040",
+          "CVE-2018-14041",
+          "CVE-2018-14042",
+          "CVE-2018-14380",
+          "CVE-2018-16460",
+          "CVE-2018-16461",
+          "CVE-2018-16462",
+          "CVE-2018-16472",
+          "CVE-2018-16478",
+          "CVE-2018-16479",
+          "CVE-2018-16480",
+          "CVE-2018-16484",
+          "CVE-2018-16485",
+          "CVE-2018-16487",
+          "CVE-2018-16489",
+          "CVE-2018-16490",
+          "CVE-2018-16491",
+          "CVE-2018-16492",
+          "CVE-2018-18282",
+          "CVE-2018-19048",
+          "CVE-2018-20164",
+          "CVE-2018-20676",
+          "CVE-2018-20677",
+          "CVE-2018-20801",
+          "CVE-2018-20834",
+          "CVE-2018-20835",
+          "CVE-2018-3712",
+          "CVE-2018-3713",
+          "CVE-2018-3718",
+          "CVE-2018-3719",
+          "CVE-2018-3721",
+          "CVE-2018-3722",
+          "CVE-2018-3725",
+          "CVE-2018-3726",
+          "CVE-2018-3728",
+          "CVE-2018-3731",
+          "CVE-2018-3733",
+          "CVE-2018-3737",
+          "CVE-2018-3738",
+          "CVE-2018-3743",
+          "CVE-2018-3746",
+          "CVE-2018-3747",
+          "CVE-2018-3750",
+          "CVE-2018-3752",
+          "CVE-2018-3757",
+          "CVE-2018-3772",
+          "CVE-2018-3783",
+          "CVE-2018-3786",
+          "CVE-2018-6184",
+          "CVE-2018-6333",
+          "CVE-2018-6342",
+          "CVE-2018-7560",
+          "CVE-2018-7651",
+          "CVE-2019-10061",
+          "CVE-2019-10090",
+          "CVE-2019-1010091",
+          "CVE-2019-1010266",
+          "CVE-2019-10744",
+          "CVE-2019-10746",
+          "CVE-2019-10747",
+          "CVE-2019-10750",
+          "CVE-2019-10757",
+          "CVE-2019-10758",
+          "CVE-2019-10767",
+          "CVE-2019-10771",
+          "CVE-2019-10776",
+          "CVE-2019-10777",
+          "CVE-2019-10778",
+          "CVE-2019-10785",
+          "CVE-2019-11358",
+          "CVE-2019-12313",
+          "CVE-2019-13127",
+          "CVE-2019-13173",
+          "CVE-2019-13506",
+          "CVE-2019-14772",
+          "CVE-2019-14862",
+          "CVE-2019-15478",
+          "CVE-2019-15479",
+          "CVE-2019-15482",
+          "CVE-2019-15532",
+          "CVE-2019-15658",
+          "CVE-2019-15782",
+          "CVE-2019-16763",
+          "CVE-2019-17592",
+          "CVE-2019-18350",
+          "CVE-2019-18818",
+          "CVE-2019-18954",
+          "CVE-2019-19507",
+          "CVE-2019-20174",
+          "CVE-2019-5413",
+          "CVE-2019-5414",
+          "CVE-2019-5423",
+          "CVE-2019-5444",
+          "CVE-2019-5479",
+          "CVE-2019-5483",
+          "CVE-2019-5484",
+          "CVE-2019-8331",
+          "CVE-2019-8903",
+          "CVE-2019-9844",
+          "CVE-2020-11079",
+          "CVE-2020-12265",
+          "CVE-2020-14000",
+          "CVE-2020-15092",
+          "CVE-2020-15095",
+          "CVE-2020-15119",
+          "CVE-2020-15123",
+          "CVE-2020-15135",
+          "CVE-2020-15138",
+          "CVE-2020-15152",
+          "CVE-2020-15156",
+          "CVE-2020-15256",
+          "CVE-2020-4051",
+          "CVE-2020-4059",
+          "CVE-2020-4066",
+          "CVE-2020-5251",
+          "CVE-2020-5258",
+          "CVE-2020-6836",
+          "CVE-2020-7638",
+          "CVE-2020-7656",
+          "CVE-2020-7662",
+          "CVE-2020-7676",
+          "CVE-2020-7699",
+          "CVE-2020-7720",
+          "CVE-2020-7750",
+          "CVE-2020-7763",
+          "CVE-2020-8116",
+          "CVE-2020-8135",
+          "CVE-2020-8149",
+          "CVE-2020-8203",
+          "CVE-2020-8205",
+          "CVE-2020-9038"
+        ],
+        "nao_herdado": [
+          "CVE-2017-10910",
+          "CVE-2017-16011",
+          "CVE-2017-16014",
+          "CVE-2017-16026",
+          "CVE-2017-16226",
+          "CVE-2018-21036",
+          "CVE-2018-3732",
+          "CVE-2018-3736",
+          "CVE-2018-3770",
+          "CVE-2018-6341",
+          "CVE-2019-1020012",
+          "CVE-2019-10742",
+          "CVE-2019-10745",
+          "CVE-2019-10759",
+          "CVE-2019-10761",
+          "CVE-2019-10765",
+          "CVE-2019-10775",
+          "CVE-2019-10781",
+          "CVE-2019-12041",
+          "CVE-2019-12043",
+          "CVE-2019-15657",
+          "CVE-2019-16769",
+          "CVE-2019-17495",
+          "CVE-2019-20149",
+          "CVE-2020-11021",
+          "CVE-2020-11022",
+          "CVE-2020-11059",
+          "CVE-2020-26226",
+          "CVE-2020-26256",
+          "CVE-2020-27666",
+          "CVE-2020-7660",
+          "CVE-2020-7752",
+          "CVE-2020-8192",
+          "CVE-2020-8244",
+          "CVE-2021-23344",
+          "CVE-2021-23364",
+          "CVE-2021-31712"
+        ]
+      },
+      "tamanhos": {
+        "herdado": 183,
+        "nao_herdado": 37,
+        "denominador": 220
+      },
+      "fora_do_denominador": {
+        "CVE-2016-1000229": {
+          "grupo": "herdado",
+          "motivo": "codigo_indisponivel_repositorio_inexistente"
+        },
+        "CVE-2018-1000096": {
+          "grupo": "herdado",
+          "motivo": "sem_cwe_no_ground_truth"
+        },
+        "CVE-2018-8035": {
+          "grupo": "nao_herdado",
+          "motivo": "codigo_indisponivel_commit_inexistente"
+        }
+      },
+      "tabela": {
+        "codeql|nivel_0": {
+          "herdado": {
+            "acertos": 163,
+            "nao_acertos": 20,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 89.07103825136612
+          },
+          "nao_herdado": {
+            "acertos": 27,
+            "nao_acertos": 10,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 72.97297297297297
+          },
+          "delta_pp": 16.09806527839315
+        },
+        "codeql|nivel_1": {
+          "herdado": {
+            "acertos": 127,
+            "nao_acertos": 56,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 69.39890710382514
+          },
+          "nao_herdado": {
+            "acertos": 13,
+            "nao_acertos": 24,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 35.13513513513514
+          },
+          "delta_pp": 34.26377196869
+        },
+        "codeql|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 118,
+            "nao_acertos": 65,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 64.48087431693989
+          },
+          "nao_herdado": {
+            "acertos": 8,
+            "nao_acertos": 29,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 21.62162162162162
+          },
+          "delta_pp": 42.85925269531827
+        },
+        "codeql|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 116,
+            "nao_acertos": 66,
+            "nao_se_aplica": 1,
+            "base": 182,
+            "taxa": 63.73626373626374
+          },
+          "nao_herdado": {
+            "acertos": 8,
+            "nao_acertos": 29,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 21.62162162162162
+          },
+          "delta_pp": 42.114642114642116
+        },
+        "codeql|nivel_3": {
+          "herdado": {
+            "acertos": 94,
+            "nao_acertos": 89,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 51.36612021857923
+          },
+          "nao_herdado": {
+            "acertos": 7,
+            "nao_acertos": 30,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 18.91891891891892
+          },
+          "delta_pp": 32.447201299660314
+        },
+        "codeql|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 90,
+            "nao_acertos": 93,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 49.18032786885246
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "nao_acertos": 32,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 35.66681435533894
+        },
+        "codeql|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 89,
+            "nao_acertos": 93,
+            "nao_se_aplica": 1,
+            "base": 182,
+            "taxa": 48.9010989010989
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "nao_acertos": 32,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 35.38758538758538
+        },
+        "semgrep|nivel_0": {
+          "herdado": {
+            "acertos": 152,
+            "nao_acertos": 31,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 83.06010928961749
+          },
+          "nao_herdado": {
+            "acertos": 31,
+            "nao_acertos": 6,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 83.78378378378379
+          },
+          "delta_pp": -0.7236744941663034
+        },
+        "semgrep|nivel_1": {
+          "herdado": {
+            "acertos": 89,
+            "nao_acertos": 94,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 48.63387978142077
+          },
+          "nao_herdado": {
+            "acertos": 9,
+            "nao_acertos": 28,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 24.324324324324323
+          },
+          "delta_pp": 24.309555457096444
+        },
+        "semgrep|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 46,
+            "nao_acertos": 137,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 25.136612021857925
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "nao_acertos": 35,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 19.731206616452518
+        },
+        "semgrep|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 44,
+            "nao_acertos": 138,
+            "nao_se_aplica": 1,
+            "base": 182,
+            "taxa": 24.175824175824175
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "nao_acertos": 35,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 18.77041877041877
+        },
+        "semgrep|nivel_3": {
+          "herdado": {
+            "acertos": 23,
+            "nao_acertos": 160,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 12.568306010928962
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "nao_acertos": 35,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 7.162900605523557
+        },
+        "semgrep|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 18,
+            "nao_acertos": 165,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 9.836065573770492
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "nao_acertos": 35,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 4.430660168365087
+        },
+        "semgrep|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 18,
+            "nao_acertos": 164,
+            "nao_se_aplica": 1,
+            "base": 182,
+            "taxa": 9.89010989010989
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "nao_acertos": 35,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 4.484704484704485
+        },
+        "snyk-code|nivel_0": {
+          "herdado": {
+            "acertos": 108,
+            "nao_acertos": 75,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 59.01639344262295
+          },
+          "nao_herdado": {
+            "acertos": 24,
+            "nao_acertos": 13,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 64.86486486486487
+          },
+          "delta_pp": -5.848471422241921
+        },
+        "snyk-code|nivel_1": {
+          "herdado": {
+            "acertos": 40,
+            "nao_acertos": 143,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 21.85792349726776
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "nao_acertos": 32,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 8.344409983754245
+        },
+        "snyk-code|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 15,
+            "nao_acertos": 168,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 8.19672131147541
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "nao_acertos": 36,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 2.7027027027027026
+          },
+          "delta_pp": 5.4940186087727065
+        },
+        "snyk-code|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 9,
+            "nao_acertos": 173,
+            "nao_se_aplica": 1,
+            "base": 182,
+            "taxa": 4.945054945054945
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "nao_acertos": 37,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 0.0
+          },
+          "delta_pp": 4.945054945054945
+        },
+        "snyk-code|nivel_3": {
+          "herdado": {
+            "acertos": 21,
+            "nao_acertos": 162,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 11.475409836065573
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "nao_acertos": 36,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 2.7027027027027026
+          },
+          "delta_pp": 8.772707133362871
+        },
+        "snyk-code|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 10,
+            "nao_acertos": 173,
+            "nao_se_aplica": 0,
+            "base": 183,
+            "taxa": 5.46448087431694
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "nao_acertos": 37,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 0.0
+          },
+          "delta_pp": 5.46448087431694
+        },
+        "snyk-code|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 6,
+            "nao_acertos": 176,
+            "nao_se_aplica": 1,
+            "base": 182,
+            "taxa": 3.2967032967032965
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "nao_acertos": 37,
+            "nao_se_aplica": 0,
+            "base": 37,
+            "taxa": 0.0
+          },
+          "delta_pp": 3.2967032967032965
+        }
+      },
+      "composicao_tratado": {
+        "codeql|herdado": {
+          "com_tratado": 183,
+          "total": 183
+        },
+        "codeql|nao_herdado": {
+          "com_tratado": 37,
+          "total": 37
+        },
+        "semgrep|herdado": {
+          "com_tratado": 183,
+          "total": 183
+        },
+        "semgrep|nao_herdado": {
+          "com_tratado": 37,
+          "total": 37
+        },
+        "snyk-code|herdado": {
+          "com_tratado": 178,
+          "total": 183
+        },
+        "snyk-code|nao_herdado": {
+          "com_tratado": 37,
+          "total": 37
+        }
+      },
+      "distribuicao_gt_cwe_primary": {
+        "herdado": {
+          "(nulo)": 1,
+          "CWE-020": 5,
+          "CWE-022": 27,
+          "CWE-078": 24,
+          "CWE-079": 39,
+          "CWE-089": 4,
+          "CWE-094": 8,
+          "CWE-116": 8,
+          "CWE-200": 1,
+          "CWE-312": 2,
+          "CWE-327": 1,
+          "CWE-338": 2,
+          "CWE-352": 2,
+          "CWE-400": 24,
+          "CWE-601": 7,
+          "CWE-754": 1,
+          "CWE-807": 1,
+          "CWE-829": 1,
+          "CWE-915": 22,
+          "CWE-918": 3
+        },
+        "nao_herdado": {
+          "CWE-020": 1,
+          "CWE-022": 2,
+          "CWE-078": 1,
+          "CWE-079": 8,
+          "CWE-094": 6,
+          "CWE-116": 1,
+          "CWE-125": 1,
+          "CWE-200": 1,
+          "CWE-312": 1,
+          "CWE-399": 1,
+          "CWE-400": 2,
+          "CWE-404": 1,
+          "CWE-444": 1,
+          "CWE-502": 1,
+          "CWE-668": 1,
+          "CWE-730": 3,
+          "CWE-770": 4,
+          "CWE-915": 1
+        }
+      },
+      "distribuicao_gt_cwes": {
+        "herdado": {
+          "CWE-020": 5,
+          "CWE-022": 7,
+          "CWE-022|CWE-023|CWE-036|CWE-073|CWE-099": 20,
+          "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915": 22,
+          "CWE-078|CWE-088": 24,
+          "CWE-079|CWE-116": 38,
+          "CWE-079|CWE-116|CWE-020": 1,
+          "CWE-079|CWE-116|CWE-601": 3,
+          "CWE-089": 4,
+          "CWE-094|CWE-079|CWE-116": 8,
+          "CWE-116": 1,
+          "CWE-116|CWE-020": 7,
+          "CWE-200": 1,
+          "CWE-250|CWE-400": 1,
+          "CWE-312|CWE-315|CWE-359": 2,
+          "CWE-327": 1,
+          "CWE-338": 2,
+          "CWE-352": 2,
+          "CWE-601": 4,
+          "CWE-730|CWE-400": 24,
+          "CWE-754": 1,
+          "CWE-807|CWE-290": 1,
+          "CWE-829": 1,
+          "CWE-918": 3
+        },
+        "nao_herdado": {
+          "CWE-020|CWE-094": 1,
+          "CWE-022": 1,
+          "CWE-022|CWE-023|CWE-036|CWE-073|CWE-099": 1,
+          "CWE-074|CWE-094": 1,
+          "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915": 1,
+          "CWE-078|CWE-088": 1,
+          "CWE-079": 6,
+          "CWE-079|CWE-116": 2,
+          "CWE-094": 4,
+          "CWE-116": 1,
+          "CWE-125|CWE-126": 1,
+          "CWE-200": 1,
+          "CWE-312|CWE-315|CWE-359": 1,
+          "CWE-399": 1,
+          "CWE-400": 1,
+          "CWE-444": 1,
+          "CWE-502": 1,
+          "CWE-668": 1,
+          "CWE-668|CWE-020": 1,
+          "CWE-730": 3,
+          "CWE-730|CWE-400": 1,
+          "CWE-730|CWE-404": 1,
+          "CWE-770": 4
+        }
+      },
+      "celulas_zero": [
+        {
+          "ferramenta": "snyk-code",
+          "nivel": "nivel_2_estrita",
+          "grupo": "nao_herdado",
+          "base": 37
+        },
+        {
+          "ferramenta": "snyk-code",
+          "nivel": "nivel_4_generosa",
+          "grupo": "nao_herdado",
+          "base": 37
+        },
+        {
+          "ferramenta": "snyk-code",
+          "nivel": "nivel_4_estrita",
+          "grupo": "nao_herdado",
+          "base": 37
+        }
+      ]
+    }
+  ],
+  "trocas_entre_referencias": {
+    "so_em_ref": [],
+    "so_em_sens": [
+      "CVE-2018-16487",
+      "CVE-2018-16489",
+      "CVE-2018-16490",
+      "CVE-2018-16491",
+      "CVE-2018-16492",
+      "CVE-2018-3719",
+      "CVE-2018-3721",
+      "CVE-2018-3722",
+      "CVE-2018-3728",
+      "CVE-2018-3750",
+      "CVE-2018-3752",
+      "CVE-2019-10746",
+      "CVE-2019-10747",
+      "CVE-2019-10750",
+      "CVE-2019-11358",
+      "CVE-2020-15256",
+      "CVE-2020-5258",
+      "CVE-2020-7638",
+      "CVE-2020-7699",
+      "CVE-2020-7720",
+      "CVE-2020-8116",
+      "CVE-2020-8203"
+    ],
+    "consultas": {
+      "Security/CWE-915/PrototypePollutingFunction.ql": 22
+    },
+    "detalhe": {
+      "CVE-2018-16487": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-16489": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-16490": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-16491": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-16492": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-3719": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-3721": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-3722": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-3728": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-3750": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2018-3752": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2019-10746": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2019-10747": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2019-10750": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2019-11358": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2020-15256": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2020-5258": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2020-7638": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2020-7699": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "false",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "false"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2020-7720": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2020-8116": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "false",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      },
+      "CVE-2020-8203": {
+        "no_denominador": true,
+        "gt_cwes": "CWE-078|CWE-079|CWE-094|CWE-400|CWE-915",
+        "gt_cwe_primary": "CWE-915",
+        "grupo_ref": "nao_herdado",
+        "grupo_sens": "herdado",
+        "acertos": {
+          "codeql": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "true",
+            "nivel_4_generosa": "true",
+            "nivel_4_estrita": "true"
+          },
+          "semgrep": {
+            "nivel_0": "true",
+            "nivel_1": "true",
+            "nivel_2_generosa": "true",
+            "nivel_2_estrita": "true",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          },
+          "snyk-code": {
+            "nivel_0": "true",
+            "nivel_1": "false",
+            "nivel_2_generosa": "false",
+            "nivel_2_estrita": "false",
+            "nivel_3": "false",
+            "nivel_4_generosa": "false",
+            "nivel_4_estrita": "false"
+          }
+        }
+      }
+    }
+  },
+  "auxiliar_sem_as_trocas": [
+    {
+      "rotulo": "ref",
+      "excluidos": [
+        "CVE-2018-16487",
+        "CVE-2018-16489",
+        "CVE-2018-16490",
+        "CVE-2018-16491",
+        "CVE-2018-16492",
+        "CVE-2018-3719",
+        "CVE-2018-3721",
+        "CVE-2018-3722",
+        "CVE-2018-3728",
+        "CVE-2018-3750",
+        "CVE-2018-3752",
+        "CVE-2019-10746",
+        "CVE-2019-10747",
+        "CVE-2019-10750",
+        "CVE-2019-11358",
+        "CVE-2020-15256",
+        "CVE-2020-5258",
+        "CVE-2020-7638",
+        "CVE-2020-7699",
+        "CVE-2020-7720",
+        "CVE-2020-8116",
+        "CVE-2020-8203"
+      ],
+      "tamanhos": {
+        "herdado": 161,
+        "nao_herdado": 37
+      },
+      "tabela": {
+        "codeql|nivel_0": {
+          "herdado": {
+            "acertos": 144,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 89.44099378881988
+          },
+          "nao_herdado": {
+            "acertos": 27,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 72.97297297297297
+          },
+          "delta_pp": 16.468020815846913
+        },
+        "codeql|nivel_1": {
+          "herdado": {
+            "acertos": 110,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 68.32298136645963
+          },
+          "nao_herdado": {
+            "acertos": 13,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 35.13513513513514
+          },
+          "delta_pp": 33.18784623132449
+        },
+        "codeql|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 101,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 62.732919254658384
+          },
+          "nao_herdado": {
+            "acertos": 8,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 21.62162162162162
+          },
+          "delta_pp": 41.11129763303676
+        },
+        "codeql|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 100,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 62.5
+          },
+          "nao_herdado": {
+            "acertos": 8,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 21.62162162162162
+          },
+          "delta_pp": 40.87837837837838
+        },
+        "codeql|nivel_3": {
+          "herdado": {
+            "acertos": 80,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 49.68944099378882
+          },
+          "nao_herdado": {
+            "acertos": 7,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 18.91891891891892
+          },
+          "delta_pp": 30.770522074869902
+        },
+        "codeql|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 76,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 47.20496894409938
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 33.69145543058586
+        },
+        "codeql|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 76,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 47.5
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 33.986486486486484
+        },
+        "semgrep|nivel_0": {
+          "herdado": {
+            "acertos": 134,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 83.22981366459628
+          },
+          "nao_herdado": {
+            "acertos": 31,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 83.78378378378379
+          },
+          "delta_pp": -0.553970119187511
+        },
+        "semgrep|nivel_1": {
+          "herdado": {
+            "acertos": 77,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 47.82608695652174
+          },
+          "nao_herdado": {
+            "acertos": 9,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 24.324324324324323
+          },
+          "delta_pp": 23.50176263219742
+        },
+        "semgrep|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 35,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 21.73913043478261
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 16.333725029377206
+        },
+        "semgrep|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 33,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 20.625
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 15.219594594594595
+        },
+        "semgrep|nivel_3": {
+          "herdado": {
+            "acertos": 22,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 13.664596273291925
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 8.25919086788652
+        },
+        "semgrep|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 17,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 10.559006211180124
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 5.153600805774719
+        },
+        "semgrep|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 17,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 10.625
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 5.219594594594595
+        },
+        "snyk-code|nivel_0": {
+          "herdado": {
+            "acertos": 100,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 62.11180124223603
+          },
+          "nao_herdado": {
+            "acertos": 24,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 64.86486486486487
+          },
+          "delta_pp": -2.7530636226288436
+        },
+        "snyk-code|nivel_1": {
+          "herdado": {
+            "acertos": 39,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 24.22360248447205
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 10.710088970958536
+        },
+        "snyk-code|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 15,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 9.316770186335404
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 2.7027027027027026
+          },
+          "delta_pp": 6.614067483632701
+        },
+        "snyk-code|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 9,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 5.625
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 0.0
+          },
+          "delta_pp": 5.625
+        },
+        "snyk-code|nivel_3": {
+          "herdado": {
+            "acertos": 21,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 13.043478260869565
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 2.7027027027027026
+          },
+          "delta_pp": 10.340775558166861
+        },
+        "snyk-code|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 10,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 6.211180124223603
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 0.0
+          },
+          "delta_pp": 6.211180124223603
+        },
+        "snyk-code|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 6,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 3.75
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 0.0
+          },
+          "delta_pp": 3.75
+        }
+      }
+    },
+    {
+      "rotulo": "sens",
+      "excluidos": [
+        "CVE-2018-16487",
+        "CVE-2018-16489",
+        "CVE-2018-16490",
+        "CVE-2018-16491",
+        "CVE-2018-16492",
+        "CVE-2018-3719",
+        "CVE-2018-3721",
+        "CVE-2018-3722",
+        "CVE-2018-3728",
+        "CVE-2018-3750",
+        "CVE-2018-3752",
+        "CVE-2019-10746",
+        "CVE-2019-10747",
+        "CVE-2019-10750",
+        "CVE-2019-11358",
+        "CVE-2020-15256",
+        "CVE-2020-5258",
+        "CVE-2020-7638",
+        "CVE-2020-7699",
+        "CVE-2020-7720",
+        "CVE-2020-8116",
+        "CVE-2020-8203"
+      ],
+      "tamanhos": {
+        "herdado": 161,
+        "nao_herdado": 37
+      },
+      "tabela": {
+        "codeql|nivel_0": {
+          "herdado": {
+            "acertos": 144,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 89.44099378881988
+          },
+          "nao_herdado": {
+            "acertos": 27,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 72.97297297297297
+          },
+          "delta_pp": 16.468020815846913
+        },
+        "codeql|nivel_1": {
+          "herdado": {
+            "acertos": 110,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 68.32298136645963
+          },
+          "nao_herdado": {
+            "acertos": 13,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 35.13513513513514
+          },
+          "delta_pp": 33.18784623132449
+        },
+        "codeql|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 101,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 62.732919254658384
+          },
+          "nao_herdado": {
+            "acertos": 8,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 21.62162162162162
+          },
+          "delta_pp": 41.11129763303676
+        },
+        "codeql|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 100,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 62.5
+          },
+          "nao_herdado": {
+            "acertos": 8,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 21.62162162162162
+          },
+          "delta_pp": 40.87837837837838
+        },
+        "codeql|nivel_3": {
+          "herdado": {
+            "acertos": 80,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 49.68944099378882
+          },
+          "nao_herdado": {
+            "acertos": 7,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 18.91891891891892
+          },
+          "delta_pp": 30.770522074869902
+        },
+        "codeql|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 76,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 47.20496894409938
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 33.69145543058586
+        },
+        "codeql|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 76,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 47.5
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 33.986486486486484
+        },
+        "semgrep|nivel_0": {
+          "herdado": {
+            "acertos": 134,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 83.22981366459628
+          },
+          "nao_herdado": {
+            "acertos": 31,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 83.78378378378379
+          },
+          "delta_pp": -0.553970119187511
+        },
+        "semgrep|nivel_1": {
+          "herdado": {
+            "acertos": 77,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 47.82608695652174
+          },
+          "nao_herdado": {
+            "acertos": 9,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 24.324324324324323
+          },
+          "delta_pp": 23.50176263219742
+        },
+        "semgrep|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 35,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 21.73913043478261
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 16.333725029377206
+        },
+        "semgrep|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 33,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 20.625
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 15.219594594594595
+        },
+        "semgrep|nivel_3": {
+          "herdado": {
+            "acertos": 22,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 13.664596273291925
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 8.25919086788652
+        },
+        "semgrep|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 17,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 10.559006211180124
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 5.153600805774719
+        },
+        "semgrep|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 17,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 10.625
+          },
+          "nao_herdado": {
+            "acertos": 2,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 5.405405405405405
+          },
+          "delta_pp": 5.219594594594595
+        },
+        "snyk-code|nivel_0": {
+          "herdado": {
+            "acertos": 100,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 62.11180124223603
+          },
+          "nao_herdado": {
+            "acertos": 24,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 64.86486486486487
+          },
+          "delta_pp": -2.7530636226288436
+        },
+        "snyk-code|nivel_1": {
+          "herdado": {
+            "acertos": 39,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 24.22360248447205
+          },
+          "nao_herdado": {
+            "acertos": 5,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 13.513513513513514
+          },
+          "delta_pp": 10.710088970958536
+        },
+        "snyk-code|nivel_2_generosa": {
+          "herdado": {
+            "acertos": 15,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 9.316770186335404
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 2.7027027027027026
+          },
+          "delta_pp": 6.614067483632701
+        },
+        "snyk-code|nivel_2_estrita": {
+          "herdado": {
+            "acertos": 9,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 5.625
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 0.0
+          },
+          "delta_pp": 5.625
+        },
+        "snyk-code|nivel_3": {
+          "herdado": {
+            "acertos": 21,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 13.043478260869565
+          },
+          "nao_herdado": {
+            "acertos": 1,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 2.7027027027027026
+          },
+          "delta_pp": 10.340775558166861
+        },
+        "snyk-code|nivel_4_generosa": {
+          "herdado": {
+            "acertos": 10,
+            "base": 161,
+            "nao_se_aplica": 0,
+            "taxa": 6.211180124223603
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 0.0
+          },
+          "delta_pp": 6.211180124223603
+        },
+        "snyk-code|nivel_4_estrita": {
+          "herdado": {
+            "acertos": 6,
+            "base": 160,
+            "nao_se_aplica": 1,
+            "taxa": 3.75
+          },
+          "nao_herdado": {
+            "acertos": 0,
+            "base": 37,
+            "nao_se_aplica": 0,
+            "taxa": 0.0
+          },
+          "delta_pp": 3.75
+        }
+      }
+    }
+  ]
+}

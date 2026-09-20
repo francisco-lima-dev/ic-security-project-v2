@@ -1,0 +1,454 @@
+--- circularidade da proveniencia do ground truth ---
+  autoteste do caminho de contagem: OK (acerto, nao-acerto, nao-se-aplica, malformado, base zero, mutacao)
+  matriz : results/cruzamento/matriz-deteccao.csv
+           sha256 f80158b730794c3135701a8631e551d89610775562577322b806fcc180452825
+  CVEs na matriz          : 223
+  CVEs no denominador     : 220
+  fora do denominador (3) : CVE-2016-1000229 (codigo_indisponivel_repositorio_inexistente), CVE-2018-1000096 (sem_cwe_no_ground_truth), CVE-2018-8035 (codigo_indisponivel_commit_inexistente)
+  proveniencia [ref]: results/proveniencia/cotejo-ref.json
+           sha256 ca8f0a897c17b601657b36f56a681ef3ce04bb1286d6731b01a75b08a8873df5
+  proveniencia [sens]: results/proveniencia/cotejo-sens.json
+           sha256 917ef8b87a4b4e5ea24228538d49722e75a233ee3dbeee0414d69720fb66bf65
+
+==============================================================================
+PARTICAO PELA PROVENIENCIA DA ETIQUETA  [ref]
+==============================================================================
+  relatorio do cotejo : results/proveniencia/cotejo-ref.json
+  catalogo CodeQL     : catalogos/codeql-2020/javascript/ql/src
+  ground truth        : datasets/cve-metadata.csv
+
+  VALIDACAO ESTRUTURAL (fatal se falhar)
+    CVEs no cotejo                      : 223
+    herdado  (casa consulta do CodeQL)  : 163
+    nao herdado (nao casa)              : 60
+    intersecao dos grupos               : 0  (exigido 0)
+    uniao dos grupos                    : 223  (= CVEs do cotejo)
+    dentro do denominador de 220:
+      herdado 161 + nao herdado 59 = 220  (exigido 220)
+    fora do denominador (3), nominal:
+      CVE-2016-1000229   herdado      codigo_indisponivel_repositorio_inexistente
+      CVE-2018-1000096   herdado      sem_cwe_no_ground_truth
+      CVE-2018-8035      nao herdado  codigo_indisponivel_commit_inexistente
+    ressalva: casamento de explanation SEM etiqueta a herdar (dois conjuntos de CWE vazios): CVE-2018-1000096
+
+  TAMANHOS DESIGUAIS, declarado: 161 contra 59 no denominador. 
+  Toda taxa sai com numerador e denominador. Diferenca de poucos
+  pontos percentuais no grupo menor nao significa nada, e nenhum
+  teste estatistico e aplicado.
+
+  TABELA  ferramenta x nivel x grupo
+  (acertos/base (taxa); `na` = nao se aplica, so nas variantes estritas;
+   base da estrita = grupo menos os `na`)
+
+  --- codeql
+                                     HERDADO                NAO HERDADO             delta pp
+  nivel 0  (achado na arvore)        144/161 ( 89.4%)        46/59  ( 78.0%)           +11.5  <- controle interno (nao usa CWE)
+  nivel 1  (arquivo)                 110/161 ( 68.3%)        30/59  ( 50.8%)           +17.5  <- controle interno (nao usa CWE)
+  nivel 2  generosa (arquivo+CWE)    101/161 ( 62.7%)        25/59  ( 42.4%)           +20.4
+  nivel 2  estrita  (arquivo+CWE)    100/160 ( 62.5%) na=1   24/59  ( 40.7%)           +21.8
+  nivel 3  (arquivo+linha)            80/161 ( 49.7%)        21/59  ( 35.6%)           +14.1  <- controle interno (nao usa CWE)
+  nivel 4  generosa (arq+linha+CWE)   76/161 ( 47.2%)        19/59  ( 32.2%)           +15.0
+  nivel 4  estrita  (arq+linha+CWE)   76/160 ( 47.5%) na=1   18/59  ( 30.5%)           +17.0
+
+  --- semgrep
+                                     HERDADO                NAO HERDADO             delta pp
+  nivel 0  (achado na arvore)        134/161 ( 83.2%)        49/59  ( 83.1%)            +0.2  <- controle interno (nao usa CWE)
+  nivel 1  (arquivo)                  77/161 ( 47.8%)        21/59  ( 35.6%)           +12.2  <- controle interno (nao usa CWE)
+  nivel 2  generosa (arquivo+CWE)     35/161 ( 21.7%)        13/59  ( 22.0%)            -0.3
+  nivel 2  estrita  (arquivo+CWE)     33/160 ( 20.6%) na=1   13/59  ( 22.0%)            -1.4
+  nivel 3  (arquivo+linha)            22/161 ( 13.7%)         3/59  (  5.1%)            +8.6  <- controle interno (nao usa CWE)
+  nivel 4  generosa (arq+linha+CWE)   17/161 ( 10.6%)         3/59  (  5.1%)            +5.5
+  nivel 4  estrita  (arq+linha+CWE)   17/160 ( 10.6%) na=1    3/59  (  5.1%)            +5.5
+
+  --- snyk-code
+                                     HERDADO                NAO HERDADO             delta pp
+  nivel 0  (achado na arvore)        100/161 ( 62.1%)        32/59  ( 54.2%)            +7.9  <- controle interno (nao usa CWE)
+  nivel 1  (arquivo)                  39/161 ( 24.2%)         6/59  ( 10.2%)           +14.1  <- controle interno (nao usa CWE)
+  nivel 2  generosa (arquivo+CWE)     15/161 (  9.3%)         1/59  (  1.7%)            +7.6
+  nivel 2  estrita  (arquivo+CWE)      9/160 (  5.6%) na=1    0/59  (  0.0%)            +5.6
+  nivel 3  (arquivo+linha)            21/161 ( 13.0%)         1/59  (  1.7%)           +11.3  <- controle interno (nao usa CWE)
+  nivel 4  generosa (arq+linha+CWE)   10/161 (  6.2%)         0/59  (  0.0%)            +6.2
+  nivel 4  estrita  (arq+linha+CWE)    6/160 (  3.8%) na=1    0/59  (  0.0%)            +3.8
+
+  CELULAS ZERO, e o controle que as sustenta
+    snyk-code / nivel_2_estrita / nao_herdado: 0 de 59
+    snyk-code / nivel_4_generosa / nao_herdado: 0 de 59
+    snyk-code / nivel_4_estrita / nao_herdado: 0 de 59
+    Controle: o autoteste exerceu este mesmo caminho de contagem
+    contra fixture de contagem conhecida, incluindo mutacao de uma
+    celula de zero para um.
+    snyk-code/nao_herdado: a mesma coluna tem acerto em nivel_0, nivel_1, nivel_2_generosa, nivel_3 -> o caminho de
+      contagem esta exercitado sobre o conjunto real.
+    snyk-code/nao_herdado: a mesma coluna tem acerto em nivel_0, nivel_1, nivel_2_generosa, nivel_3 -> o caminho de
+      contagem esta exercitado sobre o conjunto real.
+    snyk-code/nao_herdado: a mesma coluna tem acerto em nivel_0, nivel_1, nivel_2_generosa, nivel_3 -> o caminho de
+      contagem esta exercitado sobre o conjunto real.
+
+  COMPOSICAO DOS GRUPOS POR FERRAMENTA (tratado presente)
+               HERDADO                NAO HERDADO           
+  codeql       161/161                59/59                 
+  semgrep      161/161                59/59                 
+  snyk-code    156/161                59/59                 
+    sem tratado em snyk-code / herdado (5): CVE-2018-16479 CVE-2018-16480 CVE-2018-3731 CVE-2018-3747 CVE-2019-5423
+      status na campanha: {'SEM_ARQUIVO_ANALISAVEL': 5}
+
+  DISTRIBUICAO DE gt_cwe_primary POR GRUPO
+  gt_cwe_primary    herdado  nao herd.
+  (nulo)                  1          0
+  CWE-020                 5          1
+  CWE-022                27          2
+  CWE-078                24          1
+  CWE-079                39          8
+  CWE-089                 4          0
+  CWE-094                 8          6
+  CWE-116                 8          1
+  CWE-125                 0          1
+  CWE-200                 1          1
+  CWE-312                 2          1
+  CWE-327                 1          0
+  CWE-338                 2          0
+  CWE-352                 2          0
+  CWE-399                 0          1
+  CWE-400                24          2
+  CWE-404                 0          1
+  CWE-444                 0          1
+  CWE-502                 0          1
+  CWE-601                 7          0
+  CWE-668                 0          1
+  CWE-730                 0          3
+  CWE-754                 1          0
+  CWE-770                 0          4
+  CWE-807                 1          0
+  CWE-829                 1          0
+  CWE-915                 0         23
+  CWE-918                 3          0
+  TOTAL                 161         59
+
+  DISTRIBUICAO DO CONJUNTO gt_cwes COMPLETO POR GRUPO
+  gt_cwes                                          herdado nao herd.
+  CWE-079|CWE-116                                       38         2
+  CWE-078|CWE-088                                       24         1
+  CWE-730|CWE-400                                       24         1
+  CWE-078|CWE-079|CWE-094|CWE-400|CWE-915                0        23
+  CWE-022|CWE-023|CWE-036|CWE-073|CWE-099               20         1
+  CWE-022                                                7         1
+  CWE-094|CWE-079|CWE-116                                8         0
+  CWE-116|CWE-020                                        7         0
+  CWE-079                                                0         6
+  CWE-020                                                5         0
+  CWE-089                                                4         0
+  CWE-094                                                0         4
+  CWE-601                                                4         0
+  CWE-770                                                0         4
+  CWE-079|CWE-116|CWE-601                                3         0
+  CWE-312|CWE-315|CWE-359                                2         1
+  CWE-730                                                0         3
+  CWE-918                                                3         0
+  CWE-116                                                1         1
+  CWE-200                                                1         1
+  CWE-338                                                2         0
+  CWE-352                                                2         0
+  CWE-020|CWE-094                                        0         1
+  CWE-074|CWE-094                                        0         1
+  CWE-079|CWE-116|CWE-020                                1         0
+  CWE-125|CWE-126                                        0         1
+  CWE-250|CWE-400                                        1         0
+  CWE-327                                                1         0
+  CWE-399                                                0         1
+  CWE-400                                                0         1
+  CWE-444                                                0         1
+  CWE-502                                                0         1
+  CWE-668                                                0         1
+  CWE-668|CWE-020                                        0         1
+  CWE-730|CWE-404                                        0         1
+  CWE-754                                                1         0
+  CWE-807|CWE-290                                        1         0
+  CWE-829                                                1         0
+  TOTAL                                                161        59
+
+  RESSALVA DA PARTICAO — o criterio e a explanation, os niveis 2 e 4
+  usam o conjunto de CWEs. CVEs do grupo NAO HERDADO cujo conjunto de
+  CWEs e, ainda assim, igual ao de uma consulta do catalogo:
+    conjunto com 2+ CWEs : 6 de 59  CVE-2019-10765 CVE-2020-11022 CVE-2020-11059 CVE-2020-26256 CVE-2020-27666 CVE-2020-7752
+    conjunto unitario    : 8 de 59  (contado a parte: CWE unico
+                           coincide por banalidade, nao por heranca)
+    consultas com tag no catalogo: 67 conjuntos distintos
+    LIMITE declarado: o catalogo e lido do caminho que o relatorio do
+    cotejo declara, e nem o cotejo nem este script gravam hash dele.
+    Catalogo trocado nesse caminho produziria esta ressalva contra
+    outro estado, sem sinal. O commit esta em proveniencia.meta.json.
+
+==============================================================================
+PARTICAO PELA PROVENIENCIA DA ETIQUETA  [sens]
+==============================================================================
+  relatorio do cotejo : results/proveniencia/cotejo-sens.json
+  catalogo CodeQL     : catalogos/codeql-2020-12-11/javascript/ql/src
+  ground truth        : datasets/cve-metadata.csv
+
+  VALIDACAO ESTRUTURAL (fatal se falhar)
+    CVEs no cotejo                      : 223
+    herdado  (casa consulta do CodeQL)  : 185
+    nao herdado (nao casa)              : 38
+    intersecao dos grupos               : 0  (exigido 0)
+    uniao dos grupos                    : 223  (= CVEs do cotejo)
+    dentro do denominador de 220:
+      herdado 183 + nao herdado 37 = 220  (exigido 220)
+    fora do denominador (3), nominal:
+      CVE-2016-1000229   herdado      codigo_indisponivel_repositorio_inexistente
+      CVE-2018-1000096   herdado      sem_cwe_no_ground_truth
+      CVE-2018-8035      nao herdado  codigo_indisponivel_commit_inexistente
+    ressalva: casamento de explanation SEM etiqueta a herdar (dois conjuntos de CWE vazios): CVE-2018-1000096
+
+  TAMANHOS DESIGUAIS, declarado: 183 contra 37 no denominador. 
+  Toda taxa sai com numerador e denominador. Diferenca de poucos
+  pontos percentuais no grupo menor nao significa nada, e nenhum
+  teste estatistico e aplicado.
+
+  TABELA  ferramenta x nivel x grupo
+  (acertos/base (taxa); `na` = nao se aplica, so nas variantes estritas;
+   base da estrita = grupo menos os `na`)
+
+  --- codeql
+                                     HERDADO                NAO HERDADO             delta pp
+  nivel 0  (achado na arvore)        163/183 ( 89.1%)        27/37  ( 73.0%)           +16.1  <- controle interno (nao usa CWE)
+  nivel 1  (arquivo)                 127/183 ( 69.4%)        13/37  ( 35.1%)           +34.3  <- controle interno (nao usa CWE)
+  nivel 2  generosa (arquivo+CWE)    118/183 ( 64.5%)         8/37  ( 21.6%)           +42.9
+  nivel 2  estrita  (arquivo+CWE)    116/182 ( 63.7%) na=1    8/37  ( 21.6%)           +42.1
+  nivel 3  (arquivo+linha)            94/183 ( 51.4%)         7/37  ( 18.9%)           +32.4  <- controle interno (nao usa CWE)
+  nivel 4  generosa (arq+linha+CWE)   90/183 ( 49.2%)         5/37  ( 13.5%)           +35.7
+  nivel 4  estrita  (arq+linha+CWE)   89/182 ( 48.9%) na=1    5/37  ( 13.5%)           +35.4
+
+  --- semgrep
+                                     HERDADO                NAO HERDADO             delta pp
+  nivel 0  (achado na arvore)        152/183 ( 83.1%)        31/37  ( 83.8%)            -0.7  <- controle interno (nao usa CWE)
+  nivel 1  (arquivo)                  89/183 ( 48.6%)         9/37  ( 24.3%)           +24.3  <- controle interno (nao usa CWE)
+  nivel 2  generosa (arquivo+CWE)     46/183 ( 25.1%)         2/37  (  5.4%)           +19.7
+  nivel 2  estrita  (arquivo+CWE)     44/182 ( 24.2%) na=1    2/37  (  5.4%)           +18.8
+  nivel 3  (arquivo+linha)            23/183 ( 12.6%)         2/37  (  5.4%)            +7.2  <- controle interno (nao usa CWE)
+  nivel 4  generosa (arq+linha+CWE)   18/183 (  9.8%)         2/37  (  5.4%)            +4.4
+  nivel 4  estrita  (arq+linha+CWE)   18/182 (  9.9%) na=1    2/37  (  5.4%)            +4.5
+
+  --- snyk-code
+                                     HERDADO                NAO HERDADO             delta pp
+  nivel 0  (achado na arvore)        108/183 ( 59.0%)        24/37  ( 64.9%)            -5.8  <- controle interno (nao usa CWE)
+  nivel 1  (arquivo)                  40/183 ( 21.9%)         5/37  ( 13.5%)            +8.3  <- controle interno (nao usa CWE)
+  nivel 2  generosa (arquivo+CWE)     15/183 (  8.2%)         1/37  (  2.7%)            +5.5
+  nivel 2  estrita  (arquivo+CWE)      9/182 (  4.9%) na=1    0/37  (  0.0%)            +4.9
+  nivel 3  (arquivo+linha)            21/183 ( 11.5%)         1/37  (  2.7%)            +8.8  <- controle interno (nao usa CWE)
+  nivel 4  generosa (arq+linha+CWE)   10/183 (  5.5%)         0/37  (  0.0%)            +5.5
+  nivel 4  estrita  (arq+linha+CWE)    6/182 (  3.3%) na=1    0/37  (  0.0%)            +3.3
+
+  CELULAS ZERO, e o controle que as sustenta
+    snyk-code / nivel_2_estrita / nao_herdado: 0 de 37
+    snyk-code / nivel_4_generosa / nao_herdado: 0 de 37
+    snyk-code / nivel_4_estrita / nao_herdado: 0 de 37
+    Controle: o autoteste exerceu este mesmo caminho de contagem
+    contra fixture de contagem conhecida, incluindo mutacao de uma
+    celula de zero para um.
+    snyk-code/nao_herdado: a mesma coluna tem acerto em nivel_0, nivel_1, nivel_2_generosa, nivel_3 -> o caminho de
+      contagem esta exercitado sobre o conjunto real.
+    snyk-code/nao_herdado: a mesma coluna tem acerto em nivel_0, nivel_1, nivel_2_generosa, nivel_3 -> o caminho de
+      contagem esta exercitado sobre o conjunto real.
+    snyk-code/nao_herdado: a mesma coluna tem acerto em nivel_0, nivel_1, nivel_2_generosa, nivel_3 -> o caminho de
+      contagem esta exercitado sobre o conjunto real.
+
+  COMPOSICAO DOS GRUPOS POR FERRAMENTA (tratado presente)
+               HERDADO                NAO HERDADO           
+  codeql       183/183                37/37                 
+  semgrep      183/183                37/37                 
+  snyk-code    178/183                37/37                 
+    sem tratado em snyk-code / herdado (5): CVE-2018-16479 CVE-2018-16480 CVE-2018-3731 CVE-2018-3747 CVE-2019-5423
+      status na campanha: {'SEM_ARQUIVO_ANALISAVEL': 5}
+
+  DISTRIBUICAO DE gt_cwe_primary POR GRUPO
+  gt_cwe_primary    herdado  nao herd.
+  (nulo)                  1          0
+  CWE-020                 5          1
+  CWE-022                27          2
+  CWE-078                24          1
+  CWE-079                39          8
+  CWE-089                 4          0
+  CWE-094                 8          6
+  CWE-116                 8          1
+  CWE-125                 0          1
+  CWE-200                 1          1
+  CWE-312                 2          1
+  CWE-327                 1          0
+  CWE-338                 2          0
+  CWE-352                 2          0
+  CWE-399                 0          1
+  CWE-400                24          2
+  CWE-404                 0          1
+  CWE-444                 0          1
+  CWE-502                 0          1
+  CWE-601                 7          0
+  CWE-668                 0          1
+  CWE-730                 0          3
+  CWE-754                 1          0
+  CWE-770                 0          4
+  CWE-807                 1          0
+  CWE-829                 1          0
+  CWE-915                22          1
+  CWE-918                 3          0
+  TOTAL                 183         37
+
+  DISTRIBUICAO DO CONJUNTO gt_cwes COMPLETO POR GRUPO
+  gt_cwes                                          herdado nao herd.
+  CWE-079|CWE-116                                       38         2
+  CWE-078|CWE-088                                       24         1
+  CWE-730|CWE-400                                       24         1
+  CWE-078|CWE-079|CWE-094|CWE-400|CWE-915               22         1
+  CWE-022|CWE-023|CWE-036|CWE-073|CWE-099               20         1
+  CWE-022                                                7         1
+  CWE-094|CWE-079|CWE-116                                8         0
+  CWE-116|CWE-020                                        7         0
+  CWE-079                                                0         6
+  CWE-020                                                5         0
+  CWE-089                                                4         0
+  CWE-094                                                0         4
+  CWE-601                                                4         0
+  CWE-770                                                0         4
+  CWE-079|CWE-116|CWE-601                                3         0
+  CWE-312|CWE-315|CWE-359                                2         1
+  CWE-730                                                0         3
+  CWE-918                                                3         0
+  CWE-116                                                1         1
+  CWE-200                                                1         1
+  CWE-338                                                2         0
+  CWE-352                                                2         0
+  CWE-020|CWE-094                                        0         1
+  CWE-074|CWE-094                                        0         1
+  CWE-079|CWE-116|CWE-020                                1         0
+  CWE-125|CWE-126                                        0         1
+  CWE-250|CWE-400                                        1         0
+  CWE-327                                                1         0
+  CWE-399                                                0         1
+  CWE-400                                                0         1
+  CWE-444                                                0         1
+  CWE-502                                                0         1
+  CWE-668                                                0         1
+  CWE-668|CWE-020                                        0         1
+  CWE-730|CWE-404                                        0         1
+  CWE-754                                                1         0
+  CWE-807|CWE-290                                        1         0
+  CWE-829                                                1         0
+  TOTAL                                                183        37
+
+  RESSALVA DA PARTICAO — o criterio e a explanation, os niveis 2 e 4
+  usam o conjunto de CWEs. CVEs do grupo NAO HERDADO cujo conjunto de
+  CWEs e, ainda assim, igual ao de uma consulta do catalogo:
+    conjunto com 2+ CWEs : 7 de 37  CVE-2019-10745 CVE-2019-10765 CVE-2020-11022 CVE-2020-11059 CVE-2020-26256 CVE-2020-27666 CVE-2020-7752
+    conjunto unitario    : 8 de 37  (contado a parte: CWE unico
+                           coincide por banalidade, nao por heranca)
+    consultas com tag no catalogo: 67 conjuntos distintos
+    LIMITE declarado: o catalogo e lido do caminho que o relatorio do
+    cotejo declara, e nem o cotejo nem este script gravam hash dele.
+    Catalogo trocado nesse caminho produziria esta ressalva contra
+    outro estado, sem sinal. O commit esta em proveniencia.meta.json.
+
+==============================================================================
+CVEs QUE MUDAM DE GRUPO ENTRE AS DUAS REFERENCIAS
+==============================================================================
+  herdados so em [ref]: 0  -
+  herdados so em [sens]: 22
+    22  por Security/CWE-915/PrototypePollutingFunction.ql
+
+  CVE                den.   gt_cwes                    acertos por ferramenta
+                                                       (n1 / n2e / n3 / n4e)
+  CVE-2018-16487     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+  CVE-2018-16489     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:....  sem:....  sny:....
+  CVE-2018-16490     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+  CVE-2018-16491     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SS..  sem:....  sny:....
+  CVE-2018-16492     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:....  sny:....
+  CVE-2018-3719      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:....  sny:....
+  CVE-2018-3721      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+  CVE-2018-3722      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:....  sem:....  sny:....
+  CVE-2018-3728      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+  CVE-2018-3750      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SS..  sem:S...  sny:....
+  CVE-2018-3752      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:....  sem:....  sny:....
+  CVE-2019-10746     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:....  sny:....
+  CVE-2019-10747     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+  CVE-2019-10750     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:....  sem:....  sny:....
+  CVE-2019-11358     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:....  sem:....  sny:....
+  CVE-2020-15256     sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+  CVE-2020-5258      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:....  sny:....
+  CVE-2020-7638      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SS..  sem:SSSS  sny:....
+  CVE-2020-7699      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:S.S.  sem:SS..  sny:....
+  CVE-2020-7720      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:S...
+  CVE-2020-8116      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+  CVE-2020-8203      sim    CWE-078|CWE-079|CWE-094|CWE-400|CWE-915 cod:SSSS  sem:SS..  sny:....
+
+  Legenda: S acerta, . nao acerta, - nao se aplica, x fora do denominador (nao computado).
+  Colunas por ferramenta: nivel 1, nivel 2 estrita, nivel 3, nivel 4 estrita.
+  gt_cwe_primary destes 22: {'CWE-915': 22}
+
+==============================================================================
+AUXILIAR — a mesma tabela SEM os 22 CVEs que trocam de grupo
+==============================================================================
+  Excluidos dos dois grupos, em ambas as referencias. Com eles dentro,
+  proveniencia da etiqueta e tipo de vulnerabilidade variam juntos.
+
+  --- [ref]  herdado 161, nao herdado 37  (total 198 = 220 - 22)
+  codeql
+                                     HERDADO                NAO HERDADO            delta pp
+  nivel 0  (achado na arvore)        144/161 ( 89.4%)        27/37  ( 73.0%)          +16.5
+  nivel 1  (arquivo)                 110/161 ( 68.3%)        13/37  ( 35.1%)          +33.2
+  nivel 2  generosa (arquivo+CWE)    101/161 ( 62.7%)         8/37  ( 21.6%)          +41.1
+  nivel 2  estrita  (arquivo+CWE)    100/160 ( 62.5%) na=1    8/37  ( 21.6%)          +40.9
+  nivel 3  (arquivo+linha)            80/161 ( 49.7%)         7/37  ( 18.9%)          +30.8
+  nivel 4  generosa (arq+linha+CWE)   76/161 ( 47.2%)         5/37  ( 13.5%)          +33.7
+  nivel 4  estrita  (arq+linha+CWE)   76/160 ( 47.5%) na=1    5/37  ( 13.5%)          +34.0
+
+  semgrep
+                                     HERDADO                NAO HERDADO            delta pp
+  nivel 0  (achado na arvore)        134/161 ( 83.2%)        31/37  ( 83.8%)           -0.6
+  nivel 1  (arquivo)                  77/161 ( 47.8%)         9/37  ( 24.3%)          +23.5
+  nivel 2  generosa (arquivo+CWE)     35/161 ( 21.7%)         2/37  (  5.4%)          +16.3
+  nivel 2  estrita  (arquivo+CWE)     33/160 ( 20.6%) na=1    2/37  (  5.4%)          +15.2
+  nivel 3  (arquivo+linha)            22/161 ( 13.7%)         2/37  (  5.4%)           +8.3
+  nivel 4  generosa (arq+linha+CWE)   17/161 ( 10.6%)         2/37  (  5.4%)           +5.2
+  nivel 4  estrita  (arq+linha+CWE)   17/160 ( 10.6%) na=1    2/37  (  5.4%)           +5.2
+
+  snyk-code
+                                     HERDADO                NAO HERDADO            delta pp
+  nivel 0  (achado na arvore)        100/161 ( 62.1%)        24/37  ( 64.9%)           -2.8
+  nivel 1  (arquivo)                  39/161 ( 24.2%)         5/37  ( 13.5%)          +10.7
+  nivel 2  generosa (arquivo+CWE)     15/161 (  9.3%)         1/37  (  2.7%)           +6.6
+  nivel 2  estrita  (arquivo+CWE)      9/160 (  5.6%) na=1    0/37  (  0.0%)           +5.6
+  nivel 3  (arquivo+linha)            21/161 ( 13.0%)         1/37  (  2.7%)          +10.3
+  nivel 4  generosa (arq+linha+CWE)   10/161 (  6.2%)         0/37  (  0.0%)           +6.2
+  nivel 4  estrita  (arq+linha+CWE)    6/160 (  3.8%) na=1    0/37  (  0.0%)           +3.8
+
+  --- [sens]  herdado 161, nao herdado 37  (total 198 = 220 - 22)
+  codeql
+                                     HERDADO                NAO HERDADO            delta pp
+  nivel 0  (achado na arvore)        144/161 ( 89.4%)        27/37  ( 73.0%)          +16.5
+  nivel 1  (arquivo)                 110/161 ( 68.3%)        13/37  ( 35.1%)          +33.2
+  nivel 2  generosa (arquivo+CWE)    101/161 ( 62.7%)         8/37  ( 21.6%)          +41.1
+  nivel 2  estrita  (arquivo+CWE)    100/160 ( 62.5%) na=1    8/37  ( 21.6%)          +40.9
+  nivel 3  (arquivo+linha)            80/161 ( 49.7%)         7/37  ( 18.9%)          +30.8
+  nivel 4  generosa (arq+linha+CWE)   76/161 ( 47.2%)         5/37  ( 13.5%)          +33.7
+  nivel 4  estrita  (arq+linha+CWE)   76/160 ( 47.5%) na=1    5/37  ( 13.5%)          +34.0
+
+  semgrep
+                                     HERDADO                NAO HERDADO            delta pp
+  nivel 0  (achado na arvore)        134/161 ( 83.2%)        31/37  ( 83.8%)           -0.6
+  nivel 1  (arquivo)                  77/161 ( 47.8%)         9/37  ( 24.3%)          +23.5
+  nivel 2  generosa (arquivo+CWE)     35/161 ( 21.7%)         2/37  (  5.4%)          +16.3
+  nivel 2  estrita  (arquivo+CWE)     33/160 ( 20.6%) na=1    2/37  (  5.4%)          +15.2
+  nivel 3  (arquivo+linha)            22/161 ( 13.7%)         2/37  (  5.4%)           +8.3
+  nivel 4  generosa (arq+linha+CWE)   17/161 ( 10.6%)         2/37  (  5.4%)           +5.2
+  nivel 4  estrita  (arq+linha+CWE)   17/160 ( 10.6%) na=1    2/37  (  5.4%)           +5.2
+
+  snyk-code
+                                     HERDADO                NAO HERDADO            delta pp
+  nivel 0  (achado na arvore)        100/161 ( 62.1%)        24/37  ( 64.9%)           -2.8
+  nivel 1  (arquivo)                  39/161 ( 24.2%)         5/37  ( 13.5%)          +10.7
+  nivel 2  generosa (arquivo+CWE)     15/161 (  9.3%)         1/37  (  2.7%)           +6.6
+  nivel 2  estrita  (arquivo+CWE)      9/160 (  5.6%) na=1    0/37  (  0.0%)           +5.6
+  nivel 3  (arquivo+linha)            21/161 ( 13.0%)         1/37  (  2.7%)          +10.3
+  nivel 4  generosa (arq+linha+CWE)   10/161 (  6.2%)         0/37  (  0.0%)           +6.2
+  nivel 4  estrita  (arq+linha+CWE)    6/160 (  3.8%) na=1    0/37  (  0.0%)           +3.8
+
+
+  relatorio JSON: results/circularidade/circularidade.json

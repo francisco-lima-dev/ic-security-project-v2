@@ -1,0 +1,21 @@
+--- A: [previo-0212]
+      ground truth: catalogos/benchmark-previo/CVEs
+      consultas   : catalogos/codeql-2020-12-02/javascript/ql/src
+--- B: [previo-ref]
+      ground truth: catalogos/benchmark-previo/CVEs
+      consultas   : catalogos/codeql-2020/javascript/ql/src
+
+  1. ground truth
+     CVEs em A: 214 | em B: 214 | nos dois: 214
+     so em A: 0 
+     so em B: 0 
+     nos dois, com rotulo diferente: 0
+
+  2. casamento
+     casados em A: 181 | em B: 181
+     casados so em A: 0
+     casados so em B: 0
+
+  3. casados nos dois: 181
+     com consulta diferente: 0
+     com relacao diferente: 0

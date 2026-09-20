@@ -1,0 +1,21 @@
+--- A: [release-ref]
+      ground truth: catalogos/benchmark-release/CVEs
+      consultas   : catalogos/codeql-2020/javascript/ql/src
+--- B: [ref]
+      ground truth: datasets/cve-metadata.csv
+      consultas   : catalogos/codeql-2020/javascript/ql/src
+
+  1. ground truth
+     CVEs em A: 219 | em B: 223 | nos dois: 219
+     so em A: 0 
+     so em B: 4 CVE-2020-26256 CVE-2021-23344 CVE-2021-23364 CVE-2021-31712
+     nos dois, com rotulo diferente: 0
+
+  2. casamento
+     casados em A: 163 | em B: 163
+     casados so em A: 0
+     casados so em B: 0
+
+  3. casados nos dois: 163
+     com consulta diferente: 0
+     com relacao diferente: 0

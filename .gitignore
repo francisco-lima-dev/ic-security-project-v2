@@ -11,6 +11,14 @@
 # Não é conteúdo nosso — o README (etapa 3) explica como cloná-lo.
 /ossf-cve-benchmark/
 
+# Catálogos externos do cotejo de proveniência (CodeQL em quatro estados,
+# Semgrep, benchmark em dois estados). São obtidos por
+# tools/ground-truth/obter-catalogos.sh, em estado fixado pelo descritor.
+# Ficam DENTRO da árvore de propósito: os relatórios do cotejo gravam o
+# caminho que receberam, e caminho relativo ao repositório mantém a máquina
+# do operador fora das saídas versionadas.
+/catalogos/
+
 # Saída bruta das ferramentas (SARIF/JSON grandes, regeneráveis).
 # O schema comum em results/*/treated/ é versionado.
 results/*/raw/
