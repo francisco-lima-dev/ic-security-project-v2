@@ -1,0 +1,2223 @@
+limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+
+Testing /tmp/src-CVE-2017-16114 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: da3875de-2be0-4a0a-b08a-192e9d36d9f4
+   Path: test/browser/index.js, line 8
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 55a69cbd-b1e1-4388-89ee-d80e64a0a998
+   Path: test/browser/index.js, line 27
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16114       │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  0 MEDIUM  2 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:434788a8-0bfe-4698-bc6c-1fa00e7622a8 
+
+Testing /tmp/src-CVE-2017-16117 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16117    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16118 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16118    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16119 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16119    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16136 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ea24260a-ba5f-4040-8226-9881a43e62bf
+   Path: test/test.js, line 187
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 70aed195-0f1a-40c7-b6d7-60e85401d7a6
+   Path: test/test.js, line 192
+   Info: Unsanitized input from the HTTP request body flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16136       │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  0 MEDIUM  2 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:e3dceff7-b0fe-47fa-b8bb-b24a57a49a34 
+
+Testing /tmp/src-CVE-2017-16137 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 181e7f8c-71bf-4c45-8aa0-481361814622
+   Path: examples/node/app.js, line 10
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16137       │
+│                                                    │
+│   Total issues:   1                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    1 [ 0 HIGH  1 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:c97b0a37-39c6-4085-bda5-ffa6e0619845 
+
+Testing /tmp/src-CVE-2017-16138 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16138    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16224 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: cf039beb-27db-41eb-bf06-01e5f9104cb7
+   Path: test/common.js, line 34
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: bfd3d793-d0f3-4b46-8b30-1339af1b14e8
+   Path: test/dot-common.js, line 25
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 37fd67be-ec03-473c-bafb-1a751a501ac4
+   Path: test/multi-mount.js, line 75
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 5590310f-ae58-4337-b7d2-0a63d7937651
+   Path: test/multi-mount.js, line 90
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8d42b3a0-4ce2-4c22-97d3-ded70601edbc
+   Path: test/preset-cache-control.js, line 28
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 7a768501-a511-4067-ad4b-b48685818a60
+   Path: test/common.js, line 37
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 627a9e5e-2f7f-429d-8df3-0f575227fd50
+   Path: test/dot-common.js, line 28
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 266b0d4d-965e-4b64-948c-64f8c8ce856d
+   Path: test/multi-mount.js, line 79
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 80c89359-ec1b-4b78-ae5e-a93fd071cd55
+   Path: test/multi-mount.js, line 93
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 153a17f3-ef9f-4bad-81d5-e57b025c8c94
+   Path: test/preset-cache-control.js, line 33
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6c323dc6-50d6-45fe-b0c2-538d62fb9b0e
+   Path: bin/server.js, line 173
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16224         │
+│                                                      │
+│   Total issues:   11                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    11 [ 0 HIGH  1 MEDIUM  10 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:b9c93d49-b3da-4991-af9b-b8c99105dc2d 
+
+Testing /tmp/src-CVE-2017-16226 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16226    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16877 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f989e66b-ed60-46a6-8fdb-854dfe332e86
+   Path: test/lib/next-test-utils.js, line 26
+   Info: http.default.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 0b5ad86a-a0eb-4c16-ba11-e504083d03ae
+   Path: server/build/webpack.js, line 270
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: afa55d2b-5b49-4a2e-8e8f-8bc7ae153091
+   Path: examples/with-firebase/server.js, line 29
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3ff8fecc-0893-4913-a899-2ea3300bff42
+   Path: examples/with-url-object-routing/server.js, line 14
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d52522e1-c467-4958-8115-1dcf78c759ae
+   Path: examples/with-mobx/server.js, line 13
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 042c7457-8a5b-4d73-b3e9-d5da7c890917
+   Path: examples/with-firebase/server.js, line 19
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 79964fee-284f-412f-800d-6850877a2678
+   Path: server/render.js, line 183
+   Info: An error object flows to end and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f819fd24-8b15-436d-805e-11958ec1e544
+   Path: examples/custom-server/server.js, line 11
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 770693fe-a719-4053-b359-83df6a0f79dd
+   Path: examples/parameterized-routing/server.js, line 14
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1c406eae-2b87-4c68-922a-89c667accd10
+   Path: examples/root-static-files/server.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9834227c-6d47-4fac-8dd6-b644053d1fd5
+   Path: examples/using-inferno/server.js, line 21
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: c333c903-f97a-4ba3-9da2-2f23f895d818
+   Path: examples/using-preact/server.js, line 20
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Improper Code Sanitization
+   Finding ID: 323be73e-3fe1-4230-9855-1325fc03f692
+   Path: server/build/webpack.js, line 31
+   Info: Data that flows into require is incorrectly sanitized with stringify. stringify is inappropriate for defending against this kind of vulnerability, special characters need to be specifically escaped.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 929356d7-b2e9-4c3b-a132-624824e20fee
+   Path: examples/with-next-routes/server.js, line 11
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 92ce420a-e6bc-4751-8aef-c3e853559999
+   Path: examples/with-react-intl/server.js, line 42
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 2c78bbd8-cac0-444d-baff-25e0147a5fb4
+   Path: examples/with-firebase/server.js, line 19
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: dc68cb46-25ac-4fc5-9144-e3c33f4ed8bb
+   Path: server/index.js, line 201
+   Info: http.default.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 4d6a5620-9cc9-4b2c-954d-2c2c18956ebc
+   Path: examples/ssr-caching/server.js, line 53
+   Info: Unsanitized input from the request URL flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 3efa80ce-3e25-4ad7-9f73-617aa2dd5248
+   Path: examples/ssr-caching/server.js, line 64
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: e4366919-61a3-41c7-8799-80c9b4f65c57
+   Path: examples/with-firebase/server.js, line 22
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in express-session.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: b6b4f0f7-ea92-45dc-a68d-a9e3ac53e599
+   Path: examples/with-firebase/server.js, line 25
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 800e8ddf-3ff5-4f3c-8544-fa7d3dbd422e
+   Path: server/render.js, line 183
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16877         │
+│                                                      │
+│   Total issues:   22                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    22 [ 5 HIGH  14 MEDIUM  3 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:85fd3914-27ef-4d63-9d4f-19190ae2c4fa 
+
+Testing /tmp/src-CVE-2017-17461 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: da3875de-2be0-4a0a-b08a-192e9d36d9f4
+   Path: test/browser/index.js, line 8
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 55a69cbd-b1e1-4388-89ee-d80e64a0a998
+   Path: test/browser/index.js, line 27
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-17461       │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  0 MEDIUM  2 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:a1051dbf-6514-49ce-b216-2b2473530445 
+
+Testing /tmp/src-CVE-2017-18077 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-18077    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-18214 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-18214    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-18352 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: dc9b058d-1718-44c9-91a0-389170cfffe1
+   Path: middleware/test/middleware-test.js, line 45
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: da651e3a-8aa1-4c7d-82e1-63f152874ef5
+   Path: middleware/test/middleware-test.js, line 56
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: f158a312-4fd9-4abf-9f4b-110540f5dc12
+   Path: middleware/test/middleware-test.js, line 168
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: c1d2a2f8-be42-48c3-880e-56806143dfd4
+   Path: middleware/test/middleware-test.js, line 178
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 88b38afc-78ce-42c2-bb04-5f53ffc18a71
+   Path: test/cache-test.js, line 25
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 5cfa3b2f-57b6-4297-95f8-48f5d654af0c
+   Path: middleware/test/middleware-test.js, line 57
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 14cfc709-c430-49ac-9bb1-7e7db67eb4b0
+   Path: src/main.js, line 27
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 68459869-f4c8-4048-98e1-4851b3e2fbe6
+   Path: src/main.js, line 61
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 41223524-bf2d-47dc-9b2a-49bdafe1502b
+   Path: src/main.js, line 124
+   Info: An error object flows to end and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: db3a1e05-8878-41c3-abcd-68cd2924c591
+   Path: middleware/src/middleware.js, line 101
+   Info: Unsanitized input from an HTTP header flows into the url argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 10f6bf62-fc66-4033-80df-50bbc23f3448
+   Path: src/main.js, line 100
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: a619b6d2-ce3d-41ee-ad49-343710cf012b
+   Path: src/main.js, line 106
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭─────────────────────────────────────────────────────╮
+│ Test Summary                                        │
+│                                                     │
+│   Organization:                                     │
+│   Test type:         Static code analysis           │
+│   Project path:      /tmp/src-CVE-2017-18352        │
+│                                                     │
+│   Total issues:   12                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]     │
+│   Open issues:    12 [ 3 HIGH  3 MEDIUM  6 LOW ]    │
+╰─────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:4875d714-c4f4-4772-b4d6-7045c1309d63 
+
+Testing /tmp/src-CVE-2017-18353 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: dc9b058d-1718-44c9-91a0-389170cfffe1
+   Path: middleware/test/middleware-test.js, line 45
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: da651e3a-8aa1-4c7d-82e1-63f152874ef5
+   Path: middleware/test/middleware-test.js, line 56
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: f158a312-4fd9-4abf-9f4b-110540f5dc12
+   Path: middleware/test/middleware-test.js, line 168
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: c1d2a2f8-be42-48c3-880e-56806143dfd4
+   Path: middleware/test/middleware-test.js, line 178
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 88b38afc-78ce-42c2-bb04-5f53ffc18a71
+   Path: test/cache-test.js, line 25
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 5cfa3b2f-57b6-4297-95f8-48f5d654af0c
+   Path: middleware/test/middleware-test.js, line 57
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 14cfc709-c430-49ac-9bb1-7e7db67eb4b0
+   Path: src/main.js, line 27
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 68459869-f4c8-4048-98e1-4851b3e2fbe6
+   Path: src/main.js, line 61
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 41223524-bf2d-47dc-9b2a-49bdafe1502b
+   Path: src/main.js, line 124
+   Info: An error object flows to end and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: db3a1e05-8878-41c3-abcd-68cd2924c591
+   Path: middleware/src/middleware.js, line 101
+   Info: Unsanitized input from an HTTP header flows into the url argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 10f6bf62-fc66-4033-80df-50bbc23f3448
+   Path: src/main.js, line 100
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: a619b6d2-ce3d-41ee-ad49-343710cf012b
+   Path: src/main.js, line 106
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭─────────────────────────────────────────────────────╮
+│ Test Summary                                        │
+│                                                     │
+│   Organization:                                     │
+│   Test type:         Static code analysis           │
+│   Project path:      /tmp/src-CVE-2017-18353        │
+│                                                     │
+│   Total issues:   12                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]     │
+│   Open issues:    12 [ 3 HIGH  3 MEDIUM  6 LOW ]    │
+╰─────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:81ed053c-7668-4f18-a7b6-61b9f3e42add 
+
+Testing /tmp/src-CVE-2017-18354 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: dc9b058d-1718-44c9-91a0-389170cfffe1
+   Path: middleware/test/middleware-test.js, line 45
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: da651e3a-8aa1-4c7d-82e1-63f152874ef5
+   Path: middleware/test/middleware-test.js, line 56
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: f158a312-4fd9-4abf-9f4b-110540f5dc12
+   Path: middleware/test/middleware-test.js, line 168
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: c1d2a2f8-be42-48c3-880e-56806143dfd4
+   Path: middleware/test/middleware-test.js, line 178
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 88b38afc-78ce-42c2-bb04-5f53ffc18a71
+   Path: test/cache-test.js, line 25
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 5cfa3b2f-57b6-4297-95f8-48f5d654af0c
+   Path: middleware/test/middleware-test.js, line 57
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 14cfc709-c430-49ac-9bb1-7e7db67eb4b0
+   Path: src/main.js, line 27
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 68459869-f4c8-4048-98e1-4851b3e2fbe6
+   Path: src/main.js, line 61
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 41223524-bf2d-47dc-9b2a-49bdafe1502b
+   Path: src/main.js, line 124
+   Info: An error object flows to end and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: db3a1e05-8878-41c3-abcd-68cd2924c591
+   Path: middleware/src/middleware.js, line 101
+   Info: Unsanitized input from an HTTP header flows into the url argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 10f6bf62-fc66-4033-80df-50bbc23f3448
+   Path: src/main.js, line 100
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: a619b6d2-ce3d-41ee-ad49-343710cf012b
+   Path: src/main.js, line 106
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭─────────────────────────────────────────────────────╮
+│ Test Summary                                        │
+│                                                     │
+│   Organization:                                     │
+│   Test type:         Static code analysis           │
+│   Project path:      /tmp/src-CVE-2017-18354        │
+│                                                     │
+│   Total issues:   12                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]     │
+│   Open issues:    12 [ 3 HIGH  3 MEDIUM  6 LOW ]    │
+╰─────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:d20f7860-3043-4491-9047-e338971402b4 
+
+Testing /tmp/src-CVE-2017-18355 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: dc9b058d-1718-44c9-91a0-389170cfffe1
+   Path: middleware/test/middleware-test.js, line 45
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: da651e3a-8aa1-4c7d-82e1-63f152874ef5
+   Path: middleware/test/middleware-test.js, line 56
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: f158a312-4fd9-4abf-9f4b-110540f5dc12
+   Path: middleware/test/middleware-test.js, line 168
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: c1d2a2f8-be42-48c3-880e-56806143dfd4
+   Path: middleware/test/middleware-test.js, line 178
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 88b38afc-78ce-42c2-bb04-5f53ffc18a71
+   Path: test/cache-test.js, line 25
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 5cfa3b2f-57b6-4297-95f8-48f5d654af0c
+   Path: middleware/test/middleware-test.js, line 57
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 14cfc709-c430-49ac-9bb1-7e7db67eb4b0
+   Path: src/main.js, line 27
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 68459869-f4c8-4048-98e1-4851b3e2fbe6
+   Path: src/main.js, line 61
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 41223524-bf2d-47dc-9b2a-49bdafe1502b
+   Path: src/main.js, line 124
+   Info: An error object flows to end and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: db3a1e05-8878-41c3-abcd-68cd2924c591
+   Path: middleware/src/middleware.js, line 101
+   Info: Unsanitized input from an HTTP header flows into the url argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 10f6bf62-fc66-4033-80df-50bbc23f3448
+   Path: src/main.js, line 100
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: a619b6d2-ce3d-41ee-ad49-343710cf012b
+   Path: src/main.js, line 106
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭─────────────────────────────────────────────────────╮
+│ Test Summary                                        │
+│                                                     │
+│   Organization:                                     │
+│   Test type:         Static code analysis           │
+│   Project path:      /tmp/src-CVE-2017-18355        │
+│                                                     │
+│   Total issues:   12                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]     │
+│   Open issues:    12 [ 3 HIGH  3 MEDIUM  6 LOW ]    │
+╰─────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:35d61cdc-a60c-4088-9a05-7aa7d0129635 
+
+Testing /tmp/src-CVE-2017-18635 ...
+
+Open Issues
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: dd38c974-2aaa-4110-8f68-be96410ff929
+   Path: tests/test.rfb.js, line 822
+   Info: Do not hardcode passwords in code. Found hardcoded password used in connect.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 1a49df5e-8021-4cb5-ac38-6f846b38d1b3
+   Path: tests/test.rfb.js, line 835
+   Info: Do not hardcode passwords in code. Found hardcoded password used in connect.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 6a09c87b-5a62-4ed7-9d98-8295671551c0
+   Path: tests/test.rfb.js, line 859
+   Info: Do not hardcode passwords in code. Found hardcoded password used in connect.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 37631695-ca92-4148-94eb-a4e2431d5a89
+   Path: tests/test.rfb.js, line 877
+   Info: Do not hardcode passwords in code. Found hardcoded password used in connect.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: e9cf7be1-bdc6-439c-80ba-ea166b2b7460
+   Path: tests/test.rfb.js, line 886
+   Info: Do not hardcode passwords in code. Found hardcoded password used in connect.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: e662676d-3c60-472c-8cb4-e984eb805ecc
+   Path: utils/parse.js, line 44
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: bc4d92e4-1796-4de3-9d6d-c6cae7240b9f
+   Path: tests/playback.js, line 31
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] DOM-based Cross-site Scripting (XSS)
+   Finding ID: b09abd55-97db-4691-b84f-d172cb04088a
+   Path: vnc_auto.html, line 149
+   Info: Unsanitized input from an exception flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 3e8bee0e-7e12-4e45-aa8c-c73ef94bd548
+   Path: utils/use_require.js, line 58
+   Info: Unsanitized input from a local file flows into fs-extra.copy, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-18635       │
+│                                                    │
+│   Total issues:   9                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    9 [ 0 HIGH  2 MEDIUM  7 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:9d285bda-8c7b-4073-97a3-829203d14b48 
+
+Testing /tmp/src-CVE-2017-5954 ...
+
+
+╭────────────────────────────────────────────────╮
+│ Test Summary                                   │
+│                                                │
+│   Organization:                                │
+│   Test type:         Static code analysis      │
+│   Project path:      /tmp/src-CVE-2017-5954    │
+│                                                │
+│   Total issues:   0                            │
+╰────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-1000086 ...
+
+Open Issues
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: a3fad777-94a1-4167-9470-901b1e8aeccf
+   Path: test/pym/pym.child.test.js, line 90
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: 6dccc35e-3b10-4f94-b8de-ce1ac169d448
+   Path: test/pym/pym.child.test.js, line 133
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: 88c8b487-bf1e-4b6b-820c-312e289a526e
+   Path: test/pym/pym.child.test.js, line 145
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: e2ad411c-ff7b-4374-a765-d5c2d96e6cd2
+   Path: test/pym/pym.child.test.js, line 148
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: b3cd57e4-beec-4584-8558-ea4fd88149a2
+   Path: test/pym/pym.child.test.js, line 199
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: b7cb03b2-d7b4-4807-b7b5-b6ab026bf5e6
+   Path: test/pym/pym.child.test.js, line 200
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: 82e9bf27-f677-44f2-a70f-7f31a5c30a23
+   Path: test/pym/pym.integration.test.js, line 195
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: baf8eacb-85db-47f9-b189-ef3f4a6cf005
+   Path: test/pym/pym.integration.test.js, line 216
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: c940dc19-f05b-479b-ad8e-d98c6d95a5cd
+   Path: test/pym/pym.integration.test.js, line 237
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [LOW] Permissive Cross-domain Policy
+   Finding ID: 8dba3ec1-17e2-407c-a1c4-c30a88f9640e
+   Path: test/pym/pym.parent.test.js, line 170
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: 7b7c0184-25a6-4e0c-bea1-1e9be0c16a23
+   Path: dist/pym.v1.js, line 631
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: 10f048f2-a42d-40ba-92e3-84ae87ada809
+   Path: src/pym.js, line 630
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2018-1000086       │
+│                                                      │
+│   Total issues:   12                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    12 [ 0 HIGH  2 MEDIUM  10 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:0de31d24-c4a1-411b-9711-609e4fee0f34 
+
+Testing /tmp/src-CVE-2018-1000096 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: d0708be1-4399-4748-b53b-7654ac592fd6
+   Path: test-get.js, line 4
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: f296bb5a-507d-4297-9920-c75c5cb2d25b
+   Path: test-post.js, line 4
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3d775944-b4c1-43b6-a2e5-f63fdd9c6842
+   Path: test-qq-multipart.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-1000096     │
+│                                                    │
+│   Total issues:   3                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    3 [ 0 HIGH  3 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:351448d9-e66a-4e0b-bf9c-3de756ed415c 
+
+Testing /tmp/src-CVE-2018-1000620 ...
+
+
+╭───────────────────────────────────────────────────╮
+│ Test Summary                                      │
+│                                                   │
+│   Organization:                                   │
+│   Test type:         Static code analysis         │
+│   Project path:      /tmp/src-CVE-2018-1000620    │
+│                                                   │
+│   Total issues:   0                               │
+╰───────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-1002203 ...
+
+
+╭───────────────────────────────────────────────────╮
+│ Test Summary                                      │
+│                                                   │
+│   Organization:                                   │
+│   Test type:         Static code analysis         │
+│   Project path:      /tmp/src-CVE-2018-1002203    │
+│                                                   │
+│   Total issues:   0                               │
+╰───────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-1002204 ...
+
+
+╭───────────────────────────────────────────────────╮
+│ Test Summary                                      │
+│                                                   │
+│   Organization:                                   │
+│   Test type:         Static code analysis         │
+│   Project path:      /tmp/src-CVE-2018-1002204    │
+│                                                   │
+│   Total issues:   0                               │
+╰───────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-11093 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-11093    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-11615 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 2f7d26ef-39fb-457d-be4a-8c8c2321e7ae
+   Path: test/server_websocket_attach.js, line 16
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 62e8705c-fed7-4853-a060-10298644e333
+   Path: test/server_websocket_attach.js, line 100
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 665760b4-a814-4aea-9444-24c3f4be2be4
+   Path: examples/kafka/server.js, line 84
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Insecure TLS Configuration
+   Finding ID: f0584d5f-9076-40aa-94f2-8357585441b6
+   Path: test/server_websocket_secure.js, line 43
+   Info: Setting the 'NODE_TLS_REJECT_UNAUTHORIZED' to '0' makes TLS connections and HTTPS requests insecure.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: 140263bf-cd4a-4cff-bbd2-4a62ca32b05e
+   Path: test/abstract_server.js, line 1570
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in connect.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: e6fc0581-0134-4725-9349-90ae5f9542de
+   Path: test/abstract_server.js, line 1592
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in connect.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: 190cca93-9ed8-4bab-aa06-9645e2cc25a0
+   Path: test/abstract_server.js, line 1611
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in connect.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: a1bcb1f3-b351-436e-8651-6800777578aa
+   Path: test/authorizer.js, line 122
+   Info: Do not hardcode passwords in code. Found hardcoded password used in password.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 7262b321-f26d-4c78-a97e-e6c2b9449323
+   Path: test/cli.js, line 306
+   Info: Do not hardcode passwords in code. Found hardcoded password used in password.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 18813298-246a-45b5-a01f-9c4b3833b96f
+   Path: lib/interfaces.js, line 100
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭─────────────────────────────────────────────────────╮
+│ Test Summary                                        │
+│                                                     │
+│   Organization:                                     │
+│   Test type:         Static code analysis           │
+│   Project path:      /tmp/src-CVE-2018-11615        │
+│                                                     │
+│   Total issues:   10                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]     │
+│   Open issues:    10 [ 0 HIGH  1 MEDIUM  9 LOW ]    │
+╰─────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:dfc9df18-620b-42dd-8562-204cb71850d5 
+
+Testing /tmp/src-CVE-2018-11798 ...
+
+Open Issues
+
+ ✗ [LOW] Double Free
+   Finding ID: 181242fd-7177-452f-ab48-19ce26b71bbd
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 194
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: cb27fd38-4db7-4425-9d61-aec72dfb5c6d
+   Path: tutorial/js/src/Httpd.java, line 92
+   Info: Unsanitized input from a command line argument flows into exists, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to bypass the logic of the application in the conditional expression.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 3cc07d83-5a7b-4187-ba9d-b3d932fa4dfc
+   Path: test/cpp/src/TestClient.cpp, line 341
+   Info: Leaking memory. ThriftTestCobClient is allocated on the heap and never freed
+
+ ✗ [LOW] Path Traversal
+   Finding ID: f6da6f11-7921-451f-a18e-3d0a89a0235a
+   Path: compiler/cpp/src/thrift/main.cc, line 921
+   Info: Unsanitized input from a command line argument flows into fopen, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 3bfbd329-a05a-4cd6-9074-4a2e416ef4c6
+   Path: compiler/cpp/src/thrift/main.cc, line 947
+   Info: Unsanitized input from a command line argument flows into fopen, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 0697e66d-4a53-4222-b3f7-e88a0017ccb5
+   Path: contrib/async-test/test-server.cpp, line 54
+   Info: Leaking memory. AggrCobClient is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 7f0678d8-30e8-4564-a548-9dce93108959
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_initialization_tests.cc, line 68
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: fce70cfa-f60a-4681-958f-e8f1d1fd9989
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 193
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Path Traversal
+   Finding ID: b352d570-db12-407c-b92e-7690f7c36fe5
+   Path: compiler/cpp/src/thrift/main.cc, line 963
+   Info: Unsanitized input from a command line argument flows into fopen, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 63f3f82b-3f1b-4b61-977b-908ee8e5473a
+   Path: test/cpp/src/TestServer.cpp, line 718
+   Info: Unsanitized input from a command line argument flows into unlink, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 1b210e9c-8b0d-48f4-8731-dda88f02b1d1
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 71
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: d0f77bbc-942a-4371-8785-847c8525d6ec
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 313
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 817c0a34-2bff-492c-8b19-93691792cd99
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 277
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 4161755d-5985-4c6d-9d34-6c1af7d0f276
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 241
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: ff83b78e-d065-48c7-b7b5-3cd9828a4fb8
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 205
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: a3cb3be5-71c6-4d37-913a-753078af0630
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 169
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 74c8c11f-3c81-4521-b90e-9703dff5c3c6
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 133
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 4a3215cd-24ae-4078-8ce2-0aeece097460
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 97
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: a5866596-d353-4beb-97ca-eba6d4eca206
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 64
+   Info: Leaking memory. t_netcore_generator is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 8e297a09-adbd-46cd-b88b-9f582e3c7723
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_initialization_tests.cc, line 67
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Double Free
+   Finding ID: 12c5f053-95f5-41e2-b0e7-8c41bb64aa0e
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 85
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 12a9391f-ccab-4be9-8a04-7d9517e67146
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 121
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: f01725a1-5bf7-4e0f-ab65-7fadfc1eb22d
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 157
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 94c9f8dc-363b-441f-8f27-d6eaedc32db0
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 193
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: e200ca88-ccb1-413e-be6b-cb1548eb2ebe
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 229
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 094d3c09-cbf2-4cfa-a4a1-a1984c566859
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 265
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 2a1132cb-3ef6-40d4-aea5-9e633c0bc6b0
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 301
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: a339d634-b011-497f-88ec-85fa575ada22
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 337
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 50ce2f95-0cd5-48eb-b592-bcb3178c2c55
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 76
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 655496be-6d81-4801-accc-20621537b74c
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 207
+   Info: Potential double delete expression. gen may have already been freed by delete expression.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: e16c9aec-8a71-4ca0-9f95-b6cd9aae3ad4
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_initialization_tests.cc, line 45
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 3a41f220-dd5a-40c6-81c9-1128d7b00563
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 192
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Use After Free
+   Finding ID: ac202a19-514a-4bc0-89ef-70c244c0bdd7
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 66
+   Info: Use after free. gen is used in TestDataGenerator::get_test_void_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: f545750d-0db4-4836-bb53-e99693c22f24
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 100
+   Info: Use after free. gen is used in TestDataGenerator::get_test_string_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: c2806b97-69d2-44d8-a409-bedb09aa54fe
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 104
+   Info: Use after free. const_ is used in push_back after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: a8843b68-281c-4eae-a1e0-c9ce31a4ea0f
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 140
+   Info: Use after free. const_ is used in push_back after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: 15f2b4ed-c899-4aca-8629-b7c1ccc1b508
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 176
+   Info: Use after free. const_ is used in push_back after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: 0c47621b-eac7-4365-bbe2-88fc241ace0b
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 212
+   Info: Use after free. const_ is used in push_back after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: e23f9e47-88ae-4878-80cc-e75456a2e880
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 248
+   Info: Use after free. const_ is used in push_back after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: 14e91994-fec2-47cf-819f-990051af7022
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 284
+   Info: Use after free. const_ is used in push_back after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: 2b441110-66c7-44eb-ad3b-a63ab78b14e1
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 320
+   Info: Use after free. const_ is used in push_back after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: 20636118-0cbc-46d1-beae-883d27927a93
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 136
+   Info: Use after free. gen is used in TestDataGenerator::get_test_bool_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: 10b0997e-6d91-4e86-9f45-3a046d065f7d
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 172
+   Info: Use after free. gen is used in TestDataGenerator::get_test_i8_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: b3f97e6f-7b04-4844-a2d6-f528c8f076e7
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 208
+   Info: Use after free. gen is used in TestDataGenerator::get_test_i16_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: d2bc9357-e373-436e-b8ea-d09fb75082eb
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 244
+   Info: Use after free. gen is used in TestDataGenerator::get_test_i32_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: 538d6478-0fce-4fd3-9476-7b96fe69c42c
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 280
+   Info: Use after free. gen is used in TestDataGenerator::get_test_i64_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: bcb3f1b3-0bf0-47b4-9c90-6974706b36d4
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 316
+   Info: Use after free. gen is used in TestDataGenerator::get_test_double_const_data after it may already have been freed with delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 979ed452-52cc-4d83-a886-d5ad48bc5d64
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 86
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: f9eb6de5-72f9-4af6-b5dd-00c626719b2d
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 122
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 5c9a1403-6367-49f6-bc32-2fcb24dec9e7
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 158
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: bea68b39-c158-49a4-823f-2788299d7b1c
+   Path: lib/cpp/test/TMemoryBufferTest.cpp, line 84
+   Info: Leaking memory. std::string is allocated on the heap and never freed
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 42eab5b2-1b70-4373-b151-917ed7a022ad
+   Path: lib/nodejs/lib/thrift/web_server.js, line 514
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 1956ad3f-1353-4dbb-b9d8-84b1563394b7
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 312
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Double Free
+   Finding ID: 6e3918d1-45af-4b00-9735-7ca6aa167bf0
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 302
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: ed0eb3b8-2ac4-4ef9-9de1-a6f2c6e92fec
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 338
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 86cf4e6b-98ca-47bc-9760-1dbdb123b63f
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 77
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: ad1176da-0d23-4886-81e1-92b456cf01b2
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 208
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 2e12cf66-840e-4ff5-8d4d-ed10d06e001e
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_initialization_tests.cc, line 57
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 4534b2cf-7127-47dd-a63e-63ce82332cbd
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_initialization_tests.cc, line 73
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Use After Free
+   Finding ID: be1dd7f1-6e91-497a-83b9-3a19a8ba81d5
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_initialization_tests.cc, line 48
+   Info: Use after free. program is used in t_netcore_generator after it may already have been freed with delete expression.
+
+ ✗ [LOW] Log Forging
+   Finding ID: a7b647e3-7bb8-4d3f-a3df-184317a4bc8b
+   Path: tutorial/netcore/Client/Program.cs, line 159
+   Info: Unsanitized input from a command line argument flows into global::Microsoft.Extensions.Logging.ILogger.LogInformation, where it is used as log input. This may result in a Logs Forging vulnerability.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: 2b308bee-01bc-47a9-a5fb-4f0d7bc26c32
+   Path: tutorial/netcore/Client/Program.cs, line 172
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in X509Certificate2.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: 3040c6a3-0abd-499d-a82b-52b0f1968c72
+   Path: tutorial/netcore/Server/Program.cs, line 226
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in X509Certificate2.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: 4fb4e67b-4d29-449d-8387-520648a66e0d
+   Path: test/csharp/TestClient.cs, line 64
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in X509Certificate2.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: bcc333d0-8df7-43c0-a480-909889e1b7c0
+   Path: test/csharp/TestServer.cs, line 458
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in X509Certificate2.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: 79fc8256-573b-4698-91e6-acf5648dfcdc
+   Path: test/netcore/Client/TestClient.cs, line 147
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in X509Certificate2.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: b5f7a38e-3e53-4e27-8123-822d76e597f9
+   Path: test/netcore/Server/TestServer.cs, line 490
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in X509Certificate2.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 01b84d2f-6d3c-4b0f-90e4-d4fe78314a0d
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_helpers_tests.cc, line 70
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of File Descriptor or Handle after Effective Lifetime
+   Finding ID: 4e0be829-dd81-42b6-9bbf-93f816dec48a
+   Path: lib/cpp/src/thrift/transport/TSimpleFileTransport.cpp, line 63
+   Info: File opened by open may not be closed. The file does not seem to be closed on all possible execution paths.
+
+ ✗ [LOW] Double Free
+   Finding ID: cee33443-98a3-4d86-9045-e7832a0b69f7
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 266
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Improper Certificate Validation - Permissive TrustManager
+   Finding ID: 53af7205-e1aa-49f8-b51e-e437be1fc8df
+   Path: test/go/src/common/client.go, line 80
+   Info: TrustManager might be too permissive: The client will accept any certificate and any host name in that certificate, making it susceptible to man-in-the-middle attacks.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 51353982-0bc7-461f-9728-de4900f126ad
+   Path: lib/go/thrift/protocol_test.go, line 66
+   Info: Unsanitized input from the request body flows into Write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: e4ece098-1263-4826-b0db-2ac10aaef15f
+   Path: lib/go/thrift/protocol_test.go, line 69
+   Info: Unsanitized input from the request body flows into Write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 42d7fd55-70a2-44e2-abc9-34637a197f69
+   Path: lib/go/thrift/protocol_test.go, line 77
+   Info: Unsanitized input from the request body flows into Write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: c0864e3d-cf33-4914-9809-1ae43977ca26
+   Path: lib/go/thrift/protocol_test.go, line 80
+   Info: Unsanitized input from the request body flows into Write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 81a1bba0-aef5-4c24-86b3-a578a38a8192
+   Path: lib/java/test/org/apache/thrift/transport/TestTSaslTransports.java, line 58
+   Info: Do not hardcode passwords in code. Found hardcoded password used in here.
+
+ ✗ [LOW] Improper Neutralization of CRLF Sequences in HTTP Headers
+   Finding ID: 2bbba6e1-e9c7-4f9c-8fb6-6d5cc87560d2
+   Path: lib/js/test/src/test/Httpd.java, line 97
+   Info: Unsanitized input from a command line argument flows into addHeader and reaches an HTTP header returned to the user. This may allow a malicious input that contain CR/LF to split the http response into two responses and the second response to be controlled by the attacker. This may be used to mount a range of attacks such as cross-site scripting or cache poisoning.
+
+ ✗ [LOW] Double Free
+   Finding ID: 9a5b0846-5084-4f3e-bad1-d2e73c616dd3
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 120
+   Info: Potential double delete expression. const_ may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: e28cf047-3ad3-4988-a9f4-9cca212c6fd6
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 156
+   Info: Potential double delete expression. const_ may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: f9f0f3f0-1618-4a49-bb8a-e694f284c0ef
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 192
+   Info: Potential double delete expression. const_ may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 9b31219c-ecf1-4379-8b2b-487184fba3d2
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 228
+   Info: Potential double delete expression. const_ may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 4098540f-7690-4cfb-b7d9-bc5367e22dd4
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 264
+   Info: Potential double delete expression. const_ may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: ae178d9e-baf8-40fa-a150-c207335df2d9
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 300
+   Info: Potential double delete expression. const_ may have already been freed by delete expression.
+
+ ✗ [LOW] Double Free
+   Finding ID: 71cf8fe3-d0a0-406f-8f37-36f10883e6c5
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 336
+   Info: Potential double delete expression. const_ may have already been freed by delete expression.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 35f07a97-0a97-4b15-8186-02b64b44657d
+   Path: contrib/thrift-maven-plugin/src/main/java/org/apache/thrift/maven/AbstractThriftMojo.java, line 344
+   Info: The MD5 hash (used in java.security.MessageDigest.getInstance) is insecure. Consider changing it to a secure hash algorithm
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 8b84e1bb-a2f8-4843-a78d-0f1c34a2d5f5
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 276
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 5b92d89d-98e3-4e48-9de1-d8009d888a24
+   Path: lib/java/src/org/apache/thrift/transport/TFileTransport.java, line 599
+   Info: Unsanitized input from a command line argument flows into java.io.BufferedOutputStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Double Free
+   Finding ID: 71634343-78e4-42db-a52e-37c18849528d
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 230
+   Info: Potential double delete expression. program may have already been freed by delete expression.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: e589a1a8-f27f-42ec-bb86-290183dac54c
+   Path: lib/java/test/org/apache/thrift/test/ReadStruct.java, line 40
+   Info: Unsanitized input from a command line argument flows into java.io.FileInputStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: a33d9f31-bbae-480b-ae31-b512d9a6ac90
+   Path: lib/java/test/org/apache/thrift/test/WriteStruct.java, line 38
+   Info: Unsanitized input from a command line argument flows into java.io.FileOutputStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: e41baa3d-3c58-4d0d-9aca-fc9e16f18807
+   Path: lib/js/test/src/test/Httpd.java, line 97
+   Info: Unsanitized input from a command line argument flows into exists, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to bypass the logic of the application in the conditional expression.
+
+ ✗ [LOW] Unsafe Reflection
+   Finding ID: 2ac1f7af-ac38-4a77-abee-f4a43e34242c
+   Path: lib/java/test/org/apache/thrift/test/ReadStruct.java, line 42
+   Info: Unsanitized input from a command line argument flows into java.lang.Class.forName, where it is used for Reflection. This may result in an Unsafe Reflection vulnerability.
+
+ ✗ [LOW] Unsafe Reflection
+   Finding ID: 61e6fbd6-358b-4036-af6d-49987d84b11d
+   Path: lib/java/test/org/apache/thrift/test/WriteStruct.java, line 40
+   Info: Unsanitized input from a command line argument flows into java.lang.Class.forName, where it is used for Reflection. This may result in an Unsafe Reflection vulnerability.
+
+ ✗ [LOW] Server-Side Request Forgery (SSRF)
+   Finding ID: 5a77c7e9-af38-474a-9f39-f1b0e9d0e6b3
+   Path: lib/java/test/org/apache/thrift/test/TestClient.java, line 149
+   Info: Unsanitized input from a command line argument flows into openConnection, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 603b29fb-9eeb-420e-9f27-d0dc5542cfe4
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 240
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 82f050a7-e25b-4f57-a72c-f597764de1aa
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 204
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 1da63519-40e3-414b-94eb-d45f82b7dc09
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 168
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 1e2f9300-0459-48e3-a4c5-c5ba0a64b20b
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 132
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: 6d5fa241-9d53-4bcf-a84a-cb520c2e1cdd
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 96
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Missing Release of Memory after Effective Lifetime
+   Finding ID: cf534fd8-a1f3-479b-93bb-fbdef12dbd96
+   Path: compiler/cpp/tests/netcore/t_netcore_generator_functional_tests.cc, line 63
+   Info: Leaking memory. t_program is allocated on the heap and never freed
+
+ ✗ [LOW] Path Traversal
+   Finding ID: ee5ab93b-c8d8-4463-a18e-852899544705
+   Path: contrib/parse_profiling.py, line 298
+   Info: Unsanitized input from a command line argument flows into open, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [MEDIUM] Insecure TLS Configuration
+   Finding ID: 26637028-3505-4c56-90f6-6e668ddf54ab
+   Path: lib/go/thrift/ssl_socket.go, line 53
+   Info: Insecure TLS configuration is found to be in use. MinVersion is set to a deprecated SSL/TLS version
+
+ ✗ [MEDIUM] Cleartext Transmission - Unencrypted Socket
+   Finding ID: 9559394a-8413-4b35-83d3-fc77cefd2834
+   Path: lib/java/src/org/apache/thrift/transport/TSocket.java, line 222
+   Info: Reading from an unencrypted socket is insecure - a man-in-the-middle attacker can tamper the messages. Consider using SSL sockets.
+
+ ✗ [MEDIUM] Buffer Over-read
+   Finding ID: 94f1d10e-93dd-4583-ba58-c68eccac1f89
+   Path: lib/nodejs/lib/thrift/web_server.js, line 100
+   Info: Setting noAssert to true (in writeUInt32BE) allows offset to be beyond the end of the buffer.
+
+ ✗ [MEDIUM] Buffer Over-read
+   Finding ID: 13af667d-3cdb-46d4-9faa-c8c88403ac7b
+   Path: lib/nodejs/lib/thrift/web_server.js, line 101
+   Info: Setting noAssert to true (in writeUInt32BE) allows offset to be beyond the end of the buffer.
+
+ ✗ [MEDIUM] Buffer Overflow
+   Finding ID: a63d9e05-2256-4aa4-9355-b8d84065804d
+   Path: compiler/cpp/src/thrift/main.cc, line 176
+   Info: Unsanitized input from a command line argument flows into strcpy, where it is used to manipulate a string. This may result in a buffer overflow vulnerability.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 6d1c66d4-e3df-49db-b36f-f7e798a0b0d2
+   Path: tutorial/php/PhpClient.php, line 73
+   Info: An exception object flows to the print statement and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: c94ab196-dca5-4326-a30a-9780c2a7c26d
+   Path: tutorial/php/PhpClient.php, line 88
+   Info: An exception object flows to the print statement and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 52cfec16-47ee-4d74-814d-4a5e65a2a2d1
+   Path: lib/nodejs/lib/thrift/web_server.js, line 486
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Missing Release of Memory after Effective Lifetime
+   Finding ID: 511422a1-175f-4765-ae58-c00ad7bef836
+   Path: lib/cpp/src/thrift/server/TThreadedServer.h, line 46
+   Info: Leaking memory. apache::thrift::concurrency::PlatformThreadFactory is allocated on the heap and never freed
+
+ ✗ [MEDIUM] Missing Release of Memory after Effective Lifetime
+   Finding ID: 1b7ea6db-ecdc-47ab-a7f9-80227b3c606a
+   Path: lib/cpp/src/thrift/server/TThreadedServer.h, line 55
+   Info: Leaking memory. apache::thrift::concurrency::PlatformThreadFactory is allocated on the heap and never freed
+
+ ✗ [MEDIUM] Missing Release of Memory after Effective Lifetime
+   Finding ID: a16db24a-6afc-4877-b097-1bce03fafce4
+   Path: lib/cpp/src/thrift/server/TThreadedServer.h, line 66
+   Info: Leaking memory. apache::thrift::concurrency::PlatformThreadFactory is allocated on the heap and never freed
+
+ ✗ [MEDIUM] Missing Release of Memory after Effective Lifetime
+   Finding ID: 40cf5ea9-f89a-4150-abad-f3b4933331b8
+   Path: lib/cpp/src/thrift/server/TThreadedServer.h, line 77
+   Info: Leaking memory. apache::thrift::concurrency::PlatformThreadFactory is allocated on the heap and never freed
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 94bbba51-3382-440e-b911-8068cfac776d
+   Path: lib/nodejs/lib/thrift/http_connection.js, line 223
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - Unencrypted Socket
+   Finding ID: 8af90349-617e-4e4e-ad8e-a957045c576b
+   Path: lib/java/src/org/apache/thrift/transport/TSocket.java, line 223
+   Info: Writing to an unencrypted socket is insecure - a man-in-the-middle attacker can tamper the messages. Consider using SSL sockets.
+
+ ✗ [MEDIUM] Integer Overflow
+   Finding ID: e0c8e739-16fc-4dc1-924a-8b4ecbdfc116
+   Path: compiler/cpp/src/thrift/main.cc, line 1011
+   Info: Unsanitized input from a command line argument flows into a subtraction operator (-), where it is used in integer arithmetic. This may result in an integer overflow vulnerability.
+
+ ✗ [MEDIUM] Integer Overflow
+   Finding ID: 621005f8-00fa-44bc-bd33-cf958b007a2c
+   Path: compiler/cpp/src/thrift/main.cc, line 1007
+   Info: Unsanitized input from a command line argument flows into a subtraction operator (-), where it is used in integer arithmetic. This may result in an integer overflow vulnerability.
+
+ ✗ [MEDIUM] Integer Overflow
+   Finding ID: 2cf007af-dc4a-43f6-8f9b-c0c5269fc5c6
+   Path: compiler/cpp/src/thrift/main.cc, line 993
+   Info: Unsanitized input from a command line argument flows into a subtraction operator (-), where it is used in integer arithmetic. This may result in an integer overflow vulnerability.
+
+ ✗ [MEDIUM] Buffer Over-read
+   Finding ID: 3f1e1ee2-29d9-4ed9-b633-7813a3d8b25e
+   Path: lib/nodejs/lib/thrift/web_server.js, line 96
+   Info: Setting noAssert to true (in writeUInt16BE) allows offset to be beyond the end of the buffer.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: fec804ba-df23-4e7d-afd4-adea88fe0f8d
+   Path: contrib/thrift-maven-plugin/src/main/java/org/apache/thrift/maven/AbstractThriftMojo.java, line 302
+   Info: Unsanitized input from a zip file flows into mkdirs, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to manipulate arbitrary files.
+
+ ✗ [MEDIUM] Improper Certificate Validation - Permissive TrustManager
+   Finding ID: 0882f41a-2cb8-4caf-9286-b8e6d61c5ab7
+   Path: tutorial/go/src/client.go, line 88
+   Info: TrustManager might be too permissive: The client will accept any certificate and any host name in that certificate, making it susceptible to man-in-the-middle attacks.
+
+ ✗ [MEDIUM] Insecure TLS Configuration
+   Finding ID: ecc8a808-1bce-47d0-9b83-51200c794252
+   Path: lib/go/thrift/ssl_server_socket.go, line 42
+   Info: Insecure TLS configuration is found to be in use. MinVersion is set to a deprecated SSL/TLS version
+
+ ✗ [MEDIUM] Potential buffer overflow from usage of unsafe function
+   Finding ID: 1efc3180-d54e-4350-9323-07194fc32240
+   Path: lib/lua/src/luasocket.c, line 49
+   Info: Using sprintf can lead to buffer overflow vulnerabilities, if arbitrary user input is able to flow into this function without the length of the input being checked. Use the safer alternative snprintf instead.
+
+ ✗ [MEDIUM] Potential buffer overflow from usage of unsafe function
+   Finding ID: e70cbd0b-2a68-4607-8b50-e11ddd2f3906
+   Path: contrib/transport-sample/ThriftCommon.cpp, line 21
+   Info: Using sprintf can lead to buffer overflow vulnerabilities, if arbitrary user input is able to flow into this function without the length of the input being checked. Use the safer alternative snprintf instead.
+
+ ✗ [MEDIUM] Potential buffer overflow from usage of unsafe function
+   Finding ID: b36ac941-5c57-474f-b498-930d391c7e1c
+   Path: lib/cpp/src/thrift/windows/GetTimeOfDay.cpp, line 104
+   Info: Using strcpy can lead to buffer overflow vulnerabilities, if arbitrary user input is able to flow into this function without the length of the input being checked. Use the safer alternative strncpy instead.
+
+ ✗ [MEDIUM] Potential buffer overflow from usage of unsafe function
+   Finding ID: 7d243e82-ee37-4085-9599-31afbdf2adac
+   Path: compiler/cpp/src/thrift/main.cc, line 547
+   Info: Using strcpy can lead to buffer overflow vulnerabilities, if arbitrary user input is able to flow into this function without the length of the input being checked. Use the safer alternative strncpy instead.
+
+ ✗ [MEDIUM] Buffer Overflow
+   Finding ID: 3fb80752-8982-44e2-97d3-56235ec32b93
+   Path: compiler/cpp/src/thrift/main.cc, line 366
+   Info: Unsanitized input from a command line argument flows into strcpy, where it is used to manipulate a string. This may result in a buffer overflow vulnerability.
+
+ ✗ [MEDIUM] Buffer Overflow
+   Finding ID: b09b0c2c-d5e3-4ff6-b169-beaddff68811
+   Path: compiler/cpp/src/thrift/main.cc, line 1172
+   Info: Unsanitized input from a command line argument flows into strcpy, where it is used to manipulate a string. This may result in a buffer overflow vulnerability.
+
+ ✗ [MEDIUM] Improper Certificate Validation - SSL Verification Bypass
+   Finding ID: 1ee5158c-3a1c-4121-9dae-5d1e2958f80d
+   Path: lib/cpp/src/thrift/transport/TSSLSocket.cpp, line 938
+   Info: Certificate verification is disabled due to SSL_CTX_set_verify being set to SSL_VERIFY_NONE. This may lead to Man-in-the-middle attacks.
+
+ ✗ [HIGH] Inadequate Encryption Strength
+   Finding ID: 4c4317bf-1741-4283-9d80-9f76b0902f77
+   Path: lib/cpp/src/thrift/transport/TSSLSocket.cpp, line 173
+   Info: Insecure TLS configuration: TLS 1.0 is deprecated (RFC 8996). Implement secure HTTPS communication using a current TLS version.
+
+ ✗ [HIGH] Inadequate Encryption Strength
+   Finding ID: d83f6762-63ff-429d-9cc0-56ba1c26f723
+   Path: lib/c_glib/src/thrift/c_glib/transport/thrift_ssl_socket.c, line 775
+   Info: Insecure TLS configuration: TLS 1.0 is deprecated (RFC 8996). Implement secure HTTPS communication using a current TLS version.
+
+ ✗ [HIGH] Potential Negative Number Used as Index
+   Finding ID: 54cdfb26-2b45-4ef8-a748-ac568614163d
+   Path: lib/rb/ext/compact_protocol.c, line 449
+   Info: The value from sprintf, a standard library function that can return a negative value is used as an index. A negative array index can lead to reading or writing outside the bounds of the array. Ensure the value of the index used is within bounds before use.
+
+ ✗ [HIGH] Potential Negative Number Used as Index
+   Finding ID: ba1ef709-703b-4c27-b112-a9c3cb505bd7
+   Path: lib/rb/ext/compact_protocol.c, line 440
+   Info: The value from sprintf, a standard library function that can return a negative value is used as an index. A negative array index can lead to reading or writing outside the bounds of the array. Ensure the value of the index used is within bounds before use.
+
+ ✗ [HIGH] Inadequate Encryption Strength
+   Finding ID: 4c88bbfb-be80-4aa4-b93c-1e9c01147fe0
+   Path: lib/c_glib/src/thrift/c_glib/transport/thrift_ssl_socket.c, line 778
+   Info: Insecure TLS configuration: TLS 1.1 is deprecated (RFC 8996). Implement secure HTTPS communication using a current TLS version.
+
+ ✗ [HIGH] Inadequate Encryption Strength
+   Finding ID: 6285b066-144b-43d8-b195-71b614f3b548
+   Path: lib/cpp/src/thrift/transport/TSSLSocket.cpp, line 175
+   Info: Insecure TLS configuration: TLS 1.1 is deprecated (RFC 8996). Implement secure HTTPS communication using a current TLS version.
+
+ ✗ [HIGH] Inadequate Encryption Strength
+   Finding ID: 380aee59-46dd-4ab9-b962-bf9cdb2e2ed2
+   Path: lib/cpp/src/thrift/transport/TSSLSocket.cpp, line 170
+   Info: Insecure TLS configuration: SSL 3.0 is insecure (POODLE, RFC 7568). Implement secure HTTPS communication using a current TLS version.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 03518bb9-a2ad-4593-89df-2dde63455038
+   Path: lib/nodejs/lib/thrift/web_server.js, line 430
+   Info: Unsanitized input from the request URL flows into fs.readFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭─────────────────────────────────────────────────────────╮
+│ Test Summary                                            │
+│                                                         │
+│   Organization:                                         │
+│   Test type:         Static code analysis               │
+│   Project path:      /tmp/src-CVE-2018-11798            │
+│                                                         │
+│   Total issues:   137                                   │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]         │
+│   Open issues:    137 [ 8 HIGH  28 MEDIUM  101 LOW ]    │
+╰─────────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:44da9a5d-f7a3-4853-b2e0-f71767b2168a 
+
+Testing /tmp/src-CVE-2018-13797 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-13797    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-13863 ...
+
+Open Issues
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 0a4bfb4c-ded3-496a-bb8e-7e8466079d47
+   Path: browser_build/bson.js, line 4343
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-13863       │
+│                                                    │
+│   Total issues:   1                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    1 [ 1 HIGH  0 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:b7e132aa-05e0-417c-b210-201f6c3e4620 
+
+Testing /tmp/src-CVE-2018-14040 ...
+
+Open Issues
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: db1dcd93-994a-4402-bdf3-427572431dc2
+   Path: js/tests/vendor/qunit.js, line 3685
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: ac40608a-e60a-4dcc-8093-2f603eb8386a
+   Path: js/tests/vendor/qunit.js, line 3789
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: d5c6d403-62d7-4f0b-8646-e1f8f64a722d
+   Path: js/tests/vendor/qunit.js, line 3908
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 284c9a83-0029-40e3-a877-5a0a5afd28f4
+   Path: js/tests/vendor/qunit.js, line 4099
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: a3f7762a-bbea-47c7-bdee-67a9b69b7325
+   Path: js/tests/vendor/qunit.js, line 3780
+   Info: Unsanitized input from the document location flows into appendChild, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 0420e74e-7e28-4001-8d26-600b136cd540
+   Path: js/tests/vendor/qunit.js, line 3638
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 4f59ddb6-1b56-4aaa-8389-3807d45628b1
+   Path: js/tests/vendor/qunit.js, line 3673
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 89bc0d54-d93b-480f-a1ef-4189332f8f15
+   Path: docs/_includes/footer.html, line 44
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 20bcf828-e5a2-474c-8a82-b29345ca33c8
+   Path: grunt/change-version.js, line 57
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-14040       │
+│                                                    │
+│   Total issues:   9                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    9 [ 2 HIGH  0 MEDIUM  7 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:82f12af3-095b-43c0-b8c3-f01790646fd3 
+Lote concluido: /workspace/datasets/listas/cves-sast-batch-ab

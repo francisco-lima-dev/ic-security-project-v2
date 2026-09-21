@@ -1,0 +1,87 @@
+# Controle do defeito do HOME na imagem da campanha — snyk-code
+# Observacao datada. O procedimento e .github/workflows/analise-lote.yml
+#
+sondado_em: 2026-09-16T18:41:22Z
+workflow_run_id: 35135927579
+workflow_run_attempt: 1
+commit: 579f383195251daa8ff1858322652e9c0bcb4c39
+runner_image_os: ubuntu24
+runner_image_version: 20260907.300.1
+imagem: ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7
+uid_do_runner: 1001
+gid_do_runner: 1001
+
+O QUE SE MEDE. Os dois bracos rodam a MESMA imagem, com --user do
+runner, variando SO o -e HOME=/tmp. O lote roda com ele; aqui se mede o
+que acontece sem ele. Os comandos ESCREVEM: o --version e sonda fraca, e o
+Snyk o atravessa antes de tentar gravar configuracao.
+
+INVARIANTE ENTRE OS BRACOS: -e XDG_CACHE_HOME=/tmp nos dois, como no lote,
+para que a quebra do braco sem HOME nao possa vir do cache. Por isso o braco
+sem HOME NAO e a coluna "--user so" da tabela de 08/09/2026 do CLAUDE.md:
+la nao havia XDG_CACHE_HOME. As duas medicoes nao sao a mesma condicao.
+
+--- SEM_HOME — escrita generica em $HOME
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp --entrypoint sh ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7 -c echo "SONDA_HOME_RODOU=1"; echo "container_uid=$(id -u)"; echo "container_gid=$(id -g)"; echo "container_HOME=$HOME"; if whoami; then echo "whoami_rc=0"; else echo "whoami_rc=$?"; fi; if mkdir -p "$HOME/.sonda-home" && printf ok > "$HOME/.sonda-home/sonda"; then echo "escrita_em_HOME_rc=0"; else echo "escrita_em_HOME_rc=$?"; fi
+SONDA_HOME_RODOU=1
+container_uid=1001
+container_gid=1001
+container_HOME=/
+whoami: cannot find name for user ID 1001
+whoami_rc=1
+mkdir: cannot create directory '//.sonda-home': Permission denied
+escrita_em_HOME_rc=1
+[rc=0]
+
+--- SEM_HOME — snyk --version (sonda FRACA, registrada para contraste)
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp --entrypoint snyk ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7 --version
+1.1306.1
+[rc=0]
+
+--- SEM_HOME — snyk config set (grava configuracao em $HOME)
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp --entrypoint snyk ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7 config set org=sonda-home
+
+ ERROR   Unspecified Error (SNYK-CLI-0000)
+                                                                                        
+           An unknown error occurred. Please run with `-d` and include full trace when  
+           reporting to Snyk                                                            
+
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:66ea34fe-4860-4309-b9b8-7f3d97244ed4 
+[rc=2]
+
+--- COM_HOME — escrita generica em $HOME
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp -e HOME=/tmp --entrypoint sh ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7 -c echo "SONDA_HOME_RODOU=1"; echo "container_uid=$(id -u)"; echo "container_gid=$(id -g)"; echo "container_HOME=$HOME"; if whoami; then echo "whoami_rc=0"; else echo "whoami_rc=$?"; fi; if mkdir -p "$HOME/.sonda-home" && printf ok > "$HOME/.sonda-home/sonda"; then echo "escrita_em_HOME_rc=0"; else echo "escrita_em_HOME_rc=$?"; fi
+SONDA_HOME_RODOU=1
+container_uid=1001
+container_gid=1001
+container_HOME=/tmp
+whoami: cannot find name for user ID 1001
+whoami_rc=1
+escrita_em_HOME_rc=0
+[rc=0]
+
+--- COM_HOME — snyk --version (sonda FRACA, registrada para contraste)
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp -e HOME=/tmp --entrypoint snyk ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7 --version
+1.1306.1
+[rc=0]
+
+--- COM_HOME — snyk config set (grava configuracao em $HOME)
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp -e HOME=/tmp --entrypoint snyk ghcr.io/francisco-lima-dev/ic-security-lab-snyk-code@sha256:cdde5e9c6e5777c91052d8e438075337e26c7754dd526bcb51bb6d86c05a78d7 config set org=sonda-home
+org updated
+
+[rc=0]
+
+================================================================
+VEREDITOS
+================================================================
+HOME visto de dentro: sem -e HOME=/tmp = / | com = /tmp
+whoami rc (0 = uid presente no /etc/passwd da imagem): sem = 1 | com = 1
+escrita generica em $HOME: DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera
+comando da ferramenta: DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=2); com -e HOME=/tmp opera
+
+ALCANCE, declarado: isto mede a imagem da campanha sob o uid:gid deste
+runner. Sob outro uid a precondicao — uid ausente do /etc/passwd da imagem —
+pode nao valer, e a medicao nao transfere.

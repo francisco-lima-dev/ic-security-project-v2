@@ -1,0 +1,2297 @@
+limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+
+Testing /tmp/src-CVE-2018-14041 ...
+
+Open Issues
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: a3f7762a-bbea-47c7-bdee-67a9b69b7325
+   Path: js/tests/index.html, line 19
+   Info: Unsanitized input from the document location flows into write, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 151a1d9b-3960-4639-af84-2251c01dffc2
+   Path: build/lint-vars.js, line 35
+   Info: Unsanitized input from a command line argument flows into glob.sync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: acd3726e-318b-48e9-a0a5-0ba5c7ecf0c8
+   Path: build/lint-vars.js, line 40
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 89bc0d54-d93b-480f-a1ef-4189332f8f15
+   Path: assets/js/src/search.js, line 16
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-14041       │
+│                                                    │
+│   Total issues:   4                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    4 [ 1 HIGH  0 MEDIUM  3 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:4f546cbc-aa99-4605-916f-11923060984a 
+
+Testing /tmp/src-CVE-2018-14042 ...
+
+Open Issues
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: db1dcd93-994a-4402-bdf3-427572431dc2
+   Path: js/tests/vendor/qunit.js, line 3685
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: ac40608a-e60a-4dcc-8093-2f603eb8386a
+   Path: js/tests/vendor/qunit.js, line 3789
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: d5c6d403-62d7-4f0b-8646-e1f8f64a722d
+   Path: js/tests/vendor/qunit.js, line 3908
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 284c9a83-0029-40e3-a877-5a0a5afd28f4
+   Path: js/tests/vendor/qunit.js, line 4099
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: a3f7762a-bbea-47c7-bdee-67a9b69b7325
+   Path: js/tests/vendor/qunit.js, line 3780
+   Info: Unsanitized input from the document location flows into appendChild, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 0420e74e-7e28-4001-8d26-600b136cd540
+   Path: js/tests/vendor/qunit.js, line 3638
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 4f59ddb6-1b56-4aaa-8389-3807d45628b1
+   Path: js/tests/vendor/qunit.js, line 3673
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 89bc0d54-d93b-480f-a1ef-4189332f8f15
+   Path: docs/_includes/footer.html, line 44
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 20bcf828-e5a2-474c-8a82-b29345ca33c8
+   Path: grunt/change-version.js, line 57
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-14042       │
+│                                                    │
+│   Total issues:   9                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    9 [ 2 HIGH  0 MEDIUM  7 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:6a153bce-5149-4437-bf0b-1ed4d3d7f79f 
+
+Testing /tmp/src-CVE-2018-14380 ...
+
+Open Issues
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 9c7ef0c1-5152-47ed-8b08-cb6a364e659f
+   Path: graylog2-server/src/test/java/org/graylog2/jersey/PrefixAddingModelProcessorTest.java, line 101
+   Info: Unsanitized input from an HTTP parameter flows into here, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 3306630e-93c2-4ace-84e7-e64cb6fb4362
+   Path: graylog2-server/src/test/java/org/graylog2/security/realm/LdapUserAuthenticatorTest.java, line 102
+   Info: Do not hardcode passwords in code. Found hardcoded password used in here.
+
+ ✗ [LOW] Use of Hardcoded, Security-relevant Constants
+   Finding ID: 0263f137-d3dd-4e20-a68d-91ed0aa2e7ac
+   Path: graylog2-server/src/test/java/org/graylog2/security/realm/LdapUserAuthenticatorTest.java, line 102
+   Info: Avoid hardcoding values that are meant to be secret. Found hardcoded secret.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 5d204fde-3fd4-4523-90cd-d21ed1d99773
+   Path: graylog2-server/src/main/java/org/graylog2/security/hashing/SHA1HashPasswordAlgorithm.java, line 42
+   Info: The SHA-1 hash (used in org.apache.shiro.crypto.hash.SimpleHash) is insecure. Consider changing it to a secure hash algorithm
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 3ac643f0-788f-43e1-a521-5bae54d52ae5
+   Path: graylog2-server/src/main/java/org/graylog2/inputs/converters/HashConverter.java, line 38
+   Info: The MD5 hash (used in org.apache.commons.codec.digest.DigestUtils.md5Hex) is insecure. Consider changing it to a secure hash algorithm
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 83589098-672a-4a2e-8d59-9470df43e01b
+   Path: graylog2-server/src/main/java/org/graylog2/indexer/results/ScrollResult.java, line 76
+   Info: The MD5 hash (used in org.apache.shiro.crypto.hash.Md5Hash) is insecure. Consider changing it to a secure hash algorithm
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 8cdd81bc-d88d-45df-aa02-7cc776c034a8
+   Path: graylog2-server/src/test/java/org/graylog2/security/realm/LdapUserAuthenticatorTest.java, line 101
+   Info: Do not hardcode passwords in code. Found hardcoded password used in here.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 1eeaf7d7-0a74-4c3c-adb5-022c2f8800d8
+   Path: graylog2-server/src/main/resources/swagger/lib/shred.bundle.js, line 176
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: e19e0c6d-c18a-43d2-b6c1-0609c879c503
+   Path: graylog2-web-interface/src/stores/search/UniversalSearchStore.js, line 28
+   Info: MD5 hash (used in md5.default) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: fbe963ee-2b6c-481f-8d95-5eaf555fbfcc
+   Path: graylog2-web-interface/src/stores/messages/MessageFieldsStore.js, line 23
+   Info: MD5 hash (used in md5.default) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: 46b47df7-eeac-48bf-9cea-6a73697ce34d
+   Path: graylog2-server/src/main/resources/swagger/lib/shred.bundle.js, line 190
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Improper Neutralization of CRLF Sequences in HTTP Headers
+   Finding ID: f66cc212-bbad-45af-87c0-ad2a3abd4337
+   Path: graylog2-server/src/main/java/org/graylog2/shared/rest/CORSFilter.java, line 57
+   Info: Unsanitized input from an HTTP header flows into header and reaches an HTTP header returned to the user. This may allow a malicious input that contain CR/LF to split the http response into two responses and the second response to be controlled by the attacker. This may be used to mount a range of attacks such as cross-site scripting or cache poisoning.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 75ec6e2d-65ff-4da3-8881-86003531f221
+   Path: graylog2-server/src/main/resources/swagger/lib/shred.bundle.js, line 1165
+   Info: request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Improper Certificate Validation - Permissive TrustManager
+   Finding ID: 5c77dfa6-d713-4450-a27d-be79e3854efa
+   Path: graylog2-server/src/main/java/org/graylog2/security/TrustAllX509TrustManager.java, line 30
+   Info: TrustManager might be too permissive: all clients are trusted.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 52ee638f-e833-4872-bbd5-dac0ad07b15f
+   Path: graylog2-server/src/main/java/org/graylog2/shared/rest/resources/documentation/DocumentationResource.java, line 101
+   Info: CORS policy "*" might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Improper Certificate Validation - Permissive TrustManager
+   Finding ID: bda59b13-4576-4602-ab08-43bc1e775f08
+   Path: graylog2-server/src/main/java/org/graylog2/security/TrustAllX509TrustManager.java, line 34
+   Info: TrustManager might be too permissive: all servers are trusted.
+
+ ✗ [MEDIUM] Improper Neutralization of CRLF Sequences in HTTP Headers
+   Finding ID: 0f6d632f-5e54-4604-800f-2b51b4e9f6e8
+   Path: graylog2-server/src/main/java/org/graylog2/rest/resources/search/AbsoluteSearchResource.java, line 168
+   Info: Unsanitized input from an HTTP parameter flows into header and reaches an HTTP header returned to the user. This may allow a malicious input that contain CR/LF to split the http response into two responses and the second response to be controlled by the attacker. This may be used to mount a range of attacks such as cross-site scripting or cache poisoning.
+
+ ✗ [MEDIUM] Improper Neutralization of CRLF Sequences in HTTP Headers
+   Finding ID: 88159c96-f691-4b2c-b252-5150ad1a0032
+   Path: graylog2-server/src/main/java/org/graylog2/rest/resources/search/KeywordSearchResource.java, line 163
+   Info: Unsanitized input from an HTTP parameter flows into header and reaches an HTTP header returned to the user. This may allow a malicious input that contain CR/LF to split the http response into two responses and the second response to be controlled by the attacker. This may be used to mount a range of attacks such as cross-site scripting or cache poisoning.
+
+ ✗ [MEDIUM] Improper Neutralization of CRLF Sequences in HTTP Headers
+   Finding ID: dce6b144-62c4-4578-8d4a-c8136e3d17fa
+   Path: graylog2-server/src/main/java/org/graylog2/shared/rest/resources/documentation/DocumentationBrowserResource.java, line 89
+   Info: Unsanitized input from an HTTP parameter flows into header and reaches an HTTP header returned to the user. This may allow a malicious input that contain CR/LF to split the http response into two responses and the second response to be controlled by the attacker. This may be used to mount a range of attacks such as cross-site scripting or cache poisoning.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: 95bd7980-2789-453c-8aa3-ed24f031fe24
+   Path: graylog2-web-interface/src/util/URLUtils.js, line 40
+   Info: Unsanitized input from the document location flows into replace, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 79fd81e3-3a20-4172-8924-2b9ba07e2e22
+   Path: graylog2-server/src/main/java/org/graylog2/web/resources/WebInterfaceAssetsResource.java, line 164
+   Info: Unsanitized input from an HTTP parameter flows into com.google.common.io.Resources.toByteArray, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 779d9a4d-83fa-4a14-b6f2-6b338100f49b
+   Path: graylog2-server/src/main/java/org/graylog2/shared/rest/resources/documentation/DocumentationBrowserResource.java, line 87
+   Info: Unsanitized input from an HTTP parameter flows into com.google.common.io.Resources.toByteArray, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 08d9a0af-b3de-4f92-8ef5-3df300becc59
+   Path: graylog2-server/src/main/resources/swagger/lib/shred.bundle.js, line 1146
+   Info: Unsanitized input from the request URL flows into the path argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Regular expression injection
+   Finding ID: 8104fe26-49b5-4962-b105-e51b4f0d9b07
+   Path: graylog2-server/src/main/java/org/graylog2/rest/resources/tools/RegexTesterResource.java, line 65
+   Info: Unsanitized input from an HTTP parameter flows into java.util.regex.Pattern.compile, where it is used in a regular expression. This may result in a Regular Expression Injection vulnerability which could lead to a Denial of Service attack.
+
+ ✗ [HIGH] Regular expression injection
+   Finding ID: 25b642e6-2593-49b3-a8f1-2f08cb16a01a
+   Path: graylog2-server/src/main/java/org/graylog2/rest/resources/tools/RegexReplaceTesterResource.java, line 78
+   Info: Unsanitized input from an HTTP parameter flows into java.util.regex.Pattern.compile, where it is used in a regular expression. This may result in a Regular Expression Injection vulnerability which could lead to a Denial of Service attack.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: bb6521c7-d9f8-48e1-ae84-8be743103268
+   Path: graylog2-server/src/main/java/org/graylog2/web/resources/WebInterfaceAssetsResource.java, line 171
+   Info: Unsanitized input from an HTTP parameter flows into java.nio.file.Files.getLastModifiedTime, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to manipulate arbitrary files.
+
+ ✗ [HIGH] Improper Certificate Validation in Email Without SSL Server Check
+   Finding ID: 3e97a1fc-0ee5-4863-9211-9ee561463bf3
+   Path: graylog2-server/src/main/java/org/graylog2/alerts/FormattedEmailAlertSender.java, line 171
+   Info: A call to setSSLCheckServerIdentity is missing - the server identity will not be checked when sending the email. A man-in-the-middle attacker might be able to intercept it.
+
+ ✗ [HIGH] Hardcoded Secret
+   Finding ID: 93a67b01-2917-4a47-b58e-eb5a5c7c8abe
+   Path: graylog2-server/src/main/java/org/graylog2/shared/security/tls/PemKeyStore.java, line 71
+   Info: Hardcoded value array {...} is used as a cipher key. Generate the value with a cryptographically strong random number generator such as java.security.SecureRandom instead.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 033d2a35-b4a2-4264-800a-b00c8c339f89
+   Path: graylog2-server/src/main/java/org/graylog2/web/resources/WebInterfaceAssetsResource.java, line 158
+   Info: Unsanitized input from an HTTP parameter flows into java.nio.file.Files.readAllBytes, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭───────────────────────────────────────────────────────╮
+│ Test Summary                                          │
+│                                                       │
+│   Organization:                                       │
+│   Test type:         Static code analysis             │
+│   Project path:      /tmp/src-CVE-2018-14380          │
+│                                                       │
+│   Total issues:   29                                  │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]       │
+│   Open issues:    29 [ 9 HIGH  10 MEDIUM  10 LOW ]    │
+╰───────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:755952e1-00c5-41e0-bb5c-68ee49a41923 
+
+Testing /tmp/src-CVE-2018-16460 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16460    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-16461 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16461    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-16462 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16462    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-16472 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16472    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-16478 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: a1c9166b-22f9-4018-a564-6a9cbcb2a2b4
+   Path: eventsourceserver/eventsourceserver.js, line 10
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 4b9d7343-99ab-4e3d-89f0-7963850ccac7
+   Path: simplehttpserver/simplehttpserver.js, line 12
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 14ce055d-7c2f-42bf-919d-86aca92c53a6
+   Path: simplehttpserver/simplehttpserver.js, line 57
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 54972023-504e-4d05-a831-aa0f0e1aac07
+   Path: simplehttpserver/simplehttpserver.js, line 61
+   Info: Unsanitized input from the request URL flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: aea36adc-76c1-4fdb-b823-a05ade878f4d
+   Path: simplehttpserver/simplehttpserver.js, line 67
+   Info: Unsanitized input from the request URL flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 39a249fd-ba4f-4e3e-a252-2602826db2d8
+   Path: simplehttpserver/simplehttpserver.js, line 124
+   Info: Unsanitized input from the request URL flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: f3d948f6-adf1-42fa-b317-fb113b9f3963
+   Path: simplehttpserver/simplehttpserver.js, line 76
+   Info: Unsanitized input from the request URL flows into fs.readdir, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: e47ed25a-4447-42c2-b2a4-269c85dcd7b9
+   Path: simplehttpserver/simplehttpserver.js, line 105
+   Info: Unsanitized input from the request URL flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-16478       │
+│                                                    │
+│   Total issues:   8                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    8 [ 5 HIGH  3 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:37f18616-5736-4c29-b65e-cc90a70bddcc 
+
+ ERROR   Project not supported (SNYK-CODE-0006)
+         Snyk was unable to find supported files.                                       
+                                                                                        
+           Snyk was unable to find supported files.                                     
+
+Path:    /tmp/src-CVE-2018-16479 
+Status:  422 Unprocessable Entity 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-code-0006 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:42a0862f-2a5b-4654-a84b-38d97b93e5f8 
+
+ ERROR   Project not supported (SNYK-CODE-0006)
+         Snyk was unable to find supported files.                                       
+                                                                                        
+           Snyk was unable to find supported files.                                     
+
+Path:    /tmp/src-CVE-2018-16480 
+Status:  422 Unprocessable Entity 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-code-0006 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:7aec6d00-9214-4ed5-9c2c-34d715792442 
+
+Testing /tmp/src-CVE-2018-16484 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 70e58680-c53c-4ab0-b01a-a26bfb42d232
+   Path: test/test.js, line 10
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 44c086ce-c162-431d-a758-8d7ac283cc23
+   Path: test/test.js, line 24
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e25fc0c1-f32e-4b04-9417-9aa833411ae8
+   Path: test/test.js, line 30
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 0350d409-3256-4dd1-955e-0ea701cac689
+   Path: test/test.js, line 42
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ca0d6631-d982-424e-b510-6e98dace34af
+   Path: lib/index.js, line 9
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 13dc73c0-3a2f-4679-83a3-62e09e1678f5
+   Path: lib/index.js, line 9
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 34d5aa41-e673-4648-9a69-c6906dbcd606
+   Path: lib/index.js, line 21
+   Info: Unsanitized input from the request URL flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 9540a675-d82b-4bba-942f-e87f0682ecc7
+   Path: lib/index.js, line 23
+   Info: Unsanitized input from the request URL flows into fs.readdir, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-16484       │
+│                                                    │
+│   Total issues:   8                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    8 [ 2 HIGH  2 MEDIUM  4 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:c2365584-f23e-456c-b9b6-07783a1deb39 
+
+Testing /tmp/src-CVE-2018-16485 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 70e58680-c53c-4ab0-b01a-a26bfb42d232
+   Path: test/test.js, line 10
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 44c086ce-c162-431d-a758-8d7ac283cc23
+   Path: test/test.js, line 24
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e25fc0c1-f32e-4b04-9417-9aa833411ae8
+   Path: test/test.js, line 30
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 0350d409-3256-4dd1-955e-0ea701cac689
+   Path: test/test.js, line 42
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ca0d6631-d982-424e-b510-6e98dace34af
+   Path: lib/index.js, line 9
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 13dc73c0-3a2f-4679-83a3-62e09e1678f5
+   Path: lib/index.js, line 9
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 34d5aa41-e673-4648-9a69-c6906dbcd606
+   Path: lib/index.js, line 14
+   Info: Unsanitized input from the request URL flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 9540a675-d82b-4bba-942f-e87f0682ecc7
+   Path: lib/index.js, line 16
+   Info: Unsanitized input from the request URL flows into fs.readdir, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-16485       │
+│                                                    │
+│   Total issues:   8                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    8 [ 2 HIGH  2 MEDIUM  4 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:047a5341-9641-496c-a1c8-4b55766f8c64 
+
+Testing /tmp/src-CVE-2018-16487 ...
+
+Open Issues
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 97b7221f-e4ee-463a-9b0c-1f5c4e6a3254
+   Path: test/test.js, line 732
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 9e79c07b-0e90-4905-81e3-7c396a8be3b7
+   Path: lib/fp/build-doc.js, line 75
+   Info: Unsanitized input from a command line argument flows into fs-extra.writeFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Code Injection
+   Finding ID: da33f831-112d-4749-a9a6-901c77d007b4
+   Path: test/test.js, line 4424
+   Info: Unsanitized input from an event listener flows into setTimeout, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 5f4e4f7b-c143-48ee-a53c-b6f44d89d9c9
+   Path: test/saucelabs.js, line 881
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 06a238ed-d608-432d-9bf6-6f073b943bd2
+   Path: test/remove.js, line 19
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: c5aca6a4-620c-4f5b-8beb-3dbddd82a834
+   Path: test/asset/worker.js, line 5
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Code Injection
+   Finding ID: 631a0eba-5078-42f0-ab28-0715345e4ac2
+   Path: test/test.js, line 4423
+   Info: Unsanitized input from an event listener flows into setTimeout, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 88ef4fe8-3e8a-4394-a09b-7d81cd434c23
+   Path: vendor/firebug-lite/src/firebug-lite-debug.js, line 5997
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Code Injection
+   Finding ID: e19466a4-e37a-4c04-82e4-9266b8003a15
+   Path: test/test.js, line 4422
+   Info: Unsanitized input from an event listener flows into setTimeout, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: d9f8976f-0ca9-4a05-a2ce-9a97da127bf8
+   Path: test/remove.js, line 24
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 8553729a-8452-4d00-b06e-a31df31262a9
+   Path: test/remove.js, line 24
+   Info: Unsanitized input from a command line argument flows into fs.writeFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 8e8b621b-6d5c-46b5-940a-3e9b7d711244
+   Path: lib/fp/build-modules.js, line 119
+   Info: Unsanitized input from a command line argument flows into glob.sync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: c433222f-d343-4da9-90b0-e7e00b3915a4
+   Path: vendor/backbone/backbone.js, line 1708
+   Info: Unsanitized input from the document location flows into replace, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: 67fee544-338a-42f6-9aaf-2b572e4f004f
+   Path: vendor/backbone/backbone.js, line 1872
+   Info: Unsanitized input from the document location flows into assign, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: c0215d8e-702a-48e8-a5ff-9e46eaa792c4
+   Path: vendor/backbone/backbone.js, line 1882
+   Info: Unsanitized input from the document location flows into replace, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2018-16487         │
+│                                                      │
+│   Total issues:   15                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    15 [ 0 HIGH  3 MEDIUM  12 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:36790a98-8de6-4c65-a3e9-1e295f81def7 
+
+Testing /tmp/src-CVE-2018-16489 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16489    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-16490 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16490    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-16491 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16491    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-16492 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-16492    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-18282 ...
+
+Open Issues
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 5787d65e-b7e8-4ea8-b440-02cab600755b
+   Path: examples/with-apollo-auth/components/SigninBox.js, line 21
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d92bedb2-1b2c-4b87-9519-844c3131744e
+   Path: test/lib/next-test-utils.js, line 146
+   Info: http.default.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f989e66b-ed60-46a6-8fdb-854dfe332e86
+   Path: test/lib/next-test-utils.js, line 112
+   Info: http.default.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: afa55d2b-5b49-4a2e-8e8f-8bc7ae153091
+   Path: examples/with-firebase-authentication/server.js, line 30
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 8571c261-af01-436b-8db2-9c54aa85a573
+   Path: test/lib/next-test-utils.js, line 145
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 95f7881b-edbf-47fe-b535-2ff9b6f708cc
+   Path: examples/with-apollo-auth/pages/index.js, line 21
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 196bbbe9-0d28-40ae-9b0e-4b855e069378
+   Path: examples/with-apollo-auth/components/RegisterBox.js, line 23
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: debfc2b5-5adf-4446-831f-c60fa19820ad
+   Path: examples/with-pkg/server.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: da3c7905-0444-4555-bc1e-e438bbe3ecde
+   Path: examples/with-sw-precache/server.js, line 13
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 3f840e05-7e27-4516-867d-bead9f1e279d
+   Path: examples/with-strict-csp/server.js, line 12
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 79964fee-284f-412f-800d-6850877a2678
+   Path: server/render.js, line 233
+   Info: An error object flows to end and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: d2029a42-15ee-4383-9d07-10a1ceb03cd1
+   Path: examples/with-sitemap-and-robots-express-server/server/sitemapAndRobots.js, line 45
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 2c78bbd8-cac0-444d-baff-25e0147a5fb4
+   Path: examples/with-firebase-authentication/server.js, line 20
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 9f683c59-4ef6-43bc-ace4-787b1697d489
+   Path: examples/with-react-i18next/server.js, line 30
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Electron Load Insecure Content
+   Finding ID: 771b90d1-61be-4e23-86f8-0ef82dabad3a
+   Path: examples/with-electron/main/index.js, line 31
+   Info: Loading remote resources over HTTP does not provide integrity of the data being transmitted, traffic encryption and authentication of the remote server. It is considered insecure and could potentially allow Man-In-The-Middle attacks.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: dc68cb46-25ac-4fc5-9144-e3c33f4ed8bb
+   Path: server/lib/start-server.js, line 7
+   Info: http.default.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f819fd24-8b15-436d-805e-11958ec1e544
+   Path: examples/with-webassembly/server.js, line 10
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3ff8fecc-0893-4913-a899-2ea3300bff42
+   Path: examples/with-url-object-routing/server.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: eda19d5f-4a85-4e1c-9223-7ae892a07059
+   Path: examples/custom-charset/server.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e4d5d1ea-5ef5-4f2c-aeac-30b448d33af8
+   Path: examples/custom-server-nodemon/server/index.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: c09ec5e4-c3f6-456e-a30d-d330de92faa9
+   Path: examples/custom-server-typescript/server/index.ts, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 27edf45c-fba5-4dc8-9426-eb957225a254
+   Path: examples/custom-server/server.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 770693fe-a719-4053-b359-83df6a0f79dd
+   Path: examples/parameterized-routing/server.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1c406eae-2b87-4c68-922a-89c667accd10
+   Path: examples/root-static-files/server.js, line 13
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9834227c-6d47-4fac-8dd6-b644053d1fd5
+   Path: examples/using-inferno/server.js, line 22
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 5a189316-4978-478b-96fb-269b2037ddbf
+   Path: examples/using-nerv/server.js, line 21
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: c333c903-f97a-4ba3-9da2-2f23f895d818
+   Path: examples/using-preact/server.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 68c8f2bc-5922-4244-8a88-aef32ca8e5d8
+   Path: examples/with-apollo-and-redux-saga/server.js, line 26
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: fb16029b-5394-4029-b605-4ea7e196793a
+   Path: examples/with-ioc/server.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 29f57ab7-40af-4e1d-bb30-8b4aad93390d
+   Path: examples/with-mobx-state-tree-typescript/server.ts, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f768c265-4d93-461c-bcb7-db33b73901a6
+   Path: examples/with-mobx-state-tree/server.js, line 14
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d52522e1-c467-4958-8115-1dcf78c759ae
+   Path: examples/with-mobx/server.js, line 14
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 929356d7-b2e9-4c3b-a132-624824e20fee
+   Path: examples/with-next-routes/server.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: bb905059-0ad0-49ce-870c-06e10c61d378
+   Path: examples/with-custom-reverse-proxy/server.js, line 27
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 92ce420a-e6bc-4751-8aef-c3e853559999
+   Path: examples/with-react-intl/server.js, line 43
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 042c7457-8a5b-4d73-b3e9-d5da7c890917
+   Path: examples/with-firebase-authentication/server.js, line 20
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3f704ddd-3bdd-479a-89c4-2d6646988702
+   Path: examples/with-ts-node/server/index.ts, line 11
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: bfb34c23-acf6-49ad-98ea-4fe8c34ff347
+   Path: examples/with-segment-analytics/pages/_document.js, line 19
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: b6b4f0f7-ea92-45dc-a68d-a9e3ac53e599
+   Path: examples/with-firebase-authentication/server.js, line 26
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: e4366919-61a3-41c7-8799-80c9b4f65c57
+   Path: examples/with-firebase-authentication/server.js, line 23
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in express-session.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 800e8ddf-3ff5-4f3c-8544-fa7d3dbd422e
+   Path: server/render.js, line 233
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 3efa80ce-3e25-4ad7-9f73-617aa2dd5248
+   Path: examples/ssr-caching/server.js, line 72
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: de982900-0a9d-430d-9bfb-5c79145cfeaa
+   Path: examples/ssr-caching/server.js, line 64
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 4d6a5620-9cc9-4b2c-954d-2c2c18956ebc
+   Path: examples/ssr-caching/server.js, line 54
+   Info: Unsanitized input from the request URL flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2018-18282         │
+│                                                      │
+│   Total issues:   44                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    44 [ 7 HIGH  30 MEDIUM  7 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:4a42a237-e52b-4466-baf7-2c6e09a7e74d 
+
+Testing /tmp/src-CVE-2018-19048 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: ae89d7a8-8c24-44b9-9b5d-4b9a7767f21d
+   Path: server.js, line 6
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: b86d4be9-c394-43f4-b375-5d66e73fdb6a
+   Path: server.js, line 10
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 5a2c3259-ab45-4652-842b-8e144294c154
+   Path: server.js, line 13
+   Info: Unsanitized input from an uploaded file flows into fs.rename, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: f3680c7d-81a2-42e0-a3a9-64ff750b1cbb
+   Path: server.js, line 15
+   Info: Unsanitized input from an uploaded file flows into fs.unlink, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-19048       │
+│                                                    │
+│   Total issues:   4                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    4 [ 2 HIGH  2 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:154b0d66-9dfb-4ebc-b138-3087d73a627a 
+
+Testing /tmp/src-CVE-2018-20164 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2018-20164    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2018-20676 ...
+
+Open Issues
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: db1dcd93-994a-4402-bdf3-427572431dc2
+   Path: js/tests/vendor/qunit.js, line 3685
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: ac40608a-e60a-4dcc-8093-2f603eb8386a
+   Path: js/tests/vendor/qunit.js, line 3789
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: d5c6d403-62d7-4f0b-8646-e1f8f64a722d
+   Path: js/tests/vendor/qunit.js, line 3908
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 284c9a83-0029-40e3-a877-5a0a5afd28f4
+   Path: js/tests/vendor/qunit.js, line 4099
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: a3f7762a-bbea-47c7-bdee-67a9b69b7325
+   Path: js/tests/vendor/qunit.js, line 3780
+   Info: Unsanitized input from the document location flows into appendChild, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 0420e74e-7e28-4001-8d26-600b136cd540
+   Path: js/tests/vendor/qunit.js, line 3638
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 4f59ddb6-1b56-4aaa-8389-3807d45628b1
+   Path: js/tests/vendor/qunit.js, line 3673
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 89bc0d54-d93b-480f-a1ef-4189332f8f15
+   Path: docs/_includes/footer.html, line 44
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 20bcf828-e5a2-474c-8a82-b29345ca33c8
+   Path: grunt/change-version.js, line 57
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-20676       │
+│                                                    │
+│   Total issues:   9                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    9 [ 2 HIGH  0 MEDIUM  7 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:498f6dac-b0fa-4400-adc5-1616ab607a17 
+
+Testing /tmp/src-CVE-2018-20677 ...
+
+Open Issues
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: db1dcd93-994a-4402-bdf3-427572431dc2
+   Path: js/tests/vendor/qunit.js, line 3685
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: ac40608a-e60a-4dcc-8093-2f603eb8386a
+   Path: js/tests/vendor/qunit.js, line 3789
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: d5c6d403-62d7-4f0b-8646-e1f8f64a722d
+   Path: js/tests/vendor/qunit.js, line 3908
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 284c9a83-0029-40e3-a877-5a0a5afd28f4
+   Path: js/tests/vendor/qunit.js, line 4099
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: a3f7762a-bbea-47c7-bdee-67a9b69b7325
+   Path: js/tests/vendor/qunit.js, line 3780
+   Info: Unsanitized input from the document location flows into appendChild, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 0420e74e-7e28-4001-8d26-600b136cd540
+   Path: js/tests/vendor/qunit.js, line 3638
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 4f59ddb6-1b56-4aaa-8389-3807d45628b1
+   Path: js/tests/vendor/qunit.js, line 3673
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 89bc0d54-d93b-480f-a1ef-4189332f8f15
+   Path: docs/_includes/footer.html, line 44
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 20bcf828-e5a2-474c-8a82-b29345ca33c8
+   Path: grunt/change-version.js, line 57
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-20677       │
+│                                                    │
+│   Total issues:   9                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    9 [ 2 HIGH  0 MEDIUM  7 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:cebd13cd-5d88-42f5-b105-0f2e3cb1679f 
+
+Testing /tmp/src-CVE-2018-20801 ...
+
+Open Issues
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 8541e29a-b817-4365-8ade-3ba04a779c41
+   Path: utils/samples/compare-iframe.php, line 117
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: b009875c-6555-498d-99e4-feaeaac8e0ec
+   Path: samples/highcharts/exporting/sourcewidth/unit-tests.js, line 41
+   Info: Unsanitized input from data from a remote resource flows into appendChild, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: 0d30fa8e-3b4b-4ede-83ba-86f2657dfafe
+   Path: tools/jsdoc/static/scripts/toc.js, line 64
+   Info: Unsanitized input to JQuery plugin from options flows into $, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 58f0fb54-b75a-450d-a3d1-3b8c1bb7c56c
+   Path: vendor/mootools-1.2.5-core-nc.js, line 3721
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: e973948a-1ea5-49f0-91f1-7f5b1fd33fcb
+   Path: vendor/mootools-core-1.3.2-full-compat.js, line 5703
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 88faaa32-da74-4525-af34-481f0b9a25ba
+   Path: vendor/mootools-core-1.4.5-full-nocompat.js, line 5727
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: 3a79cf48-4406-4c2a-a040-727c272cdf4e
+   Path: tools/jsdoc/static/scripts/toc.js, line 62
+   Info: Unsanitized input to JQuery plugin from options flows into $, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 1e936764-dc77-4a14-bff9-072a08166151
+   Path: test/puppeteer.js, line 501
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 1d94e79b-3422-4600-aea6-9d2d20eb44a0
+   Path: samples/highcharts/exporting/width/unit-tests.js, line 32
+   Info: Unsanitized input from data from a remote resource flows into appendChild, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 46a45537-0f90-4b20-b685-3910ad5d61d3
+   Path: samples/highcharts/exporting/scale/unit-tests.js, line 34
+   Info: Unsanitized input from data from a remote resource flows into appendChild, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 90e7f104-1584-461a-a9b3-e13d03630ad6
+   Path: utils/samples/compare-images.php, line 159
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 33005c2f-e49a-4d5f-95fe-98f2f183db56
+   Path: test/puppeteer.js, line 110
+   Info: Unsanitized input from a command line argument flows into glob.sync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 4b4c4ca0-f5b2-47ca-9ce0-5a8574b60f21
+   Path: tools/compare_api.js, line 87
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: d0706835-247f-4c3c-b458-a4c71bf231c6
+   Path: tools/compare_api.js, line 80
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Server-Side Request Forgery (SSRF)
+   Finding ID: ffac6e11-8d8c-43e3-a4bf-462bc6b895f3
+   Path: samples/maps-base.php, line 6
+   Info: Unsanitized input from an HTTP parameter flows into a URL used for a request in file_get_contents. Within the same domain, the URL may request a different resource from the one intended, resulting in a Server-Side Request Forgery vulnerability.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 8ea1854e-31a6-415c-9523-e0d7fb2ae151
+   Path: gulpfile.js, line 1212
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 7e0dd5f8-2106-4376-a996-44d7b1d1a9bf
+   Path: gulpfile.js, line 1212
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: f91955f7-9e46-47c6-9d6a-8d59cbf2c5d1
+   Path: utils/samples/functions.php, line 27
+   Info: An exception object flows to the echo statement and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Code Injection
+   Finding ID: 07238711-7050-4083-84b0-e78dcdc2aeee
+   Path: studies/live-server.htm, line 28
+   Info: Unsanitized input from data from a remote resource flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [MEDIUM] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 6b7b3b79-4a1f-4260-8064-4eb2a27f1583
+   Path: js/modules/map-parser.src.js, line 309
+   Info: Unsanitized input from data from a remote resource flows into html, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [MEDIUM] Integer Overflow
+   Finding ID: 41cc0f21-26b1-44fb-9d7a-82d9f1d5f736
+   Path: tools/lcov-1.9/example/example.c, line 45
+   Info: Unsanitized input from a command line argument flows into an addition operator (+), where it is used in integer arithmetic. This may result in an integer overflow vulnerability.
+
+ ✗ [MEDIUM] Cross-site Scripting (XSS)
+   Finding ID: 8c24f40a-ac9a-4c04-9858-bc21c5e0c96f
+   Path: utils/issue-stats/import.php, line 126
+   Info: Unsanitized input from data from a remote resource flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Cross-site Scripting (XSS)
+   Finding ID: 9ac5823b-ebfa-4f34-ae74-67f8c6d16442
+   Path: utils/issue-stats/import.php, line 117
+   Info: Unsanitized input from data from a remote resource flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Cross-site Scripting (XSS)
+   Finding ID: 1ac11c34-fe0e-44a9-b37e-bde6aba29b60
+   Path: utils/issue-stats/import.php, line 85
+   Info: Unsanitized input from data from a remote resource flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Cross-site Scripting (XSS)
+   Finding ID: b5b11b45-287e-444a-90be-5a380972b122
+   Path: utils/issue-stats/import.php, line 79
+   Info: Unsanitized input from data from a remote resource flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Cross-site Scripting (XSS)
+   Finding ID: 771b00d2-37f4-40e8-889f-6a9115d1097e
+   Path: utils/issue-stats/import.php, line 23
+   Info: Unsanitized input from data from a remote resource flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Cross-site Scripting (XSS)
+   Finding ID: 034b0e7b-3cb7-4401-89e2-50b28c1d0675
+   Path: samples/maps-base.php, line 52
+   Info: Unsanitized input from data from a remote resource flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Code Injection
+   Finding ID: 0f4665d0-5684-47b2-bd47-eb9ed7338504
+   Path: utils/benchmark/javascript-functions.js, line 122
+   Info: Unsanitized input from data from a remote resource flows into Function, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 3012f6c7-7b28-4d84-8ed2-b2a77a348cf7
+   Path: utils/benchmark/index.php, line 255
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 96bfa3cb-8cd6-4d27-9312-136538954081
+   Path: utils/samples/compare-comment.php, line 106
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 1c702722-e64b-4c8c-8f91-97ab0d2ba94a
+   Path: utils/samples/compare-view.php, line 21
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 0084ac3c-a452-438a-bbf2-2c5b1837eed1
+   Path: utils/samples/github-cache.php, line 20
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 1192f603-6a6f-4f25-a77e-e1d0d6844452
+   Path: utils/samples/compare-update-report.php, line 30
+   Info: Unsanitized input from an HTTP parameter flows into file_put_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: c94e38a6-1c83-4989-9b0c-975c317a0a70
+   Path: utils/benchmark/dir-struct.php, line 14
+   Info: Unsanitized input from an HTTP parameter flows into scandir, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 039c6c3a-e054-4ae2-aa12-d62959ec7ab2
+   Path: utils/samples/view-source.php, line 18
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: f3d5575b-81f0-4dd8-bda2-69e013a008a5
+   Path: utils/samples/view-source.php, line 17
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 9de3eb6a-f045-4eea-a06c-4aa1762a6b90
+   Path: utils/samples/view-source.php, line 16
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: d8f916a4-195b-4902-bff0-8064c3a561c0
+   Path: utils/samples/github-cache.php, line 24
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 9af09ec0-d41c-4ad7-94aa-553b3c20a7d3
+   Path: samples/maps-base.php, line 63
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: ce003328-598c-4702-9e92-3ea93dd36213
+   Path: samples/maps-base.php, line 63
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: d884787c-b60d-4618-aaf1-83295a119174
+   Path: samples/maps-base.php, line 79
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 867064e9-ab21-4179-a1e9-dcd2ac2d758e
+   Path: samples/maps-base.php, line 91
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: f1e34711-75d7-4dc5-b889-98b7d166a7a0
+   Path: samples/maps-base.php, line 99
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 5cbe92b0-2053-4480-be81-d8ae1884d1ff
+   Path: studies/forecast.jsonp.php, line 6
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 05fe9eb1-9304-4449-b7a4-bcdbd5e0989a
+   Path: studies/performance.php, line 56
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 7b70a872-432d-4884-a67a-1c1deab19634
+   Path: studies/performance.php, line 171
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 4abed6ce-8297-4f8c-b337-bb462c16a803
+   Path: utils/benchmark/index.php, line 48
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: d0f759a4-1ea7-4a65-bb93-4195ba54b9fb
+   Path: utils/benchmark/index.php, line 52
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 99a5d791-c2be-4176-a002-8ad0c8e5d184
+   Path: utils/samples/github-cache.php, line 20
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 9fa5e1fd-04d8-46d4-92fb-5ed37bfc4b78
+   Path: utils/issue-by-commit/commits.php, line 276
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 2ab566fc-3fc1-4658-9936-6a1250ad6e00
+   Path: utils/issue-by-commit/commits.php, line 278
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: ee151dc0-a276-41dc-9c71-50d4e4fc1385
+   Path: utils/issue-by-commit/main.php, line 64
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 2fdb846d-0b48-45b4-a9c0-a1b97d960cab
+   Path: utils/issue-by-commit/main.php, line 86
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: ea8cdf01-67c2-4ea8-959b-ac4aab690c25
+   Path: utils/issue-by-commit/main.php, line 89
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 2192fd7c-07a3-471f-a16a-7b5b298f62ff
+   Path: utils/issue-by-commit/main.php, line 91
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 789f5e6f-52b0-457e-8b33-ba1884da2413
+   Path: utils/issue-by-commit/main.php, line 103
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 39d28241-84a9-4e7b-8c54-085fb9ae7cb9
+   Path: utils/issue-by-commit/main.php, line 107
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: caab715d-8415-4ed6-b9f8-8a121782e7a7
+   Path: utils/issue-by-commit/main.php, line 111
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 781f226e-0726-4c08-8ed1-42515eda98a4
+   Path: utils/issue-by-commit/main.php, line 132
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 4c261aef-2cd6-46ac-a330-62c72643732e
+   Path: utils/issue-by-commit/main.php, line 139
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 0fe0fc0d-f2be-4a3c-a82e-382b35bea9cd
+   Path: utils/issue-by-commit/main.php, line 144
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 222a3c02-ddfe-40dc-8600-292767cd65b5
+   Path: utils/samples/compare-comment.php, line 74
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 1d1c489b-72c4-4855-bbfb-7b8f5570c8f6
+   Path: utils/samples/compare-comment.php, line 106
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 25e141e8-a6ae-4072-b8ad-e17a4707c4eb
+   Path: utils/samples/github-cache.php, line 20
+   Info: Unsanitized input from an HTTP parameter flows into file_put_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 9e161ce1-b320-4e83-909b-918156560eed
+   Path: utils/samples/compare-comment.php, line 107
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 7dc07e03-3bec-4f14-a244-f5a578fdd675
+   Path: utils/samples/compare-comment.php, line 107
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: ee224758-bec6-40e0-8e54-46041fe43a4b
+   Path: utils/samples/compare-comment.php, line 126
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 649c561b-02b3-4c31-bc45-8f7b77f7a38a
+   Path: utils/samples/compare-comment.php, line 153
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 86944fc6-f84a-4304-bbd7-6ba8c36c5676
+   Path: utils/samples/compare-comment.php, line 157
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 8de82212-a0b8-4041-bb1d-0a7a6135baa9
+   Path: utils/samples/compare-comment.php, line 166
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: a7a23b6e-b767-45e7-a68b-eecb3e12f7d0
+   Path: utils/samples/compare-iframe.php, line 282
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: f191c032-50dd-405a-b5dd-0367e4cebc55
+   Path: utils/samples/compare-iframe.php, line 575
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: d0a790c0-5159-48db-847c-218fcd41e976
+   Path: utils/samples/compare-view.php, line 57
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 65ef6c96-3df8-4c22-a421-bb8bd336e126
+   Path: utils/samples/compare-view.php, line 58
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: dbb2b95c-8fdb-46c4-b34f-3b3d1d30663d
+   Path: utils/samples/compare-view.php, line 67
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 1f759cac-da79-4f53-9287-265ae326e2e4
+   Path: utils/samples/compare-view.php, line 70
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 753e53d6-4e3a-48cb-b139-61faa17fae93
+   Path: utils/samples/compare-view.php, line 71
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 6fc68705-ee1c-4dd7-97c9-2151ca89a877
+   Path: utils/samples/compare-view.php, line 170
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: a165ed93-a4f2-46dc-a8c4-a2c6b7ce2410
+   Path: utils/samples/compare-view.php, line 626
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: edf35d40-3dec-47b8-9d1d-1d79e59c6bcf
+   Path: utils/samples/compare-view.php, line 733
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 55194a48-3aef-490e-a3fc-47a07e5ce760
+   Path: utils/samples/compare-view.php, line 764
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 41ec4336-0178-4572-a0a1-fe43b23d92c4
+   Path: utils/samples/settings.php, line 52
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 45663453-8b19-42cf-b3a9-cf5f1435eb3f
+   Path: utils/samples/compare-iframe.php, line 273
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 922c0537-7b1c-47ae-8ca5-340801653e88
+   Path: utils/samples/compare-view.php, line 775
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 7457a499-eb2d-44bd-a65c-5b80421599fd
+   Path: utils/samples/compare-view.php, line 777
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: ef297b4c-d711-4fa3-a69d-2bc8a61b2e87
+   Path: utils/samples/view.php, line 447
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: c5fa089a-77ef-42cb-9aad-c2f04365761f
+   Path: utils/samples/view.php, line 563
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: f2af744d-49dc-467f-818c-e256c700d15e
+   Path: utils/samples/functions.php, line 14
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 92b10921-92c2-4383-97a5-4be54f0d70c0
+   Path: utils/samples/compare-view.php, line 21
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: bbe314d1-bf04-4fa7-97d6-04571c3dc4cc
+   Path: utils/samples/compare-update-report.php, line 15
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 14593682-74c6-4e75-ba3e-81aba687aef2
+   Path: samples/maps-base.php, line 6
+   Info: Unsanitized input from an HTTP parameter flows into file_get_contents, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] File Inclusion
+   Finding ID: 303ba137-5053-4544-86fd-a51393e5a43b
+   Path: samples/view.php, line 62
+   Info: Unsanitized input from an HTTP parameter flows into include, where it is included dynamically. Allowing unvalidated user input to control files that are included dynamically in PHP can lead to malicious code execution.
+
+ ✗ [HIGH] File Inclusion
+   Finding ID: 95edf151-2111-4282-bb40-fb15e476775e
+   Path: samples/view.php, line 58
+   Info: Unsanitized input from an HTTP parameter flows into include, where it is included dynamically. Allowing unvalidated user input to control files that are included dynamically in PHP can lead to malicious code execution.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: f97b5457-9fc5-4600-9fc0-feaa2b5a11fb
+   Path: gulpfile.js, line 1263
+   Info: Unsanitized input from the request URL flows into fs.readFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] File Inclusion
+   Finding ID: c4ce6211-0034-412b-9a2d-574b45598570
+   Path: samples/view.php, line 55
+   Info: Unsanitized input from an HTTP parameter flows into include, where it is included dynamically. Allowing unvalidated user input to control files that are included dynamically in PHP can lead to malicious code execution.
+
+ ✗ [HIGH] File Inclusion
+   Finding ID: 9487f59a-5ed6-4586-86d4-9943d4ffcd56
+   Path: samples/view.php, line 15
+   Info: Unsanitized input from an HTTP parameter flows into include, where it is included dynamically. Allowing unvalidated user input to control files that are included dynamically in PHP can lead to malicious code execution.
+
+ ✗ [HIGH] Command Injection
+   Finding ID: 01ce7559-7040-42bc-88f1-fb98881df33d
+   Path: utils/issue-by-commit/commits.php, line 51
+   Info: Unsanitized input from an HTTP parameter flows into proc_open, where it is used to build a shell command. This may result in a Command Injection vulnerability.
+
+
+
+╭────────────────────────────────────────────────────────╮
+│ Test Summary                                           │
+│                                                        │
+│   Organization:                                        │
+│   Test type:         Static code analysis              │
+│   Project path:      /tmp/src-CVE-2018-20801           │
+│                                                        │
+│   Total issues:   97                                   │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]        │
+│   Open issues:    97 [ 69 HIGH  13 MEDIUM  15 LOW ]    │
+╰────────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:ea7abf6c-ed69-4eea-882f-a28e961e6799 
+
+Testing /tmp/src-CVE-2018-20834 ...
+
+Open Issues
+
+ ✗ [LOW] Path Traversal
+   Finding ID: b75505b7-fcd7-4665-9f3d-046465de5c13
+   Path: benchmarks/extract/node-tar-stream-async.js, line 14
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 0b905fad-4e71-431d-b679-a9fb1c5b1250
+   Path: benchmarks/extract/old-async.js, line 15
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 08310753-da03-4387-ab43-a44f1ff22967
+   Path: benchmarks/extract/tar-fs-async.js, line 14
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: a90fba71-3b3a-44f0-86fb-3b06f69ff191
+   Path: benchmarks/extract/unpack-async.js, line 15
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 30db5c2f-2ba7-4dc2-9e2f-17ff0d12d562
+   Path: benchmarks/parse/node-tar-stream-async.js, line 9
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 50890abe-4cf4-4e58-ad70-d5f12360be5a
+   Path: benchmarks/parse/old-async.js, line 10
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 7f727b60-5eba-4899-8de5-a868abb85071
+   Path: benchmarks/parse/parse-async.js, line 10
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 4e142799-6129-4507-bdda-3dfbf5b8192a
+   Path: benchmarks/parse/tar-stream-async.js, line 13
+   Info: Unsanitized input from a command line argument flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 7fc5cc48-b575-4678-b76e-a1960fe97935
+   Path: benchmarks/extract/node-tar-stream-sync.js, line 14
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: ef033182-8e7a-4bda-bc6b-49560e7bab7f
+   Path: benchmarks/extract/old-sync.js, line 11
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 54171b28-c27c-4bf8-b0ea-bd20b1f66225
+   Path: benchmarks/extract/tar-fs-sync.js, line 11
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 647087cc-ed0c-423c-bbd9-2deed68d51ab
+   Path: benchmarks/extract/unpack-sync.js, line 11
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: ff6881b5-2ade-4dd1-802f-7553deac5ef3
+   Path: benchmarks/parse/fast-scan-no-body.js, line 4
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 42099495-378e-46f0-a08b-a4c46306a764
+   Path: benchmarks/parse/fast-scan.js, line 4
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 2c6859e3-370d-4c6a-838b-fd9fe48f05e2
+   Path: benchmarks/parse/node-tar-stream-sync.js, line 9
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: d8378709-087c-4e39-b7d3-d2c46c6579a0
+   Path: benchmarks/parse/old-sync.js, line 5
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 79311a86-4811-429f-a443-8bcdc6e49fde
+   Path: benchmarks/parse/parse-sync.js, line 5
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: fd7c40db-3d93-4a75-9fbb-6a90da3db288
+   Path: benchmarks/parse/tar-stream-sync.js, line 5
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2018-20834         │
+│                                                      │
+│   Total issues:   18                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    18 [ 0 HIGH  0 MEDIUM  18 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:0eaa2be0-0596-4287-bcdd-08bf3cce1604 
+
+Testing /tmp/src-CVE-2018-20835 ...
+
+Open Issues
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: 32a009ee-46ec-448d-bed4-43d816b44fa0
+   Path: index.js, line 227
+   Info: Unsanitized input from Tar-Stream library flows into _, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to manipulate arbitrary files.
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: 35e4df6a-0480-4b0d-bc71-08a5a3bb12ac
+   Path: index.js, line 231
+   Info: Unsanitized input from Tar-Stream library flows into _, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to manipulate arbitrary files.
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: 0fcb48b2-ef6d-4ecb-970b-d3bebc9d2070
+   Path: index.js, line 256
+   Info: Unsanitized input from Tar-Stream library flows into unlink, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: 87a09ca3-1156-4339-bd44-56cae2722939
+   Path: index.js, line 263
+   Info: Unsanitized input from Tar-Stream library flows into unlink, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: 70fd9254-a726-4872-b5e8-834f12cc7750
+   Path: index.js, line 257
+   Info: Unsanitized input from Tar-Stream library flows into symlink, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: d9d64ab5-aa3f-4a39-8c3c-cbe0711e40cb
+   Path: index.js, line 266
+   Info: Unsanitized input from Tar-Stream library flows into link, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: ebaf13fa-fe6b-4a06-9c64-09a6d4b7e6a5
+   Path: index.js, line 268
+   Info: Unsanitized input from Tar-Stream library flows into createReadStream, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Arbitrary File Write via Archive Extraction (Zip Slip)
+   Finding ID: fcdf37ef-50d1-4b5b-8e49-5ecaba982300
+   Path: index.js, line 278
+   Info: Unsanitized input from Tar-Stream library flows into createWriteStream, where it is used as a path after been extracted from a zip file. This may result in a Zip Slip vulnerability and allow an attacker to write to arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-20835       │
+│                                                    │
+│   Total issues:   8                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    8 [ 8 HIGH  0 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:56c1edc9-6f8a-494e-aef0-0b6f32bcdc86 
+
+Testing /tmp/src-CVE-2018-21036 ...
+
+Open Issues
+
+ ✗ [LOW] Improper Type Validation
+   Finding ID: 120fb998-7c48-49ce-aee9-0c2581b89ea4
+   Path: test/integration/hook.pubsub.modelEvents.subscribers.test.js, line 31
+   Info: The type of this object, coming from body and the value of its length property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 77c6c4b4-c439-49e9-86c4-c21ba37ec523
+   Path: test/with-redis.errors.test.js, line 175
+   Info: Do not hardcode passwords in code. Found hardcoded password used in pass.
+
+ ✗ [LOW] Information Exposure - Server Error Message
+   Finding ID: bea97c04-73e7-4dc3-a19d-13b20a936446
+   Path: test/with-redis.test.js, line 110
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [LOW] Information Exposure - Server Error Message
+   Finding ID: 8b6f2f8b-e34f-432b-a465-a4dfe8305d45
+   Path: test/with-redis.test.js, line 118
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [LOW] Information Exposure - Server Error Message
+   Finding ID: 6a6224d9-d325-4e0b-8daf-0dc7ff36e33b
+   Path: test/with-redis.test.js, line 126
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: d4c48398-2ac3-47e9-8a03-dcefdea22fa9
+   Path: test/sails.sockets.test.js, line 248
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 62fda4dc-e008-4a6b-9f87-8b4c0570448e
+   Path: test/sails.sockets.test.js, line 252
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-21036       │
+│                                                    │
+│   Total issues:   7                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    7 [ 0 HIGH  0 MEDIUM  7 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:47083b3e-18d1-4683-8087-b7b024a1f703 
+
+Testing /tmp/src-CVE-2018-3712 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 517335d0-0ce0-4e0d-bad1-66b001aa4216
+   Path: lib/server.js, line 18
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: b32984da-e142-44ec-8abe-eb30f33ac050
+   Path: lib/server.js, line 120
+   Info: Unsanitized input from the request URL flows into writeHead, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-3712        │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  2 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:c8b93953-c201-4b36-a984-ddfae4c8b1b9 
+
+Testing /tmp/src-CVE-2018-3713 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 675fdd08-dae5-4137-a82b-b4288a288ff9
+   Path: angular-http-server.js, line 34
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 88e03249-a5d4-436c-bed1-16b8d7ecaa04
+   Path: angular-http-server.js, line 51
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-3713        │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  2 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:cd612e55-88cf-47dd-ac87-feb388684220 
+
+Testing /tmp/src-CVE-2018-3718 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 517335d0-0ce0-4e0d-bad1-66b001aa4216
+   Path: lib/server.js, line 19
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: b32984da-e142-44ec-8abe-eb30f33ac050
+   Path: lib/server.js, line 131
+   Info: Unsanitized input from the request URL flows into writeHead, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2018-3718        │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  2 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:fd73e104-be9c-4e04-be22-9e14c30c3a36 
+
+Testing /tmp/src-CVE-2018-3719 ...
+
+
+╭────────────────────────────────────────────────╮
+│ Test Summary                                   │
+│                                                │
+│   Organization:                                │
+│   Test type:         Static code analysis      │
+│   Project path:      /tmp/src-CVE-2018-3719    │
+│                                                │
+│   Total issues:   0                            │
+╰────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+Lote concluido: /workspace/datasets/listas/cves-sast-batch-ac

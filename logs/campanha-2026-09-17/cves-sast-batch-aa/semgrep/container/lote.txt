@@ -1,0 +1,918 @@
+limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
+[CVE-2016-1000229] fetch raso saiu com 128; tentando clone completo
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 303 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60     303          Community    1074                                                                
+  html              1      32                                                                                           
+  js              153      20                                                                                           
+  yaml             35      14                                                                                           
+  json              4       7                                                                                           
+  ruby             72       4                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 18 (18 blocking)
+ • Rules run: 322
+ • Targets scanned: 303
+ • Parsed lines: ~99.9%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 76
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 322 rules on 303 files: 18 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 8 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60       8          Community    1074                                                                
+  json              4       2                                                                                           
+  js              153       1                                                                                           
+  html              1       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 0 (0 blocking)
+ • Rules run: 217
+ • Targets scanned: 8
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 1
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 217 rules on 8 files: 0 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+If Semgrep missed a finding, please send us feedback to let us know!
+See https://semgrep.dev/docs/reporting-false-negatives/
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 379 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60     379          Community    1074                                                                
+  js              153     343                                                                                           
+  json              4       3                                                                                           
+  bash              4       3                                                                                           
+  yaml             35       2                                                                                           
+  html              1       2                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 6 (6 blocking)
+ • Rules run: 254
+ • Targets scanned: 379
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 1120
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 254 rules on 379 files: 6 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 7 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47       7          Community    1074                                                                
+  js              153       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 0 (0 blocking)
+ • Rules run: 203
+ • Targets scanned: 7
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 2
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 203 rules on 7 files: 0 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+If Semgrep missed a finding, please send us feedback to let us know!
+See https://semgrep.dev/docs/reporting-false-negatives/
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 16 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      16          Community    1074                                                                
+  js              153       4                                                                                           
+  json              4       3                                                                                           
+  yaml             35       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 3 (3 blocking)
+ • Rules run: 237
+ • Targets scanned: 16
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 212
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 16 files: 3 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 17 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60      17          Community    1074                                                                
+  js              153       9                                                                                           
+  html              1       2                                                                                           
+  yaml             35       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 251
+ • Targets scanned: 17
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 13
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 251 rules on 17 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 44 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      49      44          Community    1074                                                                
+  js              153      21                                                                                           
+  ts              163       7                                                                                           
+  yaml             35       2                                                                                           
+  json              4       2                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 5 (5 blocking)
+ • Rules run: 249
+ • Targets scanned: 44
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 27
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 249 rules on 44 files: 5 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 18 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      18          Community    1074                                                                
+  js              153       7                                                                                           
+  yaml             35       2                                                                                           
+  dockerfile        6       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 0 (0 blocking)
+ • Rules run: 242
+ • Targets scanned: 18
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 15
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 242 rules on 18 files: 0 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+If Semgrep missed a finding, please send us feedback to let us know!
+See https://semgrep.dev/docs/reporting-false-negatives/
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 20 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      20          Community    1074                                                                
+  js              153      10                                                                                           
+  json              4       2                                                                                           
+  yaml             35       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 237
+ • Targets scanned: 20
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 8
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 20 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 126 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60     126          Community    1074                                                                
+  js              153      72                                                                                           
+  json              4       3                                                                                           
+  yaml             35       1                                                                                           
+  html              1       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 16 (16 blocking)
+ • Rules run: 251
+ • Targets scanned: 126
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 25
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 251 rules on 126 files: 16 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 47 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60      47          Community    1074                                                                
+  js              153      28                                                                                           
+  html              1       7                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 15 (15 blocking)
+ • Rules run: 217
+ • Targets scanned: 47
+ • Parsed lines: ~99.9%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 89
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 217 rules on 47 files: 15 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 37 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60      37          Community    1074                                                                
+  js              153      23                                                                                           
+  json              4       3                                                                                           
+  html              1       3                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 23 (23 blocking)
+ • Rules run: 217
+ • Targets scanned: 37
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 10
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 217 rules on 37 files: 23 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 60 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      60          Community    1074                                                                
+  js              153      29                                                                                           
+  json              4       2                                                                                           
+  yaml             35       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 6 (6 blocking)
+ • Rules run: 237
+ • Targets scanned: 60
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 12
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 60 files: 6 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 9 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47       9          Community    1074                                                                
+  js              153       2                                                                                           
+  yaml             35       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 237
+ • Targets scanned: 9
+ • Parsed lines: ~100.0%
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 9 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 24 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      24          Community    1074                                                                
+  js              153      12                                                                                           
+  yaml             35       2                                                                                           
+  json              4       1                                                                                           
+  bash              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 240
+ • Targets scanned: 24
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 88
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 240 rules on 24 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 25 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      25          Community    1074                                                                
+  js              153      13                                                                                           
+  json              4       3                                                                                           
+  yaml             35       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 2 (2 blocking)
+ • Rules run: 237
+ • Targets scanned: 25
+ • Parsed lines: ~100.0%
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 25 files: 2 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 17 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60      17          Community    1074                                                                
+  js              153       8                                                                                           
+  json              4       2                                                                                           
+  yaml             35       1                                                                                           
+  bash              4       1                                                                                           
+  html              1       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 254
+ • Targets scanned: 17
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 2
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 254 rules on 17 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 21 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      21          Community    1074                                                                
+  js              153       9                                                                                           
+  yaml             35       3                                                                                           
+  json              4       2                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 5 (5 blocking)
+ • Rules run: 237
+ • Targets scanned: 21
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 8
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 21 files: 5 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 54 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      54          Community    1074                                                                
+  js              153      35                                                                                           
+  json              4       4                                                                                           
+  yaml             35       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 7 (7 blocking)
+ • Rules run: 237
+ • Targets scanned: 54
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 26
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 54 files: 7 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 10 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      10          Community    1074                                                                
+  js              153       3                                                                                           
+  yaml             35       2                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 3 (3 blocking)
+ • Rules run: 237
+ • Targets scanned: 10
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 5
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 10 files: 3 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 5 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47       5          Community    1074                                                                
+  js              153       2                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 203
+ • Targets scanned: 5
+ • Parsed lines: ~100.0%
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 203 rules on 5 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 97 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60      97          Community    1074                                                                
+  js              153      78                                                                                           
+  php              38       6                                                                                           
+  json              4       1                                                                                           
+  html              1       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 16 (16 blocking)
+ • Rules run: 254
+ • Targets scanned: 97
+ • Parsed lines: ~99.9%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 3
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 254 rules on 97 files: 16 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 39 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      39          Community    1074                                                                
+  js              153      24                                                                                           
+  yaml             35       1                                                                                           
+  json              4       1                                                                                           
+  bash              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 3 (3 blocking)
+ • Rules run: 240
+ • Targets scanned: 39
+ • Parsed lines: ~99.9%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 89
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 240 rules on 39 files: 3 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 24 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      24          Community    1074                                                                
+  js              153       8                                                                                           
+  bash              4       2                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 14 (14 blocking)
+ • Rules run: 206
+ • Targets scanned: 24
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 109
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 206 rules on 24 files: 14 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 5 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47       5          Community    1074                                                                
+  js              153       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 203
+ • Targets scanned: 5
+ • Parsed lines: ~100.0%
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 203 rules on 5 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 18 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      18          Community    1074                                                                
+  json              4       5                                                                                           
+  ts              163       2                                                                                           
+  js              153       2                                                                                           
+  yaml             35       2                                                                                           
+  bash              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 4 (4 blocking)
+ • Rules run: 250
+ • Targets scanned: 18
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 36
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 250 rules on 18 files: 4 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 12 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      12          Community    1074                                                                
+  yaml             35       2                                                                                           
+  js              153       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 0 (0 blocking)
+ • Rules run: 237
+ • Targets scanned: 12
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 3
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 12 files: 0 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+If Semgrep missed a finding, please send us feedback to let us know!
+See https://semgrep.dev/docs/reporting-false-negatives/
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 10 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47      10          Community    1074                                                                
+  js              153       3                                                                                           
+  yaml             35       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 237
+ • Targets scanned: 10
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 1
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 237 rules on 10 files: 1 finding.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 8 files tracked by git with 1074 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      60       8          Community    1074                                                                
+  js              153       4                                                                                           
+  json              4       1                                                                                           
+  html              1       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 0 (0 blocking)
+ • Rules run: 217
+ • Targets scanned: 8
+ • Parsed lines: ~100.0%
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 217 rules on 8 files: 0 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+If Semgrep missed a finding, please send us feedback to let us know!
+See https://semgrep.dev/docs/reporting-false-negatives/
+Lote concluido: /workspace/datasets/listas/cves-sast-batch-aa

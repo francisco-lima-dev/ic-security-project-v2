@@ -1,0 +1,2255 @@
+limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
+[CVE-2016-1000229] fetch raso saiu com 128; tentando clone completo
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
+
+Testing /tmp/src-CVE-2016-10735 ...
+
+Open Issues
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: ac40608a-e60a-4dcc-8093-2f603eb8386a
+   Path: js/tests/vendor/qunit.js, line 3530
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: d5c6d403-62d7-4f0b-8646-e1f8f64a722d
+   Path: js/tests/vendor/qunit.js, line 3587
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 284c9a83-0029-40e3-a877-5a0a5afd28f4
+   Path: js/tests/vendor/qunit.js, line 3828
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 0420e74e-7e28-4001-8d26-600b136cd540
+   Path: js/tests/vendor/qunit.js, line 3269
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [LOW] Open Redirect
+   Finding ID: 4f59ddb6-1b56-4aaa-8389-3807d45628b1
+   Path: js/tests/vendor/qunit.js, line 3313
+   Info: Unsanitized input from the document location flows into window.location, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 89bc0d54-d93b-480f-a1ef-4189332f8f15
+   Path: _includes/scripts.html, line 28
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 20bcf828-e5a2-474c-8a82-b29345ca33c8
+   Path: build/change-version.js, line 61
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2016-10735       │
+│                                                    │
+│   Total issues:   7                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    7 [ 2 HIGH  0 MEDIUM  5 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:dfe5734e-268c-443b-92da-613b139351c6 
+
+Testing /tmp/src-CVE-2017-0931 ...
+
+
+╭────────────────────────────────────────────────╮
+│ Test Summary                                   │
+│                                                │
+│   Organization:                                │
+│   Test type:         Static code analysis      │
+│   Project path:      /tmp/src-CVE-2017-0931    │
+│                                                │
+│   Total issues:   0                            │
+╰────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-1000006 ...
+
+Open Issues
+
+ ✗ [LOW] Code Injection
+   Finding ID: 9870a430-832b-47bd-b819-5b84768906c0
+   Path: test/image/compare_pixels_test.js, line 81
+   Info: Unsanitized input from a command line argument flows into require, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Code Injection
+   Finding ID: 89723e2c-6151-40e1-aa3d-82d62aa9120d
+   Path: test/image/export_test.js, line 80
+   Info: Unsanitized input from a command line argument flows into require, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Code Injection
+   Finding ID: 59c5b269-2f3b-40d3-9028-cec9f78cc11b
+   Path: test/image/make_baseline.js, line 31
+   Info: Unsanitized input from a command line argument flows into require, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 302ca735-635c-495d-bf41-23c4fd102af1
+   Path: devtools/test_dashboard/server.js, line 16
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 4a7ab3fc-7b73-45a5-88a3-77b16c2fe9cb
+   Path: test/image/compare_pixels_test.js, line 18
+   Info: Unsanitized input from a command line argument flows into fs.openSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to manipulate arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 13d5a68c-7d37-4ade-bab8-f07a094f80da
+   Path: test/image/compare_pixels_test.js, line 91
+   Info: Unsanitized input from a command line argument flows into fs.createWriteStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 5315157f-7f1d-4db9-9f32-df60552736ae
+   Path: test/image/export_test.js, line 89
+   Info: Unsanitized input from a command line argument flows into fs.createWriteStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: d3d4afdd-78c0-4176-88cc-a7514c458c3b
+   Path: test/image/make_baseline.js, line 40
+   Info: Unsanitized input from a command line argument flows into fs.createWriteStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 3c579829-5616-4a52-bcb5-b5a6590f1dfc
+   Path: test/image/compare_pixels_test.js, line 133
+   Info: Unsanitized input from a command line argument flows into fs.unlinkSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 32067e8c-ebfa-43ee-aed1-8e69d711f923
+   Path: test/image/export_test.js, line 96
+   Info: Unsanitized input from a command line argument flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 0f94d43a-232a-4c8c-9ff0-33b5b5f30980
+   Path: devtools/image_viewer/server.js, line 49
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-1000006       │
+│                                                      │
+│   Total issues:   11                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    11 [ 0 HIGH  1 MEDIUM  10 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:adb5b981-9cb3-416a-98ad-74107c58e170 
+
+Testing /tmp/src-CVE-2017-1000219 ...
+
+
+╭───────────────────────────────────────────────────╮
+│ Test Summary                                      │
+│                                                   │
+│   Organization:                                   │
+│   Test type:         Static code analysis         │
+│   Project path:      /tmp/src-CVE-2017-1000219    │
+│                                                   │
+│   Total issues:   0                               │
+╰───────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-1000427 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: da3875de-2be0-4a0a-b08a-192e9d36d9f4
+   Path: test/browser/index.js, line 8
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 55a69cbd-b1e1-4388-89ee-d80e64a0a998
+   Path: test/browser/index.js, line 27
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-1000427     │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  0 MEDIUM  2 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:adde565a-74d3-41e8-acae-289a31fa6867 
+
+Testing /tmp/src-CVE-2017-1001004 ...
+
+
+╭───────────────────────────────────────────────────╮
+│ Test Summary                                      │
+│                                                   │
+│   Organization:                                   │
+│   Test type:         Static code analysis         │
+│   Project path:      /tmp/src-CVE-2017-1001004    │
+│                                                   │
+│   Total issues:   0                               │
+╰───────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-10910 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6e8a8ae7-6a4b-47a1-b1d3-d3ab233e8d1c
+   Path: test/browser/server.js, line 101
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9d3867bb-0a98-4d79-b562-98ea5eddf12c
+   Path: test/websocket_client.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 990e17af-b2b6-4797-ad51-d88922e497ea
+   Path: bin/pub.js, line 86
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: e9e431a1-fe55-462a-9e3c-4fab2534d299
+   Path: bin/pub.js, line 90
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: a5dad9e5-8589-4080-a358-e331f0ee37e8
+   Path: bin/pub.js, line 94
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: f3cadcb9-81f5-4bee-809b-caf68a6eef01
+   Path: bin/sub.js, line 51
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: fc2a6986-5bc9-421a-805a-745df16aacca
+   Path: bin/sub.js, line 55
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-10910       │
+│                                                    │
+│   Total issues:   7                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    7 [ 0 HIGH  0 MEDIUM  7 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:4633037a-282b-4ad0-b70f-e22a3e4a1dfa 
+
+Testing /tmp/src-CVE-2017-15010 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-15010    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16003 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16003    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16006 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 20d11934-a6b0-46c1-baea-21803d54372d
+   Path: support/entities.js, line 25
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [HIGH] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 846c841d-d12f-4273-bb40-c502f3233f05
+   Path: benchmark/index.js, line 128
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16006       │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 1 HIGH  1 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:95e2c09d-f59c-4f6a-a90f-71e155efb53d 
+
+Testing /tmp/src-CVE-2017-16011 ...
+
+Open Issues
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 2efea642-df78-45d2-9ed3-5eda0918bd8c
+   Path: test/polluted.php, line 46
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: 9da70bc6-f037-4d06-b991-53635cd6e7a0
+   Path: src/traversing.js, line 118
+   Info: Unsanitized input to JQuery plugin from selector flows into jQuery, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 2bfeb775-a88f-40d8-ba13-06950a3f9e33
+   Path: test/data/echoData.php, line 1
+   Info: Unsanitized input from the HTTP request body flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 76557bcb-95ce-4714-855b-1192f7d7a5ad
+   Path: test/data/echoQuery.php, line 1
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: d0709c30-7bb1-4fd7-b76f-d4dd85651dc9
+   Path: test/data/jsonp.php, line 10
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: fbe9ebaa-bc6c-4707-b7c9-8123adc8c974
+   Path: test/data/jsonp.php, line 12
+   Info: Unsanitized input from an HTTP header flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: ac2e53e1-fac5-4c77-966e-96653469ed07
+   Path: test/data/headers.php, line 17
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: c0a788b4-ae6c-4a75-84ef-5ba4b0e72c38
+   Path: test/data/if_modified_since.php, line 15
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 14ab1ea5-7f89-42bf-bf91-f43545c4ac8b
+   Path: test/data/name.php, line 11
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 2c11e159-4462-4250-97f7-5c185c1482b6
+   Path: test/data/params_html.php, line 4
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 6e9db4e7-1ff5-42fc-94f1-a088575cffc2
+   Path: test/data/params_html.php, line 10
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 1f2b68c9-ab87-47c1-9283-e806272bc635
+   Path: test/data/with_fries_over_jsonp.php, line 6
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: b309fcc7-da5b-4615-aeb8-50f255229f4d
+   Path: test/data/etag.php, line 5
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 3df4344f-90cc-4508-bebb-bd6a173b0cb9
+   Path: test/polluted.php, line 70
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: f50c498b-c0f5-415f-90e5-c0db3d77950c
+   Path: src/traversing.js, line 78
+   Info: Unsanitized input to JQuery plugin from selectors flows into jQuery, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: 53a55963-3607-4bca-a6ec-d1e082a0c49c
+   Path: src/traversing.js, line 41
+   Info: Unsanitized input to JQuery plugin from target flows into jQuery, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 9c65f103-772a-406f-8013-de09bb4ea66f
+   Path: build/release.js, line 174
+   Info: Unsanitized input from a command line argument flows into fs.writeFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: d7398131-bd19-4bfc-9cab-7e938415d672
+   Path: src/event.js, line 909
+   Info: Unsanitized input to JQuery plugin from types flows into jQuery, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: 2b4af430-c5bd-497b-871c-0fdfa1c6f652
+   Path: src/manipulation.js, line 257
+   Info: Unsanitized input to JQuery plugin from value flows into jQuery, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: 274e72ba-0083-49a2-9d2b-50642cdf5286
+   Path: src/traversing.js, line 19
+   Info: Unsanitized input to JQuery plugin from selector flows into jQuery, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Unsafe JQuery Plugin
+   Finding ID: a8780f25-8ee6-4a39-b855-b6543cc65bf0
+   Path: src/traversing.js, line 67
+   Info: Unsanitized input to JQuery plugin from selector flows into jQuery, where it may be evaluated as HTML. If the input is intended to be used as a selector, then a JQuery method that only accepts selectors should be used. If the input is intended to be used as HTML, the developer needs to ensure that it's well documented that the user is responsible for sanitizing the input.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 6616f251-54cd-418b-87eb-4b09b604e462
+   Path: test/polluted.php, line 56
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Command Injection
+   Finding ID: 75b10d8f-db31-40fe-8d93-6cd2f478c12c
+   Path: build/release.js, line 183
+   Info: Unsanitized input from a command line argument flows into child_process.exec, where it is used to build a shell command. Forwarding command-line arguments or file paths from the local environment to a function that executes a system command can change the meaning of the command unexpectedly due to unescaped special characters, which may result in a Indirect Command Injection vulnerability.
+
+ ✗ [MEDIUM] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 7f7f0afc-88cf-4598-bb42-0365c482d889
+   Path: src/ajax.js, line 177
+   Info: Unsanitized input from data from a remote resource flows into append, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ffe6d860-0e14-4e8d-ab06-e067ebbb7023
+   Path: build/release-notes.js, line 18
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16011         │
+│                                                      │
+│   Total issues:   25                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    25 [ 0 HIGH  3 MEDIUM  22 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:159a2f7b-07e2-4272-84ef-90918c721eac 
+
+Testing /tmp/src-CVE-2017-16014 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: bd3392da-57d6-4ddf-98dc-b8d07f6ac425
+   Path: test/helpers.js, line 258
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: dd07260e-15ef-4481-8ef2-1c55c3d8881a
+   Path: vendor/websocket.js, line 155
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: fb006bbc-214b-477d-8af0-73d2a6db816a
+   Path: test/helpers.js, line 297
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d181cda3-320b-42da-a86e-8339b80cec57
+   Path: examples/standalone-proxy.js, line 50
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: bf41765d-7027-43c7-ac00-7336259a9556
+   Path: examples/standalone-websocket-proxy.js, line 71
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: a0608658-4358-4d51-b1de-a9c3a245255c
+   Path: examples/forward-proxy.js, line 54
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 47a06aa8-7439-4314-a4ce-2029b8094a9e
+   Path: examples/gzip-middleware.js, line 43
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 39642443-8449-4b73-97b3-770e4ee27400
+   Path: examples/jsonp-middleware.js, line 25
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: b4fed64b-aa93-490f-8153-8da19af0b548
+   Path: examples/latent-proxy.js, line 49
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f86d6f43-1a52-4dd2-91c1-083754a09be4
+   Path: examples/latent-websocket-proxy.js, line 46
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: bd2546a1-6193-4a3e-812e-58dcb1aa990a
+   Path: examples/latent-websocket-proxy.js, line 71
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d7d6bd2c-70ab-40ba-9600-8b54f01c232a
+   Path: examples/proxy-https-to-http.js, line 39
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 31dc3c7f-fd24-4a81-ae8b-d56f54b74d84
+   Path: examples/proxy-table.js, line 44
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: bb088db0-ce91-47f3-8765-21604e47dcd5
+   Path: examples/standalone-proxy.js, line 36
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6a1b3976-d65f-4c55-8a07-8fec0c62fe31
+   Path: examples/basic-proxy.js, line 50
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 69c2afe8-c7fc-4e62-9af2-552052225fc9
+   Path: examples/standalone-websocket-proxy.js, line 46
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 25266d88-33cd-4dac-8f51-dace8c837da5
+   Path: examples/forward-proxy.js, line 45
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 4f652c04-f0f6-4af4-a294-d02959e57e18
+   Path: examples/url-middleware.js, line 50
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 76d4bd1f-cdbc-4b99-95cc-cd4d5886aaca
+   Path: examples/url-middleware2.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3a066a49-05e8-47c7-a8c8-381ad6c13d3d
+   Path: examples/url-middleware2.js, line 22
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9b275dce-db58-47e1-8618-261fc5642d40
+   Path: examples/web-socket-proxy.js, line 46
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 7b849303-9f29-4898-868d-ce4a1446982e
+   Path: lib/node-http-proxy.js, line 110
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 649799e5-1a55-4aa8-9a45-9713c941cf47
+   Path: vendor/websocket.js, line 616
+   Info: request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: fe3477c1-f69a-4c06-a8a6-a47f8c31515d
+   Path: examples/concurrent-proxy.js, line 48
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 067e5f14-8918-4dd6-98b6-c51ffa3272b8
+   Path: examples/bodyDecoder-middleware.js, line 35
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8d8089ea-062b-49ad-817c-a1aedb268a43
+   Path: examples/bodyDecoder-middleware.js, line 5
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: fd86ec8f-24c2-486e-be3c-46ede0fdafcb
+   Path: lib/node-http-proxy/http-proxy.js, line 199
+   Info: Unsanitized input from the request URL flows into request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: cd315c6b-172c-4300-9bf3-c00517b9548c
+   Path: lib/node-http-proxy/http-proxy.js, line 351
+   Info: Unsanitized input from the request URL flows into request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16014         │
+│                                                      │
+│   Total issues:   28                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    28 [ 2 HIGH  23 MEDIUM  3 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:3c6758f1-5bca-4d24-a135-5a02f69012f8 
+
+Testing /tmp/src-CVE-2017-16018 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 93f9e21c-54c9-43f1-b03c-b813baceecba
+   Path: test/server.test.js, line 1885
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ac5ac8d6-ee61-4ba6-aa40-19a4f1d809de
+   Path: test/server.test.js, line 445
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 7924740d-2c9b-4733-b879-5e47b345991f
+   Path: test/server.test.js, line 310
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 0a492108-43e0-44bf-b375-4b145d32eb76
+   Path: test/server.test.js, line 338
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 69245c24-80a6-42d5-8b47-c1e8783b0476
+   Path: test/server.test.js, line 365
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f7f130ae-7a2d-4302-9d99-fa677c090493
+   Path: test/server.test.js, line 390
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3cad75eb-4b21-4425-908a-d01b89e65450
+   Path: test/server.test.js, line 418
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 0f542a30-aa3a-46f0-8f64-308b848ebe84
+   Path: test/server.test.js, line 585
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 86fa72dc-f7fa-475b-926e-19b757400980
+   Path: test/server.test.js, line 530
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6e6820ae-02a2-462b-8c40-322ee9d9326c
+   Path: test/server.test.js, line 562
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8354ce8f-d28a-44be-8bbf-c266729adc2e
+   Path: test/server.test.js, line 599
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: c9ce16d8-989b-44fa-99b9-f552a0b3a973
+   Path: test/server.test.js, line 842
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: aa6ce960-9003-44fe-9999-35d52e0925c9
+   Path: test/server.test.js, line 284
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: c858a0be-fa97-439f-bd05-213fd9756efa
+   Path: test/server.test.js, line 641
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 970163c4-76c4-4b33-bfac-0db4057a08a2
+   Path: test/server.test.js, line 623
+   Info: Unsanitized input from an HTTP parameter flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: b7496077-3248-4f43-8e65-395fa601df3a
+   Path: lib/router.js, line 576
+   Info: Setting setHeader header to "*" in setHeader might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 8c9cdc27-5e2a-4e74-b525-02a3efd00830
+   Path: examples/todoapp/lib/server.js, line 248
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: f81b20d5-98a1-44ec-8252-9c90d27200b3
+   Path: examples/todoapp/lib/server.js, line 288
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 0ad3be22-440e-4acc-8ef5-20603d00e4f8
+   Path: lib/server.js, line 202
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: f6a95455-48c9-4a96-959e-8641b9ebaa40
+   Path: lib/server.js, line 881
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: f6652ae5-6a51-476c-93a3-be4cab8f30f0
+   Path: examples/todoapp/lib/server.js, line 106
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: ad453922-e7ac-42a1-80f9-e0615b5ea06d
+   Path: examples/todoapp/lib/server.js, line 213
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8ddc590f-6315-497c-8934-9a88c0d6a930
+   Path: lib/server.js, line 284
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 094cd2b0-d03d-4f15-9bdf-dd226d50e5f2
+   Path: examples/todoapp/lib/server.js, line 141
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 04730690-36e3-468f-ab59-d95b4c432fb0
+   Path: examples/todoapp/lib/server.js, line 125
+   Info: Unsanitized input from an HTTP parameter flows into fs.writeFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16018         │
+│                                                      │
+│   Total issues:   25                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    25 [ 1 HIGH  9 MEDIUM  15 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:97ff0b6b-1447-4541-85cb-aa2beaee9fda 
+
+Testing /tmp/src-CVE-2017-16023 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16023    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16026 ...
+
+Open Issues
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: d209db4a-9e6d-41f6-b6cf-92b1e723294f
+   Path: tests/test-oauth.js, line 37
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: b05d0c48-bd78-4e0c-83ef-1652fcd8f1fe
+   Path: tests/test-oauth.js, line 51
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: a3472298-f862-4399-a8b8-48a6c8b4e4c7
+   Path: tests/test-oauth.js, line 64
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 6a991194-ad14-4474-8184-3789f534f74e
+   Path: tests/test-oauth.js, line 79
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 8f047ce9-6758-4a28-86f5-183fc6c2dadc
+   Path: tests/test-oauth.js, line 94
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 56561d28-5c3b-43fa-8f8b-4c2271b5f917
+   Path: tests/test-oauth.js, line 109
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: c45166db-eae4-4cb3-9eb6-cc5439e59a5c
+   Path: tests/test-oauth.js, line 131
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 452f9610-396a-4a0d-bae2-e39af250bdb7
+   Path: tests/test-oauth.js, line 174
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 53c06575-f75f-45cd-96fb-8774f7a91194
+   Path: tests/test-oauth.js, line 175
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 9b2d3cb0-69d0-41e6-b547-67b1f01388c1
+   Path: tests/test-oauth.js, line 198
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 3749c5aa-c156-472d-8d1d-6af813fda6d8
+   Path: tests/test-oauth.js, line 219
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: bc35f707-487f-4451-8195-79ed0aa2ee49
+   Path: tests/test-oauth.js, line 220
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 5859214e-7eee-4553-b877-cc873463e950
+   Path: tests/test-oauth.js, line 242
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 082ccf42-5eb6-4dc1-ab13-a68389efe4bc
+   Path: tests/test-oauth.js, line 262
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 6b95e7ea-fbf6-4145-85da-a033a5007b80
+   Path: tests/test-oauth.js, line 263
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: aa5c5b0c-41a2-490e-8e45-2c96d73946fd
+   Path: tests/test-oauth.js, line 290
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 0b648d2d-dcc4-476b-9ec8-f54c44260b70
+   Path: tests/test-oauth.js, line 376
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 00f379c5-c9f2-41ff-a223-6adde97aa40d
+   Path: tests/test-oauth.js, line 377
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 4d1513ba-d95a-4a4d-8a89-15f354c04b97
+   Path: tests/test-oauth.js, line 387
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: e16c158d-2d5e-4aee-8505-f07c235e5869
+   Path: tests/test-oauth.js, line 409
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: f3f21b58-86a3-4acd-95c4-ed543f432c3e
+   Path: tests/test-oauth.js, line 410
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 81309c60-fecb-4fb9-b765-a8ca1d263c62
+   Path: tests/test-oauth.js, line 430
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 61d78083-073c-4943-a208-bbbc906efeef
+   Path: tests/test-oauth.js, line 451
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: c789e000-45eb-450c-bdb5-bee77a1decb8
+   Path: tests/test-oauth.js, line 452
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 6ea0fcee-2f3d-4027-8a53-cb49bd762cb8
+   Path: tests/test-oauth.js, line 476
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 5b7fa445-55ec-4e9a-9a7c-b9e59160613c
+   Path: tests/test-oauth.js, line 500
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 34d1cd62-1607-4532-8f87-37b7a1ba0fa1
+   Path: tests/test-oauth.js, line 501
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 0abf8f6f-5a81-4fa6-8b47-a2b5ca17257f
+   Path: tests/test-oauth.js, line 509
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 3a0f7b31-41d3-43e8-af66-c03c7fed6f6c
+   Path: tests/test-oauth.js, line 531
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 53304e1a-d9d8-4d4d-a379-abaa1579c2d2
+   Path: tests/test-oauth.js, line 532
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: 4e20c57e-11eb-4215-952e-d7b86ac7af47
+   Path: tests/test-oauth.js, line 548
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 50e77cd0-ae0a-4e29-badd-4015e4f5fc8a
+   Path: tests/server.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: db020524-57ca-473b-befc-7919a2105a03
+   Path: tests/server.js, line 26
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e308b16e-a08d-41a3-9193-fcc97033e00c
+   Path: tests/test-agent.js, line 9
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: cda0987b-bf57-4093-8714-0430138cc9f0
+   Path: tests/test-baseUrl.js, line 8
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d48d3fe7-2735-4ac4-9e14-617aec103971
+   Path: tests/test-basic-auth.js, line 13
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 99f88524-5fea-475f-b460-1dc386cf37c7
+   Path: tests/test-bearer-auth.js, line 13
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 561d1e52-a53e-488e-a01f-f53f3e631f5d
+   Path: tests/test-body.js, line 149
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8ea73371-53c1-48c4-8afb-88d4f7d335c9
+   Path: tests/test-cookies.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 660037c8-2c77-41e5-82f4-49aebaaa3759
+   Path: tests/test-digest-auth.js, line 20
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 71e3aa48-8c70-44da-8224-2253b1d97ecd
+   Path: tests/test-emptyBody.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9127e772-d47b-428c-a944-1ace32223be9
+   Path: tests/test-follow-all-303.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 902e03ec-39ad-45d3-a24d-b6e7dbb42fbe
+   Path: tests/test-follow-all.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d20cc0ef-3b4a-4a21-bceb-8e844dbbb4ed
+   Path: tests/test-form-data.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e4bf0ef6-1c48-40c9-8aab-d10549ddbc66
+   Path: tests/test-form-urlencoded.js, line 10
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 29a6f9f3-3c70-41c8-a403-442d49209a75
+   Path: tests/test-form.js, line 17
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: cb1e1ffd-353b-43ff-892a-f6595f2095a7
+   Path: tests/test-gzip.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: b7f988eb-901b-4051-b904-95024ac30854
+   Path: tests/test-hawk.js, line 9
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: a1cc7869-c671-4e06-b3a3-421e05918ec5
+   Path: tests/test-http-signature.js, line 63
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 4b4c6e78-2694-4378-9a5e-8e6065091af0
+   Path: tests/test-isUrl.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d054a487-7d67-40a9-a8d5-967aeab62e9c
+   Path: tests/test-multipart-encoding.js, line 88
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e276ca19-7d20-4538-ae21-fa182f7c6f8c
+   Path: tests/test-multipart.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9545c027-86e6-415d-b30f-996fd08e1417
+   Path: tests/test-node-debug.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3d3e32a7-708d-4bba-8fdb-ee3497fdc6c2
+   Path: tests/test-oauth.js, line 621
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: eeabc749-b90d-4973-b452-cf40fcfb8a47
+   Path: tests/test-oauth.js, line 652
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 28957893-da44-451c-9080-eb1543678d2b
+   Path: tests/test-oauth.js, line 656
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6ec83dbd-7263-4809-b504-5e2a520cd410
+   Path: tests/test-onelineproxy.js, line 8
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1b3c4d67-f8d6-49bd-b2aa-5a6fe14eecee
+   Path: tests/test-option-reuse.js, line 12
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: c6366361-c544-4d26-a5ca-3a42c5112f74
+   Path: tests/test-piped-redirect.js, line 10
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 25c94cbe-152c-4432-b420-20b46ddebff7
+   Path: tests/test-piped-redirect.js, line 25
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 03cbfda9-410d-482e-9d41-c275f66a0c8d
+   Path: tests/test-pool.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 17a15407-bc4a-4123-a4b4-ca4598b9ce9b
+   Path: tests/test-promise.js, line 8
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ced46465-a467-459c-9d30-03a7c4e90cb0
+   Path: tests/test-rfc3986.js, line 10
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 7320805d-1ccf-47bd-810d-7f4ca5da821f
+   Path: tests/test-toJSON.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8abd5463-862b-4aa3-93e5-09e7c5e4ecfa
+   Path: tests/test-unix.js, line 20
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 061af477-b6de-46be-8c63-8c676aae8531
+   Path: lib/helpers.js, line 38
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: c243057d-5e0b-41a6-9f49-0fee922d74f6
+   Path: lib/oauth.js, line 69
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: d7eb65f1-4e8e-498a-97f8-078b42ba335d
+   Path: tests/test-digest-auth.js, line 17
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 10ff4340-1c98-4438-944f-824b522c7ba9
+   Path: tests/test-oauth.js, line 562
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 182d630d-7736-44e8-84c7-9e3ac8964bde
+   Path: tests/test-digest-auth.js, line 58
+   Info: Do not hardcode passwords in code. Found hardcoded password used in pass.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: ba8860de-92fc-4141-bd74-46a511336bc1
+   Path: tests/test-digest-auth.js, line 148
+   Info: Do not hardcode passwords in code. Found hardcoded password used in pass.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 61be9588-2451-4b33-9f28-8f913ab5f1fc
+   Path: tests/test-digest-auth.js, line 170
+   Info: Do not hardcode passwords in code. Found hardcoded password used in pass.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: b175979b-86b0-4a37-8778-80b5d2be45ae
+   Path: tests/test-digest-auth.js, line 193
+   Info: Do not hardcode passwords in code. Found hardcoded password used in pass.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: ec438781-5419-4fff-96e4-a07ec55c080a
+   Path: tests/test-digest-auth.js, line 214
+   Info: Do not hardcode passwords in code. Found hardcoded password used in pass.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: 6acb6bce-57a0-4aba-94c9-ce77ee06e590
+   Path: tests/test-redirect-auth.js, line 15
+   Info: Do not hardcode passwords in code. Found hardcoded password used in pass.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: d0771633-7114-4b3a-aa6b-db7cc1f35b85
+   Path: tests/test-form-data.js, line 15
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: a11e388c-0454-4b4f-86f0-3a8e71d6bde6
+   Path: tests/test-form.js, line 17
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 587f6fb5-c0f3-43d4-b21f-953812fcb8e0
+   Path: tests/test-multipart.js, line 15
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 2a1b40f4-a406-46ef-81ef-9c3bbf4ae932
+   Path: tests/test-pipes.js, line 32
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Server-Side Request Forgery (SSRF)
+   Finding ID: 55fce179-0e4a-4399-a363-a4873164fc17
+   Path: tests/test-tunnel.js, line 90
+   Info: Unsanitized input from the request URL flows into net.connect, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 392e425d-1801-4b1d-90bc-5dee934335f2
+   Path: tests/test-redirect-auth.js, line 56
+   Info: Unsanitized input from an HTTP header flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: a99069c3-6928-4dbf-bf82-c6c7cd9a9ccc
+   Path: tests/test-redirect-complex.js, line 41
+   Info: Unsanitized input from an HTTP header flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16026         │
+│                                                      │
+│   Total issues:   82                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    82 [ 0 HIGH  0 MEDIUM  82 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:3d241723-9c13-4a9a-a0a5-fbfe41c6d3e1 
+
+Testing /tmp/src-CVE-2017-16028 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16028    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16029 ...
+
+Open Issues
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: fd890c24-190d-4ed4-b7f3-c0e2dcd9ffbd
+   Path: lib/routes/statics.js, line 37
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 560c6009-7f55-40ed-8e35-fbc4b3271611
+   Path: lib/server.js, line 102
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 77595f7d-c65b-4f19-b1c4-3a33c0b2b869
+   Path: lib/routes/statics.js, line 24
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: d0657674-c46e-4ed1-8125-d1618e07893b
+   Path: lib/watch.js, line 91
+   Info: Unsanitized input from a local file flows into fs.readdir, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 0b03c29f-5cc3-4180-9a03-760af603834a
+   Path: lib/watch.js, line 93
+   Info: Unsanitized input from a local file flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 15fb9a38-cdf7-4745-bb54-196997f12614
+   Path: lib/routes/statics.js, line 31
+   Info: Unsanitized input from the request URL flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: 5d388949-a6fb-4b13-97b5-71c706b27077
+   Path: lib/routes/statics.js, line 60
+   Info: Unsanitized input from the request URL flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16029       │
+│                                                    │
+│   Total issues:   7                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    7 [ 2 HIGH  4 MEDIUM  1 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:2c4892bb-c963-4ff7-8aa7-41557d9b9a5e 
+
+Testing /tmp/src-CVE-2017-16030 ...
+
+Open Issues
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 8981a123-6eda-4aab-8843-b61ff6e429e7
+   Path: benchmark/regression.js, line 28
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16030       │
+│                                                    │
+│   Total issues:   1                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    1 [ 0 HIGH  0 MEDIUM  1 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:d55d7d9c-b537-4bdd-bdc7-99f56eb65a14 
+
+Testing /tmp/src-CVE-2017-16031 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 4e222db3-c5df-4690-947a-5b61f569d965
+   Path: test/manager.test.js, line 104
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 0cf74c5e-fe4c-4d25-891a-448b24b1f2e0
+   Path: support/node-websocket-client/lib/websocket.js, line 122
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ff1a54c6-6058-424f-b03e-574079a97de9
+   Path: test/manager.test.js, line 125
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 1dd342d1-9fbe-410b-b52e-204decb46b8e
+   Path: lib/transports/websocket/hybi-16.js, line 120
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: af9a89c0-2693-49cd-b6a6-7cee9cdba93d
+   Path: test/common.js, line 62
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 58a7e300-9ff4-4e69-b4e7-f9600f049f8b
+   Path: test/io.test.js, line 57
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 99ca737a-e841-4c84-98ac-24a6fafa710f
+   Path: test/manager.test.js, line 24
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 11a55c1e-7091-4b12-9212-6b47f086e65b
+   Path: test/manager.test.js, line 30
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 99dc772b-25ad-4f82-93b0-7daa00042245
+   Path: test/manager.test.js, line 44
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ef8c05ac-bb69-41ae-a811-c6b33967e470
+   Path: test/manager.test.js, line 52
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: b273edad-5162-425f-98fe-b0a6daa8efd4
+   Path: test/manager.test.js, line 65
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e31b71dc-25d9-4fce-8c3d-08514d3b8709
+   Path: test/manager.test.js, line 83
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 5d535d5a-ca7f-4695-bda4-0526807d84eb
+   Path: lib/transports/websocket/hybi-07-12.js, line 121
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 99c4fbda-e03b-4585-bfa4-6866cce3bd2f
+   Path: lib/transports/websocket/default.js, line 231
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: dfeebbbb-f4c7-422c-a583-1de1aca9e905
+   Path: test/transports.flashsocket.test.js, line 146
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 447be11a-bd45-42cd-b10b-e3aabb03b5d1
+   Path: test/transports.flashsocket.test.js, line 77
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 342a0317-94cb-44f4-bf74-868ce8d437ba
+   Path: test/transports.flashsocket.test.js, line 96
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 23fbfbe2-54c4-41cf-a832-d4bfa3f748a1
+   Path: test/transports.flashsocket.test.js, line 117
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 0ab0222a-200a-4fc3-8564-27a9c5af9796
+   Path: test/transports.flashsocket.test.js, line 71
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 0f171208-5da9-4943-8512-7d89307d7c86
+   Path: examples/chat/app.js, line 14
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: b2585296-2efe-446f-9ac7-8e69fff08c2b
+   Path: examples/irc-output/app.js, line 15
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9a40234a-d6f1-4850-b605-810d7671f23d
+   Path: support/node-websocket-client/lib/websocket.js, line 504
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 27986494-1271-4abc-ba51-1a220f90bce0
+   Path: lib/socket.io.js, line 59
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 21abc486-205c-416a-91e8-fced05d8a565
+   Path: examples/chat/app.js, line 37
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: abf4145a-4cf9-46f1-9152-4fa6c160300b
+   Path: examples/irc-output/app.js, line 38
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: c6e944a5-d2e8-44ab-a7d9-9c80165407d6
+   Path: lib/static.js, line 268
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16031         │
+│                                                      │
+│   Total issues:   26                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    26 [ 0 HIGH  7 MEDIUM  19 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:09bd0cc4-6893-4364-b309-51a566787f65 
+
+Testing /tmp/src-CVE-2017-16034 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1e012f6b-4c9f-4a2f-989e-2c7f3ecf9ddb
+   Path: test/server.js, line 3
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16034       │
+│                                                    │
+│   Total issues:   1                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    1 [ 0 HIGH  0 MEDIUM  1 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:ac46ba7d-9df5-4eab-95ca-302670a5e3c0 
+
+Testing /tmp/src-CVE-2017-16042 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16042    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16043 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: bb25aaa0-0a41-4998-8fa9-d2c95802feea
+   Path: src/server.js, line 18
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 14b6555c-5e49-449c-a406-0d2852207be0
+   Path: src/server.js, line 33
+   Info: createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: a7c39be9-c103-4b45-9237-c4b66168a159
+   Path: src/server.js, line 73
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16043       │
+│                                                    │
+│   Total issues:   3                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    3 [ 0 HIGH  3 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:f3949a33-d171-44b2-a858-253fff2a6ef3 
+
+Testing /tmp/src-CVE-2017-16082 ...
+
+Open Issues
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: a7089ad6-b00a-4cea-bec4-180371edd884
+   Path: lib/client.js, line 85
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: c714149e-3304-4141-b8d9-a463a4f7cd36
+   Path: lib/client.js, line 86
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 9557d921-2ac0-466a-b54f-16646c9d977b
+   Path: lib/client.js, line 331
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: a26cb5d5-415c-4d6e-b8fc-d148e21b0ae8
+   Path: test/unit/client/md5-password-tests.js, line 11
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 030a5200-9454-4318-bafe-d7d3285b65a1
+   Path: test/unit/client/md5-password-tests.js, line 12
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: a2526d55-c55d-4eac-8457-bf9e0e2d40f8
+   Path: test/integration/client/heroku-pgpass-tests.js, line 21
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in connect.
+
+ ✗ [LOW] Use of Hardcoded Credentials
+   Finding ID: 43682ba9-fab8-4a06-aca2-46d9b3de387f
+   Path: test/integration/client/heroku-ssl-tests.js, line 13
+   Info: Do not hardcode credentials in code. Found hardcoded credential used in connect.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: b8f1e418-a961-4792-a443-d0d57a296928
+   Path: test/integration/client/error-handling-tests.js, line 153
+   Info: Do not hardcode passwords in code. Found hardcoded password used in password.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: e4808777-69d9-4dce-8719-8f4085bb3506
+   Path: test/integration/client/heroku-ssl-tests.js, line 14
+   Info: Do not hardcode passwords in code. Found hardcoded password used in password.
+
+ ✗ [LOW] Use of Hardcoded Passwords
+   Finding ID: d2585322-79af-4236-9d95-346085e8686a
+   Path: test/unit/connection-parameters/creation-tests.js, line 177
+   Info: Do not hardcode passwords in code. Found hardcoded password used in password.
+
+ ✗ [MEDIUM] Missing Release of Memory after Effective Lifetime
+   Finding ID: 2db72c83-e84a-4792-ac87-d701f94e62d0
+   Path: src/binding.cc, line 922
+   Info: Leaking memory. Memory allocated by malloc is never freed. In function malloc.
+
+ ✗ [MEDIUM] Potential buffer overflow from usage of unsafe function
+   Finding ID: 406bb29b-f339-4dc2-9c0d-ba6a63d8d9f1
+   Path: src/binding.cc, line 913
+   Info: Using strcpy can lead to buffer overflow vulnerabilities, if arbitrary user input is able to flow into this function without the length of the input being checked. Use the safer alternative strncpy instead.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16082         │
+│                                                      │
+│   Total issues:   12                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    12 [ 0 HIGH  2 MEDIUM  10 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:2b88d327-83f3-4417-a07c-9048c8964ac7 
+
+Testing /tmp/src-CVE-2017-16083 ...
+
+Open Issues
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: bb7979e8-62ac-46c5-b347-d8f67c4f9b7d
+   Path: test/server.js, line 268
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 9c7f212d-f4c0-4888-9bce-6e5265463c3e
+   Path: test/public/cgi-bin/cgitest.php, line 20
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 56c66b8e-95ee-4c66-a6c4-daa3fcb67098
+   Path: test/public/cgi-bin/cgitest.php, line 28
+   Info: Unsanitized input from the HTTP request body flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6cbb0c7a-0743-4878-bd65-51e8e8b22797
+   Path: test/server.js, line 634
+   Info: createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 03b5f37a-a936-4ebb-afaf-57129deabc75
+   Path: lib/ws.js, line 50
+   Info: createHash hash (used in createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: e873036a-dc37-4b55-872d-b3ef57e60f6e
+   Path: test/server.js, line 77
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: a0ff6039-9406-4f7b-9929-eb262fcafba6
+   Path: test/server.js, line 93
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 5a1a525d-10c0-4316-b58f-5c0a616f41be
+   Path: test/server.js, line 109
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: d7d515ef-7802-4eb3-8c13-10536c46fb32
+   Path: test/server.js, line 125
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 2e349960-01ed-490a-a118-08e90cf9dc2f
+   Path: test/server.js, line 141
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 6c3c801c-ddf4-4f84-ae35-d5dcdf262dff
+   Path: test/server.js, line 165
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 225622a6-c7d3-4963-b28b-41fc412ddc8e
+   Path: test/server.js, line 196
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 6db71392-337e-4cae-8718-50bef77a7699
+   Path: test/public/cgi-bin/cgitest.php, line 27
+   Info: Unsanitized input from data from a remote resource flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 7dff816b-d79f-4f49-b3e2-27ab592f49c1
+   Path: test/public/cgi-bin/cgitest.php, line 24
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 3ff2eaa4-e189-4f8a-946f-7621e14f6b2e
+   Path: test/server.js, line 407
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: e85ba6f9-bc01-45a5-b450-43cef66b6521
+   Path: test/server.js, line 336
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: ee852084-8244-4f4c-b756-2b1704190a2b
+   Path: test/server.js, line 351
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 43a39972-44f6-4cef-98d3-fdeb29c75fb3
+   Path: test/server.js, line 392
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 94c90f51-bf0c-4393-998f-e33395e9d888
+   Path: test/server.js, line 306
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 2191c3c7-2a03-4244-b445-6c5a799fe1e1
+   Path: test/server.js, line 479
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: aa13c529-29d5-4ed5-a27c-4392413c4e8c
+   Path: test/server.js, line 445
+   Info: Unsanitized input from an HTTP parameter flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: 008ea6bd-f4a1-4a18-9aa8-18c499ffd7b0
+   Path: test/public/cgi-bin/cgitest.php, line 16
+   Info: Unsanitized input from an HTTP parameter flows into the echo statement, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 0ff3ace4-d45c-4835-875f-b676743c8fd7
+   Path: test/server.js, line 283
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: e3344320-4198-4b9f-a524-5b23d3b11d30
+   Path: lib/ws.js, line 160
+   Info: request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: afede1de-c3ae-477a-93a0-4d6beb46ec3c
+   Path: lib/ws.js, line 418
+   Info: createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: f955b5ee-acc1-4bc9-acd3-43460462e599
+   Path: lib/ws.js, line 424
+   Info: createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2017-16083         │
+│                                                      │
+│   Total issues:   26                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    26 [ 0 HIGH  3 MEDIUM  23 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:7d2c9680-5c88-4a56-bba9-f427a0eabdc4 
+
+Testing /tmp/src-CVE-2017-16084 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: feb1ed75-20be-45f3-95ca-3a3ef775ea42
+   Path: server.js, line 103
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 0169ee90-9726-46f8-bad5-465c89c1cc16
+   Path: server.js, line 24
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 997ed43f-854a-472e-a28d-c219446ead6f
+   Path: server.js, line 49
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 85b8e8fe-9062-4d8d-bc62-75920f3f55ec
+   Path: server.js, line 86
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Cross-site Scripting (XSS)
+   Finding ID: e673701f-8481-444c-a953-38ef46beaf1f
+   Path: server.js, line 34
+   Info: Unsanitized input from a local file flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16084       │
+│                                                    │
+│   Total issues:   5                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    5 [ 0 HIGH  5 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:630eb441-2b8c-4846-8ca2-d6d24f3dc93b 
+
+Testing /tmp/src-CVE-2017-16087 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16087    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16098 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16098    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16100 ...
+
+
+╭─────────────────────────────────────────────────╮
+│ Test Summary                                    │
+│                                                 │
+│   Organization:                                 │
+│   Test type:         Static code analysis       │
+│   Project path:      /tmp/src-CVE-2017-16100    │
+│                                                 │
+│   Total issues:   0                             │
+╰─────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2017-16107 ...
+
+Open Issues
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 329ab0e2-ec13-4841-a66e-0b4fabd10556
+   Path: pooledwebsocket.js, line 40
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ed77b142-7fc8-4ac2-995b-69bc5fa5128d
+   Path: server.js, line 7
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 27dacf2c-51ce-4192-a3ed-4e796c97f5e6
+   Path: server.js, line 7
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: b736f89a-5598-4cfb-9d72-e4e24d469d04
+   Path: server.js, line 9
+   Info: Unsanitized input from the request URL flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: a8c7aa6b-352c-47dc-a440-d37bb999453a
+   Path: server.js, line 17
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2017-16107       │
+│                                                    │
+│   Total issues:   5                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    5 [ 2 HIGH  2 MEDIUM  1 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:548f801c-c822-4ad3-85ed-db915d48a593 
+Lote concluido: /workspace/datasets/listas/cves-sast-batch-aa

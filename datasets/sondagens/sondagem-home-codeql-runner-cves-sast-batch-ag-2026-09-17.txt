@@ -1,0 +1,61 @@
+# Controle do defeito do HOME na imagem da campanha — codeql
+# Observacao datada. O procedimento e .github/workflows/analise-lote.yml
+#
+sondado_em: 2026-09-17T01:06:40Z
+workflow_run_id: 35169211662
+workflow_run_attempt: 1
+commit: 579f383195251daa8ff1858322652e9c0bcb4c39
+runner_image_os: ubuntu24
+runner_image_version: 20260907.300.1
+imagem: ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec
+uid_do_runner: 1001
+gid_do_runner: 1001
+
+O QUE SE MEDE. Os dois bracos rodam a MESMA imagem, com --user do
+runner, variando SO o -e HOME=/tmp. O lote roda com ele; aqui se mede o
+que acontece sem ele. Os comandos ESCREVEM: o --version e sonda fraca, e o
+Snyk o atravessa antes de tentar gravar configuracao.
+
+INVARIANTE ENTRE OS BRACOS: -e XDG_CACHE_HOME=/tmp nos dois, como no lote,
+para que a quebra do braco sem HOME nao possa vir do cache. Por isso o braco
+sem HOME NAO e a coluna "--user so" da tabela de 08/09/2026 do CLAUDE.md:
+la nao havia XDG_CACHE_HOME. As duas medicoes nao sao a mesma condicao.
+
+--- SEM_HOME — escrita generica em $HOME
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp --entrypoint sh ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec -c echo "SONDA_HOME_RODOU=1"; echo "container_uid=$(id -u)"; echo "container_gid=$(id -g)"; echo "container_HOME=$HOME"; if whoami; then echo "whoami_rc=0"; else echo "whoami_rc=$?"; fi; if mkdir -p "$HOME/.sonda-home" && printf ok > "$HOME/.sonda-home/sonda"; then echo "escrita_em_HOME_rc=0"; else echo "escrita_em_HOME_rc=$?"; fi
+SONDA_HOME_RODOU=1
+container_uid=1001
+container_gid=1001
+container_HOME=/
+whoami_rc=1
+whoami: cannot find name for user ID 1001
+mkdir: cannot create directory '//.sonda-home': Permission denied
+escrita_em_HOME_rc=1
+[rc=0]
+
+--- COM_HOME — escrita generica em $HOME
+$ timeout 120 docker run --rm --user 1001:1001 -e XDG_CACHE_HOME=/tmp -e HOME=/tmp --entrypoint sh ghcr.io/francisco-lima-dev/ic-security-lab-codeql@sha256:39950e7ac03b7d7b7a724c742e1c48e9475ed998d58a4734d653188d31afcbec -c echo "SONDA_HOME_RODOU=1"; echo "container_uid=$(id -u)"; echo "container_gid=$(id -g)"; echo "container_HOME=$HOME"; if whoami; then echo "whoami_rc=0"; else echo "whoami_rc=$?"; fi; if mkdir -p "$HOME/.sonda-home" && printf ok > "$HOME/.sonda-home/sonda"; then echo "escrita_em_HOME_rc=0"; else echo "escrita_em_HOME_rc=$?"; fi
+SONDA_HOME_RODOU=1
+container_uid=1001
+container_gid=1001
+container_HOME=/tmp
+whoami: cannot find name for user ID 1001
+whoami_rc=1
+escrita_em_HOME_rc=0
+[rc=0]
+
+================================================================
+VEREDITOS
+================================================================
+HOME visto de dentro: sem -e HOME=/tmp = / | com = /tmp
+whoami rc (0 = uid presente no /etc/passwd da imagem): sem = 1 | com = 1
+escrita generica em $HOME: DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera
+comando da ferramenta: NAO SONDADO. Nenhum comando do CodeQL que grave em
+  $HOME e custe segundos foi identificado: `codeql resolve languages` operou nos
+  dois bracos na medicao local de 15/09/2026, e nao discrimina. O custo do
+  defeito no CodeQL — o compile-cache em $HOME/.codeql durante o analyze — nao
+  e medido aqui.
+
+ALCANCE, declarado: isto mede a imagem da campanha sob o uid:gid deste
+runner. Sob outro uid a precondicao — uid ausente do /etc/passwd da imagem —
+pode nao valer, e a medicao nao transfere.

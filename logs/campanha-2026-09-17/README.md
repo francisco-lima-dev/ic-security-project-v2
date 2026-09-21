@@ -1,7 +1,8 @@
 # Campanha SAST de 16–17/09/2026 — registro de execução
 
 Dois agregados, os 24 logs de execução e os 24 relatórios de normalização
-por lote.
+por lote, e o restante do conteúdo dos 24 artifacts, fora os raws e os
+tratados.
 
 ## Os 24 logs de execução
 
@@ -98,6 +99,76 @@ Duração e colisões são os campos `duracao_segundos.total` e
 sobre os raws — leitura, conversão e escrita do tratado —, e não a carga do
 ground truth nem a da tabela de primário. Os totais somados estão no
 `CLAUDE.md`, em "Campanha SAST — resultados".
+
+## O restante dos artifacts — 232 arquivos
+
+Tudo o que os 24 artifacts traziam fora de `results/` e de `logs/`, copiado
+**byte a byte** do mesmo download de 21/09/2026 e conferido com `cmp`. Os
+artifacts são os da tabela dos logs de execução, uma execução por lote.
+
+| Origem no artifact | Destino no repositório | Arquivos |
+|---|---|---:|
+| `README.txt`, `disco.txt` | `cves-sast-batch-<lote>/<ferramenta>/` | 48 |
+| `container/{lote,prevoo,resumo}.txt` | `cves-sast-batch-<lote>/<ferramenta>/container/` | 72 |
+| `portoes/{run-fixtures,normalize,check-log}.txt` | `cves-sast-batch-<lote>/<ferramenta>/portoes/` | 72 |
+| `rede-semgrep/scan.json` (só nos jobs do Semgrep) | `cves-sast-batch-<lote>/semgrep/rede-semgrep/` | 8 |
+| `datasets/sondagens/sondagem-<x>-runner-<data>.txt` | `datasets/sondagens/sondagem-<x>-runner-<lote>-<data>.txt` | 32 |
+
+**As sondagens mudam de nome, e só elas.** O nome no artifact não traz o
+lote: os seis lotes de 17/09 produzem o mesmo nome, e os dois de 16/09 o
+mesmo nome das quatro sondagens do ensaio de fumaça já em
+`datasets/sondagens/`, das quais diferem no conteúdo. O lote vai entre
+`runner` e a data, que continua no fim, como nas demais sondagens. Cada job
+produz as da sua ferramenta: `home-codeql` no do CodeQL, `home-semgrep` e
+`rede-semgrep` no do Semgrep, `home-snyk-code` no do Snyk Code — 8 de cada.
+
+**sha256 dos 232 em `SHA256SUMS-artifacts.txt`**, neste diretório, com os
+caminhos relativos à raiz do repositório. Conferível com
+
+```
+sha256sum -c logs/campanha-2026-09-17/SHA256SUMS-artifacts.txt
+```
+
+a partir da raiz. O manifesto foi conferido contra as cópias e contra os
+arquivos de origem no artifact, 232 de 232. Uma mutação de um dígito numa
+linha é acusada.
+
+**Volume:** 27,5 MiB, dos quais 24,8 MiB são os oito `container/lote.txt` do
+CodeQL, que trazem a extração arquivo a arquivo. Comprimido, o conjunto cabe
+em cerca de 2,3 MiB.
+
+**Varredura de segredo antes de versionar, em 21/09/2026.** O job do Snyk
+Code tem `SNYK_TOKEN` no ambiente do passo do lote, e o token entra no
+container por nome (`-e SNYK_TOKEN`). O `container/lote.txt` desse job é o
+stdout e o stderr do container. A varredura cobriu os 232 arquivos e também os
+51 já versionados neste diretório, e procurou padrões nomeados — UUID, que é
+a forma do token de API do Snyk, `snyk_*`, tokens do GitHub, AWS, Slack,
+chave privada, JWT, `Bearer`, URL com credencial e atribuição a nome sensível
+— além de cadeias de alta entropia. **Nenhum segredo.** O que ela levantou,
+item a item:
+
+- **3.812 ocorrências de UUID**, todas em dois contextos. Há 3.666 `Finding
+  ID:`, todos presentes no raw SARIF do Snyk do mesmo lote. Há 146
+  `urn:snyk:interaction:`, identificadores de erro do catálogo do Snyk, todos
+  distintos, onde um token vazado se repetiria. Nenhum UUID aparece fora
+  desses dois contextos
+- **hex de 40:** 214 `PrePatchCommit` do benchmark e 1 commit deste
+  repositório. **hex de 64:** digests e `image_id` das imagens, sha256 do
+  pack do Semgrep e as tabelas de sha256 deste README
+- **alta entropia:** duas, ambas nomes de classe Java e .NET em mensagens de
+  achado
+- o único e-mail é nome de diretório de fixture do repositório analisado no
+  `CVE-2019-10775`, e os caminhos em `/home/` fora do runner são de
+  `examples/with-zones/home/` do `next.js`. A linha `Organization:` do resumo
+  do Snyk sai vazia
+- o token fictício do pré-voo, `prevoo-ficticio-nao-e-segredo`, não aparece
+  em arquivo algum
+
+**Controle positivo:** um arquivo sintético com uma forma falsa de cada
+padrão teve as 14 acusadas, e um UUID falso enxertado no meio de uma linha de
+um `lote.txt` real do Snyk também foi acusado. **Alcance declarado:** a
+varredura acha segredo nas formas procuradas. O valor real do token não é
+conhecido aqui, e por isso não foi procurado literalmente.
 
 ## Os dois agregados
 

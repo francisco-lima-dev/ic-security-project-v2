@@ -1,0 +1,14 @@
+AVISO: gt_file_path de CVE-2019-12041 normalizado: '/index.js' -> 'index.js' (barra inicial (defeito do ground truth))
+--- normalizacao: snyk-code ---
+  processados: 13 | pulados: 0 | com falha: 0
+  linhas da lista sem raw: 210 | raws sem linha na lista: 0
+  achados: 249 (sem CWE: 0)
+  severidade: {'medium': 87, 'low': 126, 'high': 36}
+    regra resolvida sem nivel: 0 | regra NAO resolvida: 0
+  gt_file_scanned: true=0 false=0 null=13
+  achados com caminho transformado: 0 (0 motivo(s) aplicado(s)) — NENHUM caminho de achado foi transformado: as 249 saidas ja vieram relativas e limpas.
+    gt_file_path normalizado em 1 CVE(s): CVE-2019-12041
+  cadeia nua de CWE (semgrep): 0 | colisoes de chave: 0
+  raws ilegiveis: 0
+  duracao: total 0.016s | mediana/CVE 0.0004 | maximo/CVE 0.0036 (CVE-2020-8135)
+  relatorio: /home/runner/work/ic-security-project-v2/ic-security-project-v2/logs/normalize-report-snyk-code.json

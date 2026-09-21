@@ -1193,11 +1193,23 @@ Feita em 17/09/2026. Um `tar` por ferramenta, com `zstd`:
 e os **658 raws** contidos (221 / 221 / 216) são idênticos por sha256 aos dos
 artifacts. Nenhum falta, nenhum sobra, nenhum aparece em duplicata, e a
 contagem por lote bate. **A cópia contém só os raws.** O restante de cada
-artifact fica fora dela: `portoes/*.txt`, `container/*.txt`, `README.txt`,
-`disco.txt` e as 32 sondagens de `HOME` e de rede dos lotes. Nada disso está
-no repositório. As quatro `sondagem-*-runner-2026-09-16.txt` de
-`datasets/sondagens/` são do ensaio de fumaça e diferem das dos lotes `aa` e
-`ab`.
+artifact — `portoes/`, `container/`, `README.txt`, `disco.txt`,
+`rede-semgrep/scan.json` e as 32 sondagens de `HOME` e de rede — está
+**versionado desde 21/09/2026**, 232 arquivos byte a byte. Os primeiros cinco
+estão em `logs/campanha-2026-09-17/cves-sast-batch-<lote>/<ferramenta>/`. As
+sondagens estão em `datasets/sondagens/`, com o lote no nome: o do artifact
+não o traz e colidiria entre lotes e com as quatro
+`sondagem-*-runner-2026-09-16.txt` do ensaio de fumaça, das quais diferem. A
+procedência, o manifesto de sha256 e a varredura de segredo que precedeu o
+commit estão no `README.md` daquele diretório. Com isso, **tudo o que os 24
+artifacts continham está no repositório ou na cópia externa**.
+
+**Observação dos `container/lote.txt` do Snyk Code, não investigada:** todo
+teste com achados termina com `ERROR Forbidden (SNYK-CLI-0000)`, `403`,
+impresso **depois** do resumo do teste. São 133 de 133 testes com status `OK`,
+e nenhum dos 83 `SEM_ACHADOS`. O raw foi gravado e normalizado nos 133. O que
+a CLI tenta fazer quando recebe o 403, e se isso afeta algo além da
+mensagem, não foi apurado.
 
 ## Cruzamento SAST — resultados (18/09/2026)
 

@@ -1,0 +1,295 @@
+
+== CodeQL: casos normais ==
+  ok   codeql normal sai com 0
+  ok   5 CVEs processados
+  ok   nenhum raw orfao
+  ok   218 linhas da lista sem raw (223-5), normal e silencioso
+  ok   D.5 file_path normalizado: ./ , file:// e /tmp/src-CVE-*/ removidos
+  ok   D.5 CVE-2018-14040 → js/collapse.js
+  ok   2 achados com caminho transformado
+  ok   3 motivos aplicados — grandeza distinta da anterior, e nomeada
+  ok   3 motivos ao todo, um caminho acumulando dois
+  ok   D.5 cada transformacao traz antes E depois
+  ok   D.5 antes e depois efetivamente diferem
+  ok   CWE do CodeQL: external/cwe/cwe-079 → CWE-079
+  ok   has_cwe true quando ha CWE
+  ok   achado sem CWE → cwe: [] e has_cwe: false
+  ok   regra vinda de tool.extensions[] resolvida
+  ok   regra resolvida SEM defaultConfiguration.level → unknown
+  ok   regra NAO resolvida NAO colapsa em unknown
+  ok   contador (1) de D.6 separado: 1 regra resolvida sem nivel
+  ok   contador (2) de D.6 separado: 1 regra nao resolvida
+  ok   error→high, note→low
+  ok   security-severity '6.1' → 6.1 float
+  ok   security-severity 5 → 5.0 float
+  ok   line_end aceita nulo (ausente no CodeQL)
+  ok   achados ordenados pela chave total
+  ok   finding_id no formato <tool>:<CVE>:<NNNN>
+  ok   1 colisao sob a chave total, contada e reportada
+  ok   gt_file_scanned do CodeQL: true pela notificacao de extraidos
+  ok   arquivo extraido e sem achado sai true, nao null
+  ok   toolExecutionNotifications contadas
+  ok   campos sem fonte no CodeQL ficam null, nao zero
+  ok   gt_file_affected e gt_file_affected_method NAO sobrevivem ao 1.2
+  ok   o caminho continua legivel em details[], sem virar conclusao
+  ok   metadata basico
+  ok   commit vem da LISTA de entrada
+  ok   CodeQL: rules_total 104, rules_applied NULO
+  ok   rules_id_sha256 nulo fora do Semgrep — nao ha pack de arquivo
+  ok   o motivo acompanha o true, nao so o null, e nomeia o universo
+  ok   conferencia do teto: notificacao x artifacts depurado
+  ok   o .rb citado por notificacao de outra linguagem sai de artifacts na depuracao — usar artifacts cru reportaria varrido o que o extrator de JS nao tocou
+  ok   analysis_date de invocations[0].endTimeUtc, origem 'tool'
+  ok   gt_cwe_primary do conjunto CWE-079|CWE-116
+  ok   gt_file_lines lista de inteiros
+  ok   conjunto vazio → primario null SEM consultar a tabela
+  ok   conjunto vazio contado no relatorio
+  ok   sem invocations → analysis_date por mtime, origem declarada
+  ok   sem fonte alguma de diagnostico → contagens null e details vazio
+  ok   notificacao ausente → null, NUNCA false
+  ok   e o motivo diz que faltou o inventario, nao que faltou o arquivo
+  ok   gt_file_path ausente do inventario → false
+  ok   o motivo acompanha o false e nomeia o universo
+  ok   o relatorio do CodeQL passa a ter os tres estados
+  ok   raw sem achados produz tratado com findings: []
+  ok   conjunto unitario → o proprio, SEM consultar a tabela
+  ok   conjunto presente com primario vazio → null
+  ok   primario indefinido contado SEPARADAMENTE do conjunto vazio
+  ok   campo presente e vazio → 0, distinto de null
+  ok   gt_file_path sem extensao preservado
+
+== CodeQL: raw ilegivel e raw orfao ==
+  ok   raw ilegivel/orfao → saida NAO nula
+  ok   D.8 raw truncado NAO produz tratado
+  ok   2 raws ilegiveis contados
+  ok   raw orfao e falha ruidosa, nomeado no relatorio
+  ok   raw orfao nao produz tratado
+  ok   os defeitos aparecem no stderr
+  ok   SARIF com runs[] e SEM results[] nao vira findings: []
+  ok   SARIF sem results[] contado como raw ilegivel, como no Semgrep
+
+== Ground truth com barra inicial (CVE-2019-12041) ==
+  ok   CVE com /index.js processa sem falha
+  ok   barra inicial do ground truth removida
+  ok   caminho original do benchmark preservado no tratado
+  ok   gt_file_scanned agora casa com paths.scanned (era false por causa da barra)
+  ok   normalizacao do ground truth registrada com antes/depois
+  ok   avisado no stderr, nao so no relatorio
+
+== Caminho absoluto sob prefixo nao previsto ==
+  ok   caminho absoluto PRESERVADO, nao mutilado
+  ok   caminho absoluto contado em campo proprio
+  ok   a nota NAO afirma 'tudo limpo' quando sobrou caminho absoluto
+  ok   o resumo do console mostra os absolutos, nao so o JSON
+  ok   o resumo imprime o CAMINHO do relatorio, nao o dicionario
+
+== Semgrep ==
+  ok   semgrep normal sai com 0
+  ok   extra.metadata.cwe como CADEIA NUA extraida corretamente
+  ok   cadeia nua NAO vira has_cwe false
+  ok   ocorrencia de cadeia nua contada no relatorio
+  ok   extra.metadata.cwe como LISTA, CWE-79 → CWE-079
+  ok   MEDIUM → medium
+  ok   ERROR → high
+  ok   metadata sem cwe → []; INFO → low
+  ok   rules_applied de .time.rules[]; ruleset do descritor vendorizado
+  ok   o campo antigo rules_loaded NAO sobrevive ao lado do novo
+  ok   ruleset e ESTRUTURA, com sha256 e obtained_at do descritor
+  ok   ruleset traz rules_id_sha256: o sha256 identifica o ARQUIVO, este identifica o CONJUNTO (o registry serve em ordem nao deterministica)
+  ok   Semgrep nao tem carimbo de tempo → mtime, origem declarada
+  ok   gt_file_scanned true: paths.scanned contem js/collapse.js
+  ok   errors e paths.skipped contados; notifications null
+  ok   Semgrep nao tem toolExecutionNotifications → null, nunca falha
+  ok   no Semgrep o details[] segue trazendo o caminho mencionado
+  ok   paths.scanned passa pela MESMA normalizacao de caminho
+  ok   gt_file_scanned false quando o arquivo nao foi varrido
+  ok   os dois errors[] contados
+  ok   errors[].type como CADEIA NUA vai para o detalhe
+  ok   errors[].type como UNIAO ETIQUETADA tem a etiqueta extraida; sem isso o detalhe sai sem dizer que erro foi
+  ok   contagem true/false/null com a lista dos false
+  ok   o motivo e agregado nos TRES estados, nao so no null
+  ok   no Semgrep o motivo nomeia o universo VARRIDOS nos dois booleanos
+  ok   so rules_applied > rules_total e anomalia; 370 e 12 NAO sao
+  ok   a anomalia aparece no console, nao so no JSON do relatorio
+  ok   sem paths.scanned → null COM motivo declarado
+
+== Semgrep: falhas previstas ==
+  ok   semgrep com defeitos → saida nao nula
+  ok   ausencia de .time e FALHA, nao rules_applied null
+  ok   severidade fora da tabela falha nomeando valor e CVE
+  ok   nenhum tratado escrito para os dois casos com defeito
+  ok   sem .time e severidade invalida NAO contam como raw ilegivel
+  ok   os dois contam como CVE com falha
+
+== Conjunto de CWE ausente da tabela ==
+  ok   conjunto ausente da tabela → falha ruidosa
+  ok   conjunto ausente contado em campo PROPRIO, distinto de primario vazio
+  ok   ausente da tabela NAO se confunde com primario indefinido
+
+== Validacao da lista de entrada ==
+  ok   lista com commit-curto.txt e falha ruidosa no normalizador, nao linha pulada
+  ok   lista com cve-invalido.txt e falha ruidosa no normalizador, nao linha pulada
+
+== level 'none' do enum SARIF ==
+  ok   'none' continua derrubando o CVE, nao e mapeado
+  ok   a mensagem nomeia 'none' como valor legal nao previsto, nao como lixo
+  ok   nenhum tratado escrito para o CVE com 'none'
+
+== Snyk Code ==
+  ok   snyk normal sai com 0
+  ok   Snyk: ruleset nulo inteiro e rules_applied nulo
+  ok   analysis_date extraido de automationDetails.id
+  ok   coverage integro em metadata (so no Snyk)
+  ok   coverage agregada NAO decide sobre um arquivo → null, nao true
+  ok   motivo do null declarado
+  ok   toolExecutionNotifications ausente → null, NUNCA falha
+  ok   FAILED_PARSING promovido a errors: 7 .html + 1 .xml
+  ok   o detalhe declara que a contagem nao discrimina caminhos
+  ok   o CVE entra em cves_com_erro pela cobertura, nao so por notificacao
+  ok   CWE do Snyk: 'CWE-79' → CWE-079
+  ok   results[].level do Snyk; security_severity nulo fora do CodeQL
+  ok   properties.cwe como cadeia nua no Snyk
+  ok   ruleId ausente de driver.rules[] no Snyk tambem nao vira unknown
+  ok   entrada FAILED_PARSING com caminho tambem conta como erro
+  ok   coverage com inventario de caminhos → gt_file_scanned true
+  ok   sem automationDetails → mtime
+  ok   notificacao do Snyk contada e cruzada com o gt_file_path
+  ok   ./bin/public → bin/public
+
+== Snyk Code: raw vazio e truncado ==
+  ok   SARIF vazio/truncado do Snyk → saida nao nula
+  ok   D.8 SARIF vazio {} NAO vira findings: [] — e o caso que so aqui e pego
+  ok   2 raws ilegiveis contados
+
+== Idempotencia e schema_version ==
+  ok   segunda execucao pula os 5 pela idempotencia
+  ok   --overwrite reprocessa
+  ok   tratado com schema_version divergente NAO e pulado em silencio
+  ok   a divergencia de schema aparece no stderr
+  ok   --overwrite reprocessa o tratado de schema antigo
+
+== Estabilidade da ordenacao ==
+  ok   reordenar o raw NAO muda o tratado (ordem por chave total, nao de entrada)
+  ok   reordenar o raw do SEMGREP tambem nao muda o tratado
+
+== Colunas no schema e na chave de ordenacao ==
+  ok   codeql: todo achado tem column_start e column_end
+  ok   semgrep: todo achado tem column_start e column_end
+  ok   snyk-code: todo achado tem column_start e column_end
+  ok   o Semgrep grava coluna de fato, nao so a chave nula
+  ok   com a coluna na chave, nenhum achado do fixture empata em TODOS os campos que o schema grava
+
+== rules_applied: os dois limites ==
+  ok   rules_applied == 0 e anomalia: findings vazio nao significa ausencia de achados. A guarda `!=` antiga pegava isso de graca; a `>` sozinha deixaria sem vigia
+  ok   o limite inferior tambem grita no console
+  ok   o valor de rules_applied de CADA CVE fica registrado no relatorio, nao so as anomalias
+  ok   terceira forma de errors[].type e CONTADA, nao silenciada: sem isso o detalhe sai parecendo completo e sem dizer que erro foi
+
+== check-log.py ==
+  ok   check-log (1): raw existe com status de erro
+  ok   check-log (2): OK sem raw
+  ok   check-log (3): esperado, apenas contado
+  ok   dedup mantem a ULTIMA linha: CVE-D nao aparece como erro
+  ok   sem PULADO orfao, nada e reportado nessa categoria
+  ok   check-log com problemas → saida nao nula
+  ok   PULADO sem raw e anomalia: o raw existia quando o lote rodou
+  ok   PULADO orfao → saida nao nula
+  ok   sem --lista-lote, a (4) se declara NAO conferida em vez de calar
+  ok   a (4) acha o CVE que sumiu sem raw e sem linha de log
+  ok   o CVE sumido e nomeado
+  ok   CVE sumido → saida nao nula
+  ok   lista grande demais avisa que --lista-lote nao e a lista completa
+  ok   log ausente → mensagem clara e saida nao nula, sem excecao
+
+== Invariantes de acoplamento ==
+  ok   normalize.py nao referencia o log de execucao fora dos comentarios
+  ok   normalize.py nao importa nem invoca check-log.py
+  ok   check-log.py nao importa normalize.py
+
+== Obtencao do codigo: estouro distinguivel de recusa ==
+  ok   estouro do limite e recusa do servidor NAO produzem mais a mesma linha de log: era o defeito que contaminava a contagem de fallback
+  ok   o estouro do fetch e nomeado COM o valor do limite
+  ok   o estouro do clone de contingencia e nomeado COM o valor do limite
+  ok   a recusa do servidor e registrada com o codigo que o git devolveu
+  ok   recusa do servidor NUNCA e descrita como estouro de limite
+  ok   a mensagem nova nao tem virgula: o CSV continua com 6 campos
+  ok   o conjunto de status e fechado: a correcao muda a mensagem e NAO acrescenta status
+  ok   o bloco de obtencao foi localizavel nos tres scripts
+  ok   o bloco de obtencao e IDENTICO nos tres scripts: sem isso o ensaio acima valeria so para o CodeQL
+  ok   codeql: as 5 mensagens novas existem e nenhuma tem virgula
+  ok   semgrep: as 5 mensagens novas existem e nenhuma tem virgula
+  ok   snyk-code: as 5 mensagens novas existem e nenhuma tem virgula
+  ok   codeql: nao sobrou literal de limite fora da constante
+  ok   semgrep: nao sobrou literal de limite fora da constante
+  ok   snyk-code: nao sobrou literal de limite fora da constante
+
+== Limites de tempo: defaults, sobrescrita e guarda ==
+  ok   codeql: sem TIMEOUT_* no ambiente, os limites efetivos sao os defaults do codigo, e o script para na guarda seguinte
+  ok   codeql: TIMEOUT_* definido no ambiente sobrescreve o default, variavel a variavel
+  ok   codeql: TIMEOUT_CREATE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_CREATE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_ANALYZE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_ANALYZE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_FETCH definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_FETCH definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_CLONE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_CLONE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   semgrep: sem TIMEOUT_* no ambiente, os limites efetivos sao os defaults do codigo, e o script para na guarda seguinte
+  ok   semgrep: TIMEOUT_* definido no ambiente sobrescreve o default, variavel a variavel
+  ok   semgrep: TIMEOUT_ANALISE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_ANALISE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_FETCH definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_FETCH definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_CLONE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_CLONE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   snyk-code: sem TIMEOUT_* no ambiente, os limites efetivos sao os defaults do codigo, e o script para na guarda seguinte
+  ok   snyk-code: TIMEOUT_* definido no ambiente sobrescreve o default, variavel a variavel
+  ok   snyk-code: TIMEOUT_ANALISE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_ANALISE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_FETCH definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_FETCH definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_CLONE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_CLONE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   check-log.py aceita as linhas novas sem anomalia: erro sem raw e o caso normal
+  ok   check-log.py continua classificando ERRO_FETCH como status de erro
+  ok   (5) reconhece o fallback em linha PRODUZIDA PELO SCRIPT, nao em fixture escrita a mao
+  ok   (5) classifica a linha real do script como vocabulario novo
+  ok   (5) discrimina a causa nas linhas reais: uma por estouro e uma por outro codigo
+  ok   (5) discrimina a causa do clone nas linhas reais
+  ok   nenhum segmento das linhas reais do script escapa ao vocabulario declarado: e a conferencia de que as constantes nao divergiram
+
+== Guarda de integridade em runtime (segunda comparacao) ==
+  ok   guarda: ENV coincide com o descritor -> execucao segue
+  ok   guarda: com ENV coincidente a execucao passa das PRE-CONDICOES, nao apenas da guarda — o log foi criado
+  ok   guarda: ENV DIVERGE do descritor -> aborta. E o modo de falha visado: descritor mudou e ninguem reconstruiu a imagem
+  ok   guarda: descritor ausente NAO aborta — abortar quebraria execucao legitima sem o volume montado
+  ok   guarda: o caso 'sem volume' sai com o aviso PROPRIO dela, nunca como divergencia — sao coisas distintas
+  ok   guarda: ENV ausente aborta — imagem construida sem --build-arg nao pode rodar lote
+  ok   guarda: descritor malformado sai como MALFORMADO, nao como imagem obsoleta — a mensagem tem de nomear a causa certa
+  ok   guarda do Snyk: ENV DIVERGE do descritor -> aborta
+  ok   guarda do Snyk: ENV coincide -> execucao segue
+  ok   guarda do Snyk: descritor ausente avisa e NAO aborta
+  ok   guarda do Snyk: ENV ausente aborta
+  ok   a guarda do Snyk aponta para o descritor versionado dele
+
+== check-log.py (5): fallback e estouro ==
+  ok   (5) conta os CVEs que usaram fallback — inclusive aquele cuja linha so traz a causa e nao repete o rotulo; o nao reconhecido NAO entra no total, porque nao se sabe que ele e fallback
+  ok   (5) separa os dois vocabularios em vez de uniformiza-los: parte do corpus NAO discrimina causa e isso tem de ficar visivel
+  ok   (5) discrimina estouro de outro codigo no fetch — junta-los desfaria a correcao da G-1b
+  ok   (5) conta os CVEs em que o clone de contingencia tambem falhou
+  ok   (5) discrimina estouro de outro codigo tambem no clone
+  ok   (5) reporta o que PARECE obtencao e nao casou: silenciar seria dizer zero por nao ter perguntado
+  ok   (5) nao conta como fallback um CVE que nao o usou
+  ok   (5) e METRICA: fallback contado NAO entra na conta de problemas e nao muda o codigo de saida
+  ok   (5) diz ZERO quando nao houve fallback — e um zero que foi perguntado, com as demais contagens tambem em zero
+  ok   (5) nao inventa nao-reconhecido: 'semgrep excedeu 1800s' e mensagem de ANALISE e nao tem cara de obtencao
+  ok   (5) declara que a base e o resultado da deduplicacao, nao o arquivo bruto
+  ok   (5) reconhece a forma (A) do vocabulario antigo — o rotulo sozinho — em vez de atribui-la a 'novo' por suposicao
+  ok   (5) poe a forma (A) em causa INDETERMINADA: sem ela o CVE sumiria dos tres baldes e as causas somariam menos que o total
+  ok   (5) confere a identidade aritmetica e ela fecha: toda causa tem balde
+  ok   (5) reporta o nao reconhecido SEM transformar em problema: metrica nao muda codigo de saida
+  ok   (5) opera sobre a ULTIMA linha de cada CVE: a reexecucao PULADO substitui a linha de fallback, e o fallback que houve passa a contar ZERO — deflacao, nao inflacao
+  ok   (5) avisa que a contagem e PISO quando ha PULADO: sem isso a metrica de vigilancia cairia a zero sem sinal
+
+250 verificacoes, 0 falha(s)
+temporarios em /tmp/fixtures-normalize-nx5b_gw4

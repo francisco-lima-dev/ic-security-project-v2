@@ -1,0 +1,1674 @@
+limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+
+Testing /tmp/src-CVE-2020-7752 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: cb862698-149a-413e-9cd5-8d668cc3a16a
+   Path: lib/internet.js, line 61
+   Info: get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2020-7752        │
+│                                                    │
+│   Total issues:   1                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    1 [ 0 HIGH  1 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:8366f77a-3c3b-4e1c-aa4f-bba2f785fdc3 
+
+Testing /tmp/src-CVE-2020-7763 ...
+
+
+╭────────────────────────────────────────────────╮
+│ Test Summary                                   │
+│                                                │
+│   Organization:                                │
+│   Test type:         Static code analysis      │
+│   Project path:      /tmp/src-CVE-2020-7763    │
+│                                                │
+│   Total issues:   0                            │
+╰────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2020-8116 ...
+
+
+╭────────────────────────────────────────────────╮
+│ Test Summary                                   │
+│                                                │
+│   Organization:                                │
+│   Test type:         Static code analysis      │
+│   Project path:      /tmp/src-CVE-2020-8116    │
+│                                                │
+│   Total issues:   0                            │
+╰────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2020-8135 ...
+
+Open Issues
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: 76ee4373-ffdf-45a5-970e-d8e8edb6138a
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 65
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9b5ab9af-04eb-4816-bdf0-3a44f45e2fcb
+   Path: test/endtoend/xhr-limit/test.js, line 18
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3a98c835-7971-450e-8ff6-b83bcab7d47d
+   Path: test/endtoend/utils.js, line 160
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: a3dfc55b-ec7d-40b0-8d50-e764d0eaea77
+   Path: packages/@uppy/companion/test/mockserver.js, line 10
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Improper Type Validation
+   Finding ID: fadd6d0d-c561-486e-b157-79fac87bd9bd
+   Path: packages/@uppy/companion/src/standalone/index.js, line 45
+   Info: The type of this object, coming from query and the value of its length property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 8a18c3d1-47c8-4714-8c8b-667271ad064e
+   Path: packages/@uppy/companion/src/server/helpers/jwt.js, line 44
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: eb7a9a9a-666a-4a4a-ad2a-8a00bf56bddb
+   Path: examples/bundled/sw.js, line 53
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 5a0d2dd7-d913-42f8-8bd8-ba612697503c
+   Path: examples/dev/sw.js, line 49
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 15493407-5f2d-4ebc-9666-d5da1f47e217
+   Path: packages/@uppy/golden-retriever/src/ServiceWorker.js, line 49
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Cross-Site Request Forgery (CSRF)
+   Finding ID: 32183767-c1da-466e-afe8-ada5b20dc923
+   Path: packages/@uppy/companion/test/mockserver.js, line 5
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 2c4d1714-f22f-4d44-b6bc-d2c2df7ed2a6
+   Path: test/endtoend/utils.js, line 119
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 544a397f-1e80-46b1-9bf3-d45abc2301a9
+   Path: packages/@uppy/companion/test/mockserver.js, line 5
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: ea9596c0-3261-4873-8f5e-86c12a6db55c
+   Path: bin/upload-to-cdn.js, line 89
+   Info: Unsanitized input from a command line argument flows into readFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: e4bccb47-5204-416a-8950-b58d1a2312c4
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 89
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: 4743ff64-1813-4904-8397-fb0dd004b233
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 76
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: e6fe22a7-49c3-4bee-8bde-420436a3ab25
+   Path: packages/@uppy/companion/src/standalone/helper.js, line 119
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: f7cd2776-3235-4044-865d-685bff44c9de
+   Path: website/build-examples.js, line 137
+   Info: Unsanitized input from a command line argument flows into fs.createWriteStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: f8f67665-d2da-488d-9057-ecb6dd7b09b1
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 15
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: f45297a9-8695-46f9-ada8-def7b9b6d25b
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 28
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 3fc5ec54-d29d-4b5c-bc14-14a21472ef15
+   Path: examples/php-xhr/upload.php, line 11
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: d4ca297c-7156-483e-b8bf-50ac686307be
+   Path: packages/@uppy/companion/src/companion.js, line 64
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 6040616a-0e0b-4fe3-941e-c273cf4173df
+   Path: packages/@uppy/companion/src/server/jobs.js, line 36
+   Info: Unsanitized input from a local file flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: be9d42be-ad29-482a-9ce8-20a3c6da334e
+   Path: examples/node-xhr/server.js, line 28
+   Info: An error object flows to write and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: 69c2c287-6e18-428d-bddb-48510e3bd19f
+   Path: packages/@uppy/companion/src/server/controllers/oauth-redirect.js, line 22
+   Info: Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: 2438cf39-cedb-43a0-bfdf-824d8ee36bd8
+   Path: packages/@uppy/companion/src/server/controllers/callback.js, line 24
+   Info: Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [MEDIUM] Use of Cipher Without Integrity Protection
+   Finding ID: c9334bf3-0815-476d-b60e-d04431bdfdc3
+   Path: packages/@uppy/companion/src/server/helpers/utils.js, line 180
+   Info: Cipher Block Chaining mode (used in crypto.createDecipheriv) does not provide integrity. Consider using  Galois/Counter mode.
+
+ ✗ [MEDIUM] Use of Cipher Without Integrity Protection
+   Finding ID: dddb506d-6f92-4729-9d89-5e506dad058d
+   Path: packages/@uppy/companion/src/server/helpers/utils.js, line 158
+   Info: Cipher Block Chaining mode (used in crypto.createCipheriv) does not provide integrity. Consider using  Galois/Counter mode.
+
+ ✗ [MEDIUM] Code Injection
+   Finding ID: 10183bdd-a3ba-49e0-808f-4324c55cf887
+   Path: bin/upload-to-cdn.js, line 123
+   Info: Unsanitized input from a command line argument flows into require, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 5f34b62a-d13f-4d16-8d06-eb850b95d195
+   Path: packages/@uppy/companion/src/standalone/index.js, line 125
+   Info: Setting setHeader header to "*" in setHeader might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 07be8aaf-fcad-4163-8b75-16462e43ce62
+   Path: examples/custom-provider/server/index.js, line 8
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 6fd0f251-188d-4442-a288-062c12d9bc84
+   Path: examples/uppy-with-companion/server/index.js, line 6
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: cd1d566b-7973-4434-94bb-688d4e0325fe
+   Path: packages/@uppy/companion/examples/serverless/index.js, line 12
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 7cbeeb8c-f5a6-45fb-9bcb-95f20eaf6d2e
+   Path: examples/uppy-with-companion/server/index.js, line 6
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 6c28616b-4d2a-47d1-8bc1-ae03b2b0fac5
+   Path: packages/@uppy/companion/src/standalone/index.js, line 18
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 47605985-b6ef-442d-8b34-bf9d8f9f3efc
+   Path: examples/digitalocean-spaces/server.js, line 46
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: c746bd06-115f-4bed-860d-351abab6f1f0
+   Path: packages/@uppy/companion/src/companion.js, line 64
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 0f297ab1-c897-456d-ad8f-38a31b682589
+   Path: packages/@uppy/companion/src/server/jobs.js, line 49
+   Info: Unsanitized input from a local file flows into fs.unlink, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: d8100990-d075-4d34-ab06-84d8ea237a5e
+   Path: examples/custom-provider/server/index.js, line 8
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 510ba19b-fd45-4434-b121-a2e7a58f6f87
+   Path: examples/aws-presigned-url/s3-sign.php, line 4
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Code Injection
+   Finding ID: f9989236-bec6-49cc-a337-a8e29ef8b4ba
+   Path: bin/run-example.js, line 24
+   Info: Unsanitized input from a command line argument flows into require, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: f3e676af-5b3d-46fb-b730-b0659764d7ba
+   Path: examples/php-xhr/upload.php, line 26
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 6cacb91c-19d9-4683-95f5-36e224de0785
+   Path: examples/php-xhr/upload.php, line 36
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 05cf417d-7b60-42d2-a3f5-1cb52bfc6ba2
+   Path: packages/@uppy/companion/examples/serverless/index.js, line 12
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 4e5b70ff-428e-4281-bc95-d1199005b30c
+   Path: examples/transloadit/server.js, line 10
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1ae8d75b-dab0-4d31-bde3-856384559c49
+   Path: examples/node-xhr/server.js, line 4
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 63453cd5-95a5-4fb8-ad50-cb024d4aa499
+   Path: examples/transloadit/server.js, line 32
+   Info: Unsanitized input from the HTTP request body flows into write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: d487814e-5047-4a3c-a5a0-50782e9a48f8
+   Path: examples/uppy-with-companion/server/index.js, line 39
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 2f50cbbc-90b2-4cf0-a502-f2bcddb57a08
+   Path: examples/uppy-with-companion/server/index.js, line 43
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 492630e5-d00e-4b0f-8525-9277dd56d4b0
+   Path: examples/custom-provider/server/index.js, line 41
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: dcb81c8b-6e0e-4d54-a2f7-5c68d6814d39
+   Path: examples/aws-companion/server.js, line 37
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: e131a644-9651-41b8-b966-27510d4c35bc
+   Path: examples/aws-companion/server.js, line 16
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 41dfa5f6-2668-4a83-93f6-c41ccec96943
+   Path: examples/transloadit/server.js, line 34
+   Info: Unsanitized input from the HTTP request body flows into write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 5e83110a-488a-414b-8219-77383474a650
+   Path: packages/@uppy/companion/src/server/controllers/url.js, line 113
+   Info: Unsanitized input from the HTTP request body flows into the uri argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 8d7dea2e-763a-4767-9c9d-9bab0b12da81
+   Path: packages/@uppy/companion/src/server/controllers/url.js, line 52
+   Info: Unsanitized input from the HTTP request body flows into the uri argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: fe822073-af2d-4bab-833a-3e76f6e654c6
+   Path: packages/@uppy/companion/src/server/controllers/url.js, line 29
+   Info: Unsanitized input from the HTTP request body flows into the uri argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+
+
+╭────────────────────────────────────────────────────────╮
+│ Test Summary                                           │
+│                                                        │
+│   Organization:                                        │
+│   Test type:         Static code analysis              │
+│   Project path:      /tmp/src-CVE-2020-8135            │
+│                                                        │
+│   Total issues:   55                                   │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]        │
+│   Open issues:    55 [ 10 HIGH  26 MEDIUM  19 LOW ]    │
+╰────────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:6be58be7-09d8-4e00-8ed7-30c08f7a1f98 
+
+Testing /tmp/src-CVE-2020-8149 ...
+
+
+╭────────────────────────────────────────────────╮
+│ Test Summary                                   │
+│                                                │
+│   Organization:                                │
+│   Test type:         Static code analysis      │
+│   Project path:      /tmp/src-CVE-2020-8149    │
+│                                                │
+│   Total issues:   0                            │
+╰────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+Testing /tmp/src-CVE-2020-8192 ...
+
+Open Issues
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3c8d23e7-d65e-4a73-b168-60d6a867dd74
+   Path: test/logger.test.js, line 240
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 5d836a84-20c5-402a-a186-49f337aed2f1
+   Path: test/logger.test.js, line 446
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 761f841a-53d9-4497-8ec1-640a96848886
+   Path: test/internals/initialConfig.test.js, line 42
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d053288a-c204-4533-822d-17b0d21aeb3a
+   Path: test/types/index.ts, line 78
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: b22b0112-c330-4266-a05a-40be55fad171
+   Path: test/handler-context.test.js, line 33
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ae625ce1-bae3-413b-9838-062433fe0167
+   Path: test/handler-context.test.js, line 54
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: baf4e5d2-cb6a-49a2-b670-c52efaf28d27
+   Path: test/internals/initialConfig.test.js, line 273
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 91c915c8-7533-4221-a5dc-74aff9fd43d1
+   Path: test/internals/reply.test.js, line 239
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: c68a1628-df56-484f-99d9-522dee1609ef
+   Path: test/internals/reply.test.js, line 247
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 2e450b4b-f8f5-42d4-82e0-92f9d17e2493
+   Path: test/internals/reply.test.js, line 281
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 572bfcbd-f6f5-4704-bc6b-1a02a144461c
+   Path: test/logger.test.js, line 1220
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6c521087-7b4b-4075-8e93-b4b8b4cec0cd
+   Path: test/internals/reply.test.js, line 325
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 5a9b39f1-d245-4a4f-9adb-7fceae3526d2
+   Path: test/logger.test.js, line 77
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: aaaeca88-d15e-4861-996b-d42e858529cf
+   Path: test/logger.test.js, line 105
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 488234be-f16d-44be-a960-620ece9c5365
+   Path: test/logger.test.js, line 152
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 90ce7f72-74ba-46f1-a490-17424cee1941
+   Path: test/logger.test.js, line 195
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 2ec761b2-357f-4c44-9d47-aea2225a79ff
+   Path: test/custom-http-server.test.js, line 15
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 660a4d1f-b662-4290-b925-69400e61d9e6
+   Path: test/close.test.js, line 175
+   Info: Unsanitized user input from data from a remote resource flows into match, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: cc414fe3-c7de-4f83-a7f7-95ce8de134c4
+   Path: test/internals/reply.test.js, line 317
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: ff6a4b41-2f28-43b8-a576-9b2e162e3af0
+   Path: test/logger.test.js, line 1264
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8af7d829-112e-46ea-8646-4ef613b428bf
+   Path: test/logger.test.js, line 1302
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8b86e786-d648-40f1-83e8-6b939df47866
+   Path: test/logger.test.js, line 1336
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 7a8c64a3-f1dd-4af0-81fa-208c89c9f5ec
+   Path: test/logger.test.js, line 1373
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1eebfd19-b854-4a5c-8c9d-77eb15f4a9ba
+   Path: test/logger.test.js, line 1405
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: a1391885-e51e-4ca6-9228-bb989897529d
+   Path: test/stream.test.js, line 188
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 7675f437-3a7f-42c7-8db7-ffc4952e215b
+   Path: test/stream.test.js, line 249
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1a78d519-c670-4b0d-8317-2bec45be080d
+   Path: test/stream.test.js, line 310
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: dc409edf-2072-447f-85c0-ae2acb3d894f
+   Path: test/versioned-routes.test.js, line 385
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 4b986149-a651-47f5-b663-a4d6066baa48
+   Path: test/middleware.test.js, line 746
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 23beb97b-eb7f-41ef-96ba-c3da8f0dec6f
+   Path: test/close.test.js, line 174
+   Info: Unsanitized user input from data from a remote resource flows into match, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+ ✗ [LOW] Regular Expression Denial of Service (ReDoS)
+   Finding ID: ae980ab4-27d5-4427-95ea-0dd7b9a91d22
+   Path: test/close.test.js, line 168
+   Info: Unsanitized user input from data from a remote resource flows into match, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+ ✗ [LOW] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 2a975dd7-6183-4afb-8ac9-77571f9bb517
+   Path: test/close.test.js, line 169
+   Info: Unsanitized user input from data from a remote resource flows into match, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: ba21ef18-99e3-4e05-9e54-8b27040d062b
+   Path: lib/middleware.js, line 9
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: b79d4dbf-b33a-4de8-962d-8f79e13c05c3
+   Path: lib/server.js, line 29
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2020-8192          │
+│                                                      │
+│   Total issues:   34                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    34 [ 0 HIGH  2 MEDIUM  32 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:3d59fc23-52d8-485a-9a63-2cba976a2bfb 
+
+Testing /tmp/src-CVE-2020-8203 ...
+
+Open Issues
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 97b7221f-e4ee-463a-9b0c-1f5c4e6a3254
+   Path: test/test.js, line 732
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 9e79c07b-0e90-4905-81e3-7c396a8be3b7
+   Path: lib/fp/build-doc.js, line 75
+   Info: Unsanitized input from a command line argument flows into fs-extra.writeFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Code Injection
+   Finding ID: da33f831-112d-4749-a9a6-901c77d007b4
+   Path: test/test.js, line 4424
+   Info: Unsanitized input from an event listener flows into setTimeout, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 5f4e4f7b-c143-48ee-a53c-b6f44d89d9c9
+   Path: test/saucelabs.js, line 881
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Regular Expression Denial of Service (ReDoS)
+   Finding ID: 06a238ed-d608-432d-9bf6-6f073b943bd2
+   Path: test/remove.js, line 19
+   Info: Unsanitized user input from a command line argument flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: c5aca6a4-620c-4f5b-8beb-3dbddd82a834
+   Path: test/asset/worker.js, line 5
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Code Injection
+   Finding ID: 631a0eba-5078-42f0-ab28-0715345e4ac2
+   Path: test/test.js, line 4423
+   Info: Unsanitized input from an event listener flows into setTimeout, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 88ef4fe8-3e8a-4394-a09b-7d81cd434c23
+   Path: vendor/firebug-lite/src/firebug-lite-debug.js, line 5997
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Code Injection
+   Finding ID: e19466a4-e37a-4c04-82e4-9266b8003a15
+   Path: test/test.js, line 4422
+   Info: Unsanitized input from an event listener flows into setTimeout, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: d9f8976f-0ca9-4a05-a2ce-9a97da127bf8
+   Path: test/remove.js, line 24
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 8553729a-8452-4d00-b06e-a31df31262a9
+   Path: test/remove.js, line 24
+   Info: Unsanitized input from a command line argument flows into fs.writeFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 8e8b621b-6d5c-46b5-940a-3e9b7d711244
+   Path: lib/fp/build-modules.js, line 119
+   Info: Unsanitized input from a command line argument flows into glob.sync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to list arbitrary directories.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: c433222f-d343-4da9-90b0-e7e00b3915a4
+   Path: vendor/backbone/backbone.js, line 1708
+   Info: Unsanitized input from the document location flows into replace, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: 67fee544-338a-42f6-9aaf-2b572e4f004f
+   Path: vendor/backbone/backbone.js, line 1872
+   Info: Unsanitized input from the document location flows into assign, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: c0215d8e-702a-48e8-a5ff-9e46eaa792c4
+   Path: vendor/backbone/backbone.js, line 1882
+   Info: Unsanitized input from the document location flows into replace, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+
+
+╭──────────────────────────────────────────────────────╮
+│ Test Summary                                         │
+│                                                      │
+│   Organization:                                      │
+│   Test type:         Static code analysis            │
+│   Project path:      /tmp/src-CVE-2020-8203          │
+│                                                      │
+│   Total issues:   15                                 │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]      │
+│   Open issues:    15 [ 0 HIGH  3 MEDIUM  12 LOW ]    │
+╰──────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:ac3c3b8d-799f-44a9-99b4-27e05e424a75 
+
+Testing /tmp/src-CVE-2020-8205 ...
+
+Open Issues
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 544a397f-1e80-46b1-9bf3-d45abc2301a9
+   Path: packages/@uppy/companion/test/mockserver.js, line 5
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: e6fe22a7-49c3-4bee-8bde-420436a3ab25
+   Path: packages/@uppy/companion/src/standalone/helper.js, line 122
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: f7cd2776-3235-4044-865d-685bff44c9de
+   Path: website/build-examples.js, line 137
+   Info: Unsanitized input from a command line argument flows into fs.createWriteStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to write to arbitrary files.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: f8f67665-d2da-488d-9057-ecb6dd7b09b1
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 15
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: f45297a9-8695-46f9-ada8-def7b9b6d25b
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 28
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 15493407-5f2d-4ebc-9666-d5da1f47e217
+   Path: packages/@uppy/golden-retriever/src/ServiceWorker.js, line 49
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 5a0d2dd7-d913-42f8-8bd8-ba612697503c
+   Path: examples/dev/sw.js, line 49
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: eb7a9a9a-666a-4a4a-ad2a-8a00bf56bddb
+   Path: examples/bundled/sw.js, line 53
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9b5ab9af-04eb-4816-bdf0-3a44f45e2fcb
+   Path: test/endtoend/xhr-limit/test.js, line 18
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 3a98c835-7971-450e-8ff6-b83bcab7d47d
+   Path: test/endtoend/utils.js, line 160
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: 76ee4373-ffdf-45a5-970e-d8e8edb6138a
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 65
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: 4743ff64-1813-4904-8397-fb0dd004b233
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 76
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Prototype Pollution
+   Finding ID: e4bccb47-5204-416a-8950-b58d1a2312c4
+   Path: packages/@uppy/companion/test/__tests__/provider-manager.js, line 89
+   Info: Unsanitized input from a command line argument flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [LOW] Hardcoded Non-Cryptographic Secret
+   Finding ID: a3dfc55b-ec7d-40b0-8d50-e764d0eaea77
+   Path: packages/@uppy/companion/test/mockserver.js, line 10
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: 8a18c3d1-47c8-4714-8c8b-667271ad064e
+   Path: packages/@uppy/companion/src/server/helpers/jwt.js, line 44
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Cross-Site Request Forgery (CSRF)
+   Finding ID: 32183767-c1da-466e-afe8-ada5b20dc923
+   Path: packages/@uppy/companion/test/mockserver.js, line 5
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: ea9596c0-3261-4873-8f5e-86c12a6db55c
+   Path: bin/upload-to-cdn.js, line 89
+   Info: Unsanitized input from a command line argument flows into readFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Information Exposure - X-Powered-By Header
+   Finding ID: 2c4d1714-f22f-4d44-b6bc-d2c2df7ed2a6
+   Path: test/endtoend/utils.js, line 119
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 07be8aaf-fcad-4163-8b75-16462e43ce62
+   Path: examples/custom-provider/server/index.js, line 8
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 6cacb91c-19d9-4683-95f5-36e224de0785
+   Path: examples/php-xhr/upload.php, line 36
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Code Injection
+   Finding ID: f9989236-bec6-49cc-a337-a8e29ef8b4ba
+   Path: bin/run-example.js, line 24
+   Info: Unsanitized input from a command line argument flows into require, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [MEDIUM] Code Injection
+   Finding ID: 10183bdd-a3ba-49e0-808f-4324c55cf887
+   Path: bin/upload-to-cdn.js, line 123
+   Info: Unsanitized input from a command line argument flows into require, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: be9d42be-ad29-482a-9ce8-20a3c6da334e
+   Path: examples/node-xhr/server.js, line 28
+   Info: An error object flows to write and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 5f34b62a-d13f-4d16-8d06-eb850b95d195
+   Path: packages/@uppy/companion/src/standalone/index.js, line 145
+   Info: Setting setHeader header to "*" in setHeader might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 0f297ab1-c897-456d-ad8f-38a31b682589
+   Path: packages/@uppy/companion/src/server/jobs.js, line 49
+   Info: Unsanitized input from a local file flows into fs.unlink, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 6fd0f251-188d-4442-a288-062c12d9bc84
+   Path: examples/uppy-with-companion/server/index.js, line 6
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: d4ca297c-7156-483e-b8bf-50ac686307be
+   Path: packages/@uppy/companion/src/companion.js, line 72
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Cross-Site Request Forgery (CSRF)
+   Finding ID: 6c28616b-4d2a-47d1-8bc1-ae03b2b0fac5
+   Path: packages/@uppy/companion/src/standalone/index.js, line 19
+   Info: CSRF protection is disabled for your Express app. This allows the attackers to execute requests on a user's behalf.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 6040616a-0e0b-4fe3-941e-c273cf4173df
+   Path: packages/@uppy/companion/src/server/jobs.js, line 36
+   Info: Unsanitized input from a local file flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [MEDIUM] Open Redirect
+   Finding ID: 2438cf39-cedb-43a0-bfdf-824d8ee36bd8
+   Path: packages/@uppy/companion/src/server/controllers/callback.js, line 24
+   Info: Unsanitized input from an HTTP parameter flows into redirect, where it is used as input for request redirection. This may result in an Open Redirect vulnerability.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: d8100990-d075-4d34-ab06-84d8ea237a5e
+   Path: examples/custom-provider/server/index.js, line 8
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Use of Cipher Without Integrity Protection
+   Finding ID: c9334bf3-0815-476d-b60e-d04431bdfdc3
+   Path: packages/@uppy/companion/src/server/helpers/utils.js, line 169
+   Info: Cipher Block Chaining mode (used in crypto.createDecipheriv) does not provide integrity. Consider using  Galois/Counter mode.
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 510ba19b-fd45-4434-b121-a2e7a58f6f87
+   Path: examples/aws-presigned-url/s3-sign.php, line 4
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: 3fc5ec54-d29d-4b5c-bc14-14a21472ef15
+   Path: examples/php-xhr/upload.php, line 11
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Origin Validation Error
+   Finding ID: f3e676af-5b3d-46fb-b730-b0659764d7ba
+   Path: examples/php-xhr/upload.php, line 26
+   Info: Setting Access-Control-Allow-Origin header to "*" in header might be too permissive. This allows malicious code on other domains to communicate with the application, which is a security risk
+
+ ✗ [MEDIUM] Use of Cipher Without Integrity Protection
+   Finding ID: dddb506d-6f92-4729-9d89-5e506dad058d
+   Path: packages/@uppy/companion/src/server/helpers/utils.js, line 147
+   Info: Cipher Block Chaining mode (used in crypto.createCipheriv) does not provide integrity. Consider using  Galois/Counter mode.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 7cbeeb8c-f5a6-45fb-9bcb-95f20eaf6d2e
+   Path: examples/uppy-with-companion/server/index.js, line 6
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: c746bd06-115f-4bed-860d-351abab6f1f0
+   Path: packages/@uppy/companion/src/companion.js, line 72
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 4e5b70ff-428e-4281-bc95-d1199005b30c
+   Path: examples/transloadit/server.js, line 10
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1ae8d75b-dab0-4d31-bde3-856384559c49
+   Path: examples/node-xhr/server.js, line 4
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 47605985-b6ef-442d-8b34-bf9d8f9f3efc
+   Path: examples/digitalocean-spaces/server.js, line 46
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 2f50cbbc-90b2-4cf0-a502-f2bcddb57a08
+   Path: examples/uppy-with-companion/server/index.js, line 43
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: d487814e-5047-4a3c-a5a0-50782e9a48f8
+   Path: examples/uppy-with-companion/server/index.js, line 39
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 492630e5-d00e-4b0f-8525-9277dd56d4b0
+   Path: examples/custom-provider/server/index.js, line 41
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: dcb81c8b-6e0e-4d54-a2f7-5c68d6814d39
+   Path: examples/aws-companion/server.js, line 37
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: e131a644-9651-41b8-b966-27510d4c35bc
+   Path: examples/aws-companion/server.js, line 16
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 8d7dea2e-763a-4767-9c9d-9bab0b12da81
+   Path: packages/@uppy/companion/src/server/controllers/url.js, line 53
+   Info: Unsanitized input from the HTTP request body flows into the uri argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 41dfa5f6-2668-4a83-93f6-c41ccec96943
+   Path: examples/transloadit/server.js, line 34
+   Info: Unsanitized input from the HTTP request body flows into write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 63453cd5-95a5-4fb8-ad50-cb024d4aa499
+   Path: examples/transloadit/server.js, line 32
+   Info: Unsanitized input from the HTTP request body flows into write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: fe822073-af2d-4bab-833a-3e76f6e654c6
+   Path: packages/@uppy/companion/src/server/controllers/url.js, line 30
+   Info: Unsanitized input from the HTTP request body flows into the uri argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 5e83110a-488a-414b-8219-77383474a650
+   Path: packages/@uppy/companion/src/server/controllers/url.js, line 114
+   Info: Unsanitized input from the HTTP request body flows into the uri argument of request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+
+
+╭────────────────────────────────────────────────────────╮
+│ Test Summary                                           │
+│                                                        │
+│   Organization:                                        │
+│   Test type:         Static code analysis              │
+│   Project path:      /tmp/src-CVE-2020-8205            │
+│                                                        │
+│   Total issues:   51                                   │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]        │
+│   Open issues:    51 [ 10 HIGH  23 MEDIUM  18 LOW ]    │
+╰────────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:d71a78ff-4850-4731-995d-0332a083b27c 
+
+Testing /tmp/src-CVE-2020-8244 ...
+
+Open Issues
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 09a42934-38e7-49d6-83ce-39b8dff98f3c
+   Path: test/test.js, line 437
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2020-8244        │
+│                                                    │
+│   Total issues:   1                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    1 [ 0 HIGH  0 MEDIUM  1 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:d3d7d343-e3b2-4c7b-ac45-048301f231aa 
+
+Testing /tmp/src-CVE-2020-9038 ...
+
+Open Issues
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 4b388136-70ee-4699-803c-7b6c836c5f19
+   Path: ReactNativeClient/lib/joplin-renderer/MdToHtml.js, line 148
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Improper Type Validation
+   Finding ID: 2682583a-7fd5-4587-a741-a44f27f69641
+   Path: ReactNativeClient/lib/services/rest/Api.js, line 165
+   Info: The type of this object, coming from query and the value of its split property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.
+
+ ✗ [LOW] Improper Type Validation
+   Finding ID: dd3f1ac4-4836-441b-b122-fdc07c130193
+   Path: ReactNativeClient/lib/services/rest/Api.js, line 257
+   Info: The type of this object, coming from query and the value of its replace property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.
+
+ ✗ [LOW] Insufficient postMessage Validation
+   Finding ID: 821a14d4-4fe9-4169-a987-ffff4d8e7422
+   Path: ElectronClient/app/gui/note-viewer/preload.js, line 24
+   Info: The origin of the received message is not checked. This means any site (even malicious) can send message to this window. If you don't expect this, consider checking the origin of sender.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 24a07fe6-2c29-42ce-9168-0551f9bc66ad
+   Path: ReactNativeClient/lib/services/rest/Api.js, line 600
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 5dc11c9a-5e56-4704-9bf7-15985ef6bc6b
+   Path: ReactNativeClient/lib/services/rest/Api.js, line 579
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 2479928d-387e-4eb1-96a0-711f21fc23b2
+   Path: ReactNativeClient/lib/services/rest/Api.js, line 550
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: ae461a6a-d554-4fba-aea9-02142ef374d7
+   Path: ReactNativeClient/lib/services/rest/Api.js, line 92
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: e16398a4-4686-41e6-9f83-2d25ac61d622
+   Path: ReactNativeClient/lib/services/InteropService_Importer_Base.js, line 21
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: f810f991-80b7-418d-91f7-4ad6bf89ed4f
+   Path: ReactNativeClient/lib/services/InteropService_Exporter_Base.js, line 34
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 61900637-f53f-49b2-ad8d-3ec295cc2755
+   Path: ReactNativeClient/lib/joplin-renderer/MdToHtml/rules/katex.js, line 218
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 7a37665c-2bcb-4a61-b599-80b0a813eeb6
+   Path: ReactNativeClient/lib/joplin-renderer/MdToHtml/rules/highlight_keywords.js, line 34
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: ad7918d6-dbf2-4548-a353-7883d380faf4
+   Path: CliClient/app/command-sync.js, line 120
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 45e1152e-8627-4624-a950-cde252bb9e17
+   Path: ElectronClient/app/InteropServiceHelper.js, line 12
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: eaa0a19c-1ad6-4c1b-83cd-633945c7c054
+   Path: ElectronClient/app/gui/NoteText.jsx, line 174
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: d456b560-4f93-4458-ac45-63dec02fe5cc
+   Path: ReactNativeClient/encodeAssets.js, line 27
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 9c0a2576-c901-49c4-98fd-b12f1d000056
+   Path: ReactNativeClient/encodeAssets.js, line 67
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 18d7f02b-500a-407c-ab12-c54e10bf053e
+   Path: ReactNativeClient/lib/components/screens/note.js, line 657
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: f4d577cf-1f91-4335-b829-6fd1d6a5c860
+   Path: ReactNativeClient/lib/import-enex.js, line 349
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 5730adb5-0df8-49ce-bec2-41fbbe8ec128
+   Path: ReactNativeClient/lib/joplin-renderer/MdToHtml.js, line 125
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d65a9a0c-bbd9-4b25-ac44-f7967bc022fe
+   Path: ReactNativeClient/lib/ClipperServer.js, line 99
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: decc1e37-deea-4fa2-a3ab-7cc7f3eaf917
+   Path: ElectronClient/app/gui/note-viewer/preload.js, line 13
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Electron Insecure Web Preferences
+   Finding ID: 982a3e91-1f56-47a5-8abf-def045f266f2
+   Path: ElectronClient/app/ElectronAppWrapper.js, line 64
+   Info: Do not enable nodeIntegration. When this feature is enabled, it allows JavaScript from the renderer window to use the Node.js API. This means that a presence of a Cross-Site Scripting (XSS) vulnerability could be potentially escalated to Remote Code Execution (RCE).
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: d26e90d2-e367-4fc6-b36d-bfc14c0d9235
+   Path: CliClient/app/ResourceServer.js, line 45
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: d5feea18-3d23-47f9-b855-58bc2109eb0b
+   Path: ElectronClient/app/gui/note-viewer/preload.js, line 21
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: 0bbe0539-7f91-4b0d-97fd-0e439e6baba0
+   Path: ElectronClient/app/gui/note-viewer/preload.js, line 17
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 38cf8b31-79e4-42ee-965c-18f714790f11
+   Path: ReactNativeClient/lib/onedrive-api-node-utils.js, line 50
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: 40b3698c-0c43-484a-a982-e74ebc784884
+   Path: ElectronClient/app/gui/note-viewer/preload.js, line 9
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: f13fc153-3196-4613-9b05-e09322a371dc
+   Path: ElectronClient/app/gui/note-viewer/index.html, line 47
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: b2dcfe17-c9b5-45ea-be24-ca1da70999c9
+   Path: ElectronClient/app/gui/NoteTextViewer.jsx, line 126
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: 45705a36-ced1-4fb1-bb77-e22013635a91
+   Path: ElectronClient/app/gui/NoteTextViewer.jsx, line 114
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: b025a900-f22e-428a-983c-6b827d1c610b
+   Path: ElectronClient/app/gui/NoteTextViewer.jsx, line 118
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [MEDIUM] Permissive Cross-domain Policy
+   Finding ID: 2da36d33-bada-4076-9f92-f6c68bdad95d
+   Path: ElectronClient/app/gui/NoteTextViewer.jsx, line 122
+   Info: Setting targetOrigin to "*" in postMessage may enable malicious parties to intercept the message. Consider using an exact target origin instead.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 3d777725-455a-46c0-8f4a-d4fb2c5018ce
+   Path: ReactNativeClient/lib/parameters.js, line 8
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 4c08e96a-914e-4f63-87b4-01c1e89e7be3
+   Path: ReactNativeClient/lib/parameters.js, line 12
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 608931b9-eac8-4f88-9939-e7ee79ae40f3
+   Path: ReactNativeClient/lib/parameters.js, line 16
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: 478f3aa9-b46d-4942-b1d2-957684214c13
+   Path: ReactNativeClient/lib/parameters.js, line 23
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: deb8e007-7f57-4346-9393-412ee4920069
+   Path: ReactNativeClient/lib/parameters.js, line 27
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Hardcoded Non-Cryptographic Secret
+   Finding ID: fa8597cf-3405-4726-8c5f-eff9b7065263
+   Path: ReactNativeClient/lib/parameters.js, line 31
+   Info: Avoid hardcoding values that are meant to be secret. Found a hardcoded string used in here.
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 300b1a90-401f-4ab3-942c-b8d6767bc679
+   Path: ReactNativeClient/lib/ClipperServer.js, line 118
+   Info: Unsanitized input from the request URL flows into write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 7ee4a82e-b473-4839-bcc8-c4d06a44b0d5
+   Path: ReactNativeClient/lib/ClipperServer.js, line 124
+   Info: Unsanitized input from the request URL flows into write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: 5eb0402a-c00c-4c03-9db4-11a92b8b1896
+   Path: ReactNativeClient/lib/onedrive-api-node-utils.js, line 66
+   Info: Unsanitized input from the request URL flows into write, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [HIGH] Cross-site Scripting (XSS)
+   Finding ID: f885d167-6b0f-4e75-adcb-b2c90d2bbc8b
+   Path: ReactNativeClient/lib/ClipperServer.js, line 135
+   Info: Unsanitized input from the request URL flows into end, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+
+
+╭────────────────────────────────────────────────────────╮
+│ Test Summary                                           │
+│                                                        │
+│   Organization:                                        │
+│   Test type:         Static code analysis              │
+│   Project path:      /tmp/src-CVE-2020-9038            │
+│                                                        │
+│   Total issues:   43                                   │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]        │
+│   Open issues:    43 [ 10 HIGH  13 MEDIUM  20 LOW ]    │
+╰────────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:9ca4e07e-6d9d-4cd5-a5ec-6da7bfb6828f 
+
+Testing /tmp/src-CVE-2021-23344 ...
+
+Open Issues
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: baed6546-2b7f-4f27-ae3d-a426e01de813
+   Path: utils.js, line 4570
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: cd8ca064-322c-4559-b40e-58fa73afa496
+   Path: utils.js, line 4588
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: a8413e07-592e-4477-8f7d-cd6b0b02af31
+   Path: index.js, line 4673
+   Info: hash hash (used in hash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: f3be9698-fecf-46e7-94c4-11df79822ea7
+   Path: utils.js, line 3439
+   Info: SHA1 hash (used in sha1) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: fa392050-803b-40c0-8b73-f480b8fbff3f
+   Path: test/controllers/default.js, line 280
+   Info: hash hash (used in hash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 68a38989-96bc-43b6-b19d-c21cc5918130
+   Path: test/test-utils.js, line 206
+   Info: SHA1 hash (used in sha1) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 56ca9390-e92a-480f-a3e0-531fe2c910ec
+   Path: test/test-utils.js, line 208
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 07eac40f-69c8-47c3-8dc2-9627e7775c4f
+   Path: index.js, line 16557
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: c853a0bc-99fc-4ac2-953b-90f1dd20a92e
+   Path: internal.js, line 751
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Allocation of Resources Without Limits or Throttling
+   Finding ID: 3c70680d-c46c-49ef-b9b8-43ceeecb2a8f
+   Path: test/controllers/default.js, line 255
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [LOW] Improper Type Validation
+   Finding ID: ce613b81-f14b-454d-85ad-8aabb9149fd7
+   Path: index.js, line 17960
+   Info: The type of this object, coming from query and the value of its substring property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.
+
+ ✗ [LOW] Sensitive Cookie in HTTPS Session Without 'Secure' Attribute
+   Finding ID: d269d3f8-1649-421d-a9cb-9dbf91d4a6e7
+   Path: session.js, line 420
+   Info: Cookie misses the Secure attribute (it is false by default). Set it to true to protect the cookie from man-in-the-middle attacks.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 74a515c2-c1f9-4239-bb49-1dd794d45dbb
+   Path: websocketclient.js, line 117
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Improper Type Validation
+   Finding ID: 6c2e6766-5cb5-4e05-af23-323987e3d60a
+   Path: index.js, line 17960
+   Info: The type of this object, coming from query and the value of its length property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: f5bfa520-4638-4818-b472-cf98c809023b
+   Path: index.js, line 10039
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 05846f55-df92-48cc-a2cc-b6c43b183e2c
+   Path: index.js, line 4640
+   Info: crypto.createHash hash (used in crypto.createHash) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 22273945-f65c-47e3-837c-84a1b975b70d
+   Path: test/controllers/default.js, line 257
+   Info: Unsanitized input from the request URL flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: d8053fe9-06bd-4ce0-a0ac-52e1e2fe0306
+   Path: utils.js, line 3437
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 3fa9f57d-2f9e-455f-9674-c34a7602c277
+   Path: internal.js, line 776
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Use of Password Hash With Insufficient Computational Effort
+   Finding ID: 7aa3916c-d3df-4b27-b74e-e5493577acee
+   Path: index.js, line 962
+   Info: MD5 hash (used in md5) is insecure. Consider changing it to a secure hashing algorithm.
+
+ ✗ [LOW] Cross-site Scripting (XSS)
+   Finding ID: e5885927-4ec9-4bc3-94e1-ee735febbaf0
+   Path: test/controllers/default.js, line 238
+   Info: Unsanitized input from the request URL flows into send, where it is used to render an HTML page returned to the user. This may result in a Cross-Site Scripting attack (XSS).
+
+ ✗ [LOW] Improper Type Validation
+   Finding ID: 5b01505f-a18b-479f-9a73-3012389a566e
+   Path: internal.js, line 303
+   Info: The type of this object, coming from body and the value of its push property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.
+
+ ✗ [LOW] Sensitive Cookie Without 'HttpOnly' Flag
+   Finding ID: f88a3319-4042-4b6a-83e6-c243d21837ed
+   Path: session.js, line 420
+   Info: Cookie misses the HttpOnly attribute (it is false by default). Set it to true to protect the cookie from possible malicious code on client side.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 46dae620-d097-4695-bebc-9f7948d4e888
+   Path: nosql.js, line 5333
+   Info: Unsanitized input from a local file flows into unlink, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6f927c16-78e7-4f00-ad92-6c0e69d0511c
+   Path: utils.js, line 1650
+   Info: request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: b55f890b-7d64-4ba5-aa03-50024d24b9c7
+   Path: index.js, line 3911
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 1253c8aa-cb5f-4fe8-8670-14020bd99fda
+   Path: index.js, line 8357
+   Info: http.get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 0bf1af87-0f7e-404d-900d-a7bc26aaf920
+   Path: index.js, line 8359
+   Info: http.request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 62fdaf4b-3b6b-40a9-96d9-84e5187f2190
+   Path: index.js, line 17802
+   Info: get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9ea4c49f-6008-4f50-930e-1b46e2930ecd
+   Path: utils.js, line 868
+   Info: get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 6ae863ba-c2a2-49c1-ab3e-ba8c9dd46a51
+   Path: utils.js, line 1423
+   Info: get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 7b30e41c-75d4-41ea-9fdf-4d7cde969714
+   Path: websocketclient.js, line 95
+   Info: get uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 896de033-d78c-4372-ae2e-13fce817ce5d
+   Path: utils.js, line 868
+   Info: request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 8015c920-b18d-4356-aa61-ad8a4fa0f38e
+   Path: utils.js, line 1423
+   Info: request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 0d303e04-9bfb-4b14-8c85-950013e42bb7
+   Path: nosql.js, line 5328
+   Info: Unsanitized input from a local file flows into unlink, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to delete arbitrary files.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 39d0c3cc-e53a-434c-bab7-f14eae617666
+   Path: utils.js, line 1756
+   Info: request uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 4644ec00-7387-4cd8-adeb-ade722c59b49
+   Path: nosql.js, line 5371
+   Info: Unsanitized input from a local file flows into fs.stat, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to change current directory.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 566ed2b0-6031-4d0b-87a6-f855de8e05bf
+   Path: nosql.js, line 5377
+   Info: Unsanitized input from a local file flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [MEDIUM] Prototype Pollution
+   Finding ID: 7b8d88f4-b959-4abf-bf4b-1b0e8f99e8cd
+   Path: index.js, line 3955
+   Info: Unsanitized input from the request URL flows into a member access and is used to access a property of this object by name. This may allow a malicious user to pollute the Object.prototype and cause a crash, remote code execution or logic bypasses.
+
+ ✗ [MEDIUM] Path Traversal
+   Finding ID: 0bd663af-f316-48ab-a32d-92adb9e9a877
+   Path: utils.js, line 957
+   Info: Unsanitized input from data from a remote resource flows into fs.createReadStream, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 9e0e0bda-ed52-4421-9099-eff150161254
+   Path: index.js, line 8352
+   Info: Unsanitized input from an HTTP header flows into https.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 963b6317-1062-49e2-bfd4-45ea406290d9
+   Path: index.js, line 8354
+   Info: Unsanitized input from an HTTP header flows into https.request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] DOM-based Cross-site Scripting (XSS)
+   Finding ID: 7b6e2c88-704a-44a1-92c4-5d44c59c327b
+   Path: error.html, line 44
+   Info: Unsanitized input from the document location flows into innerHTML, where it is used to dynamically construct the HTML page on client side. This may result in a DOM Based Cross-Site Scripting attack (DOMXSS).
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 94cba74e-3f98-4ba9-bd8c-2c20de7b64c0
+   Path: index.js, line 8359
+   Info: Unsanitized input from an HTTP header flows into http.request, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Server-Side Request Forgery (SSRF)
+   Finding ID: 65d42723-c262-40b7-b57f-7fd774e35567
+   Path: index.js, line 8357
+   Info: Unsanitized input from an HTTP header flows into http.get, where it is used as an URL to perform a request. This may result in a Server-Side Request Forgery vulnerability.
+
+ ✗ [HIGH] Insecure TLS Configuration
+   Finding ID: 60b85abf-675c-495d-a0b9-f26419527f89
+   Path: index.js, line 10477
+   Info: Setting the 'NODE_TLS_REJECT_UNAUTHORIZED' to '0' makes TLS connections and HTTPS requests insecure.
+
+
+
+╭───────────────────────────────────────────────────────╮
+│ Test Summary                                          │
+│                                                       │
+│   Organization:                                       │
+│   Test type:         Static code analysis             │
+│   Project path:      /tmp/src-CVE-2021-23344          │
+│                                                       │
+│   Total issues:   46                                  │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]       │
+│   Open issues:    46 [ 6 HIGH  17 MEDIUM  23 LOW ]    │
+╰───────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:396e8657-2559-4c5f-ae8d-edaad43abed3 
+
+Testing /tmp/src-CVE-2021-23364 ...
+
+Open Issues
+
+ ✗ [LOW] Path Traversal
+   Finding ID: 50413adc-a639-4b40-bd4d-e00abc759541
+   Path: cli.js, line 105
+   Info: Unsanitized input from a command line argument flows into fs.readFileSync, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2021-23364       │
+│                                                    │
+│   Total issues:   1                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    1 [ 0 HIGH  0 MEDIUM  1 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:d5f295ff-26ae-4186-bd08-a417ac1a41c8 
+
+Testing /tmp/src-CVE-2021-31712 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Information Exposure - X-Powered-By Header
+   Finding ID: 0d138293-9d1e-4cfc-9125-648b00220cf5
+   Path: docs/config/server.dev.js, line 6
+   Info: Disable X-Powered-By header for your Express app (consider using Helmet middleware), because it exposes information about the used framework to potential attackers.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 53016842-73e2-4691-b587-21989c8186b1
+   Path: docs/config/server.dev.js, line 16
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2021-31712       │
+│                                                    │
+│   Total issues:   2                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    2 [ 0 HIGH  2 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:d57bd1ec-35ed-436a-8f7d-e107158996f3 
+Lote concluido: /workspace/datasets/listas/cves-sast-batch-ah

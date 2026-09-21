@@ -1,0 +1,16 @@
+AVISO: gt_file_path de CVE-2019-12041 normalizado: '/index.js' -> 'index.js' (barra inicial (defeito do ground truth))
+--- normalizacao: codeql ---
+  processados: 13 | pulados: 0 | com falha: 0
+  linhas da lista sem raw: 210 | raws sem linha na lista: 0
+  achados: 283 (sem CWE: 0)
+  severidade: {'medium': 226, 'high': 57}
+    regra resolvida sem nivel: 0 | regra NAO resolvida: 0
+  gt_file_scanned: true=13 false=0 null=0
+  achados com caminho transformado: 0 (0 motivo(s) aplicado(s)) — NENHUM caminho de achado foi transformado: as 283 saidas ja vieram relativas e limpas.
+    gt_file_path normalizado em 1 CVE(s): CVE-2019-12041
+  inventario do CodeQL (notificacao x artifacts depurado): 13 CVE(s), 1 divergente(s)
+    ATENCAO: CVE-2021-31712 notificacao=173 artifacts_depurado=175 — possivel teto na notificacao
+  cadeia nua de CWE (semgrep): 0 | colisoes de chave: 0
+  raws ilegiveis: 0
+  duracao: total 0.064s | mediana/CVE 0.0026 | maximo/CVE 0.0112 (CVE-2020-8205)
+  relatorio: /home/runner/work/ic-security-project-v2/ic-security-project-v2/logs/normalize-report-codeql.json

@@ -1,0 +1,15 @@
+AVISO: gt_file_path de CVE-2019-12041 normalizado: '/index.js' -> 'index.js' (barra inicial (defeito do ground truth))
+--- normalizacao: semgrep ---
+  processados: 13 | pulados: 0 | com falha: 0
+  linhas da lista sem raw: 210 | raws sem linha na lista: 0
+  achados: 623 (sem CWE: 0)
+  severidade: {'medium': 583, 'low': 27, 'high': 13}
+    regra resolvida sem nivel: 0 | regra NAO resolvida: 0
+  gt_file_scanned: true=13 false=0 null=0
+  achados com caminho transformado: 0 (0 motivo(s) aplicado(s)) — NENHUM caminho de achado foi transformado: as 623 saidas ja vieram relativas e limpas.
+    gt_file_path normalizado em 1 CVE(s): CVE-2019-12041
+  rules_applied: min=296 max=595 de rules_total=1074 (aplicadas por linguagem presente, nao carregadas)
+  cadeia nua de CWE (semgrep): 8 | colisoes de chave: 0
+  raws ilegiveis: 0
+  duracao: total 0.819s | mediana/CVE 0.006 | maximo/CVE 0.3095 (CVE-2020-8135)
+  relatorio: /home/runner/work/ic-security-project-v2/ic-security-project-v2/logs/normalize-report-semgrep.json

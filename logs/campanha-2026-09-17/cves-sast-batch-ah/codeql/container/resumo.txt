@@ -1,0 +1,11 @@
+inicio: 2026-09-17T01:06:41Z
+fim: 2026-09-17T01:21:14Z
+duracao_segundos: 873
+rc_container: 0
+limite_do_lote_segundos: 9000 (teto 9000; decorrido no job ao iniciar 42; disponivel 9648)
+estouro_do_limite_do_lote: nao
+laco_chegou_ao_fim: sim
+limites_pedidos: -e TIMEOUT_CREATE=900 -e TIMEOUT_ANALYZE=900
+limites_esperados: limites efetivos em segundos: TIMEOUT_CREATE=900; TIMEOUT_ANALYZE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+limites_efetivos: limites efetivos em segundos: TIMEOUT_CREATE=900; TIMEOUT_ANALYZE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+limites_conferidos: sim
