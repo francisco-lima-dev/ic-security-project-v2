@@ -1,0 +1,331 @@
+{
+  "ferramenta": "codeql",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-17T01:36:28.575172Z",
+  "cves": {
+    "processados": 29,
+    "pulados_por_idempotencia": 0,
+    "com_falha": [],
+    "linhas_da_lista_sem_raw": 194,
+    "raws_sem_linha_na_lista": [],
+    "arquivos_inesperados_no_raw_dir": []
+  },
+  "achados": {
+    "total": 328,
+    "sem_cwe": 0
+  },
+  "caminho": {
+    "achados_com_caminho_transformado": 0,
+    "motivos_aplicados": 0,
+    "achados_transformados": [],
+    "caminhos_scanned_transformados": 0,
+    "exemplos_scanned": [],
+    "ground_truth_normalizado": [
+      {
+        "cve": "CVE-2019-12041",
+        "antes": "/index.js",
+        "depois": "index.js",
+        "motivos": [
+          "barra inicial (defeito do ground truth)"
+        ]
+      }
+    ],
+    "caminhos_absolutos_nao_reconhecidos": [],
+    "nota": "NENHUM caminho de achado foi transformado: as 328 saidas ja vieram relativas e limpas."
+  },
+  "severidade": {
+    "por_valor_normalizado": {
+      "medium": 165,
+      "high": 163
+    },
+    "regra_resolvida_sem_nivel": [],
+    "regra_nao_resolvida": [],
+    "origem_resultado": 0,
+    "origem_regra": 328
+  },
+  "cwe": {
+    "achados_sem_cwe": 0,
+    "semgrep_cadeia_nua": [],
+    "semgrep_tipo_inesperado": []
+  },
+  "gt_cwe_primary": {
+    "nulo_conjunto_vazio": [],
+    "nulo_primario_indefinido": [],
+    "conjuntos_ausentes_da_tabela": []
+  },
+  "gt_file_scanned": {
+    "true": 29,
+    "false": 0,
+    "null": 0,
+    "lista_false": [],
+    "motivos_null": {},
+    "motivos_por_estado": {
+      "true": {
+        "inventario de arquivos EXTRAIDOS, de js/diagnostics/successfully-extracted-files. `false` significa que o arquivo nao foi extraido para o banco de dados — universo distinto do `paths.scanned` do Semgrep, que e de arquivos VARRIDOS": 29
+      }
+    }
+  },
+  "codeql_inventario": [
+    {
+      "cve": "CVE-2018-3721",
+      "notificacao": 58,
+      "artifacts_depurado": 58,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3722",
+      "notificacao": 6,
+      "artifacts_depurado": 6,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3725",
+      "notificacao": 2,
+      "artifacts_depurado": 2,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3726",
+      "notificacao": 5,
+      "artifacts_depurado": 5,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3728",
+      "notificacao": 9,
+      "artifacts_depurado": 9,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3731",
+      "notificacao": 2,
+      "artifacts_depurado": 2,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3732",
+      "notificacao": 7,
+      "artifacts_depurado": 7,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3733",
+      "notificacao": 5,
+      "artifacts_depurado": 5,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3736",
+      "notificacao": 4,
+      "artifacts_depurado": 4,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3737",
+      "notificacao": 43,
+      "artifacts_depurado": 43,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3738",
+      "notificacao": 223,
+      "artifacts_depurado": 225,
+      "bate": false
+    },
+    {
+      "cve": "CVE-2018-3743",
+      "notificacao": 2,
+      "artifacts_depurado": 2,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3746",
+      "notificacao": 6,
+      "artifacts_depurado": 6,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3747",
+      "notificacao": 2,
+      "artifacts_depurado": 2,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3750",
+      "notificacao": 5,
+      "artifacts_depurado": 5,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3752",
+      "notificacao": 11,
+      "artifacts_depurado": 11,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3757",
+      "notificacao": 3,
+      "artifacts_depurado": 3,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3770",
+      "notificacao": 13,
+      "artifacts_depurado": 13,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3772",
+      "notificacao": 4,
+      "artifacts_depurado": 4,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3783",
+      "notificacao": 305,
+      "artifacts_depurado": 305,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-3786",
+      "notificacao": 47,
+      "artifacts_depurado": 47,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-6184",
+      "notificacao": 668,
+      "artifacts_depurado": 668,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-6333",
+      "notificacao": 2580,
+      "artifacts_depurado": 2580,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-6341",
+      "notificacao": 739,
+      "artifacts_depurado": 739,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-6342",
+      "notificacao": 230,
+      "artifacts_depurado": 230,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-7560",
+      "notificacao": 2,
+      "artifacts_depurado": 2,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2018-7651",
+      "notificacao": 10,
+      "artifacts_depurado": 10,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10061",
+      "notificacao": 42,
+      "artifacts_depurado": 42,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10090",
+      "notificacao": 276,
+      "artifacts_depurado": 276,
+      "bate": true
+    }
+  ],
+  "tool_diagnostics": {
+    "cves_com_erro": [],
+    "cves_com_caminho_descartado": [],
+    "cves_com_notificacao": [
+      "CVE-2018-3721",
+      "CVE-2018-3722",
+      "CVE-2018-3725",
+      "CVE-2018-3726",
+      "CVE-2018-3728",
+      "CVE-2018-3731",
+      "CVE-2018-3732",
+      "CVE-2018-3733",
+      "CVE-2018-3736",
+      "CVE-2018-3737",
+      "CVE-2018-3738",
+      "CVE-2018-3743",
+      "CVE-2018-3746",
+      "CVE-2018-3747",
+      "CVE-2018-3750",
+      "CVE-2018-3752",
+      "CVE-2018-3757",
+      "CVE-2018-3770",
+      "CVE-2018-3772",
+      "CVE-2018-3783",
+      "CVE-2018-3786",
+      "CVE-2018-6184",
+      "CVE-2018-6333",
+      "CVE-2018-6341",
+      "CVE-2018-6342",
+      "CVE-2018-7560",
+      "CVE-2018-7651",
+      "CVE-2019-10061",
+      "CVE-2019-10090"
+    ]
+  },
+  "colisoes_chave_ordenacao": {
+    "total": 0,
+    "por_cve": []
+  },
+  "raws_ilegiveis": [],
+  "resultados_descartados": 0,
+  "sarif_runs_ignorados": [],
+  "tratados_obsoletos_apos_falha": [],
+  "analysis_date_fallback_mtime": [
+    "CVE-2018-3721",
+    "CVE-2018-3722",
+    "CVE-2018-3725",
+    "CVE-2018-3726",
+    "CVE-2018-3728",
+    "CVE-2018-3731",
+    "CVE-2018-3732",
+    "CVE-2018-3733",
+    "CVE-2018-3736",
+    "CVE-2018-3737",
+    "CVE-2018-3738",
+    "CVE-2018-3743",
+    "CVE-2018-3746",
+    "CVE-2018-3747",
+    "CVE-2018-3750",
+    "CVE-2018-3752",
+    "CVE-2018-3757",
+    "CVE-2018-3770",
+    "CVE-2018-3772",
+    "CVE-2018-3783",
+    "CVE-2018-3786",
+    "CVE-2018-6184",
+    "CVE-2018-6333",
+    "CVE-2018-6341",
+    "CVE-2018-6342",
+    "CVE-2018-7560",
+    "CVE-2018-7651",
+    "CVE-2019-10061",
+    "CVE-2019-10090"
+  ],
+  "semgrep_rules_applied": [],
+  "semgrep_rules_applied_anomalo": [],
+  "codeql_versao_inesperada": [],
+  "security_severity_ilegivel": [],
+  "duracao_segundos": {
+    "total": 0.1506,
+    "por_cve_mediana": 0.0015,
+    "por_cve_maximo": 0.0516,
+    "por_cve_maximo_cve": "CVE-2018-6333"
+  },
+  "lista": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/datasets/listas/cves-sast.txt",
+  "raw_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/codeql/raw",
+  "treated_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/codeql/treated"
+}

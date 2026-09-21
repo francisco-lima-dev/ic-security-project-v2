@@ -1,0 +1,299 @@
+{
+  "ferramenta": "semgrep",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-17T01:16:20.283007Z",
+  "cves": {
+    "processados": 30,
+    "pulados_por_idempotencia": 0,
+    "com_falha": [],
+    "linhas_da_lista_sem_raw": 193,
+    "raws_sem_linha_na_lista": [],
+    "arquivos_inesperados_no_raw_dir": []
+  },
+  "achados": {
+    "total": 625,
+    "sem_cwe": 0
+  },
+  "caminho": {
+    "achados_com_caminho_transformado": 0,
+    "motivos_aplicados": 0,
+    "achados_transformados": [],
+    "caminhos_scanned_transformados": 0,
+    "exemplos_scanned": [],
+    "ground_truth_normalizado": [
+      {
+        "cve": "CVE-2019-12041",
+        "antes": "/index.js",
+        "depois": "index.js",
+        "motivos": [
+          "barra inicial (defeito do ground truth)"
+        ]
+      }
+    ],
+    "caminhos_absolutos_nao_reconhecidos": [],
+    "nota": "NENHUM caminho de achado foi transformado: as 625 saidas ja vieram relativas e limpas."
+  },
+  "severidade": {
+    "por_valor_normalizado": {
+      "medium": 595,
+      "high": 23,
+      "low": 7
+    },
+    "regra_resolvida_sem_nivel": [],
+    "regra_nao_resolvida": [],
+    "origem_resultado": 625,
+    "origem_regra": 0
+  },
+  "cwe": {
+    "achados_sem_cwe": 0,
+    "semgrep_cadeia_nua": [
+      {
+        "cve": "CVE-2019-15782",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-18818",
+        "valor": "CWE-352: Cross-Site Request Forgery (CSRF)"
+      },
+      {
+        "cve": "CVE-2019-18818",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-5414",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-5423",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-5444",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-5483",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-5483",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-5483",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2019-5483",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      },
+      {
+        "cve": "CVE-2020-11021",
+        "valor": "CWE-319: Cleartext Transmission of Sensitive Information"
+      }
+    ],
+    "semgrep_tipo_inesperado": []
+  },
+  "gt_cwe_primary": {
+    "nulo_conjunto_vazio": [],
+    "nulo_primario_indefinido": [],
+    "conjuntos_ausentes_da_tabela": []
+  },
+  "gt_file_scanned": {
+    "true": 30,
+    "false": 0,
+    "null": 0,
+    "lista_false": [],
+    "motivos_null": {},
+    "motivos_por_estado": {
+      "true": {
+        "inventario de arquivos VARRIDOS, de paths.scanned[]. `false` significa que o arquivo ficou fora da varredura — universo distinto do inventario do CodeQL, que e de arquivos EXTRAIDOS": 30
+      }
+    }
+  },
+  "codeql_inventario": [],
+  "tool_diagnostics": {
+    "cves_com_erro": [
+      "CVE-2019-15532",
+      "CVE-2019-20174",
+      "CVE-2019-8331",
+      "CVE-2019-8903",
+      "CVE-2019-9844"
+    ],
+    "cves_com_caminho_descartado": [],
+    "cves_com_notificacao": []
+  },
+  "colisoes_chave_ordenacao": {
+    "total": 0,
+    "por_cve": []
+  },
+  "raws_ilegiveis": [],
+  "resultados_descartados": 0,
+  "sarif_runs_ignorados": [],
+  "tratados_obsoletos_apos_falha": [],
+  "analysis_date_fallback_mtime": [],
+  "semgrep_rules_applied": [
+    {
+      "cve": "CVE-2019-14862",
+      "rules_applied": 297,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-15478",
+      "rules_applied": 306,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-15479",
+      "rules_applied": 306,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-15482",
+      "rules_applied": 257,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-15532",
+      "rules_applied": 297,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-15657",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-15658",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-15782",
+      "rules_applied": 299,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-16763",
+      "rules_applied": 547,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-16769",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-17495",
+      "rules_applied": 305,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-17592",
+      "rules_applied": 306,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-18350",
+      "rules_applied": 311,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-18818",
+      "rules_applied": 297,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-18954",
+      "rules_applied": 300,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-19507",
+      "rules_applied": 256,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-20149",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-20174",
+      "rules_applied": 300,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-5413",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-5414",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-5423",
+      "rules_applied": 256,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-5444",
+      "rules_applied": 256,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-5479",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-5483",
+      "rules_applied": 299,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-5484",
+      "rules_applied": 296,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-8331",
+      "rules_applied": 297,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-8903",
+      "rules_applied": 300,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2019-9844",
+      "rules_applied": 256,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2020-11021",
+      "rules_applied": 306,
+      "rules_total": 1074
+    },
+    {
+      "cve": "CVE-2020-11022",
+      "rules_applied": 296,
+      "rules_total": 1074
+    }
+  ],
+  "semgrep_rules_applied_anomalo": [],
+  "codeql_versao_inesperada": [],
+  "security_severity_ilegivel": [],
+  "duracao_segundos": {
+    "total": 0.7082,
+    "por_cve_mediana": 0.0053,
+    "por_cve_maximo": 0.2995,
+    "por_cve_maximo_cve": "CVE-2019-18818"
+  },
+  "lista": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/datasets/listas/cves-sast.txt",
+  "raw_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/semgrep/raw",
+  "treated_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/semgrep/treated"
+}

@@ -1,6 +1,7 @@
 # Campanha SAST de 16–17/09/2026 — registro de execução
 
-Dois agregados e os 24 logs de execução por lote.
+Dois agregados, os 24 logs de execução e os 24 relatórios de normalização
+por lote.
 
 ## Os 24 logs de execução
 
@@ -42,6 +43,61 @@ partir do repositório. Os artifacts expiram em 15/12/2026 (`aa`, `ab`) e
 | `cves-sast-batch-ah` | codeql | `35169213227` | `lote-cves-sast-batch-ah-codeql-35169213227-1` | 13 | `ed9846b75cf60463d61e84ccbfa7251df8a537c79bfb5c83ea34debda4eb93e7` |
 | `cves-sast-batch-ah` | semgrep | `35169213227` | `lote-cves-sast-batch-ah-semgrep-35169213227-1` | 13 | `2c3e1fe529c494c9b2d2f3d7bb26168ae7d4b3fef6c6a0f60a6e150c935dd990` |
 | `cves-sast-batch-ah` | snyk-code | `35169213227` | `lote-cves-sast-batch-ah-snyk-code-35169213227-1` | 13 | `af1c160442f7fa9d957a980ecc86dc7c01d1228df811ee556f344d267e6a95b6` |
+
+## Os 24 relatórios de normalização
+
+`cves-sast-batch-<lote>/normalize-report-<ferramenta>.json` é cópia **byte a
+byte** do `logs/normalize-report-<ferramenta>.json` do artifact da mesma
+execução, gerado pelo `tools/normalize.py` dentro do job do lote. Baixado com
+`gh run download` em 21/09/2026 e conferido com `cmp`. Os artifacts são os
+mesmos da tabela acima: os 24 `execution-log-*.csv` do download de 21/09 batem
+byte a byte com os versionados em 18/09.
+
+Até 21/09/2026 nenhum destes estava no repositório. Os três
+`logs/normalize-report-*.json` da raiz são do ensaio **local** da Fase E, e os
+de `logs/ensaio-fumaca-2026-09-16/` são do ensaio de fumaça.
+
+Os 24 trazem `schema_version` `1.3`. Somados: processados 221 / 221 / 216
+(CodeQL / Semgrep / Snyk Code), `pulados_por_idempotencia` 0, `com_falha` 0,
+`raws_ilegiveis` 0 e órfãos 0. Os 658 tratados dos artifacts são idênticos
+byte a byte aos versionados em `results/*/treated/`.
+
+Os campos `lista`, `raw_dir` e `treated_dir` guardam caminhos absolutos **do
+runner** (`/home/runner/work/…`). São o que a execução gravou, e nenhum deles
+é caminho da máquina do operador.
+
+| Lote | Ferramenta | Execução | Processados | Duração (s) | Colisões | sha256 |
+|---|---|---|---:|---:|---:|---|
+| `cves-sast-batch-aa` | codeql | `35106944490` | 29 | 0.0793 | 0 | `6cbfe532cea58eaea6b96620b3b95d70fc4bd950a501d352d6adf8b289a59d43` |
+| `cves-sast-batch-aa` | semgrep | `35106944490` | 29 | 0.5575 | 0 | `b7cd945ef37bbce3e15ce150f61122bd5d833723026dbd21f2ff4ea3aec1e805` |
+| `cves-sast-batch-aa` | snyk-code | `35106944490` | 29 | 0.02 | 0 | `bfcaf0cf2bebb3e3579129390137b95a99887455b9b0f15014031b9bdf94f52c` |
+| `cves-sast-batch-ab` | codeql | `35135927579` | 30 | 0.0748 | 0 | `392d82d1bb2c179535002292b38116c43cdd494c8747d5c98312e4a1dc510b60` |
+| `cves-sast-batch-ab` | semgrep | `35135927579` | 30 | 2.2639 | 0 | `c9953eceda4ddc9555e59b3e52878b4c4104be41e6209384a002cf3042689810` |
+| `cves-sast-batch-ab` | snyk-code | `35135927579` | 30 | 0.0221 | 0 | `032ba59992117864ccac0c2ee7b94b2a11bc2ae1b796bd7b8b7d4513b3f21adf` |
+| `cves-sast-batch-ac` | codeql | `35169202777` | 30 | 0.1618 | 0 | `d6028d56bffa5d4165a6df63af97f40a9b9add1c3c527fc678cc2fcc5bacde2b` |
+| `cves-sast-batch-ac` | semgrep | `35169202777` | 30 | 11.2237 | 0 | `1258b1563b6093bb59d6f5f84028f6e8714decd232b6b148794e42f8a2932a69` |
+| `cves-sast-batch-ac` | snyk-code | `35169202777` | 28 | 0.0266 | 0 | `0ff5e51151188db4158497a0aae4a324a5b8642d8bedf2e85ef5f669be9f73df` |
+| `cves-sast-batch-ad` | codeql | `35169205115` | 29 | 0.1506 | 0 | `5c21f98a2ddcb09a5d77fb495c7646687d07fc40732f8fa7e41e38fc98b7acf9` |
+| `cves-sast-batch-ad` | semgrep | `35169205115` | 29 | 4.5518 | 0 | `2c8c2583e80ad3331c0518a9c2b3ac2326fb952b65eb1a8e491cc9b1b2b443c7` |
+| `cves-sast-batch-ad` | snyk-code | `35169205115` | 27 | 0.1103 | 0 | `c8a3cdaee3cd888e05dfb96285a2b1520d99c292277a9a99f32fba29c60b2846` |
+| `cves-sast-batch-ae` | codeql | `35169207030` | 30 | 0.1769 | 0 | `f5327f76bf5221973765f44bc64b196cf5e4387bb170f9c26c672e73dd111e4d` |
+| `cves-sast-batch-ae` | semgrep | `35169207030` | 30 | 1.4236 | 0 | `7da62c79e3ec968888d82b72c2d7a6755dfbf65516f58d425ea4dfbaf3921770` |
+| `cves-sast-batch-ae` | snyk-code | `35169207030` | 30 | 0.0456 | 0 | `9eff78544fe8487e037a14b331ecb36a70e211c64c30eb4ce5ca6f92bf6c21a9` |
+| `cves-sast-batch-af` | codeql | `35169209525` | 30 | 0.094 | 0 | `0a147c3895710a6aca2d1450643877045b485a5e13c519586071ababaef18bbc` |
+| `cves-sast-batch-af` | semgrep | `35169209525` | 30 | 0.7082 | 0 | `1e1504913ad13a041a5229531135efd8e1c9c74b9ceeceb3606d9c084409d867` |
+| `cves-sast-batch-af` | snyk-code | `35169209525` | 29 | 0.025 | 0 | `de02ffee2cbf375916f363322345ec54be24d9f6ec4fa638058955195916db94` |
+| `cves-sast-batch-ag` | codeql | `35169211662` | 30 | 0.1539 | 0 | `098d8c4f1645700f4a8b7ffbf787911c9e5e7fd8cf16d8e57f4e9f4073c1a7f8` |
+| `cves-sast-batch-ag` | semgrep | `35169211662` | 30 | 4.1063 | 0 | `942ada4052727590ddcd697a2b7fdf198e9b90ab6318703bff6d9298753d4dec` |
+| `cves-sast-batch-ag` | snyk-code | `35169211662` | 30 | 0.0416 | 0 | `17661a695c4ae7ab32a1b196cef18c1e02f699a97ac2af47b127684cdd948230` |
+| `cves-sast-batch-ah` | codeql | `35169213227` | 13 | 0.0638 | 0 | `2953d89397b5acc931a49b3d78919fe7daba119d34a447afe5c881c4b693f3f2` |
+| `cves-sast-batch-ah` | semgrep | `35169213227` | 13 | 0.8188 | 0 | `5ce1b5c1795c4e98e29d0f61b1666c7039be2a1a04186b3fcdf1a5c5c1e8830e` |
+| `cves-sast-batch-ah` | snyk-code | `35169213227` | 13 | 0.0162 | 0 | `5b6bb1241ec952fbf1f0a9c2a2be9816409df2364ab31ce5bc117141de5f1872` |
+
+Duração e colisões são os campos `duracao_segundos.total` e
+`colisoes_chave_ordenacao.total` de cada relatório. A duração cobre o laço
+sobre os raws — leitura, conversão e escrita do tratado —, e não a carga do
+ground truth nem a da tabela de primário. Os totais somados estão no
+`CLAUDE.md`, em "Campanha SAST — resultados".
 
 ## Os dois agregados
 

@@ -1079,6 +1079,52 @@ lotes.
 Sobrecarga do laço — container menos a soma das durações por CVE: **1 a 4 s por
 lote**, nas três ferramentas.
 
+### Normalização — os 24 relatórios (apurado em 21/09/2026)
+
+**Versionados desde 21/09/2026** em
+`logs/campanha-2026-09-17/cves-sast-batch-<lote>/normalize-report-<ferramenta>.json`,
+cópia byte a byte dos artifacts, com procedência e sha256 no `README.md` do
+diretório. Até então **nenhum** estava no repositório: os três
+`logs/normalize-report-*.json` da raiz são do ensaio local da Fase E, e os de
+`logs/ensaio-fumaca-2026-09-16/` são do ensaio de fumaça.
+
+Todos no schema `1.3`, com processados 221 / 221 / 216,
+`pulados_por_idempotencia` **0** e falhas **0** — a duração somada cobre o
+conjunto inteiro, e não um remanescente.
+
+**Duração, somada sobre os oito lotes** — `duracao_segundos.total`, que mede o
+laço sobre os raws (leitura, conversão, escrita do tratado), no runner:
+
+| Ferramenta | normalização | análise (soma por CVE) | fração |
+|---|---:|---:|---:|
+| CodeQL | 0,96 s | 3,63 h | 0,007% |
+| Semgrep | 25,65 s | 1,36 h | 0,52% |
+| Snyk Code | 0,31 s | 1,14 h | 0,007% |
+
+**A premissa da §5.1 da metodologia se sustenta em volume real:** cerca de 27 s
+de normalização para as três ferramentas, contra cerca de 6 h de análise. O
+Semgrep concentra o custo pelo mesmo motivo que concentra o volume: o maior
+CVE, `CVE-2018-20801` (raw de 144,1 MiB), leva **8,72 s**, um terço do total da
+ferramenta, e o lote `ac` que o contém leva 11,2 dos 25,7 s.
+
+**Colisões da chave de ordenação: zero nas três**, sobre 18.664 achados. Isso
+reconfere em escala a propriedade que a §9.1 limitava aos 4 CVEs do ensaio
+local. O zero foi conferido por dois caminhos, porque zero sozinho não
+distingue "não há" de "não perguntei":
+
+- **recontagem independente** sobre os 658 tratados versionados, com a chave
+  completa: zero de novo
+- **controle positivo** com a chave **sem as colunas**, que é a do schema 1.1:
+  **60 / 624 / 4** colisões em **27 / 60 / 2** CVEs (CodeQL / Semgrep / Snyk
+  Code). O método acusa colisão quando ela existe, e são as colunas que a
+  levam a zero. Na Fase E, com 4 CVEs, eram 11
+
+**`rules_applied` do Semgrep, nos 221:** mínimo **144**
+(`CVE-2018-20164`), máximo **910** (`CVE-2018-11798`), mediana **296**, que é
+também a moda (79 CVEs). Quartis 296 e 302, com 39 valores distintos.
+`rules_total` é 1074 em todos, `semgrep_rules_applied_anomalo` vazio nos oito
+lotes, e os 221 valores batem com o `metadata.rules_applied` dos tratados.
+
 ### Volume dos resultados, e o que fica fora do git
 
 Medido sobre os artifacts dos oito lotes, descomprimido:
@@ -1134,6 +1180,24 @@ o caminho dela não vai a este arquivo, porque diretório na máquina do operado
 não é registro reproduzível. Comprimida com `zstd`, ela cabe em **6,4 MiB** —
 **1,0%** dos 623,1 MiB (CodeQL 54×, Semgrep 114×, Snyk Code 35×), o que por si
 já diz da natureza do volume: JSON de achado repetido é quase todo redundância.
+
+Feita em 17/09/2026. Um `tar` por ferramenta, com `zstd`:
+
+| Arquivo | bytes | sha256 |
+|---|---:|---|
+| `raws-codeql-2026-09-17.tar.zst` | 1.139.137 | `1d33ab928ddfa4214cc801bf369e15a2f280b4fcb8e593a8c5b32570dddf8162` |
+| `raws-semgrep-2026-09-17.tar.zst` | 5.033.822 | `fd2b118b8399547cdb059831a34906808b4b53dde747d6f247d5f2ba2221a822` |
+| `raws-snyk-code-2026-09-17.tar.zst` | 485.769 | `a3e68bd40bb3408a20a05e037846189a8148888b209be8ed5b46eab319702eaf` |
+
+**Conferida contra os artifacts em 21/09/2026.** Os três passam em `zstd -t`,
+e os **658 raws** contidos (221 / 221 / 216) são idênticos por sha256 aos dos
+artifacts. Nenhum falta, nenhum sobra, nenhum aparece em duplicata, e a
+contagem por lote bate. **A cópia contém só os raws.** O restante de cada
+artifact fica fora dela: `portoes/*.txt`, `container/*.txt`, `README.txt`,
+`disco.txt` e as 32 sondagens de `HOME` e de rede dos lotes. Nada disso está
+no repositório. As quatro `sondagem-*-runner-2026-09-16.txt` de
+`datasets/sondagens/` são do ensaio de fumaça e diferem das dos lotes `aa` e
+`ab`.
 
 ## Cruzamento SAST — resultados (18/09/2026)
 

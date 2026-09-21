@@ -1,0 +1,339 @@
+{
+  "ferramenta": "codeql",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-17T01:37:37.683494Z",
+  "cves": {
+    "processados": 30,
+    "pulados_por_idempotencia": 0,
+    "com_falha": [],
+    "linhas_da_lista_sem_raw": 193,
+    "raws_sem_linha_na_lista": [],
+    "arquivos_inesperados_no_raw_dir": []
+  },
+  "achados": {
+    "total": 655,
+    "sem_cwe": 0
+  },
+  "caminho": {
+    "achados_com_caminho_transformado": 0,
+    "motivos_aplicados": 0,
+    "achados_transformados": [],
+    "caminhos_scanned_transformados": 0,
+    "exemplos_scanned": [],
+    "ground_truth_normalizado": [
+      {
+        "cve": "CVE-2019-12041",
+        "antes": "/index.js",
+        "depois": "index.js",
+        "motivos": [
+          "barra inicial (defeito do ground truth)"
+        ]
+      }
+    ],
+    "caminhos_absolutos_nao_reconhecidos": [],
+    "nota": "NENHUM caminho de achado foi transformado: as 655 saidas ja vieram relativas e limpas."
+  },
+  "severidade": {
+    "por_valor_normalizado": {
+      "high": 227,
+      "medium": 428
+    },
+    "regra_resolvida_sem_nivel": [],
+    "regra_nao_resolvida": [],
+    "origem_resultado": 0,
+    "origem_regra": 655
+  },
+  "cwe": {
+    "achados_sem_cwe": 0,
+    "semgrep_cadeia_nua": [],
+    "semgrep_tipo_inesperado": []
+  },
+  "gt_cwe_primary": {
+    "nulo_conjunto_vazio": [],
+    "nulo_primario_indefinido": [],
+    "conjuntos_ausentes_da_tabela": []
+  },
+  "gt_file_scanned": {
+    "true": 30,
+    "false": 0,
+    "null": 0,
+    "lista_false": [],
+    "motivos_null": {},
+    "motivos_por_estado": {
+      "true": {
+        "inventario de arquivos EXTRAIDOS, de js/diagnostics/successfully-extracted-files. `false` significa que o arquivo nao foi extraido para o banco de dados — universo distinto do `paths.scanned` do Semgrep, que e de arquivos VARRIDOS": 30
+      }
+    }
+  },
+  "codeql_inventario": [
+    {
+      "cve": "CVE-2019-1010091",
+      "notificacao": 1407,
+      "artifacts_depurado": 1407,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-1010266",
+      "notificacao": 58,
+      "artifacts_depurado": 58,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-1020012",
+      "notificacao": 262,
+      "artifacts_depurado": 262,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10742",
+      "notificacao": 91,
+      "artifacts_depurado": 91,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10744",
+      "notificacao": 58,
+      "artifacts_depurado": 58,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10745",
+      "notificacao": 6,
+      "artifacts_depurado": 6,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10746",
+      "notificacao": 5,
+      "artifacts_depurado": 5,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10747",
+      "notificacao": 22,
+      "artifacts_depurado": 22,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10750",
+      "notificacao": 23,
+      "artifacts_depurado": 23,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10757",
+      "notificacao": 210,
+      "artifacts_depurado": 210,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10758",
+      "notificacao": 49,
+      "artifacts_depurado": 49,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10759",
+      "notificacao": 9,
+      "artifacts_depurado": 9,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10761",
+      "notificacao": 14,
+      "artifacts_depurado": 14,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10765",
+      "notificacao": 118,
+      "artifacts_depurado": 118,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10767",
+      "notificacao": 119,
+      "artifacts_depurado": 119,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10771",
+      "notificacao": 24,
+      "artifacts_depurado": 24,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10775",
+      "notificacao": 66,
+      "artifacts_depurado": 66,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10776",
+      "notificacao": 26,
+      "artifacts_depurado": 26,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10777",
+      "notificacao": 10,
+      "artifacts_depurado": 10,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10778",
+      "notificacao": 6,
+      "artifacts_depurado": 6,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10781",
+      "notificacao": 17,
+      "artifacts_depurado": 17,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-10785",
+      "notificacao": 4519,
+      "artifacts_depurado": 4519,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-11358",
+      "notificacao": 245,
+      "artifacts_depurado": 245,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-12041",
+      "notificacao": 13,
+      "artifacts_depurado": 13,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-12043",
+      "notificacao": 85,
+      "artifacts_depurado": 85,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-12313",
+      "notificacao": 13,
+      "artifacts_depurado": 13,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-13127",
+      "notificacao": 1483,
+      "artifacts_depurado": 1487,
+      "bate": false
+    },
+    {
+      "cve": "CVE-2019-13173",
+      "notificacao": 21,
+      "artifacts_depurado": 21,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-13506",
+      "notificacao": 8,
+      "artifacts_depurado": 8,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2019-14772",
+      "notificacao": 281,
+      "artifacts_depurado": 281,
+      "bate": true
+    }
+  ],
+  "tool_diagnostics": {
+    "cves_com_erro": [],
+    "cves_com_caminho_descartado": [],
+    "cves_com_notificacao": [
+      "CVE-2019-1010091",
+      "CVE-2019-1010266",
+      "CVE-2019-1020012",
+      "CVE-2019-10742",
+      "CVE-2019-10744",
+      "CVE-2019-10745",
+      "CVE-2019-10746",
+      "CVE-2019-10747",
+      "CVE-2019-10750",
+      "CVE-2019-10757",
+      "CVE-2019-10758",
+      "CVE-2019-10759",
+      "CVE-2019-10761",
+      "CVE-2019-10765",
+      "CVE-2019-10767",
+      "CVE-2019-10771",
+      "CVE-2019-10775",
+      "CVE-2019-10776",
+      "CVE-2019-10777",
+      "CVE-2019-10778",
+      "CVE-2019-10781",
+      "CVE-2019-10785",
+      "CVE-2019-11358",
+      "CVE-2019-12041",
+      "CVE-2019-12043",
+      "CVE-2019-12313",
+      "CVE-2019-13127",
+      "CVE-2019-13173",
+      "CVE-2019-13506",
+      "CVE-2019-14772"
+    ]
+  },
+  "colisoes_chave_ordenacao": {
+    "total": 0,
+    "por_cve": []
+  },
+  "raws_ilegiveis": [],
+  "resultados_descartados": 0,
+  "sarif_runs_ignorados": [],
+  "tratados_obsoletos_apos_falha": [],
+  "analysis_date_fallback_mtime": [
+    "CVE-2019-1010091",
+    "CVE-2019-1010266",
+    "CVE-2019-1020012",
+    "CVE-2019-10742",
+    "CVE-2019-10744",
+    "CVE-2019-10745",
+    "CVE-2019-10746",
+    "CVE-2019-10747",
+    "CVE-2019-10750",
+    "CVE-2019-10757",
+    "CVE-2019-10758",
+    "CVE-2019-10759",
+    "CVE-2019-10761",
+    "CVE-2019-10765",
+    "CVE-2019-10767",
+    "CVE-2019-10771",
+    "CVE-2019-10775",
+    "CVE-2019-10776",
+    "CVE-2019-10777",
+    "CVE-2019-10778",
+    "CVE-2019-10781",
+    "CVE-2019-10785",
+    "CVE-2019-11358",
+    "CVE-2019-12041",
+    "CVE-2019-12043",
+    "CVE-2019-12313",
+    "CVE-2019-13127",
+    "CVE-2019-13173",
+    "CVE-2019-13506",
+    "CVE-2019-14772"
+  ],
+  "semgrep_rules_applied": [],
+  "semgrep_rules_applied_anomalo": [],
+  "codeql_versao_inesperada": [],
+  "security_severity_ilegivel": [],
+  "duracao_segundos": {
+    "total": 0.1769,
+    "por_cve_mediana": 0.0019,
+    "por_cve_maximo": 0.0502,
+    "por_cve_maximo_cve": "CVE-2019-10785"
+  },
+  "lista": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/datasets/listas/cves-sast.txt",
+  "raw_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/codeql/raw",
+  "treated_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/codeql/treated"
+}

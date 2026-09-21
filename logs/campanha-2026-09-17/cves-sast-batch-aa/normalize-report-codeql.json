@@ -1,0 +1,331 @@
+{
+  "ferramenta": "codeql",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-16T14:40:59.435830Z",
+  "cves": {
+    "processados": 29,
+    "pulados_por_idempotencia": 0,
+    "com_falha": [],
+    "linhas_da_lista_sem_raw": 194,
+    "raws_sem_linha_na_lista": [],
+    "arquivos_inesperados_no_raw_dir": []
+  },
+  "achados": {
+    "total": 245,
+    "sem_cwe": 0
+  },
+  "caminho": {
+    "achados_com_caminho_transformado": 0,
+    "motivos_aplicados": 0,
+    "achados_transformados": [],
+    "caminhos_scanned_transformados": 0,
+    "exemplos_scanned": [],
+    "ground_truth_normalizado": [
+      {
+        "cve": "CVE-2019-12041",
+        "antes": "/index.js",
+        "depois": "index.js",
+        "motivos": [
+          "barra inicial (defeito do ground truth)"
+        ]
+      }
+    ],
+    "caminhos_absolutos_nao_reconhecidos": [],
+    "nota": "NENHUM caminho de achado foi transformado: as 245 saidas ja vieram relativas e limpas."
+  },
+  "severidade": {
+    "por_valor_normalizado": {
+      "medium": 177,
+      "high": 68
+    },
+    "regra_resolvida_sem_nivel": [],
+    "regra_nao_resolvida": [],
+    "origem_resultado": 0,
+    "origem_regra": 245
+  },
+  "cwe": {
+    "achados_sem_cwe": 0,
+    "semgrep_cadeia_nua": [],
+    "semgrep_tipo_inesperado": []
+  },
+  "gt_cwe_primary": {
+    "nulo_conjunto_vazio": [],
+    "nulo_primario_indefinido": [],
+    "conjuntos_ausentes_da_tabela": []
+  },
+  "gt_file_scanned": {
+    "true": 29,
+    "false": 0,
+    "null": 0,
+    "lista_false": [],
+    "motivos_null": {},
+    "motivos_por_estado": {
+      "true": {
+        "inventario de arquivos EXTRAIDOS, de js/diagnostics/successfully-extracted-files. `false` significa que o arquivo nao foi extraido para o banco de dados — universo distinto do `paths.scanned` do Semgrep, que e de arquivos VARRIDOS": 29
+      }
+    }
+  },
+  "codeql_inventario": [
+    {
+      "cve": "CVE-2016-10735",
+      "notificacao": 108,
+      "artifacts_depurado": 108,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-0931",
+      "notificacao": 4,
+      "artifacts_depurado": 4,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-1000006",
+      "notificacao": 825,
+      "artifacts_depurado": 825,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-1000219",
+      "notificacao": 3,
+      "artifacts_depurado": 3,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-1000427",
+      "notificacao": 113,
+      "artifacts_depurado": 113,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-1001004",
+      "notificacao": 25,
+      "artifacts_depurado": 25,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-10910",
+      "notificacao": 47,
+      "artifacts_depurado": 47,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-15010",
+      "notificacao": 22,
+      "artifacts_depurado": 22,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16003",
+      "notificacao": 20,
+      "artifacts_depurado": 20,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16006",
+      "notificacao": 82,
+      "artifacts_depurado": 82,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16011",
+      "notificacao": 94,
+      "artifacts_depurado": 94,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16014",
+      "notificacao": 34,
+      "artifacts_depurado": 34,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16018",
+      "notificacao": 45,
+      "artifacts_depurado": 45,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16023",
+      "notificacao": 4,
+      "artifacts_depurado": 4,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16026",
+      "notificacao": 73,
+      "artifacts_depurado": 73,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16028",
+      "notificacao": 16,
+      "artifacts_depurado": 16,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16029",
+      "notificacao": 13,
+      "artifacts_depurado": 13,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16030",
+      "notificacao": 21,
+      "artifacts_depurado": 21,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16031",
+      "notificacao": 64,
+      "artifacts_depurado": 64,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16034",
+      "notificacao": 10,
+      "artifacts_depurado": 10,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16042",
+      "notificacao": 3,
+      "artifacts_depurado": 3,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16043",
+      "notificacao": 82,
+      "artifacts_depurado": 82,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16082",
+      "notificacao": 114,
+      "artifacts_depurado": 114,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16083",
+      "notificacao": 48,
+      "artifacts_depurado": 48,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16084",
+      "notificacao": 2,
+      "artifacts_depurado": 2,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16087",
+      "notificacao": 9,
+      "artifacts_depurado": 9,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16098",
+      "notificacao": 6,
+      "artifacts_depurado": 6,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16100",
+      "notificacao": 6,
+      "artifacts_depurado": 6,
+      "bate": true
+    },
+    {
+      "cve": "CVE-2017-16107",
+      "notificacao": 6,
+      "artifacts_depurado": 6,
+      "bate": true
+    }
+  ],
+  "tool_diagnostics": {
+    "cves_com_erro": [],
+    "cves_com_caminho_descartado": [],
+    "cves_com_notificacao": [
+      "CVE-2016-10735",
+      "CVE-2017-0931",
+      "CVE-2017-1000006",
+      "CVE-2017-1000219",
+      "CVE-2017-1000427",
+      "CVE-2017-1001004",
+      "CVE-2017-10910",
+      "CVE-2017-15010",
+      "CVE-2017-16003",
+      "CVE-2017-16006",
+      "CVE-2017-16011",
+      "CVE-2017-16014",
+      "CVE-2017-16018",
+      "CVE-2017-16023",
+      "CVE-2017-16026",
+      "CVE-2017-16028",
+      "CVE-2017-16029",
+      "CVE-2017-16030",
+      "CVE-2017-16031",
+      "CVE-2017-16034",
+      "CVE-2017-16042",
+      "CVE-2017-16043",
+      "CVE-2017-16082",
+      "CVE-2017-16083",
+      "CVE-2017-16084",
+      "CVE-2017-16087",
+      "CVE-2017-16098",
+      "CVE-2017-16100",
+      "CVE-2017-16107"
+    ]
+  },
+  "colisoes_chave_ordenacao": {
+    "total": 0,
+    "por_cve": []
+  },
+  "raws_ilegiveis": [],
+  "resultados_descartados": 0,
+  "sarif_runs_ignorados": [],
+  "tratados_obsoletos_apos_falha": [],
+  "analysis_date_fallback_mtime": [
+    "CVE-2016-10735",
+    "CVE-2017-0931",
+    "CVE-2017-1000006",
+    "CVE-2017-1000219",
+    "CVE-2017-1000427",
+    "CVE-2017-1001004",
+    "CVE-2017-10910",
+    "CVE-2017-15010",
+    "CVE-2017-16003",
+    "CVE-2017-16006",
+    "CVE-2017-16011",
+    "CVE-2017-16014",
+    "CVE-2017-16018",
+    "CVE-2017-16023",
+    "CVE-2017-16026",
+    "CVE-2017-16028",
+    "CVE-2017-16029",
+    "CVE-2017-16030",
+    "CVE-2017-16031",
+    "CVE-2017-16034",
+    "CVE-2017-16042",
+    "CVE-2017-16043",
+    "CVE-2017-16082",
+    "CVE-2017-16083",
+    "CVE-2017-16084",
+    "CVE-2017-16087",
+    "CVE-2017-16098",
+    "CVE-2017-16100",
+    "CVE-2017-16107"
+  ],
+  "semgrep_rules_applied": [],
+  "semgrep_rules_applied_anomalo": [],
+  "codeql_versao_inesperada": [],
+  "security_severity_ilegivel": [],
+  "duracao_segundos": {
+    "total": 0.0793,
+    "por_cve_mediana": 0.0013,
+    "por_cve_maximo": 0.0205,
+    "por_cve_maximo_cve": "CVE-2017-1000006"
+  },
+  "lista": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/datasets/listas/cves-sast.txt",
+  "raw_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/codeql/raw",
+  "treated_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/codeql/treated"
+}

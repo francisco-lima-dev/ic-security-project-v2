@@ -1,0 +1,107 @@
+{
+  "ferramenta": "snyk-code",
+  "schema_version": "1.3",
+  "gerado_em": "2026-09-16T18:48:59.150018Z",
+  "cves": {
+    "processados": 30,
+    "pulados_por_idempotencia": 0,
+    "com_falha": [],
+    "linhas_da_lista_sem_raw": 193,
+    "raws_sem_linha_na_lista": [],
+    "arquivos_inesperados_no_raw_dir": []
+  },
+  "achados": {
+    "total": 269,
+    "sem_cwe": 0
+  },
+  "caminho": {
+    "achados_com_caminho_transformado": 0,
+    "motivos_aplicados": 0,
+    "achados_transformados": [],
+    "caminhos_scanned_transformados": 0,
+    "exemplos_scanned": [],
+    "ground_truth_normalizado": [
+      {
+        "cve": "CVE-2019-12041",
+        "antes": "/index.js",
+        "depois": "index.js",
+        "motivos": [
+          "barra inicial (defeito do ground truth)"
+        ]
+      }
+    ],
+    "caminhos_absolutos_nao_reconhecidos": [],
+    "nota": "NENHUM caminho de achado foi transformado: as 269 saidas ja vieram relativas e limpas."
+  },
+  "severidade": {
+    "por_valor_normalizado": {
+      "low": 177,
+      "medium": 64,
+      "high": 28
+    },
+    "regra_resolvida_sem_nivel": [],
+    "regra_nao_resolvida": [],
+    "origem_resultado": 269,
+    "origem_regra": 0
+  },
+  "cwe": {
+    "achados_sem_cwe": 0,
+    "semgrep_cadeia_nua": [],
+    "semgrep_tipo_inesperado": []
+  },
+  "gt_cwe_primary": {
+    "nulo_conjunto_vazio": [
+      "CVE-2018-1000096"
+    ],
+    "nulo_primario_indefinido": [],
+    "conjuntos_ausentes_da_tabela": []
+  },
+  "gt_file_scanned": {
+    "true": 0,
+    "false": 0,
+    "null": 30,
+    "lista_false": [],
+    "motivos_null": {
+      "coverage[] agregada, sem inventario de caminhos: nao decide sobre um arquivo": 30
+    },
+    "motivos_por_estado": {
+      "null": {
+        "coverage[] agregada, sem inventario de caminhos: nao decide sobre um arquivo": 30
+      }
+    }
+  },
+  "codeql_inventario": [],
+  "tool_diagnostics": {
+    "cves_com_erro": [
+      "CVE-2017-18214",
+      "CVE-2017-18635",
+      "CVE-2018-11615",
+      "CVE-2018-11798",
+      "CVE-2018-14040"
+    ],
+    "cves_com_caminho_descartado": [],
+    "cves_com_notificacao": []
+  },
+  "colisoes_chave_ordenacao": {
+    "total": 0,
+    "por_cve": []
+  },
+  "raws_ilegiveis": [],
+  "resultados_descartados": 0,
+  "sarif_runs_ignorados": [],
+  "tratados_obsoletos_apos_falha": [],
+  "analysis_date_fallback_mtime": [],
+  "semgrep_rules_applied": [],
+  "semgrep_rules_applied_anomalo": [],
+  "codeql_versao_inesperada": [],
+  "security_severity_ilegivel": [],
+  "duracao_segundos": {
+    "total": 0.0221,
+    "por_cve_mediana": 0.0003,
+    "por_cve_maximo": 0.0082,
+    "por_cve_maximo_cve": "CVE-2018-11798"
+  },
+  "lista": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/datasets/listas/cves-sast.txt",
+  "raw_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/snyk-code/raw",
+  "treated_dir": "/home/runner/work/ic-security-project-v2/ic-security-project-v2/results/snyk-code/treated"
+}
