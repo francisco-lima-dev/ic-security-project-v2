@@ -1,4 +1,4 @@
-# Metodologia — V8
+# Metodologia — V9
 
 **Comparação de abordagens SAST e DAST na detecção de vulnerabilidades em aplicações JavaScript/TypeScript**
 
@@ -25,11 +25,32 @@ Os relatórios da campanha DAST integram o repositório do estudo, o que torna a
 
 O repositório do estudo foi publicado em acesso público em setembro de 2026, conforme a Seção 5.5, o que satisfaz o pré-requisito operacional da infraestrutura descrita na Seção 3.1. Este documento integra o repositório.
 
+Os procedimentos que apuram a proveniência do ground truth passaram a integrar o repositório em setembro de 2026, sob `tools/ground-truth/`, com descritor próprio dos estados fixados de cada catálogo. Deixa de subsistir a condição, declarada nas versões anteriores, de que aquele era o único achado do estudo que um terceiro não reproduzia — e a reexecução do procedimento **corrigiu o número**, conforme a Seção 2.2.2.
+
 Nenhum resultado de detecção é apresentado aqui. Este é um documento de método. Constituem exceção os números da caracterização do ground truth (Seção 2.2), que descrevem o instrumento de medida e não o desempenho das ferramentas.
 
 ---
 
 ## Registro de alterações
+
+### Versão 9
+
+Esta versão incorpora a reconstrução, o versionamento e a reexecução do procedimento que apura a proveniência do ground truth. A reexecução, com o estado do catálogo fixado por commit em lugar de por data, **corrige o número de manchete do achado**: 163 de 223, e não 185. A hipótese sobrevive intacta e ganha evidência de ordem cronológica que a versão anterior não tinha.
+
+| Seção | Tipo | Alteração |
+|---|---|---|
+| Nota, 2.2.2 | Acréscimo | Os procedimentos de proveniência passam a integrar o repositório; a condição de achado não reproduzível deixa de subsistir. |
+| 2.2.2 | **Correção** | O cotejo contra o estado de referência dá **163 de 223 (73,1%)**, com 163 de 163 de identidade de conjunto. Os 185 registrados correspondem ao estado do catálogo dois dias posterior ao commit do release do benchmark. |
+| 2.2.2 | Acréscimo | Estado de referência fixado por commit, com o critério declarado; sensibilidade do resultado à data de corte; achado de ordem cronológica e reescrita de rótulos pelo benchmark. |
+| 2.2.2 | Correção | A divergência entre a documentação e a instância do benchmark, antes registrada como contemporânea e não explicada, é explicada pela reescrita de rótulos. |
+| 4.4 | Acréscimo | Os limites de obtenção do código, isoladamente, não satisfazem a condição aritmética contra o teto do job; a decisão de manter o tamanho de lote passa a apoiar-se em comportamento medido, com sinal de vigilância próprio. |
+| 4.6 | Acréscimo | O registro de execução passa a distinguir estouro de limite de recusa do servidor, e a contagem de recurso ao clone de contingência passa a existir como conferência. |
+| 4.7 | Correção | O identificador de usuário do ambiente da campanha deixa de ser premissa e passa a medição datada. |
+| 8.5 | Acréscimo | Os fluxos de trabalho passam a submeter-se à revisão prévia, por decisão fundada em defeito real. |
+| 9.2 | Correção | Proporção da proveniência corrigida de 83% para 73,1% nas duas ocorrências. |
+| 9.5 | Acréscimo | Registro da explicação refutada e da reincidência do padrão na própria revisão. |
+| 10 | Acréscimo | Decisões 69 a 72. |
+| 11 | Correção | Pendência do alcance do limite de tempo sobre a obtenção resolvida por inspeção e retirada. |
 
 ### Versão 8
 
@@ -231,19 +252,55 @@ Procedeu-se, em setembro de 2026, à medição direta da estrutura do conjunto, 
 
 A repetição literal de conjuntos de CWE descrita na subseção anterior motivou a investigação de sua origem. A hipótese examinada foi a de que os rótulos do ground truth derivassem do catálogo de consultas de uma das ferramentas integradas ao benchmark, e não de classificação independente de cada CVE.
 
-**Método.** O campo de descrição textual de cada weakness foi cotejado, após normalização tipográfica, com o campo `@name` das consultas do pacote JavaScript do CodeQL. Para os casos correspondentes, comparou-se o conjunto de CWEs do ground truth com as tags `external/cwe/` declaradas no cabeçalho da própria consulta. A comparação foi realizada primeiro contra o estado atual do repositório de consultas e, em seguida, contra o estado vigente em 9 de dezembro de 2020, data do anúncio do benchmark, obtido por checkout do commit correspondente.
+**Método.** O campo de descrição textual de cada weakness foi cotejado, após normalização tipográfica, com o campo `@name` das consultas do pacote JavaScript do CodeQL. Para os casos correspondentes, comparou-se o conjunto de CWEs do ground truth com as tags `external/cwe/` declaradas no cabeçalho da própria consulta. O critério de correspondência é de **igualdade**, exata ou normalizada, nunca de subcadeia: subcadeia mede vocabulário compartilhado, e não herança de rótulo. Identificadores de CWE são normalizados para três dígitos **dos dois lados**.
+
+**O procedimento integra o repositório desde setembro de 2026**, sob `tools/ground-truth/`, e obtém cada catálogo em estado fixado por commit, sem depender de cópia local de quem apurou. Um descritor versionado registra cada commit, sua data e o critério pelo qual foi escolhido; nenhum valor é digitado duas vezes, e toda contagem aqui reproduzida provém da saída dos programas.
+
+**Estado de referência.** O cotejo é apurado contra o **último estado do catálogo integrado ao ramo principal anterior ao commit do release do benchmark**. O critério decorre da própria hipótese: para que o rótulo tenha sido herdado, a consulta que o origina precisa existir antes dele. A referência é, por construção, contagem conservadora — não credita como herança rótulo que corresponda a código ainda não integrado.
+
+A reexecução do procedimento sobre esse estado **corrigiu o resultado registrado nas versões anteriores deste documento**, que não distinguia estados do catálogo dentro do mesmo mês.
 
 | Verificação | Resultado |
 |---|---|
-| Descrições idênticas ao campo `@name` de consulta do CodeQL | 185 de 223 (83,0%) |
-| Destas, com conjunto de CWEs idêntico às tags da consulta (estado de dez/2020) | 185 de 185 (100%) |
+| Descrições idênticas ao campo `@name` de consulta do CodeQL, no estado de referência | **163 de 223 (73,1%)** |
+| Destas, com conjunto de CWEs idêntico às tags da consulta | **163 de 163 (100%)** |
 | Divergências não explicadas | 0 |
 
-O cotejo contra o estado atual do repositório de consultas produzia 108 correspondências exatas, 75 casos em que o conjunto do ground truth é subconjunto próprio das tags atuais e 2 divergências. As três situações resolvem-se pela evolução posterior do catálogo: a consulta `js/clear-text-logging`, por exemplo, declarava as tags `cwe-312`, `cwe-315` e `cwe-359` em dezembro de 2020 — exatamente o conjunto registrado no ground truth — e declara hoje `cwe-312`, `cwe-359` e `cwe-532`.
+**Sensibilidade à data de corte.** O número depende do estado do catálogo, e a dependência é inteiramente atribuível a um conjunto nomeado de casos:
+
+| Estado do catálogo | Correspondências | Identidade de conjunto |
+|---|---|---|
+| Referência — último estado integrado antes do commit do release | 163 de 223 | 163 de 163 |
+| Estado integrado dois dias depois do commit do release | 185 de 223 | 185 de 185 |
+| Estado atual do catálogo | 185 de 223 | 108 idênticos, 74 subconjuntos, 3 divergentes |
+
+A diferença entre as duas primeiras linhas são **22 CVEs de poluição de protótipo**, e nenhum outro: os 163 restantes correspondem às mesmas consultas nos dois estados, sem alteração de relação. O estado intermediário é o primeiro do ramo principal a conter a consulta sob o nome e as tags que o ground truth registra — nome e tags que a consulta preexistente adquiriu por renomeação, e não por criação (a identidade interna da consulta é a mesma nos dois estados).
+
+**A tabela registrada nas versões anteriores deste documento corresponde ao estado intermediário**, linha a linha, inclusive no número de registros sem correspondência. A correção consiste em adotar o estado que satisfaz o critério de anterioridade, e em reportar o outro como medida de sensibilidade.
+
+O cotejo contra o estado atual do repositório de consultas produz 108 correspondências exatas, 74 casos em que o conjunto do ground truth é subconjunto próprio das tags atuais e 3 divergências. As três situações resolvem-se pela evolução posterior do catálogo: a consulta `js/clear-text-logging`, por exemplo, declarava as tags `cwe-312`, `cwe-315` e `cwe-359` em dezembro de 2020 — exatamente o conjunto registrado no ground truth — e declara hoje `cwe-312`, `cwe-359` e `cwe-532`.
+
+A divisão entre subconjuntos e divergências depende de uma convenção declarada: conjunto **vazio** confrontado com consulta que declara tags é computado como divergência, e não como subconjunto, embora o vazio seja subconjunto de todo conjunto — ausência de rótulo não é concordância parcial. Sob a convenção oposta os mesmos dados dariam 108, 75 e 2, que é a leitura registrada nas versões anteriores. O programa imprime as duas contagens.
 
 **Controle.** O mesmo cotejo foi aplicado ao catálogo de regras do Semgrep, com o propósito de verificar se as descrições constituiriam vocabulário corrente da área em lugar de nomenclatura de uma ferramenta específica. Contra 2.228 regras, a correspondência exata é nula. Um critério deliberadamente frouxo — presença da descrição como subcadeia em alguma mensagem de regra — produz 17,0%, valor que o exame dos casos atribui à ocorrência de termos genéricos como injeção de código e cross-site scripting no interior de descrições relativas a outros defeitos, e não a coincidência de rótulo.
 
-**Interpretação.** O ground truth do OpenSSF CVE Benchmark não foi construído por classificação independente dos CVEs. Em 83% do conjunto, a descrição e os CWEs foram herdados da consulta do CodeQL que identificou o caso. Os 38 registros restantes apresentam descrições em prosa, específicas do caso e redigidas manualmente — o que indica duas camadas de proveniência no conjunto, correspondentes provavelmente ao núcleo original e a contribuições posteriores.
+**Interpretação.** O ground truth do OpenSSF CVE Benchmark não foi construído por classificação independente dos CVEs. Em 73,1% do conjunto, a descrição e os CWEs foram herdados da consulta do CodeQL que identificou o caso, e a identidade de conjunto é total nos casos correspondentes: não há um só em que a descrição coincida com o nome de uma consulta e o conjunto de CWEs difira das tags daquela consulta. Os registros restantes dividem-se entre descrições em prosa, específicas do caso e redigidas manualmente, e os 22 casos de poluição de protótipo tratados adiante — o que indica mais de uma camada de proveniência no conjunto.
+
+#### 2.2.2.1 Ordem cronológica e reescrita de rótulos
+
+A apuração do estado de referência tornou possível examinar a **ordem** entre a existência da consulta e o registro do rótulo, e não apenas a coincidência entre os dois. O exame incidiu sobre os 22 casos de poluição de protótipo, que são exatamente aqueles em que os dois estados do catálogo divergem.
+
+**Primeiro elemento — o estado do catálogo que os rótulos reproduzem não estava integrado ao ramo principal no momento do commit do release.** A consulta correspondente encontrava-se, então, em proposta de alteração **aberta e pública**, originada de bifurcação igualmente pública, submetida cinco dias antes do commit do release e integrada dois dias depois dele. O conjunto completo de tags que o ground truth registra passou a constar daquela proposta em janela cujo limite superior é estabelecido por objeto criado pelo próprio servidor da plataforma, e portanto independente do relógio de quem submeteu — poucas horas antes do commit do release.
+
+**Segundo elemento — o benchmark reescreveu os rótulos.** Recuperou-se o estado do conjunto anterior ao commit do release, alcançável pelo histórico que a importação achatada não preserva mas que permanece acessível por identificador. Naquele estado, os mesmos CVEs de poluição de protótipo registram a descrição e as tags da consulta **como ela constava do ramo principal**; no commit do release, registram as da mesma consulta **como ela constava da proposta**. Em um dos casos a descrição em prosa permanece idêntica e apenas o conjunto de CWEs se altera, do conjunto antigo para o novo.
+
+Cotejado contra o estado do ramo principal que o antecede, o estado anterior do benchmark apresenta a mesma identidade total de conjunto: 181 correspondências, 181 idênticas.
+
+**Leitura.** Em ambos os momentos, o estado da consulta precede o rótulo. A direção é, portanto, a de herança, e não a de coincidência de nomenclatura: o conjunto acompanhou a evolução da consulta durante a semana que antecedeu sua publicação.
+
+**O que não se estabelece.** De onde os autores do conjunto obtiveram o estado da proposta — da proposta pública ou de cópia própria; se o estado anterior do conjunto era público; e a hora de **publicação** do release, da qual se conhece apenas a data do commit, gravada pelo cliente.
+
+**Consequência sobre a divergência documental.** A discrepância entre a especificação do benchmark e o arquivo de dados distribuído, registrada adiante e descrita nas versões anteriores como contemporânea e não explicada, passa a ter explicação: a especificação registra a descrição e o identificador da consulta **no estado anterior**, e o arquivo de dados, os do estado da proposta. Os dois arquivos entraram no mesmo release porque a reescrita alcançou o arquivo de dados e não alcançou a documentação.
 
 **Evidência documental corroborante.** O arquivo `docs/benchmark-CVEs.md`, que especifica o formato dos registros, emprega o `CVE-2020-8203` como exemplo canônico. A instância ali apresentada difere da efetivamente distribuída no diretório `CVEs/`, para o mesmo CVE, no mesmo commit e na mesma linha: a documentação registra a descrição em prosa "Prototype pollution in utility function" e um único identificador, CWE-471; o arquivo de dados registra a descrição "Prototype-polluting function" — nome de consulta do CodeQL — e cinco identificadores, entre os quais o CWE-471 não figura. A discrepância entre a especificação e a instância é contemporânea: ambos os arquivos foram introduzidos no mesmo release.
 
@@ -255,7 +312,9 @@ Não se localizou, na literatura consultada, registro dessa característica. Tra
 
 Essa constatação não desqualifica o benchmark, cuja utilidade para avaliação de ferramentas estáticas permanece. Ela delimita o que a comparação mede, e por isso é declarada entre as ameaças à validade (Seção 9.2) e incorporada ao protocolo de análise (Seções 7.1 e 7.4).
 
-Registra-se, como subproduto de interesse para reprodutibilidade, que o procedimento fornece meio de recuperar o CWE pretendido pelo benchmark para qualquer CVE do núcleo: basta consultar as tags da respectiva consulta no estado de dezembro de 2020.
+Registra-se, como subproduto de interesse para reprodutibilidade, que o procedimento fornece meio de recuperar o CWE pretendido pelo benchmark para qualquer CVE do núcleo: basta consultar as tags da respectiva consulta no estado de referência fixado pelo descritor.
+
+**Limitação de reprodução, declarada.** Não está estabelecido, e não há como estabelecer, qual estado do catálogo a apuração **original** empregou: ela não deixou programa em arquivo nem registro do commit consultado. Os programas auxiliares encontrados junto ao conjunto de dados foram lidos integralmente e não são o cotejo — leem apenas os arquivos do benchmark e não consultam catálogo algum. O procedimento ora versionado é reprodução do método descrito, com o estado fixado pelo critério declarado acima, e não reconstituição do que se fez então.
 
 #### 2.2.3 Defeitos conhecidos do conjunto de dados
 
@@ -423,7 +482,15 @@ Daí três exigências do protocolo atual, ausentes daquela série: obtenção d
 
 **Fronteira do que essa observação estabelece.** A série de julho era exploratória, tinha o repositório por unidade de iteração, empregava suíte mais ampla e analisava o HEAD. Estabelece que o teto interrompe, e que a perda pode apresentar-se como aviso. **Não** estabelece duração por CVE, tamanho de lote seguro, nem a razão entre as durações dos dois ambientes.
 
-A condição que torna a garantia aritmética, e não dependente de comportamento, é que o produto entre o tamanho do lote e o limite por invocação caiba no teto do job. O valor corrente do limite não satisfaz essa condição: foi fixado contra os máximos observados no ensaio local, que é critério distinto e mais frouxo. É, portanto, provisório, e sua revisão depende de duas grandezas ainda não medidas — a razão entre as durações do ambiente da campanha e as do hospedeiro local, e a manutenção do tamanho de lote corrente. Não havendo valor confortável, o parâmetro a revisar é o tamanho do lote, e não o limite.
+A condição que torna a garantia aritmética, e não dependente de comportamento, é que o produto entre o tamanho do lote e o limite por invocação caiba no teto do job. O valor corrente do limite não satisfaz essa condição: foi fixado contra os máximos observados no ensaio local, que é critério distinto e mais frouxo.
+
+**A condição não é satisfazível com os limites adotados, e a apuração que o estabeleceu é de setembro de 2026.** Inspecionaram-se os programas de análise quanto a quais invocações estão sob limite de tempo. Verificou-se que a obtenção do código-fonte está sob limite — tanto a obtenção rasa quanto o clone de contingência —, o que resolve a pendência que a versão anterior deste documento registrava. Mas a soma dos dois limites, multiplicada pelo tamanho de lote corrente, **já excede o teto do job antes de qualquer análise**. Nenhum valor do limite de análise torna a condição satisfazível, e reduzir o lote ao ponto de satisfazê-la o levaria a uma ordem de grandeza incompatível com a campanha.
+
+**Decisão, registrada com sua razão.** Mantém-se o tamanho de lote corrente, e a decisão passa a apoiar-se em **comportamento medido** — obtenção rasa da ordem de segundos, recurso ao clone de contingência raro por medição (Seção 4.3) — e não no limite de pior caso. Para que o lote excedesse o teto seria preciso que cerca de metade dos seus itens atingisse simultaneamente o pior caso completo de obtenção, o que não constitui variação, e sim falha sistêmica do serviço de hospedagem ou da rede do ambiente.
+
+A garantia é, portanto, **probabilística e declarada**, e não aritmética. Isso obriga a que exista sinal de vigilância, e é o que a Seção 4.6 estabelece: a contagem de recurso ao clone de contingência, discriminada por causa. Sem ela a decisão não teria instrumento, e a alternativa — orçamento de tempo por lote, com estado próprio de registro — foi examinada e descartada por acrescentar estado ao vocabulário do registro sem economizar execução, já que a idempotência é inerte no ambiente da campanha.
+
+O limite de análise permanece provisório e será revisto a partir da razão entre as durações dos dois ambientes, apurada no ensaio de fumaça.
 
 A medição é local e não transfere para o ambiente da campanha, conforme declarado na Seção 9.1; o ensaio de fumaça que antecede o primeiro lote a refaz onde a campanha de fato executa.
 
@@ -596,6 +663,14 @@ A regra é declarada antes da execução, deliberadamente, para que a decisão n
 
 **Forma de verificação do tratamento.** O conjunto de 223 CVEs é constituído por aplicações JavaScript e TypeScript, de modo que a condição de não haver projeto suportado, embora possível, não é dele esperada; a busca dirigida por um CVE que a produza não é justificável pelo custo. O tratamento é exercitado por execução controlada, em que o código de saída da ferramenta é reproduzido fora do laço da campanha, e essa forma é declarada. A ocorrência real, se houver, é apurada pela própria campanha, cujo inventário de cobertura responde sobre os 223 — a verificação empírica é, portanto, resultado do estudo, e não pré-requisito de sua execução.
 
+**Estouro de limite distinguido de recusa do servidor.** As invocações de obtenção do código passaram, em setembro de 2026, a registrar o código de retorno em variável antes de decidir o ramo, e a declarar na mensagem quando houve **estouro do limite de tempo**. Antes disso o código era consumido pela condição do desvio e se perdia: estouro de limite e recusa do servidor — causas opostas, uma de lentidão e outra de ausência do objeto referido — produziam linha de registro byte a byte idêntica. A disciplina era a que as invocações de análise já seguiam, e faltava apenas na obtenção.
+
+A correção é pré-requisito da decisão registrada na Seção 4.4: a contagem de recurso ao clone de contingência é o sinal de vigilância que sustenta a manutenção do tamanho de lote, e um sinal que soma dois eventos de causas opostas não serve ao fim que motiva sua existência.
+
+**Contagem do recurso ao clone de contingência.** O programa de conferência do registro passou a apurá-la, como métrica e não como incoerência: não faz a conferência falhar, conta e reporta. Discrimina a causa da obtenção rasa — estouro de limite, outro código de retorno, ou indeterminada — e reporta em separado os casos em que o próprio clone de contingência falhou.
+
+Duas propriedades da contagem são declaradas. **O corpus de registros tem dois vocabulários** para a mesma condição: os registros anteriores a setembro de 2026, versionados, empregam a redação que não discrimina causa, e não são editados; a contagem reconhece as duas formas, reporta quantas linhas casaram cada uma, e computa como indeterminada a causa que a forma antiga não permite apurar. E **a contagem é piso, não valor exato**, sempre que houver reexecução: a conferência considera a última linha de cada CVE, e a reexecução substitui a linha do CVE que recorreu ao clone pela linha da reexecução. A saída declara essa condição quando ela ocorre.
+
 **Escrita atômica da saída bruta.** A saída de cada ferramenta é escrita em nome temporário e renomeada para o nome definitivo apenas após validação. A verificação de idempotência incide sobre o nome definitivo, de modo que interrupção abrupta — sinal não capturável, esgotamento de memória ou de disco, limite de tempo do job — não deixa arquivo truncado que a execução seguinte leia como análise concluída. O caso é o mesmo que a Seção 5.3 procura evitar: falso negativo indistinguível de ausência legítima de achados, sem erro visível. O nome temporário é escolhido de modo a não corresponder aos padrões de busca empregados pela normalização, e resíduo de execução anterior é removido antes do processamento de cada CVE.
 
 **Conferência do registro.** O registro é conferido por programa próprio, independente da normalização (Seção 5.1), que confronta os estados registrados com a existência das saídas brutas correspondentes. Como a reexecução de um lote acrescenta uma linha por CVE já concluído, a conferência considera, para cada CVE, a última linha registrada.
@@ -651,7 +726,11 @@ Os dois defeitos são simétricos e igualmente dependentes de coincidência. O p
 
 Nenhum dos dois foi observado nos dois ambientes: cada um apareceu onde o outro não aparece. Ambos são corrigidos na construção da imagem, de modo que o comportamento deixe de depender de qual identificador executa.
 
-O ensaio de fumaça no ambiente da campanha mede o primeiro. **O segundo não se manifesta ali** quando o identificador do ambiente coincide com o proprietário dos arquivos do bundle: um processo lê arquivo de que é proprietário ainda que a permissão restrinja os demais. A cobertura dos dois resulta, portanto, da união de duas medições em ambientes distintos, e não de uma medição única. O identificador efetivo do ambiente da campanha é premissa não medida, confirmada no ensaio descrito na Seção 11.
+O ensaio de fumaça no ambiente da campanha mede o primeiro. **O segundo não se manifesta ali** quando o identificador do ambiente coincide com o proprietário dos arquivos do bundle: um processo lê arquivo de que é proprietário ainda que a permissão restrinja os demais. A cobertura dos dois resulta, portanto, da união de duas medições em ambientes distintos, e não de uma medição única. O identificador efetivo do ambiente da campanha **deixou de ser premissa**. Sondagem executada no próprio ambiente em 12 de setembro de 2026 registrou identificador de usuário e de grupo, versão da imagem do ambiente, número de núcleos, memória e espaço disponíveis, e o resultado da escrita sob identificador explícito; a saída é datada e integra o repositório. O identificador coincide com o proprietário dos arquivos do bundle, de modo que o segundo defeito, como previsto, **não se manifesta ali** — e a cobertura dos dois permanece resultante da união das duas medições.
+
+Registra-se que a sondagem consigna identificador de usuário e de grupo **em campos separados**, ainda que coincidam neste ambiente: a coincidência é propriedade do ambiente observado, não do protocolo, e nenhum ponto deste pode supô-la.
+
+A mesma sondagem verificou, com controle, que o isolamento de rede opera no ambiente da campanha — o controle com rede alcançou o destino, e a sonda isolada, executada e respondida, não alcançou. A verificação distingue a ausência de alcance da ausência de execução, que a saída de um contêiner que não roda tornaria indistinguíveis.
 
 ---
 
@@ -1151,6 +1230,8 @@ O segundo é o caso da fixture de polaridade invertida, descrito na Seção 5.6:
 
 **Uma rodada incidiu sobre código já incorporado ao repositório.** Por interrupção do procedimento, as alterações do fechamento do ensaio local foram registradas antes da revisão correspondente, que se realizou em seguida. O fato é declarado no repositório junto ao registro da revisão. A ordem prevista — revisão antes do registro — não foi observada nesse caso, e a revisão posterior não tem o mesmo valor preventivo, ainda que tenha produzido os apontamentos acima.
 
+**Extensão da disciplina aos fluxos de trabalho.** A regra, tal como redigida, alcançava programas, arquivos de construção de imagem e o normalizador, porque os fluxos de trabalho não existiam quando foi estabelecida. Passou a alcançá-los também, por decisão fundada em defeito real: a primeira revisão de fluxo de trabalho identificou guarda que operaria na primeira execução e ficaria **inerte a partir da segunda**, por depender de condição que a própria execução anterior tornava falsa. Guarda que funciona uma vez e deixa de funcionar é pior que guarda ausente, porque ninguém volta a examinar o que já passou. Fluxo de trabalho é artefato que governa execução e apresenta os mesmos modos de falha silenciosa dos demais.
+
 **Limitação reiterada.** A revisão incide sobre a versão do código anterior às correções que ela mesma motiva. As verificações mecânicas são refeitas sobre a versão final — a suíte de asserções sobre fixtures passou de 113 para 143 casos ao fim da segunda rodada, e de 143 para 173 ao fim do ensaio local, cobrindo cada correção —, mas não se realiza revisão completa subsequente. A limitação é declarada e não corrigida: uma revisão adicional motivaria novas correções, e a recursão carece de ponto de parada natural.
 
 ---
@@ -1233,7 +1314,7 @@ O que a decisão introduz em troca está declarado na Seção 4.5: a possibilida
 
 ### 9.2 Delimitação do conjunto de dados
 
-**Proveniência do ground truth e assimetria de comparabilidade.** Conforme a Seção 2.2.2, em 83% do conjunto a descrição e os CWEs do ground truth derivam do catálogo de consultas do CodeQL — uma das três ferramentas SAST sob avaliação. O CodeQL é, portanto, confrontado com uma referência construída a partir de sua própria taxonomia, condição que não se aplica ao Semgrep nem ao Snyk Code.
+**Proveniência do ground truth e assimetria de comparabilidade.** Conforme a Seção 2.2.2, em 73,1% do conjunto a descrição e os CWEs do ground truth derivam do catálogo de consultas do CodeQL — uma das três ferramentas SAST sob avaliação. O CodeQL é, portanto, confrontado com uma referência construída a partir de sua própria taxonomia, condição que não se aplica ao Semgrep nem ao Snyk Code.
 
 A consequência delimita a interpretação dos resultados: a comparação entre as três ferramentas não mede capacidade de detecção em abstrato, e sim grau de concordância com a nomenclatura e o recorte do CodeQL. Eventual vantagem do CodeQL nas métricas admite, por construção, explicação alternativa à de superioridade técnica, e assim deve ser reportada. Registra-se que a modalidade de correspondência por conjunto (Seção 7.4) atenua parcialmente o efeito, por não exigir coincidência de identificador específico, mas não o elimina.
 
@@ -1253,7 +1334,7 @@ Acresce que a fonte adotada no CodeQL enumera arquivos extraídos sem que se ten
 
 **Subjetividade residual do mapeamento de CWE primário.** A tabela da Seção 7.4 resulta de julgamento sobre 17 conjuntos, ainda que apoiado em evidência documental e submetido a regra de fechamento explícita. A dupla apuração mitiga o risco: a modalidade de correspondência por conjunto independe inteiramente do mapeamento, de modo que divergência quanto a este pode ser avaliada por comparação entre as duas apurações.
 
-Acresce uma observação que a proveniência do ground truth impõe. A evidência de primeira ordem para a seleção do primário é o campo de descrição da weakness, o mesmo campo que, em 83% do conjunto, é herdado do catálogo de consultas do CodeQL (Seção 2.2.2). A seleção do primário incorpora, portanto, uma segunda camada da mesma proveniência, e não apenas a primeira. A observação reforça, mais do que enfraquece, a razão de haver duas modalidades: a apuração por conjunto não depende da seleção e serve de contraprova à apuração por primário.
+Acresce uma observação que a proveniência do ground truth impõe. A evidência de primeira ordem para a seleção do primário é o campo de descrição da weakness, o mesmo campo que, em 73,1% do conjunto, é herdado do catálogo de consultas do CodeQL (Seção 2.2.2). A seleção do primário incorpora, portanto, uma segunda camada da mesma proveniência, e não apenas a primeira. A observação reforça, mais do que enfraquece, a razão de haver duas modalidades: a apuração por conjunto não depende da seleção e serve de contraprova à apuração por primário.
 
 ### 9.3 Delimitação da campanha DAST
 
@@ -1294,6 +1375,10 @@ O quinto caso merece registro adicional por sua consequência. Examinava-se a re
 Registra-se que o padrão reincidiu na própria revisão que o identificou, sob outra forma: presumiu-se que determinada passagem constasse dos três documentos do projeto por figurar em dois deles, sem que a terceira ocorrência fosse conferida — presunção que se mostrou falsa em um caso e verdadeira em outro. A correspondência inferida não era, ali, entre séries de medidas, e sim entre documentos; o método falho é o mesmo. O padrão reincidiu ainda duas vezes, e as duas merecem registro por incidirem sobre o próprio material do estudo. A presunção acima veio a mostrar-se falsa também no terceiro documento: a passagem existia apenas no relatório do ensaio local, que não integra o repositório, e não em nenhum dos dois documentos versionados. E, sobre a campanha DAST, o conjunto de regras do projeto remetia a correspondência entre relatório e modo de varredura a documento que **não existia em versão alguma do repositório** — lacuna fechada em setembro de 2026 e registrada na Seção 6.1.
 
 A regra que daí se extrai é geral e simétrica: **correspondência não declarada é conferida antes de ser usada**, trate-se de séries, de listas ou de documentos. Não estando declarada, o primeiro passo é torná-la explícita na fonte, nunca estimá-la pela ordem; e remissão a documento é conferida quanto à existência do documento.
+
+**Uma explicação plausível, refutada.** Ao constatar-se que a reexecução do cotejo de proveniência produzia número diverso do registrado, propôs-se que o número registrado proviesse do estado **atual** do catálogo, e ofereceu-se aritmética que o explicava: certo número de casos a mais compensado por certo número a menos, com saldo exatamente igual à diferença observada. A aritmética é verdadeira e a atribuição, falsa — o estado atual não produz identidade total de conjunto, de modo que não pode ter originado o número registrado. As duas consultas invocadas como responsáveis pelos casos a mais sequer existiam no catálogo em dezembro de 2020. A explicação foi aceita, em primeira instância, porque os números fechavam.
+
+Registra-se como caso próprio porque ilustra modo de falha distinto dos anteriores: não é método de medição errado, é **explicação que reproduz o resultado sem ser sua causa**. A exigência que dele decorre é de mesma ordem que as demais: hipótese que explique uma diferença por compensação entre parcelas deve ter cada parcela verificada quanto à existência, e não apenas quanto à soma.
 
 **Generalização, e não um episódio adicional.** As ocorrências acima têm em comum que o resultado obtido era plausível. Decorre delas uma exigência sobre resultados vazios: **resultado nulo exige distinguir a ausência do objeto da formulação inadequada da pergunta.** Verificação que retorna zero só é aceita quando o método foi exercido contra caso reconhecidamente positivo, ou quando a saída de erro foi lida. Padrão que não corresponde, especificação de caminho inválida e argumento interpretado como opção produzem zero indistinguível de ausência — e assim ocorreu, no curso desta revisão, com uma consulta ao controle de versão cuja especificação de caminho não correspondia a arquivo algum, sugerindo ausência de arquivos existentes, e com uma busca por padrão cujo argumento foi interpretado como opção, com a saída de erro suprimida.
 
@@ -1377,6 +1462,10 @@ A observação tem alcance além deste estudo, e por isso é declarada em lugar 
 | 66 | Manutenção do OWASP NodeGoat no estudo | 2.4, 9.4 |
 | 67 | Publicação do repositório do estudo em acesso público | 5.5 |
 | 68 | Correspondência entre relatório e modo da campanha DAST registrada em documento próprio, em duas unidades de contagem e por evidência independente | 6.1 |
+| 69 | Procedimentos de apuração da proveniência do ground truth versionados, com estados dos catálogos fixados por commit em descritor próprio | 2.2.2 |
+| 70 | Estado de referência do catálogo do CodeQL fixado como o último integrado ao ramo principal antes do commit do release do benchmark, por critério de anterioridade | 2.2.2 |
+| 71 | Manutenção do tamanho de lote corrente, com a decisão apoiada em comportamento medido e não em limite de pior caso, e com sinal de vigilância próprio | 4.4, 4.6 |
+| 72 | Fluxos de trabalho submetidos à revisão prévia, na mesma disciplina dos programas e das imagens | 8.5 |
 
 ---
 
@@ -1394,9 +1483,7 @@ Registram-se as questões ainda em aberto no momento desta redação.
 
 **Verificação de dois avisos de execução.** Dois avisos previstos no programa de normalização não dispõem de fixture que os dispare, de modo que o acesso aos campos correspondentes é exercitado mas o texto das mensagens nunca é executado (Seção 5.6). Igualmente, o campo que declara a origem da data de análise admite valor que a versão fixada do CodeQL não produz, conforme a Seção 8.6 — o tratamento permanece como salvaguarda e descreve forma não observada.
 
-**Alcance do limite de tempo sobre a obtenção do código.** Conforme a Seção 4.4, o travamento observado em julho de 2026 ocorreu na obtenção do código-fonte, etapa anterior à análise, onde o limite de tempo por invocação da análise não alcança. Resta conferir se o protocolo atual aplica limite também ao fetch raso e ao clone de contingência descritos na Seção 4.3. A verificação é de inspeção dos scripts, não de execução, e precede o ensaio de fumaça.
-
-**Nota sobre pendências resolvidas.** Três questões registradas nesta seção nas versões anteriores foram decididas e retiradas: a manutenção do OWASP NodeGoat no estudo e a execução de SAST sobre as aplicações da campanha DAST, ambas na Seção 9.4, e o espelhamento do repositório, resolvido pela publicação registrada na Seção 5.5.
+**Nota sobre pendências resolvidas.** Quatro questões registradas nesta seção nas versões anteriores foram decididas ou verificadas e retiradas: a manutenção do OWASP NodeGoat no estudo e a execução de SAST sobre as aplicações da campanha DAST, ambas na Seção 9.4; o espelhamento do repositório, resolvido pela publicação registrada na Seção 5.5; e o alcance do limite de tempo sobre a obtenção do código, resolvido por inspeção dos programas, que apurou limite aplicado tanto à obtenção rasa quanto ao clone de contingência (Seção 4.4).
 
 ### Verificações do ensaio de fumaça
 
