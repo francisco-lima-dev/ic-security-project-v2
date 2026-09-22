@@ -1218,7 +1218,9 @@ teste com achados termina com `ERROR Forbidden (SNYK-CLI-0000)`, `403`,
 impresso **depois** do resumo do teste. São 133 de 133 testes com status `OK`,
 e nenhum dos 83 `SEM_ACHADOS`. O raw foi gravado e normalizado nos 133. O que
 a CLI tenta fazer quando recebe o 403, e se isso afeta algo além da
-mensagem, não foi apurado.
+mensagem, não foi apurado. **Investigação adiada** até a renovação da cota de
+testes do Snyk, esgotada em 21/09/2026; ver o item do Snyk Code em "Falso
+positivo na versão corrigida".
 
 ## Cruzamento SAST — resultados (18/09/2026)
 
@@ -1487,13 +1489,45 @@ continua não classificável.
 - **A campanha de julho de 2026, que rodou no HEAD, não substitui a segunda.**
   O HEAD difere do código vulnerável por anos de mudanças, e não só pela
   correção, o que desfaz a comparação controlada que o benchmark propõe.
-- **Snyk Code.** A segunda campanha soma outros 216 testes, se repetir a
-  cobertura da primeira, à investigação pendente do 403 (ver "Observação dos
-  `container/lote.txt` do Snyk Code"). Se a cota for resolvida com outra conta,
-  **as duas campanhas do Snyk precisam rodar na mesma conta**, ou o 403 precisa
-  ser investigado antes, para saber se depende da conta.
+- **Snyk Code.** A cota de testes da conta usada na campanha **esgotou em
+  21/09/2026**, e a investigação do 403 (ver "Observação dos
+  `container/lote.txt` do Snyk Code") fica **adiada até a renovação**. Cada
+  execução do Snyk Code consome um teste. A investigação gasta de 4 a 6; a
+  segunda campanha soma outros 216, se repetir a cobertura da primeira; no pior
+  caso, com a primeira campanha do Snyk refeita, as duas somam **432**. Se a
+  cota for resolvida com outra conta, **as duas campanhas do Snyk precisam
+  rodar na mesma conta**, ou o 403 precisa ser investigado antes, para saber se
+  depende da conta.
 - Os dois `PostPatchCommit` malformados do benchmark passam a afetar a segunda
   campanha; ver os defeitos conhecidos do conjunto.
+
+## Metodologia V10 — natureza e pendências (21/09/2026)
+
+**A pauta da V10 está em `docs/pauta-metodologia-V10.md`**, ao lado da
+`docs/metodologia-V9.md`, e é o insumo da V10. Ela reúne, seção a seção da V9,
+tudo o que muda. Este registro não a copia: traz as decisões e as pendências
+que precisam estar à vista antes de abri-la.
+
+**A V10 será documento de método e resultados**, cobrindo as campanhas SAST e
+DAST. Ela revoga a frase da V9 de que "nenhum resultado de detecção é
+apresentado aqui", da nota de abertura. **Só fecha depois da segunda campanha,
+do DAST e da análise comparativa.**
+
+**Três promessas da V9 ainda não cumpridas, a fazer antes da V10:**
+
+- a **detecção por CWE, por ferramenta** (§7.7). O cruzamento apurou por
+  ferramenta; a decomposição por CWE não existe;
+- a **tabela de capacidade empírica** por ferramenta (§7.6);
+- a **proporção dos achados do Semgrep fora de JavaScript/TypeScript**,
+  declarada (§7.6).
+
+**Registrado noutras seções, e não repetido aqui:**
+
+- **A sondagem de disponibilidade antes da campanha** está em "Obtenção do
+  código". A última registrada é a de 10/09/2026, seis dias antes da
+  campanha, e o denominador saiu da medição da própria campanha.
+- **A cota do Snyk Code e o adiamento da investigação do 403** estão no item
+  do Snyk Code em "Falso positivo na versão corrigida".
 
 ## Obtenção do código — comportamento medido
 
@@ -1520,6 +1554,27 @@ setembro de 2026:
 Sondar a disponibilidade dos 186 repositórios **imediatamente antes de
 cada campanha**, com saída datada e versionada. Sondagem é observação;
 script é procedimento.
+
+**Na campanha de 16 e 17/09/2026 a regra não foi cumprida à letra** (conferido
+em 22/09/2026). Há duas sondagens de repositório registradas: a de 06/09/2026,
+citada nos defeitos conhecidos e sem saída versionada, e a de **10/09/2026**,
+em `datasets/sondagens/sondagem-repos-2026-09-10.csv` (`4d22aa5`): 185
+`ACESSIVEL` e um `INACESSIVEL`, o `linxiaowu66/swagger-ui`. **Nenhuma
+registrada entre 10/09 e a campanha**: a última precedeu o lote `aa` em seis
+dias, e nenhum workflow invoca o `tools/probe-repos.sh`. A pauta da V10 dava a de 06/09 como a
+última registrada, mas a de 10/09 é posterior.
+
+- **O denominador saiu da medição da própria campanha, CVE a CVE**, e não da
+  sondagem: `ERRO_FETCH` no `CVE-2016-1000229`, `ERRO_CHECKOUT` no
+  `CVE-2018-8035`. A sondagem de 10/09 daria uma baixa só.
+- **Uma sondagem de repositório não teria detectado o `CVE-2018-8035`**, por
+  mais próxima da campanha que fosse: é commit inexistente em repositório
+  existente, e o script pergunta só pelo `HEAD` (`git ls-remote --exit-code
+  <url> HEAD`). O `apache/uima-ducc` saiu `ACESSIVEL` em 10/09.
+
+A V9 (§4.3 e §7.4) afirma que o denominador é o apurado na sondagem que
+antecede a execução. Isso não descreve o que ocorreu, e a V10 precisa dizer
+como o protocolo foi de fato cumprido; ver `docs/pauta-metodologia-V10.md`.
 
 **A sondagem deve ser anônima.** O `git ls-remote` usa, por padrão, o
 credential helper configurado no hospedeiro — com o `gh` autenticado, a
@@ -1593,6 +1648,8 @@ sondar.
   Não é falso negativo: nenhuma ferramenta foi confrontada com o código,
   porque não houve código. Categoria própria, fora da matriz.
   Reconferir na hora da campanha: repositório pode voltar, outro pode cair.
+  Reconferido em 10/09/2026, com o mesmo resultado, e não na hora da
+  campanha; ver "Obtenção do código".
   Ironia registrada: é justamente um dos dois homônimos que motivaram a
   regra de nomear saídas pelo CVE
 - **`CVE-2018-8035` — commit inexistente no repositório.** Medido na campanha
