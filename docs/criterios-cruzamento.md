@@ -13,6 +13,111 @@ ajustado ao resultado.
 
 ## 1. O que este estudo NÃO vai reportar, e por quê
 
+### Emenda de 21/09/2026 — o falso positivo existe
+
+**A afirmação central desta seção está errada.** O texto original, preservado
+abaixo, diz que não existe rótulo negativo em lugar algum do conjunto, e conclui
+que não haverá métrica de precisão nem de falso positivo. O rótulo negativo
+existe: é a **versão corrigida** do mesmo código, no ponto da falha. Ali o
+benchmark garante que a vulnerabilidade foi removida.
+
+**Como foi descoberto.** Lendo o README do próprio benchmark, em 21/09/2026:
+<https://github.com/ossf-cve-benchmark/ossf-cve-benchmark/blob/main/README.md>,
+consultado nessa data, no commit `91c59fd`, que era o HEAD do repositório. O
+trecho está lá, palavra por palavra, desde o release 1.0.0 (`4e90564`,
+09/12/2020):
+
+> Second, by also analyzing the patched versions of the same codebases, false
+> positive rates of these tools can be measured more accurately and based on
+> real validated fixes.
+>
+> For each CVE in the in the dataset (200+ CVEs so far), the CVE Benchmark
+> determines:
+>
+> 1. Is the security tool able to detect the vulnerability, or does it produce
+>    a false negative?
+> 2. When run against the patched codebase, does it recognize the validated
+>    patch, or does it produce a false positive?
+
+A duplicação "in the in the" é do original.
+
+**O erro não foi só de leitura.** O critério da versão corrigida estava no
+`CLAUDE.md` desde 28/08/2026 (`342194b`), citando o `docs/benchmark-CVEs.md` do
+benchmark: a ferramenta ideal produz ao menos um alerta relevante no `prePatch`
+e nenhum no `postPatch`. Esta seção foi escrita em 18/09/2026 sem ligar esse
+critério ao falso positivo, e o README, que o nomeia assim, não tinha sido lido.
+A inexistência do negativo era inferência, apresentada como propriedade do
+conjunto.
+
+**Definição adotada pelo estudo, a partir das duas perguntas do README e da
+garantia do `benchmark-CVEs.md`.** A garantia é a de que, num CVE completo, o
+`postPatch` "contains zero relevant weaknesses, meaning that the vulnerability
+has been fixed properly".
+
+| Versão analisada | O que o benchmark garante no ponto da falha | Alerta ali | Resultado |
+|---|---|---|---|
+| antes da correção | a falha existe | sim | verdadeiro positivo |
+| antes da correção | a falha existe | não | falso negativo |
+| depois da correção | a falha foi removida | sim | **falso positivo** |
+| depois da correção | a falha foi removida | não | **verdadeiro negativo** |
+
+Isso dá a matriz de confusão completa, num universo definido: um ponto
+vulnerável e um ponto corrigido por CVE. Precisão, especificidade e F1 passam a
+ser computáveis **nesse sentido** — que não é a precisão sobre todos os alertas
+da ferramenta.
+
+A tabela é construção do estudo, não o cálculo que a ferramenta de relatório do
+benchmark implementa: aquela lê a segunda pergunta de forma condicional à
+detecção no `prePatch`, sem localizar o ponto na versão corrigida. As duas
+leituras estão descritas na §8, e a escolha entre elas não está feita.
+
+**O que continua valendo.** Alerta fora do ponto da falha — noutro arquivo, ou
+noutro trecho do mesmo arquivo — continua não classificável: o benchmark não
+afirma que o resto do repositório esteja limpo, nem na versão vulnerável nem na
+corrigida. A fração de 77,8% a 96,9% dos alertas fora do arquivo do ground truth
+(§6) segue sem classificação possível, e a precisão sobre todos os alertas segue
+incomputável. O que cai é só a conclusão de que não há negativo nenhum. Há um,
+por CVE, e é ele que torna o falso positivo computável.
+
+**O que muda no plano do estudo.** Falso positivo e verdadeiro negativo exigem
+uma **segunda campanha**, sobre o commit da correção (`PostPatchCommit`), que a
+primeira não rodou. Até ela existir, a matriz tem só a metade positiva.
+
+**O que não muda.** Os resultados da primeira campanha — os cinco níveis, as
+duas variantes de CWE, o denominador de 220, a apuração da circularidade — são a
+metade VP/FN da matriz e não são afetados por esta emenda.
+
+**O critério de casamento na versão corrigida não está fixado.** Localizar "o
+mesmo ponto" depois da correção e decidir quais níveis se aplicam são decisões a
+fixar neste documento antes de qualquer resultado da segunda campanha; ver §8.
+
+**Por que emenda, e não reescrita.** Este documento vale por ter sido fixado
+antes de qualquer número de detecção, com o histórico do repositório provando a
+ordem. Reescrever a seção em silêncio apagaria essa evidência e esconderia um
+erro de método que precisa ficar registrado.
+
+**SUPERADO POR ESTA EMENDA (21/09/2026), e o original fica abaixo intacto.**
+Deixam de valer:
+
+- "Não haverá métrica de precisão, nem de falso positivo" — haverá, no sentido
+  da tabela acima, com a segunda campanha;
+- "Não existe rótulo negativo em lugar algum do conjunto" — existe, na versão
+  corrigida, no ponto da falha;
+- o "no lugar" de "O que se reporta no lugar" — detecção e volume continuam
+  sendo o que a primeira campanha reporta, mas não mais em lugar do falso
+  positivo;
+- na alternativa descartada, "construindo o negativo que falta" — no ponto da
+  falha, o negativo não falta. A rotulagem manual continua sendo o único
+  caminho para a precisão sobre **todos os alertas**, e nesse sentido a frase
+  "o que tornaria a precisão computável" segue certa.
+
+Continuam valendo, no sentido restrito de alertas fora do ponto da falha: que o
+ground truth não afirma que o resto do código é limpo; que nada no dado permite
+classificar achado fora do arquivo do CVE; e que o volume do `CVE-2018-20801` só
+distorceria uma precisão sobre todos os alertas.
+
+### Texto original, de 18/09/2026
+
 **Não haverá métrica de precisão, nem de falso positivo.**
 
 O ground truth afirma **uma** vulnerabilidade por CVE: um par (CWE,
@@ -247,6 +352,11 @@ no Semgrep, 94,6% no Snyk Code. É o que o nível 0 captura e o nível 1 descart
 Pelo argumento da seção 1, **esses achados não são classificáveis** como
 corretos ou incorretos com este conjunto.
 
+*Nota de 21/09/2026.* Os dois parágrafos acima que remetem à seção 1 — volume
+de alertas e fração fora do arquivo do ground truth — continuam valendo. Tratam
+de alertas fora do ponto da falha, que a emenda da §1 não alcança: ela
+estabelece o negativo na versão corrigida, no ponto da falha, e só ali.
+
 ---
 
 ## 7. Como o cruzamento deve ser implementado
@@ -308,3 +418,48 @@ método ainda em aberto, a tomar quando o pipeline DAST existir.
 natureza diferente: 223 CVEs de repositórios reais de um lado, duas aplicações
 deliberadamente vulneráveis do outro. A comparação direta entre os números vai
 precisar de justificativa explícita, e ela não está escrita.
+
+**O critério de casamento na versão corrigida.** Acrescentado em 21/09/2026, pela
+emenda da §1. Localizar "o mesmo ponto" depois da correção — cuja linha pode
+mudar de número, ou deixar de existir — e decidir quais dos cinco níveis se
+aplicam à versão corrigida são decisões **a fixar neste documento antes de
+qualquer resultado da segunda campanha**, como foi feito na primeira.
+
+**A primeira decisão do desenho da segunda campanha é a escolha entre duas
+leituras:** a matriz de quatro células da emenda da §1, que trata cada CVE como
+um ponto vulnerável e um ponto corrigido, independentes; e a leitura condicional
+que a ferramenta de relatório do próprio benchmark implementa. Esta fica
+registrada aqui como ponto de partida, **sem fixar**.
+
+Como a ferramenta do benchmark calcula o reconhecimento da correção, lido no
+código do commit `91c59fd`, em `contrib/reports/explore-server/src/`:
+
+- **Condicional à detecção no `prePatch`.** Só se avalia a versão corrigida de
+  CVE que a ferramenta detectou na vulnerável. Detecção, ali, é o critério do
+  próprio benchmark, descrito nos dois itens seguintes; o mais próximo dele entre
+  os cinco níveis da §2 é o nível 3.
+- **Por regra.** Entram só as regras que, no `prePatch`, produziram alerta num
+  alvo (`buildRulesOnATargetMap`, em `server/index.ts`).
+- **Por igualdade de (arquivo, linha).** Alvo é o par exato de uma weakness, sem
+  sobreposição de intervalo (`isOnTarget`, no mesmo arquivo).
+- **Contando alertas no repositório inteiro no `postPatch`.** Para cada regra que
+  entrou, compara-se o total de alertas dela no `prePatch` e no `postPatch`, sem
+  localizar ponto algum (`getRelevantRuleAlertCounts`, em `client/util.tsx`). A
+  correção conta como reconhecida (`Negative`, exibido como "good") se ao menos
+  uma dessas regras tem menos alertas no `postPatch`; do contrário, o resultado é
+  `NeutralOrPositive` ("bad").
+- **`Uncomputable` quando não houve detecção** (`getRelevantRuleAlertCountsConclusion`,
+  no mesmo arquivo), e `Missing` quando a ferramenta não rodou nos dois commits.
+  O benchmark não atribui falso positivo nem verdadeiro negativo ao CVE que a
+  ferramenta não detectou, e não monta a matriz de quatro células.
+
+---
+
+## Registro de alterações
+
+| Data | Commit | Seção | Alteração |
+|---|---|---|---|
+| 18/09/2026 | `9a91332` | todas | versão original |
+| 18/09/2026 | `a1c9cfa` | §2 | o nível 0 passa a falar da árvore analisada, não do repositório |
+| 18/09/2026 | `beac0b2` | §7 | o script lê o status nos 24 logs de lote versionados |
+| 21/09/2026 | o desta entrada | §1, §6, §8 | emenda: o falso positivo existe, na versão corrigida e no ponto da falha. O trecho da §1 que afirmava a inexistência do negativo fica marcado como superado e preservado. §6 ganha nota de que os parágrafos sobre alertas fora do ponto continuam valendo. §8 registra o critério da versão corrigida como não fixado e as duas leituras possíveis. Datada do dia da descoberta; redigida e commitada em 22/09/2026 |

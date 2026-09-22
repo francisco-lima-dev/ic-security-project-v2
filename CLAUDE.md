@@ -32,14 +32,23 @@ Decidido também manter o OWASP NodeGoat no estudo. Os quatro relatórios de
 
 ## Regra crítica — checkout do commit vulnerável
 
-Toda análise SAST **deve** fazer checkout do `PrePatchCommit`, o commit
-anterior à correção.
+Toda análise SAST da **campanha de detecção** **deve** fazer checkout do
+`PrePatchCommit`, o commit anterior à correção.
 
 Analisar o HEAD do branch padrão invalida a comparação com o ground truth:
 os CVEs do benchmark já foram corrigidos, então o código no HEAD é a versão
 corrigida. Uma campanha anterior foi inteiramente invalidada por esse erro.
 
-Nunca analisar HEAD nem `PostPatchCommit`.
+**HEAD, nunca**, em campanha alguma: foi o que invalidou a campanha
+preliminar. Tampouco serve de versão corrigida — ver "Falso positivo na versão
+corrigida".
+
+**`PostPatchCommit`, só na segunda campanha**, a de reconhecimento da correção,
+e **nunca na campanha de detecção**.
+
+Até 22/09/2026 a regra dizia "Nunca analisar HEAD nem `PostPatchCommit`", sem
+distinguir campanha. A decisão de 21/09/2026 pela segunda campanha a tornou
+contraditória, e ela foi reescrita.
 
 ## Critério oficial de acerto do benchmark
 
@@ -235,11 +244,11 @@ condições do nível; o **casamento de linha por sobreposição** de
 CWE**, generosa (intersecta `gt_cwes`) e estrita (contém `gt_cwe_primary`); e o
 **denominador de 220 pares**, o mesmo para as três ferramentas.
 
-Registra também que **não haverá métrica de precisão nem de falso positivo**: o
-benchmark afirma o par (CWE, arquivo) de cada CVE e não afirma que o resto do
-código é limpo, então achado fora do arquivo do CVE não é classificável.
-Reporta-se detecção; volume de alerta entra como caracterização descritiva,
-nunca como medida de qualidade.
+Registrava também que **não haveria métrica de precisão nem de falso
+positivo** — **superado pela emenda de 21/09/2026 à §1 do documento**: o
+negativo existe na versão corrigida, no ponto da falha. Achado fora desse ponto
+continua não classificável, e volume de alerta continua caracterização
+descritiva, nunca medida de qualidade.
 
 ## Formato das listas de entrada
 
@@ -1446,6 +1455,46 @@ Os cinco `SEM_ARQUIVO_ANALISAVEL` do Snyk Code caem **todos no grupo
 herdado**, nas duas referências. Permanecem no denominador e contam como
 não-detecção, pela regra fixada antes da campanha.
 
+## Falso positivo na versão corrigida — descoberta e decisão (21/09/2026)
+
+**O README do benchmark define o falso positivo sobre a versão corrigida.**
+Por CVE, ele pergunta se a ferramenta detecta a vulnerabilidade ou produz falso
+negativo e se, rodando sobre o código corrigido, reconhece a correção ou produz
+falso positivo. O negativo existe: é a versão corrigida, no ponto da falha,
+onde o benchmark garante (`docs/benchmark-CVEs.md`) que a vulnerabilidade foi
+removida. Lido em 21/09/2026, no commit `91c59fd` do benchmark; o trecho está
+no README desde o release 1.0.0.
+
+**O critério já estava neste arquivo, e o erro foi não ligá-lo.** O critério
+da versão corrigida está na seção "Critério oficial de acerto do benchmark"
+desde 28/08/2026 (`342194b`). A §1 do `docs/criterios-cruzamento.md` foi escrita
+em 18/09/2026 sem ligá-lo ao falso positivo, e o README, que o nomeia assim, não
+tinha sido lido. A §1 recebeu **emenda datada de 21/09/2026**, que marca como
+superado o trecho errado e o preserva. Alerta **fora** do ponto da falha
+continua não classificável.
+
+- **A primeira campanha rodou só antes da correção** e dá a metade VP/FN da
+  matriz. Essa metade **não muda**: os cinco níveis, as duas variantes, o
+  denominador de 220 e a apuração da circularidade ficam como estão.
+- **Decidido: haverá uma segunda campanha, sobre o `PostPatchCommit`**, com as
+  mesmas imagens e o mesmo pipeline da primeira. É a campanha de reconhecimento
+  da correção, e a regra crítica foi reescrita para admiti-la, e só a ela.
+- **O critério de casamento na versão corrigida ainda não está fixado.** Será
+  definido no documento de critérios antes de qualquer resultado. A primeira
+  decisão é entre a matriz de quatro células e a leitura condicional que a
+  ferramenta de relatório do benchmark implementa; as duas estão descritas na
+  §8 do documento.
+- **A campanha de julho de 2026, que rodou no HEAD, não substitui a segunda.**
+  O HEAD difere do código vulnerável por anos de mudanças, e não só pela
+  correção, o que desfaz a comparação controlada que o benchmark propõe.
+- **Snyk Code.** A segunda campanha soma outros 216 testes, se repetir a
+  cobertura da primeira, à investigação pendente do 403 (ver "Observação dos
+  `container/lote.txt` do Snyk Code"). Se a cota for resolvida com outra conta,
+  **as duas campanhas do Snyk precisam rodar na mesma conta**, ou o 403 precisa
+  ser investigado antes, para saber se depende da conta.
+- Os dois `PostPatchCommit` malformados do benchmark passam a afetar a segunda
+  campanha; ver os defeitos conhecidos do conjunto.
+
 ## Obtenção do código — comportamento medido
 
 Fetch raso por SHA, com fallback para clone completo. Medições de
@@ -1485,8 +1534,16 @@ sondar.
 - `CVE-2018-1000096` não tem CWE atribuído. É analisado normalmente, mas
   fica fora das contagens da matriz de confusão
 - `CVE-2017-18352` e `CVE-2018-11093` têm `PostPatchCommit` malformado no
-  benchmark original da OpenSSF — truncado e abreviado, respectivamente.
-  Não afeta o pipeline SAST, que usa apenas `PrePatchCommit`.
+  benchmark original da OpenSSF — truncado e abreviado, respectivamente
+  (38 e 7 caracteres hex). Não afetou a campanha de detecção, que usa apenas
+  `PrePatchCommit`. **Passam a afetar a segunda campanha**, que roda sobre o
+  `PostPatchCommit` (ver "Falso positivo na versão corrigida"). O pipeline
+  pressupõe SHA completo — o fetch raso é por SHA, e a asserção compara
+  `git rev-parse HEAD` com o valor da lista —, e hoje o gerador nem emite o
+  `PostPatchCommit`, só avisa da forma dele. A resolução — expandir o SHA
+  abreviado pelo próprio repositório, se o prefixo for único, ou excluir com
+  motivo declarado — fica para o desenho da segunda campanha, e não está
+  tomada.
   Os 223 `PrePatchCommit`, esses, são SHA-1 completos e bem formados — e o
   gerador valida 40 hex. **Boa formação não implica que o objeto referido
   seja um commit:** um objeto de tag anotada tem a mesma forma, atravessa
@@ -2433,7 +2490,8 @@ Declaradas na monografia, não corrigíveis por código:
 
 ## O que NÃO fazer
 
-- Não analisar HEAD nem `PostPatchCommit`
+- Não analisar HEAD, em campanha alguma. `PostPatchCommit` só na segunda
+  campanha, de reconhecimento da correção — nunca na campanha de detecção
 - Não nomear saídas pelo nome do repositório
 - **Não expandir CVE multivalorado em uma linha por CWE**
 - **Não tratar o campo `CWEs` como classificação do defeito** — é conjunto
