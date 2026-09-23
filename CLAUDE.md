@@ -806,7 +806,7 @@ Fase D e de novo em cada rodada da Fase E. O número corrente sai de
 `python3 tests/run-fixtures.py`, não daqui, justamente para não envelhecer a
 cada acréscimo.
 
-Mas **não há segunda revisão completa**. Vale para a Fase C (declarado na Seção 8.5 da metodologia) e
+Mas **não há segunda revisão completa**. Vale para a Fase C (declarado na §8.5 da metodologia, numeração da V10) e
 reaparece na Fase D pelo mesmo motivo: uma segunda revisão motivaria novas
 correções, e a recursão não tem ponto de parada natural.
 
@@ -986,9 +986,16 @@ denominador**, e o estado conta como não-detecção do Snyk Code.
 
 | Ferramenta | mediana | média | máximo | q1–q3 | soma |
 |---|---:|---:|---:|---|---:|
-| CodeQL | 47 s | 58,8 s | 304 s | 43–60 s | 3,63 h |
+| CodeQL | 47 s | 58,6 s | 304 s | 43–60 s | 3,63 h |
 | Semgrep | 18 s | 21,9 s | 202 s | 14–21 s | 1,36 h |
 | Snyk Code | 13 s | 18,5 s | 135 s | 10–19 s | 1,14 h |
+
+**Convenção: as 223 linhas do registro**, incluídas as duas de falha de
+obtenção. **A média do CodeQL constou como 58,8 s até 22/09/2026**, valor que
+corresponde a 222 linhas; sobre as 223 é 58,6 s. As demais células e as médias
+das outras duas ferramentas sempre seguiram a convenção das 223. A V10 **herdou
+daqui** o 58,8, e a conferência de `tools/confere-numeros-v10.py` o pegou nos
+dois documentos; os dois foram corrigidos na mesma rodada.
 
 **Os 900 s nunca foram exercidos:** o máximo dos 223 é 304 s, um terço do
 limite, e nenhum log traz `excedeu`. O que se pode dizer é que a decisão de H4
@@ -1110,7 +1117,7 @@ laço sobre os raws (leitura, conversão, escrita do tratado), no runner:
 | Semgrep | 25,65 s | 1,36 h | 0,52% |
 | Snyk Code | 0,31 s | 1,14 h | 0,007% |
 
-**A premissa da §5.1 da metodologia se sustenta em volume real:** cerca de 27 s
+**A premissa da §5.1 da metodologia (V10) se sustenta em volume real:** cerca de 27 s
 de normalização para as três ferramentas, contra cerca de 6 h de análise. O
 Semgrep concentra o custo pelo mesmo motivo que concentra o volume: o maior
 CVE, `CVE-2018-20801` (raw de 144,1 MiB), leva **8,72 s**, um terço do total da
@@ -1503,17 +1510,24 @@ continua não classificável.
 
 ## Metodologia V10 — natureza e pendências (21/09/2026)
 
-**A pauta da V10 está em `docs/pauta-metodologia-V10.md`**, ao lado da
-`docs/metodologia-V9.md`, e é o insumo da V10. Ela reúne, seção a seção da V9,
-tudo o que muda. Este registro não a copia: traz as decisões e as pendências
-que precisam estar à vista antes de abri-la.
+**A versão vigente é a `docs/metodologia-V10.md`, de 22/09/2026, e ela é
+parcial.** Documento de método **e resultados**, cobrindo as campanhas SAST e
+DAST; revoga a frase da V9 de que "nenhum resultado de detecção é apresentado
+aqui". As seções **9.8** (resultados da versão corrigida), **9.9** (detecção por
+CWE), **10** (resultados DAST) e **11** (análise comparativa) estão **a
+preencher**, e a versão só fecha com as quatro.
 
-**A V10 será documento de método e resultados**, cobrindo as campanhas SAST e
-DAST. Ela revoga a frase da V9 de que "nenhum resultado de detecção é
-apresentado aqui", da nota de abertura. **Só fecha depois da segunda campanha,
-do DAST e da análise comparativa.**
+**Numeração nova:** as seções 9, 10 e 11 da V9 passaram a **12** (ameaças), **13**
+(decisões) e **14** (pendências), para que os resultados venham depois do método.
+Remissão a "Seção 9" da V9 hoje aponta para os resultados, não para as ameaças.
 
-**Três promessas da V9 ainda não cumpridas, a fazer antes da V10:**
+**A V9 permanece versionada**, como registro do que estava decidido antes da
+campanha, e a V10 remete a ela. **A pauta da V10 foi removida** no commit que
+versionou a V10, por ter cumprido a função; está no histórico, versionada em
+`f6bd601`, e recuperável por
+`git show f6bd601:docs/pauta-metodologia-V10.md`.
+
+**Três promessas da V9 ainda não cumpridas, a fazer antes de fechar a V10:**
 
 - a **detecção por CWE, por ferramenta** (§7.7). O cruzamento apurou por
   ferramenta; a decomposição por CWE não existe;
@@ -1528,6 +1542,34 @@ do DAST e da análise comparativa.**
   campanha, e o denominador saiu da medição da própria campanha.
 - **A cota do Snyk Code e o adiamento da investigação do 403** estão no item
   do Snyk Code em "Falso positivo na versão corrigida".
+
+### Conferência dos números da metodologia (22/09/2026)
+
+**`tools/confere-numeros-v10.py` confere o documento contra as fontes
+versionadas**, tratando-o como texto de entrada e nunca como verdade. Na
+primeira rodada foram **447 afirmações**, com controle positivo de **10 de 10**
+células adulteradas acusadas, uma por família de verificação. Extração que não
+case exatamente uma vez é falha declarada, nunca silêncio.
+
+```
+python3 tools/confere-numeros-v10.py --controle-positivo
+```
+
+**O que a conferência pegou:** a média do CodeQL em 58,8 s, que vinha deste
+arquivo, e a faixa de duração do lote mais lento, que não batia com a medição
+versionada. Ambas corrigidas nos dois documentos em 22/09/2026.
+
+**O que NÃO é conferível a partir do repositório, e por quê.** A lista poupa a
+próxima conferência de redescobri-la; nenhum destes números sai de arquivo
+versionado, e todos são declarados como medição própria:
+
+| Afirmação | Por que não se confere |
+|---|---|
+| Severidades do pack do Semgrep (722/310/31/11) | exige parser YAML, e o ambiente local não tem um; contar com `grep` é proibido pela regra geral de contagem. `rules_total` 1074 e 163 JS/TS conferem contra o descritor versionado |
+| Volume bruto (623 / 548 / 144 MiB) e cópia externa (6,35 MiB) | `results/*/raw/` não é versionado; a fonte é este arquivo |
+| 1 h 30 de relógio da campanha, e os 34 min dos seis lotes em paralelo | duração de **job** no GitHub Actions, que inclui pull da imagem e upload de artifact; não versionada. O que se confere é a duração do **container**, no `README.txt` de cada lote |
+| Suítes do CodeQL (88 / 104 / 202 consultas) | o bundle não é versionado |
+| Sondagem de 06/09/2026 (185 de 186) | não deixou saída versionada; só a de 10/09/2026 tem arquivo |
 
 ## Obtenção do código — comportamento medido
 
@@ -1574,7 +1616,8 @@ dias, e nenhum workflow invoca o `tools/probe-repos.sh`. A pauta da V10 dava a d
 
 A V9 (§4.3 e §7.4) afirma que o denominador é o apurado na sondagem que
 antecede a execução. Isso não descreve o que ocorreu, e a V10 precisa dizer
-como o protocolo foi de fato cumprido; ver `docs/pauta-metodologia-V10.md`.
+como o protocolo foi de fato cumprido; está na §4.3 da
+`docs/metodologia-V10.md`.
 
 **A sondagem deve ser anônima.** O `git ls-remote` usa, por padrão, o
 credential helper configurado no hospedeiro — com o `gh` autenticado, a
