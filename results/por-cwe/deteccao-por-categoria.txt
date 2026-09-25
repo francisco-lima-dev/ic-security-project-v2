@@ -1,0 +1,316 @@
+Deteccao por categoria de CWE (criterios-cruzamento.md, secao 9)
+Reagrupamento da matriz publicada; nenhuma deteccao recomputada.
+Categoria = gt_cwe_primary do CVE. Limiar k = 10. Wilson 95%, sem correcao de continuidade, z = 1.96, so acima do limiar.
+
+  csv desta execucao (sha256): bd24382e531a265fb11980a02d4d46be627a9be392585dd5ab2fbf1087fadaf0
+
+Fontes (caminho relativo ao repositorio, sha256):
+  matriz        results/cruzamento/matriz-deteccao.csv  f80158b730794c3135701a8631e551d89610775562577322b806fcc180452825
+  distribuicao  results/por-cwe/distribuicao-primario.csv  86a9f13bcb50a7f20b448bc39aea154a2bda753ef9c441fef2c4ab9f52718fa1
+  cruzamento    results/cruzamento/cruzamento-codeql.json  9f8c2190831e7c1bb1f59f74b01976934464c11657d6822f9cae8f431845da94
+  cruzamento    results/cruzamento/cruzamento-semgrep.json  beae2a4da726b843c270e787b70f9ba1c3b88984eb6fba9503b5fc0a610b00cd
+  cruzamento    results/cruzamento/cruzamento-snyk-code.json  baab159f5f552d37d22ebcaba890917a1d2c1406acca2f907eb05418b25c17ef
+  codigo        tools/deteccao-por-cwe.py  656c3c87368d89785b788c9debeb3c501a647a8d3c93231335f45082170a4890
+  codigo        tools/distribuicao-cwe-primario.py  9e106c1865b8de912e59ba16d57540fd18c89b2bf841af95c6342ef6ac93a3b5
+
+Conferencias:
+  0 forma da matriz: niveis 'true'/'false', vazio so na estrita n.s.a.   OK
+  1 sha256 da matriz (= CLAUDE.md = 3 JSON) e da distribuicao (= .txt)   OK
+  2 denominador da matriz = 220 da distribuicao, nas 3; primario igual   OK
+  3 soma das categorias = matriz publicada e = agregados dos 3 JSON (21) OK
+    limite: deslocamento de acerto entre categorias com total mantido    nao pego pela 3
+  3c estrita <= generosa em toda celula                                  OK
+  4 os 22 de prototype pollution = tabela publicada (12 celulas)         OK
+  5 SEM_ARQUIVO_ANALISAVEL no denominador, nao-acerto em todo nivel      OK
+  6 Wilson: 3 referencias, bissecao, [0,1], contem x/n, espelho, n<=47   OK
+  7 taxa e IC so acima do limiar; so categorias; corte = secao 9         OK
+  8 CSV gravado relido (publicado so se aprovado)                        OK
+  9 controle positivo (32 mutantes)                                      OK
+      0: nivel grafado TRUE na matriz                                    pretendida 0; dispararam 0,3
+      1: matriz com outro sha256                                         pretendida 1; dispararam 1
+      1: json declara outra matriz                                       pretendida 1; dispararam 1
+      1: distribuicao difere do .txt                                     pretendida 1; dispararam 1
+      2: CVE fora do denominador da matriz no codeql                     pretendida 2; dispararam 2
+      2: gt_cwe_primary divergente na matriz                             pretendida 2; dispararam 2
+      2: distribuicao com n diferente da lista                           pretendida 2; dispararam 2
+      2: CVE em duas categorias da distribuicao                          pretendida 2; dispararam 2,3
+      3: acerto acrescentado no codeql nivel 0                           pretendida 3; dispararam 3
+      3: agregado do json alterado                                       pretendida 3; dispararam 3
+      3c: estrita acerta onde a generosa nao                             pretendida 3c; dispararam 3,3c
+      3 limite: acerto deslocado CWE-079 -> CWE-022, fora dos 22         pretendida nenhuma; dispararam nenhuma
+      3 limite: acerto deslocado de um dos 22 para CWE-079               pretendida 4; dispararam 4
+      4: um dos 22 passa a acertar nivel 3 no snyk                       pretendida 4; dispararam 3,4
+      4: lista dos 22 com o CVE-2019-10745 no lugar de um deles          pretendida 4; dispararam 4
+      5: SEM_ARQUIVO com acerto no snyk                                  pretendida 5; dispararam 3,5
+      5: SEM_ARQUIVO com outro status                                    pretendida 5; dispararam 5
+      5: sexto CVE com SEM_ARQUIVO_ANALISAVEL                            pretendida 5; dispararam 5
+      6.ref: Wald no lugar de Wilson                                     pretendida 6.ref; dispararam 6.bissecao,6.intervalo,6.ref
+      6.borda: forma centro - meia-largura (-1e-17 em 0/n)               pretendida 6.borda; dispararam 6.borda,6.contem,6.intervalo
+      6.intervalo: limite inferior abaixo de 0 em 1/n                    pretendida 6.intervalo; dispararam 6.bissecao,6.espelho,6.intervalo
+      6.contem: limite inferior acima de x/n                             pretendida 6.contem; dispararam 6.bissecao,6.contem,6.espelho,6.ref
+      6.espelho: limite superior encolhido                               pretendida 6.espelho; dispararam 6.bissecao,6.espelho
+      6.bissecao: limite superior encolhido                              pretendida 6.bissecao; dispararam 6.bissecao,6.espelho
+      7: taxa abaixo do limiar                                           pretendida 7; dispararam 7
+      7: intervalo vazio acima do limiar                                 pretendida 7; dispararam 7
+      7: linha de agregado 'Outros'                                      pretendida 7; dispararam 7
+      7: CWE-116 com n 10, coerente consigo mas nao com a secao 9        pretendida 7; dispararam 7
+      8: cabecalho alterado                                              pretendida 8; dispararam 8
+      8: celula de acertos alterada no arquivo                           pretendida 8; dispararam 8
+      8: ultima linha removida                                           pretendida 8; dispararam 8
+      8: campo excedente                                                 pretendida 8; dispararam 8
+
+SEM_ARQUIVO_ANALISAVEL do Snyk Code, por categoria:
+  CVE-2018-16479  CWE-022
+  CVE-2018-16480  CWE-079
+  CVE-2018-3731  CWE-022
+  CVE-2018-3747  CWE-079
+  CVE-2019-5423  CWE-116
+
+ACIMA DO LIMIAR (n >= 10): acertos/base  taxa  [wilson_inf, wilson_sup]
+
+  codeql
+  categoria nivel a/base    taxa    IC 95%
+  CWE-079   0     45/47     0.9574  [0.8575, 0.9883]
+            1     24/47     0.5106  [0.3724, 0.6472]
+            2g    23/47     0.4894  [0.3528, 0.6276]
+            2e    23/47     0.4894  [0.3528, 0.6276]
+            3     18/47     0.3830  [0.2579, 0.5257]
+            4g    18/47     0.3830  [0.2579, 0.5257]
+            4e    18/47     0.3830  [0.2579, 0.5257]
+  CWE-022   0     22/29     0.7586  [0.5789, 0.8778]
+            1     17/29     0.5862  [0.4074, 0.7449]
+            2g    14/29     0.4828  [0.3139, 0.6557]
+            2e    14/29     0.4828  [0.3139, 0.6557]
+            3     15/29     0.5172  [0.3443, 0.6861]
+            4g    13/29     0.4483  [0.2841, 0.6245]
+            4e    13/29     0.4483  [0.2841, 0.6245]
+  CWE-400   0     23/26     0.8846  [0.7102, 0.9600]
+            1     21/26     0.8077  [0.6212, 0.9149]
+            2g    19/26     0.7308  [0.5392, 0.8630]
+            2e    19/26     0.7308  [0.5392, 0.8630]
+            3     9/26      0.3462  [0.1941, 0.5378]
+            4g    9/26      0.3462  [0.1941, 0.5378]
+            4e    9/26      0.3462  [0.1941, 0.5378]
+  CWE-078   0     23/25     0.9200  [0.7503, 0.9778]
+            1     22/25     0.8800  [0.7004, 0.9583]
+            2g    22/25     0.8800  [0.7004, 0.9583]
+            2e    22/25     0.8800  [0.7004, 0.9583]
+            3     15/25     0.6000  [0.4074, 0.7660]
+            4g    15/25     0.6000  [0.4074, 0.7660]
+            4e    15/25     0.6000  [0.4074, 0.7660]
+  CWE-915   0     20/23     0.8696  [0.6787, 0.9546]
+            1     18/23     0.7826  [0.5810, 0.9034]
+            2g    18/23     0.7826  [0.5810, 0.9034]
+            2e    17/23     0.7391  [0.5353, 0.8745]
+            3     15/23     0.6522  [0.4489, 0.8119]
+            4g    15/23     0.6522  [0.4489, 0.8119]
+            4e    14/23     0.6087  [0.4079, 0.7784]
+  CWE-094   0     10/14     0.7143  [0.4535, 0.8828]
+            1     7/14      0.5000  [0.2680, 0.7320]
+            2g    7/14      0.5000  [0.2680, 0.7320]
+            2e    7/14      0.5000  [0.2680, 0.7320]
+            3     4/14      0.2857  [0.1172, 0.5465]
+            4g    4/14      0.2857  [0.1172, 0.5465]
+            4e    4/14      0.2857  [0.1172, 0.5465]
+  (n: CWE-079 47, CWE-022 29, CWE-400 26, CWE-078 25, CWE-915 23, CWE-094 14)
+
+  semgrep
+  categoria nivel a/base    taxa    IC 95%
+  CWE-079   0     43/47     0.9149  [0.8007, 0.9664]
+            1     17/47     0.3617  [0.2397, 0.5046]
+            2g    7/47      0.1489  [0.0741, 0.2769]
+            2e    6/47      0.1277  [0.0598, 0.2517]
+            3     6/47      0.1277  [0.0598, 0.2517]
+            4g    6/47      0.1277  [0.0598, 0.2517]
+            4e    6/47      0.1277  [0.0598, 0.2517]
+  CWE-022   0     24/29     0.8276  [0.6545, 0.9240]
+            1     22/29     0.7586  [0.5789, 0.8778]
+            2g    16/29     0.5517  [0.3755, 0.7159]
+            2e    16/29     0.5517  [0.3755, 0.7159]
+            3     2/29      0.0690  [0.0191, 0.2196]
+            4g    2/29      0.0690  [0.0191, 0.2196]
+            4e    2/29      0.0690  [0.0191, 0.2196]
+  CWE-400   0     16/26     0.6154  [0.4253, 0.7757]
+            1     8/26      0.3077  [0.1650, 0.4999]
+            2g    0/26      0.0000  [0.0000, 0.1287]
+            2e    0/26      0.0000  [0.0000, 0.1287]
+            3     2/26      0.0769  [0.0214, 0.2414]
+            4g    0/26      0.0000  [0.0000, 0.1287]
+            4e    0/26      0.0000  [0.0000, 0.1287]
+  CWE-078   0     22/25     0.8800  [0.7004, 0.9583]
+            1     16/25     0.6400  [0.4452, 0.7975]
+            2g    10/25     0.4000  [0.2340, 0.5926]
+            2e    10/25     0.4000  [0.2340, 0.5926]
+            3     8/25      0.3200  [0.1720, 0.5159]
+            4g    8/25      0.3200  [0.1720, 0.5159]
+            4e    8/25      0.3200  [0.1720, 0.5159]
+  CWE-915   0     19/23     0.8261  [0.6286, 0.9302]
+            1     12/23     0.5217  [0.3296, 0.7076]
+            2g    11/23     0.4783  [0.2924, 0.6704]
+            2e    11/23     0.4783  [0.2924, 0.6704]
+            3     1/23      0.0435  [0.0077, 0.2099]
+            4g    1/23      0.0435  [0.0077, 0.2099]
+            4e    1/23      0.0435  [0.0077, 0.2099]
+  CWE-094   0     10/14     0.7143  [0.4535, 0.8828]
+            1     5/14      0.3571  [0.1634, 0.6124]
+            2g    1/14      0.0714  [0.0127, 0.3147]
+            2e    0/14      0.0000  [0.0000, 0.2153]
+            3     1/14      0.0714  [0.0127, 0.3147]
+            4g    0/14      0.0000  [0.0000, 0.2153]
+            4e    0/14      0.0000  [0.0000, 0.2153]
+  (n: CWE-079 47, CWE-022 29, CWE-400 26, CWE-078 25, CWE-915 23, CWE-094 14)
+
+  snyk-code
+  categoria nivel a/base    taxa    IC 95%
+  CWE-079   0     38/47     0.8085  [0.6746, 0.8958]
+            1     11/47     0.2340  [0.1360, 0.3722]
+            2g    5/47      0.1064  [0.0463, 0.2259]
+            2e    5/47      0.1064  [0.0463, 0.2259]
+            3     8/47      0.1702  [0.0889, 0.3014]
+            4g    4/47      0.0851  [0.0336, 0.1993]
+            4e    4/47      0.0851  [0.0336, 0.1993]
+  CWE-022   0     20/29     0.6897  [0.5077, 0.8272]
+            1     16/29     0.5517  [0.3755, 0.7159]
+            2g    8/29      0.2759  [0.1470, 0.4572]
+            2e    1/29      0.0345  [0.0061, 0.1718]
+            3     12/29     0.4138  [0.2551, 0.5926]
+            4g    5/29      0.1724  [0.0760, 0.3455]
+            4e    1/29      0.0345  [0.0061, 0.1718]
+  CWE-400   0     12/26     0.4615  [0.2876, 0.6454]
+            1     0/26      0.0000  [0.0000, 0.1287]
+            2g    0/26      0.0000  [0.0000, 0.1287]
+            2e    0/26      0.0000  [0.0000, 0.1287]
+            3     0/26      0.0000  [0.0000, 0.1287]
+            4g    0/26      0.0000  [0.0000, 0.1287]
+            4e    0/26      0.0000  [0.0000, 0.1287]
+  CWE-078   0     7/25      0.2800  [0.1428, 0.4758]
+            1     2/25      0.0800  [0.0222, 0.2497]
+            2g    1/25      0.0400  [0.0071, 0.1954]
+            2e    1/25      0.0400  [0.0071, 0.1954]
+            3     1/25      0.0400  [0.0071, 0.1954]
+            4g    1/25      0.0400  [0.0071, 0.1954]
+            4e    1/25      0.0400  [0.0071, 0.1954]
+  CWE-915   0     8/23      0.3478  [0.1881, 0.5511]
+            1     1/23      0.0435  [0.0077, 0.2099]
+            2g    0/23      0.0000  [0.0000, 0.1431]
+            2e    0/23      0.0000  [0.0000, 0.1431]
+            3     0/23      0.0000  [0.0000, 0.1431]
+            4g    0/23      0.0000  [0.0000, 0.1431]
+            4e    0/23      0.0000  [0.0000, 0.1431]
+  CWE-094   0     5/14      0.3571  [0.1634, 0.6124]
+            1     1/14      0.0714  [0.0127, 0.3147]
+            2g    0/14      0.0000  [0.0000, 0.2153]
+            2e    0/14      0.0000  [0.0000, 0.2153]
+            3     0/14      0.0000  [0.0000, 0.2153]
+            4g    0/14      0.0000  [0.0000, 0.2153]
+            4e    0/14      0.0000  [0.0000, 0.2153]
+  (n: CWE-079 47, CWE-022 29, CWE-400 26, CWE-078 25, CWE-915 23, CWE-094 14)
+
+ABAIXO DO LIMIAR: so contagens, acertos/base; sem total
+
+  codeql
+  categoria       n        0       1      2g      2e       3      4g      4e
+  CWE-116         9      8/9     8/9     8/9     8/9     7/9     7/9     7/9
+  CWE-601         7      7/7     5/7     4/7     3/7     4/7     3/7     3/7
+  CWE-020         6      5/6     4/6     4/6     4/6     4/6     4/6     4/6
+  CWE-089         4      4/4     1/4     1/4     1/4     1/4     1/4     1/4
+  CWE-770         4      3/4     0/4     0/4     0/4     0/4     0/4     0/4
+  CWE-312         3      3/3     2/3     2/3     2/3     2/3     2/3     2/3
+  CWE-730         3      2/3     1/3     0/3     0/3     1/3     0/3     0/3
+  CWE-918         3      2/3     2/3     2/3     2/3     2/3     2/3     2/3
+  CWE-200         2      1/2     1/2     0/2     0/2     1/2     0/2     0/2
+  CWE-338         2      1/2     1/2     0/2     0/2     0/2     0/2     0/2
+  CWE-352         2      2/2     1/2     0/2     0/2     0/2     0/2     0/2
+  CWE-125         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-327         1      1/1     1/1     1/1     1/1     1/1     1/1     1/1
+  CWE-399         1      1/1     1/1     0/1     0/1     0/1     0/1     0/1
+  CWE-404         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-444         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-502         1      1/1     1/1     0/1     0/1     1/1     0/1     0/1
+  CWE-668         1      1/1     1/1     0/1     0/1     0/1     0/1     0/1
+  CWE-754         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-807         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-829         1      1/1     1/1     1/1     1/1     1/1     1/1     1/1
+  SEM_PRIMARIO    1      0/1     0/1     0/1  n.s.a.     0/1     0/1  n.s.a.
+
+  semgrep
+  categoria       n        0       1      2g      2e       3      4g      4e
+  CWE-116         9      9/9     5/9     2/9     2/9     3/9     2/9     2/9
+  CWE-601         7      6/7     3/7     0/7     0/7     0/7     0/7     0/7
+  CWE-020         6      5/6     2/6     0/6     0/6     0/6     0/6     0/6
+  CWE-089         4      3/4     0/4     0/4     0/4     0/4     0/4     0/4
+  CWE-770         4      4/4     0/4     0/4     0/4     0/4     0/4     0/4
+  CWE-312         3      3/3     0/3     0/3     0/3     0/3     0/3     0/3
+  CWE-730         3      3/3     0/3     0/3     0/3     0/3     0/3     0/3
+  CWE-918         3      3/3     1/3     1/3     1/3     1/3     1/3     1/3
+  CWE-200         2      2/2     2/2     0/2     0/2     1/2     0/2     0/2
+  CWE-338         2      2/2     0/2     0/2     0/2     0/2     0/2     0/2
+  CWE-352         2      2/2     2/2     0/2     0/2     0/2     0/2     0/2
+  CWE-125         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-327         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-399         1      1/1     1/1     0/1     0/1     0/1     0/1     0/1
+  CWE-404         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-444         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-502         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-668         1      1/1     1/1     0/1     0/1     0/1     0/1     0/1
+  CWE-754         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-807         1      1/1     1/1     0/1     0/1     0/1     0/1     0/1
+  CWE-829         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  SEM_PRIMARIO    1      0/1     0/1     0/1  n.s.a.     0/1     0/1  n.s.a.
+
+  snyk-code
+  categoria       n        0       1      2g      2e       3      4g      4e
+  CWE-116         9      8/9     3/9     0/9     0/9     1/9     0/9     0/9
+  CWE-601         7      6/7     3/7     1/7     1/7     0/7     0/7     0/7
+  CWE-020         6      3/6     0/6     0/6     0/6     0/6     0/6     0/6
+  CWE-089         4      4/4     2/4     0/4     0/4     0/4     0/4     0/4
+  CWE-770         4      4/4     0/4     0/4     0/4     0/4     0/4     0/4
+  CWE-312         3      3/3     0/3     0/3     0/3     0/3     0/3     0/3
+  CWE-730         3      3/3     2/3     0/3     0/3     0/3     0/3     0/3
+  CWE-918         3      2/3     1/3     1/3     1/3     0/3     0/3     0/3
+  CWE-200         2      2/2     0/2     0/2     0/2     0/2     0/2     0/2
+  CWE-338         2      1/2     0/2     0/2     0/2     0/2     0/2     0/2
+  CWE-352         2      2/2     2/2     0/2     0/2     0/2     0/2     0/2
+  CWE-125         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-327         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-399         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-404         1      1/1     1/1     0/1     0/1     0/1     0/1     0/1
+  CWE-444         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-502         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-668         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-754         1      1/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-807         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  CWE-829         1      0/1     0/1     0/1     0/1     0/1     0/1     0/1
+  SEM_PRIMARIO    1      0/1     0/1     0/1  n.s.a.     0/1     0/1  n.s.a.
+
+DIFERENCA ENTRE VARIANTES, em acertos: generosa - estrita
+                     codeql        | semgrep       | snyk-code    
+  categoria       n   2g-2e  4g-4e |  2g-2e  4g-4e |  2g-2e  4g-4e
+  CWE-079        47       0      0 |      1      0 |      0      0
+  CWE-022        29       0      0 |      0      0 |      7      4
+  CWE-400        26       0      0 |      0      0 |      0      0
+  CWE-078        25       0      0 |      0      0 |      0      0
+  CWE-915        23       1      1 |      0      0 |      0      0
+  CWE-094        14       0      0 |      1      0 |      0      0
+  CWE-116         9       0      0 |      0      0 |      0      0
+  CWE-601         7       1      0 |      0      0 |      0      0
+  CWE-020         6       0      0 |      0      0 |      0      0
+  CWE-089         4       0      0 |      0      0 |      0      0
+  CWE-770         4       0      0 |      0      0 |      0      0
+  CWE-312         3       0      0 |      0      0 |      0      0
+  CWE-730         3       0      0 |      0      0 |      0      0
+  CWE-918         3       0      0 |      0      0 |      0      0
+  CWE-200         2       0      0 |      0      0 |      0      0
+  CWE-338         2       0      0 |      0      0 |      0      0
+  CWE-352         2       0      0 |      0      0 |      0      0
+  CWE-125         1       0      0 |      0      0 |      0      0
+  CWE-327         1       0      0 |      0      0 |      0      0
+  CWE-399         1       0      0 |      0      0 |      0      0
+  CWE-404         1       0      0 |      0      0 |      0      0
+  CWE-444         1       0      0 |      0      0 |      0      0
+  CWE-502         1       0      0 |      0      0 |      0      0
+  CWE-668         1       0      0 |      0      0 |      0      0
+  CWE-754         1       0      0 |      0      0 |      0      0
+  CWE-807         1       0      0 |      0      0 |      0      0
+  CWE-829         1       0      0 |      0      0 |      0      0
+  SEM_PRIMARIO    1  n.s.a. n.s.a. | n.s.a. n.s.a. | n.s.a. n.s.a.

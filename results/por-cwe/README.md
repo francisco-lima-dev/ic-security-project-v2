@@ -43,11 +43,12 @@ Os tratados do Snyk Code **não** são fonte: faltam-lhe os cinco
 `SEM_ARQUIVO_ANALISAVEL`. O script **não reimplementa** denominador nem
 primário: importa as funções do `cruza-deteccao.py` e do `normalize.py`.
 
-## O que este diretório NÃO contém
+## O que a distribuição NÃO contém
 
-**Detecção alguma.** O script não lê a matriz de detecção, os agregados da
-circularidade nem o campo `findings` dos tratados. A distribuição é
-propriedade do ground truth.
+**Detecção alguma.** O `distribuicao-cwe-primario.py` não lê a matriz de
+detecção, os agregados da circularidade nem o campo `findings` dos tratados. A
+distribuição é propriedade do ground truth, e foi fixada (commit `6e0a7cb`)
+antes de existir qualquer número de detecção por categoria.
 
 ## Conferências que precedem a gravação
 
@@ -96,3 +97,65 @@ este inclusive, se alguma entrada estiver fora dele — cada uma resolvida por
 inteiro, symlink incluso, e o diretório de tratado de cada ferramenta
 conferido à parte —, porque o caminho da máquina do operador iria para o
 `.txt`.
+
+---
+
+# Detecção por categoria de CWE
+
+Saída de `tools/deteccao-por-cwe.py`, que aplica a §9 de
+`docs/criterios-cruzamento.md`: categoria é o `gt_cwe_primary` do CVE, limiar
+k = 10, intervalo de Wilson de 95% sem correção de continuidade (z = 1,96) só
+acima do limiar, nenhuma linha de agregado.
+
+```bash
+python3 tools/deteccao-por-cwe.py
+```
+
+## O que contém
+
+- `deteccao-por-categoria.csv` — formato longo, uma linha por (categoria,
+  ferramenta, nível): 28 × 3 × 7 = 588 linhas. `taxa`, `wilson_inf` e
+  `wilson_sup` vazios abaixo do limiar.
+- `deteccao-por-categoria.txt` — fontes com sha256, conferências e controle
+  positivo, as tabelas acima e abaixo do limiar, e a diferença entre variante
+  generosa e estrita por categoria, sem comentário.
+
+## Fontes lidas
+
+| Fonte | Para quê |
+|---|---|
+| `results/cruzamento/matriz-deteccao.csv` | a detecção por (CVE, ferramenta, nível), com sha256 fixado |
+| `results/cruzamento/cruzamento-<ferramenta>.json` | agregados: segunda fonte das somas, e o sha256 da matriz |
+| `results/por-cwe/distribuicao-primario.csv` | a categoria de cada CVE, com sha256 conferido contra o `.txt` irmão |
+
+**Não recomputa detecção.** Só reagrupa a matriz pela categoria do CVE;
+nenhum tratado é lido.
+
+## Conferências
+
+0 forma da matriz; 1 proveniência por sha256; 2 mesmo universo e mesmo
+primário; 3 a soma das categorias reconstrói a matriz publicada e os
+agregados dos JSON, e 3c a estrita nunca acerta mais que a generosa; 4 os 22
+de prototype pollution contra a tabela publicada; 5 os cinco
+`SEM_ARQUIVO_ANALISAVEL`; 6 Wilson contra referências, bisseção e
+propriedades; 7 limiar aplicado e corte igual ao da §9; 8 releitura do CSV
+gravado antes da promoção; 9 controle positivo, um mutante por conferência e
+por subitem da 6. As conferências reais rodam antes do controle, para que
+falha nos dados saia com o título da conferência que reprovou.
+
+**Limite declarado da conferência 3.** Deslocar um acerto de uma categoria
+para outra, mantendo o total, reproduz a matriz publicada e passa pela 3. Em
+memória, só a 4 o pega, e só se o deslocamento tocar os 22. No arquivo, a 1
+pega qualquer alteração da matriz, pelo sha256.
+
+**Limites da escrita.** Os dois renames não são atômicos como par: falha
+entre eles é reportada como escrita parcial, e o `.txt` declara o sha256 do
+CSV. Interrupção abrupta pode deixar `.tmp-*` neste diretório, que não é
+ignorado pelo git; a execução seguinte os remove, e o stage deve ser por
+caminho explícito.
+
+## Determinismo
+
+Mesmos bytes com `PYTHONHASHSEED` 0, 1, 7 e 12345, para o CSV, o texto e o
+stdout. O script recusa gravar dentro do repositório se alguma entrada
+estiver fora dele.
