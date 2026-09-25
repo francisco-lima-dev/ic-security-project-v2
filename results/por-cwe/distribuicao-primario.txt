@@ -1,0 +1,141 @@
+Distribuicao de gt_cwe_primary no denominador (220 pares)
+Propriedade do ground truth; nenhuma deteccao lida ou computada.
+
+  csv desta execucao (sha256): 86a9f13bcb50a7f20b448bc39aea154a2bda753ef9c441fef2c4ab9f52718fa1
+
+Fontes (caminho relativo ao repositorio, sha256):
+  lista      datasets/listas/cves-sast.txt  7b300e43c561470a7d4952cdd0789cd231fab2f3b38a00f047967bb6ab49b277
+  tabela     datasets/cwe-primario.csv  cf77014f582170df920bbe7200aa8e68c7e7c90f9d561a36f9ac39320dcf9fbe
+  metadata   datasets/cve-metadata.csv  d202df0214078faf2d4be53f94789b2e153baa5f898205572b7539c9ef44f598
+  codeql     results/codeql/treated/ (220, conjunto)  6b499a4d7418594868b44a37fd9c83fc6b3720fd28f0a9befe86c9ba33df20bb
+  semgrep    results/semgrep/treated/ (220, conjunto)  3fc7bdcc6f48f906dd75246c1b71f6e981234f3ce13f0b262caf58ca8489da2f
+  codigo     tools/distribuicao-cwe-primario.py  9e106c1865b8de912e59ba16d57540fd18c89b2bf841af95c6342ef6ac93a3b5
+  codigo     tools/cruza-deteccao.py  8fea5aaba3202b019b92fd27ad6472b7c9ef7eab31dfa5a3130f1e266053c44c
+  codigo     tools/normalize.py  0e2a0b1229762732a62579fac1a1411a9549249cd5fccd32e17caf45b258b1d0
+
+Conferencias:
+  1 soma = 220, SEM_PRIMARIO = {CVE-2018-16472}                      OK
+  2 lista = codeql = semgrep = metadata, CVE a CVE (220)             OK, 0 divergencias
+  3 contagens publicadas (10 categorias)                             OK
+    excecoes CVE-2017-16023, CVE-2018-7560 em CWE-400                OK
+  4 controle positivo (13 mutantes, alvo CVE-2016-10735)             OK, todos dispararam
+      c1: CVE removido (soma 219)                                    disparou
+      c1: CVE-2018-16472 recebe primario                             disparou
+      c1: segundo CVE em SEM_PRIMARIO                                disparou
+      c2: primario alterado em codeql                                disparou
+      c2: primario alterado em lista                                 disparou
+      c2: primario alterado em metadata                              disparou
+      c2: primario alterado em semgrep                               disparou
+      c2: CVE ausente de semgrep                                     disparou
+      c2: conjunto alterado em codeql                                disparou
+      c3: CVE trocado de CWE-079 para CWE-022                        disparou
+      cx: excecao com conjunto alterado                              disparou
+      guarda: saida versionada fora de por-cwe, entrada externa      disparou
+      guarda: diretorio de tratado de uma ferramenta externo         disparou
+  6 CSV gravado relido (publicado so se aprovado)                    OK
+    controle positivo no arquivo (9 mutantes)                        OK, cada um pelo item pretendido
+      6.1: ID corrompido                                             disparou 6.1,6.4,6.5
+      6.2: ID removido, n mantido                                    disparou 6.2,6.4,6.5
+      6.3: ID duplicado em duas linhas                               disparou 6.3,6.5
+      6.4: ID fora do denominador                                    disparou 6.4,6.5
+      6.5: CVE trocado entre duas categorias                         disparou 6.5
+      6.1: ID com quebra de linha final                              disparou 6.1,6.4,6.5
+      6.0: cabecalho alterado                                        disparou 6.0
+      6.0: categoria fora da forma                                   disparou 6.0,6.5
+      6.0: campo excedente numa linha                                disparou 6.0,6.4,6.5
+
+Alcance das conferencias:
+  1 a soma 220 e verdadeira por construcao: carregar_gt ja para se o
+    denominador nao tiver 220. O que 1 mede e o SEM_PRIMARIO.
+  2 'CVE fora do denominador' e verdadeiro por construcao: as fontes sao
+    lidas so para os CVEs do denominador. 2 pega entrada divergente e
+    tratado desatualizado, mas NAO erro na tabela de primario: as quatro
+    fontes a aplicam pela mesma funcao. Contra a tabela, a unica prova
+    independente e 3, que cobre 10 categorias e 187 dos 220 CVEs.
+
+Tabela (n decrescente; empate por numero do CWE; SEM_PRIMARIO por ultimo no empate):
+
+  gt_cwe_primary    n  conjuntos_gt_cwes
+  CWE-079         47  CWE-079|CWE-116=40; CWE-079=6; CWE-020|CWE-079|CWE-116=1
+  CWE-022         29  CWE-022|CWE-023|CWE-036|CWE-073|CWE-099=21; CWE-022=8
+  CWE-400         26  CWE-400|CWE-730=25; CWE-400=1
+                      nota: excecoes documentadas do conjunto CWE-400|CWE-730 (injecao de expressao regular, nao ReDoS): CVE-2017-16023, CVE-2018-7560
+  CWE-078         25  CWE-078|CWE-088=25
+  CWE-915         23  CWE-078|CWE-079|CWE-094|CWE-400|CWE-915=23
+  CWE-094         14  CWE-079|CWE-094|CWE-116=8; CWE-094=4; CWE-020|CWE-094=1; CWE-074|CWE-094=1
+  CWE-116          9  CWE-020|CWE-116=7; CWE-116=2
+  CWE-601          7  CWE-601=4; CWE-079|CWE-116|CWE-601=3
+  CWE-020          6  CWE-020=5; CWE-020|CWE-668=1
+  CWE-089          4  CWE-089=4
+  CWE-770          4  CWE-770=4
+  CWE-312          3  CWE-312|CWE-315|CWE-359=3
+  CWE-730          3  CWE-730=3
+  CWE-918          3  CWE-918=3
+  CWE-200          2  CWE-200=2
+  CWE-338          2  CWE-338=2
+  CWE-352          2  CWE-352=2
+  CWE-125          1  CWE-125|CWE-126=1
+  CWE-327          1  CWE-327=1
+  CWE-399          1  CWE-399=1
+  CWE-404          1  CWE-404|CWE-730=1
+  CWE-444          1  CWE-444=1
+  CWE-502          1  CWE-502=1
+  CWE-668          1  CWE-668=1
+  CWE-754          1  CWE-754=1
+  CWE-807          1  CWE-290|CWE-807=1
+  CWE-829          1  CWE-829=1
+  SEM_PRIMARIO     1  CWE-250|CWE-400=1
+
+CVEs por categoria:
+  CWE-079 (47): CVE-2016-10735|CVE-2017-0931|CVE-2017-1000006|CVE-2017-16011|CVE-2017-16018|CVE-2017-16043|CVE-2017-18352|CVE-2017-18353|CVE-2017-18635|CVE-2018-11093|CVE-2018-14040|CVE-2018-14041|CVE-2018-14042|CVE-2018-14380|CVE-2018-16480|CVE-2018-16484|CVE-2018-19048|CVE-2018-20676|CVE-2018-20677|CVE-2018-3726|CVE-2018-3747|CVE-2018-6341|CVE-2019-10090|CVE-2019-10771|CVE-2019-12043|CVE-2019-12313|CVE-2019-13127|CVE-2019-14772|CVE-2019-14862|CVE-2019-15478|CVE-2019-15479|CVE-2019-15482|CVE-2019-15532|CVE-2019-15782|CVE-2019-16769|CVE-2019-17495|CVE-2019-20174|CVE-2019-8331|CVE-2020-11022|CVE-2020-15092|CVE-2020-15119|CVE-2020-15138|CVE-2020-27666|CVE-2020-4051|CVE-2020-7676|CVE-2020-7750|CVE-2021-31712
+  CWE-022 (29): CVE-2017-16029|CVE-2017-16083|CVE-2017-16084|CVE-2017-16107|CVE-2017-16877|CVE-2018-1002203|CVE-2018-1002204|CVE-2018-11798|CVE-2018-16478|CVE-2018-16479|CVE-2018-16485|CVE-2018-20834|CVE-2018-20835|CVE-2018-3712|CVE-2018-3713|CVE-2018-3718|CVE-2018-3725|CVE-2018-3731|CVE-2018-3732|CVE-2018-3733|CVE-2018-6184|CVE-2019-10765|CVE-2019-10767|CVE-2019-13173|CVE-2019-5444|CVE-2019-5479|CVE-2019-5484|CVE-2020-12265|CVE-2020-7763
+  CWE-400 (26): CVE-2017-15010|CVE-2017-16023|CVE-2017-16030|CVE-2017-16098|CVE-2017-16114|CVE-2017-16117|CVE-2017-16118|CVE-2017-16119|CVE-2017-16136|CVE-2017-16137|CVE-2017-16138|CVE-2017-17461|CVE-2017-18077|CVE-2017-18214|CVE-2018-13863|CVE-2018-20164|CVE-2018-20801|CVE-2018-3737|CVE-2018-3738|CVE-2018-7560|CVE-2018-7651|CVE-2019-1010266|CVE-2019-17592|CVE-2020-26256|CVE-2020-7662|CVE-2021-23364
+  CWE-078 (25): CVE-2017-1000219|CVE-2017-16034|CVE-2017-16042|CVE-2017-16087|CVE-2017-16100|CVE-2018-13797|CVE-2018-16460|CVE-2018-16461|CVE-2018-16462|CVE-2018-3746|CVE-2018-3757|CVE-2018-3772|CVE-2018-3786|CVE-2018-6342|CVE-2019-10061|CVE-2019-10776|CVE-2019-10777|CVE-2019-10778|CVE-2019-5414|CVE-2020-11079|CVE-2020-15123|CVE-2020-4059|CVE-2020-4066|CVE-2020-7752|CVE-2020-8149
+  CWE-915 (23): CVE-2018-16487|CVE-2018-16489|CVE-2018-16490|CVE-2018-16491|CVE-2018-16492|CVE-2018-3719|CVE-2018-3721|CVE-2018-3722|CVE-2018-3728|CVE-2018-3750|CVE-2018-3752|CVE-2019-10745|CVE-2019-10746|CVE-2019-10747|CVE-2019-10750|CVE-2019-11358|CVE-2020-15256|CVE-2020-5258|CVE-2020-7638|CVE-2020-7699|CVE-2020-7720|CVE-2020-8116|CVE-2020-8203
+  CWE-094 (14): CVE-2017-1001004|CVE-2017-16226|CVE-2017-5954|CVE-2018-18282|CVE-2018-3770|CVE-2019-10744|CVE-2019-10758|CVE-2019-10759|CVE-2019-10761|CVE-2019-13506|CVE-2019-15657|CVE-2019-5413|CVE-2020-6836|CVE-2021-23344
+  CWE-116 (9): CVE-2017-16082|CVE-2018-11615|CVE-2019-1010091|CVE-2019-10757|CVE-2019-10785|CVE-2019-5423|CVE-2019-8903|CVE-2020-26226|CVE-2020-7656
+  CWE-601 (7): CVE-2017-16224|CVE-2018-1000086|CVE-2018-3743|CVE-2018-6333|CVE-2019-18350|CVE-2020-14000|CVE-2020-8135
+  CWE-020 (6): CVE-2017-1000427|CVE-2017-16006|CVE-2019-16763|CVE-2019-20149|CVE-2019-9844|CVE-2020-9038
+  CWE-089 (4): CVE-2018-3783|CVE-2019-15658|CVE-2019-18818|CVE-2020-5251
+  CWE-770 (4): CVE-2017-10910|CVE-2017-16026|CVE-2018-3736|CVE-2020-8192
+  CWE-312 (3): CVE-2019-5483|CVE-2020-11059|CVE-2020-15095
+  CWE-730 (3): CVE-2017-16014|CVE-2018-21036|CVE-2019-10775
+  CWE-918 (3): CVE-2017-18354|CVE-2020-15152|CVE-2020-8205
+  CWE-200 (2): CVE-2017-18355|CVE-2020-11021
+  CWE-338 (2): CVE-2017-16028|CVE-2017-16031
+  CWE-352 (2): CVE-2020-15135|CVE-2020-15156
+  CWE-125 (1): CVE-2020-8244
+  CWE-327 (1): CVE-2018-1000620
+  CWE-399 (1): CVE-2019-12041
+  CWE-404 (1): CVE-2019-10742
+  CWE-444 (1): CVE-2019-1020012
+  CWE-502 (1): CVE-2020-7660
+  CWE-668 (1): CVE-2019-10781
+  CWE-754 (1): CVE-2019-18954
+  CWE-807 (1): CVE-2019-19507
+  CWE-829 (1): CVE-2017-16003
+  SEM_PRIMARIO (1): CVE-2018-16472
+
+Resumo:
+  categorias distintas, com SEM_PRIMARIO: 28
+  categorias distintas, sem SEM_PRIMARIO: 27
+  soma de n: 220 (com primario: 219)
+  n em ordem (sem SEM_PRIMARIO): 47 29 26 25 23 14 9 7 6 4 4 3 3 3 2 2 2 1 1 1 1 1 1 1 1 1 1
+  saltos n_i - n_(i+1): 18 3 1 2 9 5 2 1 2 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0
+
+  Patamares (sem SEM_PRIMARIO): para cada n distinto t, categorias com n == t,
+  categorias com n >= t e CVEs cobertos por elas:
+      t   n == t    n >= t     CVEs
+     47        1         1       47
+     29        1         2       76
+     26        1         3      102
+     25        1         4      127
+     23        1         5      150
+     14        1         6      164
+      9        1         7      173
+      7        1         8      180
+      6        1         9      186
+      4        2        11      194
+      3        3        14      203
+      2        3        17      209
+      1       10        27      219

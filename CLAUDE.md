@@ -250,6 +250,9 @@ negativo existe na versão corrigida, no ponto da falha. Achado fora desse ponto
 continua não classificável, e volume de alerta continua caracterização
 descritiva, nunca medida de qualidade.
 
+**A decomposição da detecção por categoria de CWE está na §9 do documento**
+(25/09/2026): categoria, limiar e tratamento do grupo "outros" são de lá.
+
 ## Formato das listas de entrada
 
 Seis campos, sem cabeçalho:
@@ -320,7 +323,7 @@ O gerador exige a flag `--force` para remover lotes existentes.
 **Versionados:** `datasets/` (incluindo `cwe-primario.csv` e
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
 `results/*/treated/`, `results/cruzamento/`, `results/proveniencia/`,
-`results/circularidade/`, `results/zap/`, `logs/`
+`results/circularidade/`, `results/por-cwe/`, `results/zap/`, `logs/`
 (incluindo `normalize-report-<ferramenta>.json`), o pack vendorizado do
 Semgrep e seu descritor, Dockerfiles, scripts, workflows.
 
@@ -356,6 +359,17 @@ fora dela não há caminho relativo a dar. O
 `tools/circularidade-proveniencia.py` fecha o mesmo buraco com guarda
 explícita, na forma do `cruza-deteccao.py`: recusa gravar em
 `results/circularidade/` se alguma entrada estiver fora do repositório.
+
+**`results/por-cwe/` entra pela mesma razão, em 25/09/2026.** Guarda a
+distribuição de `gt_cwe_primary` nos 220 pares do denominador — propriedade do
+ground truth, e não resultado de detecção —, produzida por
+`tools/distribuicao-cwe-primario.py`, que toma o denominador do
+`cruza-deteccao.py` e o primário das funções do `normalize.py`, sem
+reimplementar nenhum dos dois. É determinística e não grava carimbo de
+execução: conferido com quatro `PYTHONHASHSEED` distintos. O CSV gravado é
+relido antes de ocupar o nome definitivo, e o script recusa gravar dentro do
+repositório se alguma entrada estiver fora dele. O `README.md` do diretório traz o
+comando e a procedência.
 
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
 databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`, os
@@ -1394,7 +1408,12 @@ apareça neles não pode ser circularidade de etiqueta.
 
 ### Composição de CWE dos dois grupos — os grupos não são comparáveis
 
-`gt_cwe_primary`, os oito maiores:
+`gt_cwe_primary`, dez categorias — **não** as maiores do denominador: fora
+delas ficam CWE-020 (6) e CWE-089 (4). As dez coincidem com a união das sete
+maiores de cada grupo, e com nenhum outro corte de 3 a 9. **Se foi esse o
+critério usado ao criar a tabela não está registrado** no commit que a criou
+(`4a9241b`), onde o rótulo era "os oito maiores". A distribuição completa,
+sem partição, está em `results/por-cwe/distribuicao-primario.csv`:
 
 | CWE primário | herdado | não herdado |
 |---|---:|---:|

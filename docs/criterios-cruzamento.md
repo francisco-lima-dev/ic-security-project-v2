@@ -455,6 +455,103 @@ código do commit `91c59fd`, em `contrib/reports/explore-server/src/`:
 
 ---
 
+## 9. Decomposição da detecção por categoria de CWE
+
+Fixado em 25/09/2026, a partir da distribuição de `gt_cwe_primary` no
+denominador (`results/por-cwe/distribuicao-primario.csv`), **antes** de
+qualquer número de detecção por categoria. A distribuição é propriedade do
+ground truth, e não resultado. Única detecção por categoria já conhecida: a
+do CWE-915, publicada na apuração da circularidade. Com n = 23, ele fica
+acima de qualquer limiar considerado.
+
+### A categoria
+
+**A categoria de um CVE é o seu `gt_cwe_primary`. Sempre a do CVE, nunca a
+do achado.** Um CVE de primário CWE-079 acertado na variante generosa por
+achado etiquetado CWE-116 conta em CWE-079. O CWE do achado pertence à
+tabela de capacidade empírica (§7.6 da metodologia), que é outro eixo.
+
+Cada CVE cai em exatamente uma categoria, e o agrupamento é uma
+**partição** do denominador de 220. Controle obrigatório da apuração: a
+soma das categorias reconstrói a matriz de detecção publicada, em todas as
+células, nas três ferramentas, com zero divergências.
+
+O `CVE-2018-16472`, de primário indefinido, forma a categoria
+`SEM_PRIMARIO`. Entra nos níveis 0, 1 e 3 e nas variantes generosas; nas
+estritas não se aplica, como já ocorre na matriz.
+
+### O limiar
+
+**k = 10. A categoria com n ≥ 10 tem taxa apurada e discutida no texto.**
+
+Distribuição: 47, 29, 26, 25, 23, 14 | 9, 7, 6 | 4, 4, 3, 3, 3, 2, 2, 2
+e dez categorias com 1. Nenhuma categoria tem n entre 10 e 13, de modo que
+qualquer limiar de 10 a 14 produz o mesmo corte; ele coincide com o salto
+de 14 para 9.
+
+Acima do limiar ficam seis categorias — CWE-079 (47), CWE-022 (29),
+CWE-400 (26), CWE-078 (25), CWE-915 (23) e CWE-094 (14) —, com 164 dos 220
+CVEs do denominador.
+
+Alternativas examinadas e descartadas:
+
+- **k = 20** retiraria o CWE-094, categoria distinta e com n suficiente para
+  leitura.
+- **k = 6** acrescentaria CWE-116 (9), CWE-601 (7) e CWE-020 (6), com n
+  pequeno demais para que uma taxa diga algo.
+
+### Abaixo do limiar
+
+**Nada é omitido.** A apuração publica todas as categorias, com acertos e
+n, em `results/por-cwe/`. O limiar governa o que o texto discute, não o que
+se publica.
+
+Abaixo do limiar, o texto apresenta só contagens (acertos/n), sem
+percentual. As categorias abaixo do limiar formam o grupo "outros", com 56
+CVEs (55 com primário e o `CVE-2018-16472`), em 22 categorias. **O grupo não
+recebe taxa agregada**: é heterogêneo, e uma taxa conjunta não descreveria
+tipo de vulnerabilidade algum.
+
+"Outros" é agrupamento de apresentação, não critério de casamento, e não
+contraria a vedação de agrupamento por família (Decisão 39 da metodologia).
+Pelo mesmo motivo, as categorias de negação de serviço por expressão
+regular não se fundem: estão em CWE-400 (26, das quais `CVE-2017-16023` e
+`CVE-2018-7560` são as exceções documentadas de injeção de expressão
+regular), CWE-730 (3) e CWE-404 (1). No texto, o desempenho em ReDoS
+corresponde essencialmente ao CWE-400, e isso é declarado.
+
+### Incerteza
+
+Para as seis categorias acima do limiar, cada taxa é acompanhada do
+intervalo de Wilson de 95%, sem correção de continuidade, com z = 1,96,
+como **descrição** da incerteza devida ao tamanho da categoria. Não é teste
+de hipótese, e nenhuma comparação entre ferramentas ou categorias é
+declarada significativa a partir dele. Abaixo do limiar não se calcula
+intervalo.
+
+### Expectativa declarada antes do número
+
+Os conjuntos de CWE-079, CWE-116 e CWE-094 se sobrepõem, e os 8 CVEs do
+conjunto `CWE-079|CWE-094|CWE-116` têm primário CWE-094. Espera-se que a
+diferença entre as variantes generosa e estrita se concentre nessas
+categorias. É expectativa registrada para ser confrontada, e não critério:
+nenhuma regra da apuração depende dela.
+
+### Composição e circularidade
+
+A decomposição por categoria não resolve a confusão entre proveniência da
+etiqueta e tipo de vulnerabilidade apontada na apuração da circularidade.
+Na partição pela âncora `ec573b51`, entre as seis categorias acima do
+limiar, o cruzamento categoria × herança tem as duas células populadas em
+cinco, mas em três delas o grupo não herdado tem 1 ou 2 CVEs — CWE-022
+(27/2), CWE-400 (24/2) e CWE-078 (24/1). Só CWE-079 (39/8) e CWE-094 (8/6)
+têm mais de 2 CVEs em cada grupo, e mesmo ali o cruzamento serve no máximo
+como ilustração. O CWE-915 é 0/23 na âncora e 22/1 na referência de
+sensibilidade (`9ff6d68a`): é o maior recorte livre de etiqueta herdada sob
+a âncora, e a propriedade depende dela.
+
+---
+
 ## Registro de alterações
 
 | Data | Commit | Seção | Alteração |
@@ -463,3 +560,4 @@ código do commit `91c59fd`, em `contrib/reports/explore-server/src/`:
 | 18/09/2026 | `a1c9cfa` | §2 | o nível 0 passa a falar da árvore analisada, não do repositório |
 | 18/09/2026 | `beac0b2` | §7 | o script lê o status nos 24 logs de lote versionados |
 | 21/09/2026 | o desta entrada | §1, §6, §8 | emenda: o falso positivo existe, na versão corrigida e no ponto da falha. O trecho da §1 que afirmava a inexistência do negativo fica marcado como superado e preservado. §6 ganha nota de que os parágrafos sobre alertas fora do ponto continuam valendo. §8 registra o critério da versão corrigida como não fixado e as duas leituras possíveis. Datada do dia da descoberta; redigida e commitada em 22/09/2026 |
+| 25/09/2026 | o desta entrada | §9 | seção nova: decomposição da detecção por categoria de CWE. Categoria é o `gt_cwe_primary` do CVE; limiar k = 10, fixado pela distribuição em `results/por-cwe/`, antes de qualquer número de detecção por categoria; grupo "outros" sem taxa agregada; intervalo de Wilson de 95% nas seis categorias acima do limiar |
