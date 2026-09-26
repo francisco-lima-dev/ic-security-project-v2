@@ -65,6 +65,7 @@ apuram a proveniência do ground truth integram o repositório desde setembro de
 |---|---|---|
 | Nota | Acréscimo | Decomposição por categoria e capacidade empírica apuradas |
 | 7.6, 7.7 | Correção | Estado das apurações atualizado, com remissão aos resultados; em 7.6, a proporção fora de JS/TS deixa de ser dita descartada |
+| 9.5 | Correção | O denominador dos 77% passa a ser explícito: os achados dos seis últimos lotes, e não o total da ferramenta |
 | 9.9 | Acréscimo | Detecção por categoria de CWE, pelo critério da §9 do documento de critérios |
 | 9.11 | Acréscimo | Nova seção: capacidade empírica e delimitação por linguagem |
 | 13 | Acréscimo | Decisões 91 a 96 |
@@ -1670,7 +1671,7 @@ A relação entre porte e custo **existe**, mas fica encoberta pelo custo fixo d
 
 **Estes números medem quanto cada ferramenta reporta, e não quanto acerta** (Seções 7.3 e 7.7). Os alertas fora do arquivo do ground truth não são classificáveis como corretos ou incorretos com este conjunto.
 
-**O volume do Semgrep é concentrado.** Nos seis últimos lotes, dez CVEs somam 77% dos achados da ferramenta, e um único — o `CVE-2018-20801` — responde por 5.850, com saída bruta de 144 MiB. É perfil de regra disparando em massa num repositório, e não de detecção densa. Qualquer número agregado de volume precisa vir acompanhado da distribuição.
+**O volume do Semgrep é concentrado.** Nos seis últimos lotes, dez CVEs somam 77% dos achados da ferramenta nesses lotes, e um único — o `CVE-2018-20801` — responde por 5.850, com saída bruta de 144 MiB. É perfil de regra disparando em massa num repositório, e não de detecção densa. Qualquer número agregado de volume precisa vir acompanhado da distribuição.
 
 ### 9.6 Inventário do CodeQL
 

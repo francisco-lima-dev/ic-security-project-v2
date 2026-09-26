@@ -2126,7 +2126,7 @@ def _(doc, f):
     seis = {c: n for c, n in por_cve.items() if lote_de[c] & set(ultimos)}
     extenso = {"dez": 10, "doze": 12, "oito": 8, "cinco": 5, "seis": 6, "sete": 7}
     g = busca_unica("\n".join(doc.secao("### 9.5")),
-                    r"Nos (\w+) últimos lotes, (\w+) CVEs somam (\d+)% dos achados da ferramenta", "9.5")
+                    r"Nos (\w+) últimos lotes, (\w+) CVEs somam (\d+)% dos achados da ferramenta nesses lotes", "9.5")
     n_lotes, n_cves = extenso.get(g[0], g[0]), extenso.get(g[1], g[1])
     if not isinstance(n_cves, int):
         raise FalhaDeExtracao(f"9.5: número de CVEs {g[1]!r}")
