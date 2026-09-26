@@ -1,0 +1,524 @@
+Capacidade empirica e delimitacao por linguagem (criterios-cruzamento.md, secao 10)
+Gerado por tools/capacidade-empirica.py. Descritivo: o que as ferramentas reportam,
+e nao o que acertam. Nenhum campo gt_* e lido.
+
+1. FONTES
+  regras       results/capacidade/regras-linguagens.csv
+               sha256 83b7fe5faf523450d2d37514a4e4ae0c6d053a0416c12384cc3131a43b42307e
+  tratados     results/codeql/treated
+               sha256 81ccc0179b44a7b4f74af4e6b683a01dc46f1f0d64e70f9bf3a6fbb7a8176fc0
+  tratados     results/semgrep/treated
+               sha256 79007a217f1a0947c9b92043d3ab209b0afe92e78942dae66fd45d8eaeb17409
+  tratados     results/snyk-code/treated
+               sha256 5102f42a05dd70343fee41918edb15fe47430c1351e02043c87aa86ffe91145e
+  relatorios   logs/campanha-2026-09-17/cves-sast-batch-*/normalize-report-*.json
+               sha256 247bd6e8e66d1c567ffdd15f301d89da22b49e6e11b17882f68c451f806df7bd
+  codigo       tools/capacidade-empirica.py
+               sha256 7bb5bba57ee037e7e394535f023b6116179d327845aa3505623a38df46b56580
+  codigo       tools/distribuicao-cwe-primario.py
+               sha256 9e106c1865b8de912e59ba16d57540fd18c89b2bf841af95c6342ef6ac93a3b5
+  saida        capacidade-por-cwe.csv sha256 21f2cf5d9a39b652e313cabb32d44bac4f7f0eb7028abe605f34cda3152af27a
+  saida        delimitacao-linguagem.csv sha256 c4e2e12e1af3a8eed65e949a5105969f10b69cf61da68d45b5591e8821db3585
+
+  Extensao: o sufixo depois do ultimo ponto do NOME do arquivo (depois da ultima '/'),
+  em minusculas; sem ponto no nome, ou com o ponto no fim, nao ha extensao.
+  x.d.ts -> ts; .eslintrc.js -> js; bin/public -> sem extensao.
+  JS/TS pela extensao: .cjs .cts .js .jsx .mjs .mts .ts .tsx
+  JS/TS pela linguagem da regra (so Semgrep): languages contem um de javascript, js, typescript, ts
+  Linguagem da regra lida so da juncao com regras-linguagens.csv, nunca do prefixo do check_id.
+
+2. CONFERENCIAS
+  1 sha256 do regras-linguagens.csv = 83b7fe5faf52..; tratados 221/221/216     OK
+    conjunto: sem as 2 baixas; CodeQL = Semgrep; Snyk = eles - 5 SEM_ARQUIVO   OK
+  2 total e SEM_CWE dos tratados = soma dos 8 relatorios = publicado           OK
+    totais: codeql 3230, semgrep 11768, snyk-code 3666; SEM_CWE 0/0/0          
+  3 CWE canonico (3 digitos, sem zero sobrando) sem repeticao; file_path       OK
+    relativo; coverage do Snyk na forma; antes da apuracao                     
+  4 todo rule_id do Semgrep resolve em regras-linguagens.csv                   OK
+    regras do pack com algum achado: 122 de 1074                               
+  5 js_ts + fora = total; 2x2 soma o total; margens = criterios sozinhos       OK
+  6 soma das categorias - total = sum(len(cwe) - 1), nas duas versoes          OK
+    achados com mais de um CWE (todos / js_ts): codeql 2049/1953, semgrep 62/0, snyk-code 537/511 
+  7 achados do Semgrep no CVE-2018-20801 = 5850                                OK
+  8 segundo caminho: celulas extensao e 10 maiores categorias, nas 3           OK
+  9 os dois CSV gravados relidos (publicados so se aprovados)                  OK
+  10 controle positivo (30 casos)                                              OK
+      1: sha256 do regras-linguagens.csv adulterado                            pretendida 1; dispararam 1
+      1: um tratado a menos no Snyk Code                                       pretendida 1; dispararam 1,2
+      1: Snyk Code com um SEM_ARQUIVO no lugar de outro CVE (contagem mantida) pretendida 1; dispararam 1
+      2: um achado a menos no CodeQL                                           pretendida 2; dispararam 2
+      2: achado do Snyk Code sem CWE (SEM_CWE != 0)                            pretendida 2; dispararam 2
+      2: relatorio de normalizacao do Semgrep +1                               pretendida 2; dispararam 2
+      3: CWE sem zero a esquerda (CWE-79)                                      pretendida 3; dispararam 3
+      3: file_path absoluto                                                    pretendida 3; dispararam 3
+      3: file_path vazio                                                       pretendida 3; dispararam 3
+      3: CWE com zero a esquerda sobrando (CWE-0079)                           pretendida 3; dispararam 3
+      3: cwe nulo                                                              pretendida 3; dispararam 3
+      3: cwe como cadeia nua                                                   pretendida 3; dispararam 3
+      3: file_path nulo                                                        pretendida 3; dispararam 3
+      3: rule_id nulo no Semgrep                                               pretendida 3; dispararam 3
+      3: coverage do Snyk com lang sem ponto                                   pretendida 3; dispararam 3
+      4: rule_id com prefixo de diretorio (packs.javascript...)                pretendida 4; dispararam 4,5
+      5: celula js_ts do CodeQL +1                                             pretendida 5; dispararam 5
+      5: deslocamento entre celulas da 2x2 com total mantido                   pretendida 5; dispararam 5
+      6: soma das categorias do Snyk Code -1                                   pretendida 6; dispararam 6
+      6: soma das categorias do Semgrep js_ts +1 (excesso inexistente)         pretendida 6; dispararam 6
+      7: um achado a menos no CVE-2018-20801                                   pretendida 7; dispararam 2,7
+      8: CVE espurio na celula fora do Semgrep                                 pretendida 8; dispararam 5,8
+      8: CVE a menos na maior categoria do CodeQL                              pretendida 8; dispararam 8
+      9: capacidade.csv com cves_com_achado adulterado                         pretendida 9; dispararam 9
+      9: delimitacao.csv com cves_com_achado adulterado                        pretendida 9; dispararam 9
+      ext: achado em x.d.ts cai em js_ts                                       pretendida ext; dispararam ext
+      ext: achado em bin/public cai em fora                                    pretendida ext; dispararam ext
+      ext: achado em .eslintrc.js cai em js_ts                                 pretendida ext; dispararam ext
+      ext: achado em src/A.TSX cai em js_ts                                    pretendida ext; dispararam ext
+      ext: achado em index.html cai em fora                                    pretendida ext; dispararam ext
+  11 determinismo: NAO verificado por este script; conferido por fora          ver README
+
+3. CAPACIDADE, VERSAO PRINCIPAL (achados em arquivo JS/TS pela extensao)
+  Um achado com mais de um CWE conta em cada um: as categorias NAO somam o total.
+
+  codeql — universo 221 CVEs; 2557 achados em JS/TS, 68 categorias com achado
+  categoria     cves  achados  maior_cve             n
+  CWE-400        118      722  CVE-2019-10767       77
+  CWE-116         92      794  CVE-2018-20801       66
+  CWE-079         91      640  CVE-2019-10767       51
+  CWE-020         84      638  CVE-2020-15092      141
+  CWE-730         83      324  CVE-2020-15138       42
+  CWE-1333        76      305  CVE-2020-15138       42
+  CWE-078         72      340  CVE-2019-10767       48
+  CWE-080         63      322  CVE-2018-20801       42
+  CWE-094         52      262  CVE-2019-10767       49
+  CWE-471         43      177  CVE-2019-10767       42
+  CWE-915         43      177  CVE-2019-10767       42
+  CWE-088         38      162  CVE-2017-16042       23
+  CWE-250         34      138  CVE-2019-10767       32
+  CWE-184         31       52  CVE-2018-20801       10
+  CWE-117         30      164  CVE-2019-10767       38
+  CWE-770         26       86  CVE-2018-3783        12
+  CWE-307         25       85  CVE-2018-3783        12
+  CWE-022         23      123  CVE-2019-10767       26
+  CWE-367         23       46  CVE-2018-6333         9
+  CWE-023         22      122  CVE-2019-10767       26
+  CWE-036         22      122  CVE-2019-10767       26
+  CWE-073         22      122  CVE-2019-10767       26
+  CWE-099         22      122  CVE-2019-10767       26
+  CWE-185         22       41  CVE-2018-20801       10
+  CWE-186         22       41  CVE-2018-20801       10
+  CWE-940         19       34  CVE-2018-1000086      5
+  CWE-918         18       22  CVE-2017-18635        2
+  CWE-312         17       29  CVE-2020-8135         6
+  CWE-377         14       29  CVE-2019-5484         5
+  CWE-378         14       29  CVE-2019-5484         5
+  CWE-601         13       34  CVE-2019-10758       10
+  CWE-295         12       17  CVE-2018-3736         4
+  CWE-297         12       17  CVE-2018-3736         4
+  CWE-338         10       14  CVE-2017-1000006      3
+  CWE-200          9       22  CVE-2019-10767        5
+  CWE-311          9       19  CVE-2020-8135         6
+  CWE-319          9       19  CVE-2020-8135         6
+  CWE-614          9       19  CVE-2020-8135         6
+  CWE-359          9       10  CVE-2018-18282        2
+  CWE-916          7       10  CVE-2019-10767        4
+  CWE-327          7        7  CVE-2018-1000620      1
+  CWE-532          7        7  CVE-2017-16082        1
+  CWE-754          6        6  CVE-2017-10910        1
+  CWE-290          5       12  CVE-2017-16026        4
+  CWE-807          5       12  CVE-2017-16026        4
+  CWE-434          5        6  CVE-2017-16018        2
+  CWE-912          5        6  CVE-2017-16018        2
+  CWE-942          4        6  CVE-2020-8135         2
+  CWE-219          4        4  CVE-2017-18352        1
+  CWE-328          4        4  CVE-2018-11615        1
+  CWE-346          4        4  CVE-2017-16018        1
+  CWE-352          4        4  CVE-2017-16877        1
+  CWE-548          4        4  CVE-2017-18352        1
+  CWE-639          4        4  CVE-2017-16018        1
+  CWE-095          3       15  CVE-2019-10765        7
+  CWE-843          3        9  CVE-2019-10758        3
+  CWE-315          3        3  CVE-2018-18282        1
+  CWE-384          3        3  CVE-2017-16877        1
+  CWE-134          2        3  CVE-2020-8205         2
+  CWE-248          2        3  CVE-2018-19048        2
+  CWE-209          2        2  CVE-2018-3725         1
+  CWE-497          2        2  CVE-2018-3725         1
+  CWE-089          1        3  CVE-2018-3783         3
+  CWE-090          1        3  CVE-2018-3783         3
+  CWE-943          1        3  CVE-2018-3783         3
+  CWE-506          1        2  CVE-2018-13863        2
+  CWE-829          1        1  CVE-2017-16003        1
+  CWE-830          1        1  CVE-2020-7763         1
+  SEM_CWE          0        0  -                     0
+
+  semgrep — universo 221 CVEs; 3232 achados em JS/TS, 22 categorias com achado
+  categoria     cves  achados  maior_cve             n
+  CWE-1333        91      596  CVE-2019-10785       59
+  CWE-022         87     1532  CVE-2020-27666      236
+  CWE-915         49      213  CVE-2018-1000086     40
+  CWE-319         41       93  CVE-2017-16014       21
+  CWE-095         27      136  CVE-2019-10785       55
+  CWE-352         25       72  CVE-2018-18282       11
+  CWE-078         23       76  CVE-2019-10778       14
+  CWE-079         23       42  CVE-2019-10785        5
+  CWE-116         22       58  CVE-2019-10785        7
+  CWE-134         21       65  CVE-2019-13173       10
+  CWE-522         16      100  CVE-2020-8135        25
+  CWE-798         13       24  CVE-2019-1020012      4
+  CWE-345         12       38  CVE-2020-9038         9
+  CWE-346          6       12  CVE-2020-8135         4
+  CWE-601          6        7  CVE-2020-9038         2
+  CWE-918          5        9  CVE-2017-18352        2
+  CWE-119          4       18  CVE-2018-11798       11
+  CWE-1204         4       16  CVE-2019-15532        6
+  CWE-073          3        3  CVE-2019-15478        1
+  CWE-094          1      120  CVE-2020-7676       120
+  CWE-327          1        1  CVE-2018-11615        1
+  CWE-338          1        1  CVE-2019-14772        1
+  CWE-020          0        0  -                     0
+  CWE-089          0        0  -                     0
+  CWE-093          0        0  -                     0
+  CWE-096          0        0  -                     0
+  CWE-150          0        0  -                     0
+  CWE-200          0        0  -                     0
+  CWE-242          0        0  -                     0
+  CWE-250          0        0  -                     0
+  CWE-269          0        0  -                     0
+  CWE-284          0        0  -                     0
+  CWE-295          0        0  -                     0
+  CWE-297          0        0  -                     0
+  CWE-321          0        0  -                     0
+  CWE-326          0        0  -                     0
+  CWE-328          0        0  -                     0
+  CWE-353          0        0  -                     0
+  CWE-470          0        0  -                     0
+  CWE-502          0        0  -                     0
+  CWE-611          0        0  -                     0
+  CWE-614          0        0  -                     0
+  CWE-668          0        0  -                     0
+  CWE-706          0        0  -                     0
+  CWE-732          0        0  -                     0
+  CWE-776          0        0  -                     0
+  CWE-829          0        0  -                     0
+  CWE-926          0        0  -                     0
+  CWE-1004         0        0  -                     0
+  CWE-1357         0        0  -                     0
+  SEM_CWE          0        0  -                     0
+
+  snyk-code — universo 216 CVEs; 2773 achados em JS/TS, 34 categorias com achado
+  categoria     cves  achados  maior_cve             n
+  CWE-319         70      469  CVE-2020-15095       71
+  CWE-079         62      268  CVE-2019-10765       32
+  CWE-023         52      217  CVE-2018-20834       18
+  CWE-770         50      109  CVE-2017-16083       15
+  CWE-200         46      139  CVE-2020-7699        10
+  CWE-916         28      185  CVE-2019-5484        40
+  CWE-547         27      184  CVE-2017-16026       31
+  CWE-094         25       46  CVE-2017-1000006      3
+  CWE-209         24       41  CVE-2020-7699         8
+  CWE-601         22       45  CVE-2018-16487        3
+  CWE-798         21      699  CVE-2020-5251       208
+  CWE-614         21       55  CVE-2020-7676        13
+  CWE-259         20      430  CVE-2020-15119       86
+  CWE-1287        19       59  CVE-2019-18818        8
+  CWE-400         18       37  CVE-2020-15095       11
+  CWE-020         17       41  CVE-2020-5258        10
+  CWE-918         15       45  CVE-2019-10742       21
+  CWE-942         12       38  CVE-2018-1000086     12
+  CWE-116         12       36  CVE-2017-16011        7
+  CWE-327         10       23  CVE-2020-7720         9
+  CWE-078          9       12  CVE-2020-15095        3
+  CWE-1321         8       42  CVE-2019-10767       24
+  CWE-352          8       18  CVE-2020-8135         6
+  CWE-346          4        4  CVE-2017-16018        1
+  CWE-347          3        5  CVE-2019-15532        3
+  CWE-016          3        3  CVE-2018-18282        1
+  CWE-126          2        7  CVE-2018-3738         4
+  CWE-208          2        4  CVE-2019-1020012      2
+  CWE-089          2        3  CVE-2019-10785        2
+  CWE-1004         2        2  CVE-2020-15135        1
+  CWE-943          1       13  CVE-2018-3783        13
+  CWE-022          1        8  CVE-2018-20835        8
+  CWE-096          1        1  CVE-2020-15095        1
+  CWE-643          1        1  CVE-2019-10785        1
+  CWE-098          0        0  -                     0
+  CWE-113          0        0  -                     0
+  CWE-117          0        0  -                     0
+  CWE-122          0        0  -                     0
+  CWE-125          0        0  -                     0
+  CWE-134          0        0  -                     0
+  CWE-190          0        0  -                     0
+  CWE-284          0        0  -                     0
+  CWE-295          0        0  -                     0
+  CWE-297          0        0  -                     0
+  CWE-326          0        0  -                     0
+  CWE-377          0        0  -                     0
+  CWE-401          0        0  -                     0
+  CWE-415          0        0  -                     0
+  CWE-416          0        0  -                     0
+  CWE-470          0        0  -                     0
+  CWE-501          0        0  -                     0
+  CWE-502          0        0  -                     0
+  CWE-611          0        0  -                     0
+  CWE-730          0        0  -                     0
+  CWE-775          0        0  -                     0
+  CWE-787          0        0  -                     0
+  SEM_CWE          0        0  -                     0
+
+4. DELIMITACAO POR LINGUAGEM
+  ferramenta criterio           celula                      achados   cves  p_achad   p_cves
+  codeql     extensao           js_ts                          2557    184   0.7916   0.8326
+  codeql     extensao           fora                            673     52   0.2084   0.2353
+  semgrep    extensao           js_ts                          3232    166   0.2746   0.7511
+  semgrep    extensao           fora                           8536     99   0.7254   0.4480
+  semgrep    regra_x_extensao   regra_js_ts|arquivo_js_ts      3213    166   0.2730   0.7511
+  semgrep    regra_x_extensao   regra_js_ts|arquivo_fora         98     10   0.0083   0.0452
+  semgrep    regra_x_extensao   regra_fora|arquivo_js_ts         19     12   0.0016   0.0543
+  semgrep    regra_x_extensao   regra_fora|arquivo_fora        8438     92   0.7170   0.4163
+  snyk-code  extensao           js_ts                          2773    133   0.7564   0.6157
+  snyk-code  extensao           fora                            893     33   0.2436   0.1528
+
+  Semgrep 2x2, em achados (linhas: regra; colunas: arquivo)
+                  arq JS/TS     arq fora
+  regra JS/TS          3213           98
+  regra fora             19         8438
+
+  Semgrep 2x2, em CVEs (linhas: regra; colunas: arquivo)
+                  arq JS/TS     arq fora
+  regra JS/TS           166           10
+  regra fora             12           92
+  Em CVEs as celulas nao somam o universo: um CVE pode estar em mais de uma.
+
+5. EXTENSOES DOS ACHADOS FORA DE JS/TS
+
+  codeql — 673 achados fora de JS/TS
+  extensao            achados   cves
+  .html                   600     42
+  (sem extensao)           36     10
+  .htm                     23      1
+  .ejs                      6      3
+  .es6                      4      2
+  .jsp                      4      1
+
+  semgrep — 8536 achados fora de JS/TS
+  extensao            achados   cves
+  .html                  7803     50
+  .ejs                    209      5
+  .yml                    111     14
+  (sem extensao)           97     18
+  .py                      88      4
+  .java                    59      4
+  .php                     57      7
+  .npmrc                   25     23
+  .md                      18     10
+  .json                    12      1
+  .pug                      8      4
+  .ml                       8      1
+  .rb                       8      1
+  .yaml                     5      2
+  .hbs                      5      1
+  .sh                       5      1
+  .go                       4      2
+  .key                      3      3
+  .pem                      3      3
+  .htm                      3      1
+  .xml                      2      1
+  .conf                     1      1
+  .cs                       1      1
+  .graffle                  1      1
+
+  snyk-code — 893 achados fora de JS/TS
+  extensao            achados   cves
+  .java                   273      4
+  .jsp                    236      1
+  .php                    162     13
+  .cc                      93      3
+  .py                      43      3
+  .html                    40     16
+  .cpp                     17      3
+  .cs                      10      2
+  .go                       8      1
+  .c                        6      2
+  .h                        4      1
+  .htm                      1      1
+
+6. CONCENTRACAO NO SEMGREP
+  total 11768 achados, em 184 CVEs com achado de 221
+  CVE               achados  parcela
+  CVE-2018-20801       5850   0.4971
+  CVE-2019-13127       1095   0.0930
+  CVE-2020-27666        301   0.0256
+  CVE-2018-6333         271   0.0230
+  CVE-2019-18818        223   0.0189
+  CVE-2020-8135         187   0.0159
+  CVE-2020-8205         183   0.0156
+  CVE-2019-10767        180   0.0153
+  CVE-2019-10785        162   0.0138
+  CVE-2020-7676         160   0.0136
+  dez maiores somam 8612 (0.7318)
+  parcela do maior CVE: 0.4971
+
+  regra                                                                           achados  parcela languages          js_ts
+  html.security.audit.missing-integrity.missing-integrity                            6333   0.5382 generic            nao
+  javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal     1604   0.1363 javascript|typescript sim
+  html.security.plaintext-http-link.plaintext-http-link                              1415   0.1202 html               nao
+  javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp      596   0.0506 javascript|typescript sim
+  javascript.express.security.audit.xss.ejs.explicit-unescape.template-explicit-unescape      210   0.0178 regex              nao
+  javascript.lang.security.audit.prototype-pollution.prototype-pollution-loop.prototype-pollution-loop      201   0.0171 javascript|typescript sim
+  javascript.browser.security.eval-detected.eval-detected                             135   0.0115 javascript|typescript sim
+  generic.unicode.security.bidi.contains-bidirectional-characters                     132   0.0112 bash|c|csharp|go|java|javascript|json|kotlin|lua|ocaml|php|python|ruby|rust|scala|sh|typescript|yaml sim
+  problem-based-packs.insecure-transport.js-node.using-http-server.using-http-server       86   0.0073 javascript         sim
+  javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage       72   0.0061 javascript|typescript sim
+  parcela da maior regra: 0.5382
+
+7. CORROBORACAO PELO coverage DO SNYK CODE
+  Limitacao declarada: coverage[] e agregada e nao enumera caminhos. O campo `lang`
+  traz uma extensao ('.js', '.html'), nao um nome de linguagem; JS/TS aqui e a mesma
+  lista de extensoes do criterio. Conta-se a entrada com isSupported verdadeiro e files > 0.
+
+  lang         cves   arquivos  js_ts
+  .js           216      29961    sim
+  .html          99       7679    nao
+  .ts            34       2148    sim
+  .xml           26        222    nao
+  .php           14        265    nao
+  .py             8        495    nao
+  .h              7        247    nao
+  .jsx            7        849    sim
+  .rb             7        105    nao
+  .tsx            7         71    sim
+  .ejs            6         46    nao
+  .java           6       2450    nao
+  .mjs            6        463    sim
+  .c              5         69    nao
+  .cc             4         68    nao
+  .cpp            4        156    nao
+  .cs             4        212    nao
+  .htm            3         33    nao
+  .config         2          8    nao
+  .es6            2         12    nao
+  .go             2         96    nao
+  .inc            2          3    nao
+  .jsp            2        119    nao
+  .vue            2        977    nao
+  .xsd            2          2    nao
+  .aspx           1          1    nao
+  .install        1          3    nao
+  .pom            1         23    nao
+  .swift          1         44    nao
+
+  CVEs com alguma lang analisada fora de JS/TS: 111 de 216; destes, com achado fora de
+  JS/TS pela extensao: 33; sem: 78
+  CVEs com achado fora de JS/TS pela extensao e sem lang fora de JS/TS no coverage: 0
+
+  CVE              langs fora de JS/TS                      achados fora (extensao)
+  CVE-2016-10735   .html .rb                                1
+  CVE-2017-0931    .html                                    0
+  CVE-2017-1000006 .html                                    0
+  CVE-2017-1000427 .html                                    0
+  CVE-2017-1001004 .html                                    0
+  CVE-2017-16006   .html                                    0
+  CVE-2017-16011   .html .php .xml                          14
+  CVE-2017-16014   .html                                    0
+  CVE-2017-16029   .html                                    0
+  CVE-2017-16043   .html                                    0
+  CVE-2017-16082   .cc                                      2
+  CVE-2017-16083   .html .php .py .rb                       5
+  CVE-2017-16107   .html                                    0
+  CVE-2017-16114   .html                                    0
+  CVE-2017-16137   .html                                    0
+  CVE-2017-16224   .html                                    0
+  CVE-2017-16877   .xml                                     0
+  CVE-2017-17461   .html                                    0
+  CVE-2017-18352   .html                                    0
+  CVE-2017-18353   .html                                    0
+  CVE-2017-18354   .html                                    0
+  CVE-2017-18355   .html                                    0
+  CVE-2017-18635   .html                                    1
+  CVE-2018-1000086 .html .py                                0
+  CVE-2018-1002203 .html .xml                               0
+  CVE-2018-1002204 .xml                                     0
+  CVE-2018-11093   .html                                    0
+  CVE-2018-11615   .html                                    0
+  CVE-2018-11798   .c .cc .config .cpp .cs .go .h .html .inc .install .java .php .py .rb .swift .xml .xsd 130
+  CVE-2018-14040   .html .rb                                1
+  CVE-2018-14041   .html                                    1
+  CVE-2018-14042   .html .rb                                1
+  CVE-2018-14380   .java .xml                               22
+  CVE-2018-16478   .c .cpp .cs .go .h .html                 0
+  CVE-2018-16487   .html                                    0
+  CVE-2018-18282   .xml                                     0
+  CVE-2018-19048   .html                                    0
+  CVE-2018-20676   .html .rb                                1
+  CVE-2018-20677   .html .rb                                1
+  CVE-2018-20801   .c .h .htm .html .java .jsp .php .pom .xml 80
+  CVE-2018-21036   .html                                    0
+  CVE-2018-3713    .html                                    0
+  CVE-2018-3721    .html                                    0
+  CVE-2018-3726    .html                                    0
+  CVE-2018-3733    .html                                    0
+  CVE-2018-3770    .html .xml                               0
+  CVE-2018-3783    .html .xml                               0
+  CVE-2018-6184    .xml                                     0
+  CVE-2018-6333    .c .cpp .h .html .php .py                28
+  CVE-2018-6341    .cpp .h .html                            3
+  CVE-2018-6342    .html                                    0
+  CVE-2019-10061   .cc .h .html .xml                        13
+  CVE-2019-10090   .html .java .jsp .xml                    458
+  CVE-2019-1010091 .html                                    0
+  CVE-2019-1010266 .html                                    0
+  CVE-2019-1020012 .html                                    0
+  CVE-2019-10742   .html                                    13
+  CVE-2019-10744   .html                                    0
+  CVE-2019-10758   .html                                    0
+  CVE-2019-10765   .html .xml                               0
+  CVE-2019-10767   .html                                    0
+  CVE-2019-10771   .html .xml                               0
+  CVE-2019-10775   .html                                    0
+  CVE-2019-10781   .html                                    0
+  CVE-2019-10785   .html .php .xml                          22
+  CVE-2019-11358   .html .php .xml                          8
+  CVE-2019-12041   .html                                    0
+  CVE-2019-12043   .html                                    0
+  CVE-2019-12313   .html                                    0
+  CVE-2019-13127   .aspx .config .cs .htm .html .java .php .xml .xsd 26
+  CVE-2019-14772   .html                                    0
+  CVE-2019-14862   .html                                    0
+  CVE-2019-15478   .ejs                                     0
+  CVE-2019-15479   .ejs                                     0
+  CVE-2019-15482   .html                                    0
+  CVE-2019-15532   .html                                    0
+  CVE-2019-16763   .htm .html .py                           0
+  CVE-2019-17495   .html                                    0
+  CVE-2019-18350   .ejs                                     0
+  CVE-2019-18818   .html .vue                               1
+  CVE-2019-18954   .html                                    0
+  CVE-2019-19507   .xml                                     0
+  CVE-2019-20174   .html                                    0
+  CVE-2019-5444    .html                                    0
+  CVE-2019-8331    .html                                    0
+  CVE-2019-8903    .html                                    1
+  CVE-2020-11022   .html .php .xml                          8
+  CVE-2020-14000   .html                                    0
+  CVE-2020-15092   .html .py                                0
+  CVE-2020-15095   .cc .cs .html .py .xml                   18
+  CVE-2020-15119   .html                                    0
+  CVE-2020-15135   .ejs                                     0
+  CVE-2020-15138   .html                                    0
+  CVE-2020-15152   .html                                    0
+  CVE-2020-26256   .xml                                     0
+  CVE-2020-27666   .html .vue                               0
+  CVE-2020-4051    .html .php                               7
+  CVE-2020-5251    .html                                    0
+  CVE-2020-5258    .html .php                               2
+  CVE-2020-7656    .html .php .xml                          14
+  CVE-2020-7676    .html .inc .xml                          0
+  CVE-2020-7699    .html                                    0
+  CVE-2020-7720    .c .html .py .xml                        1
+  CVE-2020-7750    .html                                    0
+  CVE-2020-7752    .html                                    0
+  CVE-2020-8135    .ejs .es6 .html .php                     4
+  CVE-2020-8203    .html                                    0
+  CVE-2020-8205    .ejs .es6 .html .php                     4
+  CVE-2020-9038    .h .html .java .xml                      1
+  CVE-2021-23344   .html                                    1
+  CVE-2021-31712   .html                                    0

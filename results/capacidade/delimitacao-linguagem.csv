@@ -1,0 +1,11 @@
+ferramenta,criterio,celula,achados,cves_com_achado,proporcao_achados,proporcao_cves
+codeql,extensao,js_ts,2557,184,0.7916,0.8326
+codeql,extensao,fora,673,52,0.2084,0.2353
+semgrep,extensao,js_ts,3232,166,0.2746,0.7511
+semgrep,extensao,fora,8536,99,0.7254,0.4480
+semgrep,regra_x_extensao,regra_js_ts|arquivo_js_ts,3213,166,0.2730,0.7511
+semgrep,regra_x_extensao,regra_js_ts|arquivo_fora,98,10,0.0083,0.0452
+semgrep,regra_x_extensao,regra_fora|arquivo_js_ts,19,12,0.0016,0.0543
+semgrep,regra_x_extensao,regra_fora|arquivo_fora,8438,92,0.7170,0.4163
+snyk-code,extensao,js_ts,2773,133,0.7564,0.6157
+snyk-code,extensao,fora,893,33,0.2436,0.1528
