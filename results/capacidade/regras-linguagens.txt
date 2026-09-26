@@ -1,0 +1,199 @@
+Tabela regra -> linguagens do pack vendorizado do Semgrep
+Base do criterio 'pela linguagem da regra' (criterios-cruzamento.md, secao 10).
+Nenhum achado lido ou contado.
+
+  csv desta execucao (sha256): 83b7fe5faf523450d2d37514a4e4ae0c6d053a0416c12384cc3131a43b42307e
+  rules_id_sha256 recalculado: 725482bbbcd8439ab473c0139bd114ef92658bada2243dc779e505518e0a14a0
+
+Parser: ruamel.yaml 0.19.1, Python 3.12.14, dentro de
+  ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000
+  (sem rede, --user, pack montado so para leitura)
+
+Fontes (caminho relativo ao repositorio, sha256):
+  pack       ic-security-lab-semgrep/rules/semgrep-default.yaml  1ddc9b0bd5ad9ee31f4727648cfdd4279317627b859c44ef56d77438a0f8b87b
+  descritor  ic-security-lab-semgrep/rules/semgrep-default.meta.json  42f937a0c4ace4a7c1b3a8d2e86c5dc9f74d399bef9b733dde06b6d41c36528f
+  codigo     tools/regras-linguagens-semgrep.py  113fab3f815e76d931eeb1f32e7d5da79db38f2e23acd192919978d08829280c
+  codigo     tools/distribuicao-cwe-primario.py  9e106c1865b8de912e59ba16d57540fd18c89b2bf841af95c6342ef6ac93a3b5
+
+Conferencias:
+  1 1074 regras, 1074 check_id distintos                             OK
+  2 JS/TS: javascript 152, js 1, typescript 150, ts 5, uniao 163     OK
+  3 sha256 do pack e rules_id_sha256 = descritor                     OK
+  4 toda regra com languages em lista                                OK
+  5 CSV gravado relido (publicado so se aprovado)                    OK
+  6 controle positivo (15 mutantes)                                  OK
+      1: check_id repetido                                           pretendida 1; dispararam 1,3
+      1: regra removida                                              pretendida 1; dispararam 1,3
+      2: regra javascript vira python                                pretendida 2; dispararam 2
+      2: grafia ts trocada por typescript, uniao mantida             pretendida 2; dispararam 2
+      3: sha256 do pack diferente do descritor                       pretendida 3; dispararam 3
+      3: check_id alterado (rules_id_sha256)                         pretendida 3; dispararam 3
+      4: languages como cadeia nua                                   pretendida 4; dispararam 2,4
+      4: regra sem languages                                         pretendida 4; dispararam 4
+      4: elemento de languages que nao e cadeia                      pretendida 4; dispararam 4
+      3m: caminho de pack com ':'                                    pretendida 3m; dispararam 3m
+      5: cabecalho alterado                                          pretendida 5; dispararam 5
+      5: js_ts fora de sim/nao                                       pretendida 5; dispararam 5
+      5: js_ts invertido numa linha                                  pretendida 5; dispararam 5
+      5: ultima linha removida                                       pretendida 5; dispararam 5
+      5: campo excedente                                             pretendida 5; dispararam 5
+    controle do extrator, YAML mutante no container (6)              OK
+      extrator: controle.ausente                                     OK
+      extrator: controle.cadeia                                      OK
+      extrator: controle.lista                                       OK
+      extrator: controle.nulo                                        OK
+      extrator: conferencia 4 sobre o YAML mutante                   OK
+      extrator: chave duplicada falha                                OK: raise DuplicateKeyError(*args)
+
+Coluna languages do CSV: NORMALIZADA (minusculas, sem repeticao, ordenada),
+nao o texto literal do pack. Criterio do descritor: case-insensitive.
+Equivalencia com o parser interno do Semgrep 1.171.0 nao e verificada: os
+numeros batem com o descritor, contado com o mesmo parser na mesma imagem.
+
+Composicao JS/TS (uma regra pode declarar mais de uma grafia):
+  javascript   152
+  js             1
+  typescript   150
+  ts             5
+  uniao        163
+
+Distribuicao de regras por valor de languages (34 valores distintos):
+  regras  JS/TS  languages
+    242  nao    python
+    144  sim    javascript|typescript
+    114  nao    java
+     99  nao    hcl
+     83  nao    go
+     73  nao    ruby
+     53  nao    regex  <-- regex
+     46  nao    generic  <-- generic
+     39  nao    yaml
+     38  nao    php
+     21  nao    solidity
+     20  nao    scala
+     19  nao    csharp
+     13  nao    c#
+     12  nao    kt
+      7  sim    javascript
+      6  nao    ocaml
+      5  nao    dockerfile
+      5  sim    ts
+      5  sim    typescript
+      4  nao    c
+      4  nao    json
+      3  nao    bash
+      3  nao    clojure
+      3  nao    java|kt
+      3  nao    rust
+      2  nao    swift
+      2  nao    terraform
+      1  sim    bash|c|csharp|go|java|javascript|json|kotlin|lua|ocaml|php|python|ruby|rust|scala|sh|typescript|yaml
+      1  nao    dockerfile|yaml
+      1  nao    html
+      1  sim    js
+      1  nao    kotlin
+      1  nao    kt|scala
+
+Regras generic e regex: disparam em qualquer arquivo, JS inclusive, sem serem
+regras de JS. Pelo criterio da regra, saem fora de JS/TS (ponto cego da secao 10).
+  generic: 46 regras
+    csharp.dotnet.security.net-webconfig-debug.net-webconfig-debug
+    csharp.dotnet.security.net-webconfig-trace-enabled.net-webconfig-trace-enabled
+    csharp.dotnet.security.web-config-insecure-cookie-settings.web-config-insecure-cookie-settings
+    generic.ci.security.bash-reverse-shell.bash_reverse_shell
+    generic.nginx.security.alias-path-traversal.alias-path-traversal
+    generic.nginx.security.dynamic-proxy-host.dynamic-proxy-host
+    generic.nginx.security.dynamic-proxy-scheme.dynamic-proxy-scheme
+    generic.nginx.security.header-injection.header-injection
+    generic.nginx.security.header-redefinition.header-redefinition
+    generic.nginx.security.insecure-redirect.insecure-redirect
+    generic.nginx.security.insecure-ssl-version.insecure-ssl-version
+    generic.nginx.security.missing-internal.missing-internal
+    generic.nginx.security.missing-ssl-version.missing-ssl-version
+    generic.nginx.security.possible-h2c-smuggling.possible-nginx-h2c-smuggling
+    generic.secrets.security.detected-github-token.detected-github-token
+    generic.secrets.security.detected-npm-registry-auth-token.detected-npm-registry-auth-token
+    generic.secrets.security.detected-private-key.detected-private-key
+    generic.secrets.security.google-maps-apikeyleak.google-maps-apikeyleak
+    generic.visualforce.security.ncino.html.usesriforcdns.use-SRI-for-CDNs
+    generic.visualforce.security.ncino.vf.xssfromunescapedurlparam.xss-from-unescaped-url-param
+    generic.visualforce.security.ncino.xml.cspheaderattribute.csp-header-attribute
+    generic.visualforce.security.ncino.xml.visualforceapiversion.visualforce-page-api-version
+    go.lang.security.audit.xss.no-interpolation-in-tag.no-interpolation-in-tag
+    go.lang.security.audit.xss.no-interpolation-js-template-string.no-interpolation-js-template-string
+    html.security.audit.missing-integrity.missing-integrity
+    java.android.security.exported_activity.exported_activity
+    java.spring.security.audit.spring-actuator-fully-enabled.spring-actuator-fully-enabled
+    java.spring.security.audit.spring-jsp-eval.spring-jsp-eval
+    javascript.express.security.audit.xss.ejs.var-in-script-src.var-in-script-src
+    javascript.express.security.audit.xss.ejs.var-in-script-tag.var-in-script-tag
+    package_managers.bun.bun-missing-minimum-release-age.bun-missing-minimum-release-age
+    package_managers.npm.npm-missing-minimum-release-age.npm-missing-minimum-release-age
+    package_managers.poetry.poetry-missing-solver-min-release-age.poetry-missing-solver-min-release-age
+    package_managers.uv.uv-missing-dependency-cooldown.uv-missing-dependency-cooldown
+    python.django.security.audit.xss.template-blocktranslate-no-escape.template-blocktranslate-no-escape
+    python.django.security.audit.xss.template-translate-as-no-escape.template-translate-as-no-escape
+    python.django.security.django-no-csrf-token.django-no-csrf-token
+    ruby.rails.security.audit.xss.templates.alias-for-html-safe.alias-for-html-safe
+    ruby.rails.security.audit.xss.templates.avoid-content-tag.avoid-content-tag
+    ruby.rails.security.audit.xss.templates.avoid-html-safe.avoid-html-safe
+    ruby.rails.security.audit.xss.templates.avoid-raw.avoid-raw
+    ruby.rails.security.audit.xss.templates.unquoted-attribute.unquoted-attribute
+    ruby.rails.security.audit.xss.templates.var-in-href.var-in-href
+    ruby.rails.security.audit.xss.templates.var-in-script-tag.var-in-script-tag
+    scala.lang.security.audit.scalac-debug.scalac-debug
+    scala.play.security.conf-insecure-cookie-settings.conf-insecure-cookie-settings
+  regex: 53 regras
+    generic.secrets.security.detected-amazon-mws-auth-token.detected-amazon-mws-auth-token
+    generic.secrets.security.detected-artifactory-password.detected-artifactory-password
+    generic.secrets.security.detected-artifactory-token.detected-artifactory-token
+    generic.secrets.security.detected-aws-access-key-id-value.detected-aws-access-key-id-value
+    generic.secrets.security.detected-aws-appsync-graphql-key.detected-aws-appsync-graphql-key
+    generic.secrets.security.detected-aws-secret-access-key.detected-aws-secret-access-key
+    generic.secrets.security.detected-aws-session-token.detected-aws-session-token
+    generic.secrets.security.detected-bcrypt-hash.detected-bcrypt-hash
+    generic.secrets.security.detected-codeclimate.detected-codeclimate
+    generic.secrets.security.detected-etc-shadow.detected-etc-shadow
+    generic.secrets.security.detected-facebook-access-token.detected-facebook-access-token
+    generic.secrets.security.detected-facebook-oauth.detected-facebook-oauth
+    generic.secrets.security.detected-generic-api-key.detected-generic-api-key
+    generic.secrets.security.detected-generic-secret.detected-generic-secret
+    generic.secrets.security.detected-google-oauth-access-token.detected-google-oauth-access-token
+    generic.secrets.security.detected-heroku-api-key.detected-heroku-api-key
+    generic.secrets.security.detected-hockeyapp.detected-hockeyapp
+    generic.secrets.security.detected-jwt-token.detected-jwt-token
+    generic.secrets.security.detected-kolide-api-key.detected-kolide-api-key
+    generic.secrets.security.detected-mailchimp-api-key.detected-mailchimp-api-key
+    generic.secrets.security.detected-mailgun-api-key.detected-mailgun-api-key
+    generic.secrets.security.detected-onfido-live-api-token.detected-onfido-live-api-token
+    generic.secrets.security.detected-outlook-team.detected-outlook-team
+    generic.secrets.security.detected-paypal-braintree-access-token.detected-paypal-braintree-access-token
+    generic.secrets.security.detected-pgp-private-key-block.detected-pgp-private-key-block
+    generic.secrets.security.detected-picatic-api-key.detected-picatic-api-key
+    generic.secrets.security.detected-sauce-token.detected-sauce-token
+    generic.secrets.security.detected-sendgrid-api-key.detected-sendgrid-api-key
+    generic.secrets.security.detected-slack-token.detected-slack-token
+    generic.secrets.security.detected-slack-webhook.detected-slack-webhook
+    generic.secrets.security.detected-snyk-api-key.detected-snyk-api-key
+    generic.secrets.security.detected-softlayer-api-key.detected-softlayer-api-key
+    generic.secrets.security.detected-sonarqube-docs-api-key.detected-sonarqube-docs-api-key
+    generic.secrets.security.detected-square-access-token.detected-square-access-token
+    generic.secrets.security.detected-square-oauth-secret.detected-square-oauth-secret
+    generic.secrets.security.detected-ssh-password.detected-ssh-password
+    generic.secrets.security.detected-stripe-api-key.detected-stripe-api-key
+    generic.secrets.security.detected-stripe-restricted-api-key.detected-stripe-restricted-api-key
+    generic.secrets.security.detected-telegram-bot-api-key.detected-telegram-bot-api-key
+    generic.secrets.security.detected-twilio-api-key.detected-twilio-api-key
+    java.lang.security.audit.xss.jsf.autoescape-disabled.autoescape-disabled
+    javascript.express.security.audit.xss.ejs.explicit-unescape.template-explicit-unescape
+    javascript.express.security.audit.xss.mustache.explicit-unescape.template-explicit-unescape
+    javascript.express.security.audit.xss.pug.and-attributes.template-and-attributes
+    javascript.express.security.audit.xss.pug.explicit-unescape.template-explicit-unescape
+    javascript.express.security.audit.xss.pug.var-in-href.var-in-href
+    javascript.express.security.audit.xss.pug.var-in-script-tag.var-in-script-tag
+    javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+    javascript.vue.security.audit.xss.templates.avoid-v-html.avoid-v-html
+    python.django.security.audit.templates.debug-template-tag.debug-template-tag
+    python.django.security.audit.xss.template-autoescape-off.template-autoescape-off
+    python.django.security.audit.xss.template-var-unescaped-with-safeseq.template-var-unescaped-with-safeseq
+    python.flask.security.xss.audit.template-autoescape-off.template-autoescape-off

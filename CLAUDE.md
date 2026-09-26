@@ -252,6 +252,8 @@ descritiva, nunca medida de qualidade.
 
 **A decomposição da detecção por categoria de CWE está na §9 do documento**
 (25/09/2026): categoria, limiar e tratamento do grupo "outros" são de lá.
+**A capacidade empírica e a delimitação por linguagem estão na §10**
+(25/09/2026): eixo, universo, unidades e os dois critérios de JS/TS.
 
 ## Formato das listas de entrada
 
@@ -323,7 +325,7 @@ O gerador exige a flag `--force` para remover lotes existentes.
 **Versionados:** `datasets/` (incluindo `cwe-primario.csv` e
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
 `results/*/treated/`, `results/cruzamento/`, `results/proveniencia/`,
-`results/circularidade/`, `results/por-cwe/`, `results/zap/`, `logs/`
+`results/circularidade/`, `results/por-cwe/`, `results/capacidade/`, `results/zap/`, `logs/`
 (incluindo `normalize-report-<ferramenta>.json`), o pack vendorizado do
 Semgrep e seu descritor, Dockerfiles, scripts, workflows.
 
@@ -370,6 +372,16 @@ execução: conferido com quatro `PYTHONHASHSEED` distintos. O CSV gravado é
 relido antes de ocupar o nome definitivo, e o script recusa gravar dentro do
 repositório se alguma entrada estiver fora dele. O `README.md` do diretório traz o
 comando e a procedência.
+
+**`results/capacidade/` entra pela mesma razão, em 25/09/2026.** Guarda a
+tabela regra → linguagens do pack vendorizado do Semgrep, produzida por
+`tools/regras-linguagens-semgrep.py`, que lê o YAML com `ruamel.yaml` dentro
+da imagem do Semgrep da campanha, referenciada pelo digest vigente, e nunca
+pelo prefixo do `check_id`. É determinística e não grava carimbo de execução:
+conferido com quatro `PYTHONHASHSEED` distintos. O CSV gravado é relido antes
+de ocupar o nome definitivo, e o script recusa gravar dentro do repositório se
+alguma entrada estiver fora dele. Nesta fase não contém contagem de achado
+alguma. O `README.md` do diretório traz o comando e a procedência.
 
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
 databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`, os

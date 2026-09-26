@@ -552,6 +552,84 @@ a âncora, e a propriedade depende dela.
 
 ---
 
+## 10. Capacidade empírica e delimitação por linguagem
+
+Fixado em 25/09/2026, antes de qualquer contagem de achado por CWE ou por
+linguagem. Descritivo: mede o que cada ferramenta **reporta**, e não o que
+**acerta**. Nada aqui cruza com o ground truth, e nenhum número desta seção
+é medida de qualidade.
+
+### O eixo
+
+A categoria é o **CWE do achado**, normalizado para três dígitos, e não o
+CWE do CVE. É o eixo complementar ao da §9. Um achado com mais de um CWE
+conta em cada um deles, de modo que as categorias não somam o total de
+achados; isso é declarado junto a toda tabela. Achado sem CWE forma a
+categoria `SEM_CWE`; a medição de setembro de 2026 registra zero nas três
+ferramentas, e a categoria existe para que um zero futuro não seja
+presumido.
+
+### O universo
+
+**Todos os CVEs com tratado**: 221 no CodeQL e no Semgrep, 216 no Snyk
+Code. A capacidade não depende do ground truth, e não há razão para
+restringi-la ao denominador de 220. O `CVE-2018-1000096`, sem CWE no ground
+truth, entra.
+
+### As duas unidades
+
+- **CVEs com ao menos um achado da categoria.** Unidade principal. Mede em
+  quantos alvos a ferramenta reporta a categoria, e é robusta à
+  concentração de volume.
+- **Achados da categoria.** Unidade secundária. Mede volume, e é dominada
+  por poucos CVEs: só o `CVE-2018-20801` responde por 5.850 dos 11.768
+  achados do Semgrep. Toda tabela nesta unidade vem acompanhada da
+  distribuição por CVE, ou da parcela do maior CVE.
+
+### O que é JavaScript e TypeScript
+
+Dois critérios, que medem coisas diferentes, apurados os dois:
+
+- **Pela extensão do arquivo do achado:** `.js`, `.jsx`, `.mjs`, `.cjs`,
+  `.ts`, `.tsx`, `.mts`, `.cts`, comparadas em minúsculas. Responde "onde o
+  achado caiu". **Ponto cego declarado:** arquivo JavaScript sem extensão,
+  como `bin/public` e `bin/http-live` do próprio ground truth, sai como fora
+  de JS/TS.
+- **Pela linguagem da regra** (só no Semgrep): a regra declara em
+  `languages` ao menos um de `javascript`, `js`, `typescript`, `ts`, lido do
+  pack vendorizado por parser YAML, em `results/capacidade/regras-linguagens.csv`.
+  Responde "que tipo de regra disparou". **Ponto cego declarado:** regra
+  `generic` ou `regex` disparando em arquivo JS sai como fora de JS/TS.
+
+No Semgrep, os dois critérios são cruzados numa tabela 2 × 2, em achados e
+em CVEs, e a proporção fora de JS/TS é reportada pelos dois. O critério pela
+extensão é aplicado também ao CodeQL e ao Snyk Code, como descrição. O
+critério pela regra não se aplica a eles: o CodeQL analisa só
+JavaScript/TypeScript por construção da suíte, e o Snyk Code não declara
+linguagem por regra num campo que se possa ler sem convenção de
+nomenclatura.
+
+### Qual versão é a principal
+
+A tabela de capacidade é apurada **sobre todos os achados** e **sobre os
+achados em arquivo JS/TS, pelo critério da extensão**. A segunda é a
+principal, porque o escopo do estudo é JavaScript e TypeScript. A primeira
+fica publicada, para que a delimitação seja verificável.
+
+### Expectativa declarada antes do número
+
+Na campanha preliminar, sob outro commit e com `--config=auto`, só 20,7% dos
+achados do Semgrep eram de JavaScript ou TypeScript, e uma única regra de
+HTML respondia por 56,5% do total. Os dois números constam da metodologia;
+os dados daquela campanha não estão versionados neste repositório, e não são
+reconferíveis. Espera-se que a proporção fora de JS/TS
+seja alta também nesta campanha. É expectativa registrada para ser
+confrontada, e não critério: nenhuma regra da apuração depende dela, e a
+campanha preliminar analisou o HEAD, de modo que os números não são
+comparáveis diretamente.
+
+---
+
 ## Registro de alterações
 
 | Data | Commit | Seção | Alteração |
@@ -561,3 +639,4 @@ a âncora, e a propriedade depende dela.
 | 18/09/2026 | `beac0b2` | §7 | o script lê o status nos 24 logs de lote versionados |
 | 21/09/2026 | o desta entrada | §1, §6, §8 | emenda: o falso positivo existe, na versão corrigida e no ponto da falha. O trecho da §1 que afirmava a inexistência do negativo fica marcado como superado e preservado. §6 ganha nota de que os parágrafos sobre alertas fora do ponto continuam valendo. §8 registra o critério da versão corrigida como não fixado e as duas leituras possíveis. Datada do dia da descoberta; redigida e commitada em 22/09/2026 |
 | 25/09/2026 | o desta entrada | §9 | seção nova: decomposição da detecção por categoria de CWE. Categoria é o `gt_cwe_primary` do CVE; limiar k = 10, fixado pela distribuição em `results/por-cwe/`, antes de qualquer número de detecção por categoria; grupo "outros" sem taxa agregada; intervalo de Wilson de 95% nas seis categorias acima do limiar |
+| 25/09/2026 | o desta entrada | §10 | seção nova: capacidade empírica e delimitação por linguagem. Eixo é o CWE do achado; universo são todos os CVEs com tratado; unidade principal são CVEs com achado da categoria; JS/TS por dois critérios, extensão do arquivo e linguagem da regra (tabela em `results/capacidade/`), com os pontos cegos de cada um; a versão principal é a restrita a arquivo JS/TS. Fixada antes de qualquer contagem |
