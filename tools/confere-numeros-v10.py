@@ -24,6 +24,7 @@ import re
 import statistics
 import sys
 from collections import Counter, defaultdict
+from decimal import ROUND_HALF_UP, Decimal
 
 FERRAMENTAS = ("codeql", "semgrep", "snyk-code")
 NIVEIS = (
@@ -311,6 +312,37 @@ class Fontes:
                 return saida
 
         return self._memo(f"logavulso:{caminho}", carrega)
+
+    def csv(self, caminho):
+        def carrega():
+            with open(self.raiz / caminho, encoding="utf-8", newline="") as fh:
+                return list(csv.DictReader(fh))
+
+        return self._memo(f"csv:{caminho}", carrega)
+
+    @property
+    def capacidade_txt(self):
+        return self._memo(
+            "captxt",
+            lambda: (self.raiz / "results/capacidade/capacidade.txt").read_text(encoding="utf-8"),
+        )
+
+    @property
+    def wilson(self):
+        """A wilson() do tools/deteccao-por-cwe.py, importada e não reimplementada."""
+
+        def carrega():
+            import importlib.util
+
+            sys.dont_write_bytecode = True
+            spec = importlib.util.spec_from_file_location(
+                "deteccao_por_cwe", self.raiz / "tools/deteccao-por-cwe.py"
+            )
+            modulo = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(modulo)
+            return modulo.wilson
+
+        return self._memo("wilson", carrega)
 
     @property
     def claude_md(self):
@@ -1620,6 +1652,591 @@ def _(doc, f):
     ]
 
 
+# ---- 9.9 detecção por categoria de CWE ------------------------------------
+# Fonte: results/por-cwe/deteccao-por-categoria.csv. Taxa e limites do
+# intervalo são arredondados a UMA casa a partir do VALOR EXATO — a taxa como
+# acertos/base, em aritmética racional; os limites pela wilson() importada do
+# tools/deteccao-por-cwe.py, nunca reimplementada —, e nunca do valor do CSV,
+# que já vem arredondado a quatro casas: arredondar duas vezes muda a última
+# casa (0,5465 → 54,7, quando o exato é 54,6495 → 54,6).
+NIVEIS_9_9 = {"Nível 1": "1", "Nível 2 estrita": "2e", "Nível 3": "3", "Nível 4 estrita": "4e"}
+FERRAMENTA_DO_ROTULO = {"CodeQL": "codeql", "Semgrep": "semgrep", "Snyk Code": "snyk-code"}
+_CELULA_9_9 = re.compile(r"(\d+) · (\d+,\d)% \[(\d+,\d); (\d+,\d)\]")
+
+
+def arredonda(valor, casas):
+    """Meio para cima, sobre a expansão decimal exata do valor.
+
+    Valor a menos de 1e-9 unidades da última casa de um empate é recusado:
+    ali a representação em ponto flutuante decide o resultado, e a
+    conferência não pode afirmá-lo.
+    """
+    exato = valor if isinstance(valor, Decimal) else Decimal(valor)
+    escala = Decimal(1).scaleb(-casas)
+    resto = (exato / escala) % 1
+    if not isinstance(valor, Decimal) and abs(resto - Decimal("0.5")) < Decimal("1e-9"):
+        raise ValueError(f"valor {valor!r} em empate de arredondamento a {casas} casa(s)")
+    return float(exato.quantize(escala, rounding=ROUND_HALF_UP))
+
+
+def taxa_exata(acertos, base, casas=1):
+    return arredonda(Decimal(100 * acertos) / Decimal(base), casas)
+
+
+def deteccao_por_categoria(f):
+    return {(r["categoria"], r["ferramenta"], r["nivel"]): r for r in f.csv("results/por-cwe/deteccao-por-categoria.csv")}
+
+
+def tabelas_rotuladas(bloco):
+    """[(rótulo em negrito que precede a tabela, tabela)]."""
+    saida, rotulo, corrente = [], None, []
+    for linha in bloco + [""]:
+        if linha.strip().startswith("|"):
+            celulas = [c.strip() for c in linha.strip().strip("|").split("|")]
+            if not all(re.fullmatch(r":?-{2,}:?", c) for c in celulas):
+                corrente.append(celulas)
+            continue
+        if corrente:
+            saida.append((rotulo, corrente))
+            corrente = []
+        # rótulo = negrito no início do parágrafo; outro texto o anula, para
+        # que tabela sem rótulo próprio não herde o da anterior
+        m = re.match(r"\*\*([^*]+)\*\*", linha.strip())
+        if m:
+            rotulo = m.group(1)
+        elif linha.strip():
+            rotulo = None
+    return saida
+
+
+def busca_unica(texto, padrao, onde):
+    achados = re.findall(padrao, texto)
+    if len(achados) != 1:
+        raise FalhaDeExtracao(f"{onde}: padrão {padrao!r} casou {len(achados)} vezes")
+    return achados[0]
+
+
+def tabela_rotulada(bloco, prefixo_rotulo, onde):
+    """A única tabela cujo rótulo começa por `prefixo_rotulo` (revisão, risco 6)."""
+    achadas = [t for r, t in tabelas_rotuladas(bloco) if r and r.startswith(prefixo_rotulo)]
+    if len(achadas) != 1:
+        raise FalhaDeExtracao(f"{onde}: {len(achadas)} tabelas com rótulo {prefixo_rotulo!r}")
+    return achadas[0]
+
+
+@verificacao("9.9-acima", "9.9", "results/por-cwe/deteccao-por-categoria.csv + wilson() do deteccao-por-cwe.py")
+def _(doc, f):
+    det = deteccao_por_categoria(f)
+    wilson = f.wilson
+    rotuladas = [(r, t) for r, t in tabelas_rotuladas(doc.secao("### 9.9")) if r in FERRAMENTA_DO_ROTULO]
+    tabelas = dict(rotuladas)
+    if len(tabelas) != 3 or len(rotuladas) != 3:
+        raise FalhaDeExtracao(f"9.9: tabelas por ferramenta encontradas: {sorted(tabelas)}")
+    acima = sorted({c for (c, _, _), r in det.items() if r["acima_do_limiar"] == "sim"})
+    resultados = []
+    for rotulo, tab in tabelas.items():
+        ferramenta = FERRAMENTA_DO_ROTULO[rotulo]
+        cabecalho = tab[0]
+        colunas = {i: NIVEIS_9_9[c] for i, c in enumerate(cabecalho) if c in NIVEIS_9_9}
+        if sorted(colunas.values()) != sorted(NIVEIS_9_9.values()):
+            raise FalhaDeExtracao(f"9.9 {rotulo}: cabeçalho {cabecalho}")
+        vistas = []
+        for linha in tab[1:]:
+            categoria = re.match(r"CWE-\d+", linha[0])
+            if not categoria:
+                raise FalhaDeExtracao(f"9.9 {rotulo}: categoria {linha[0]!r}")
+            categoria = categoria.group(0)
+            vistas.append(categoria)
+            n = int(um_numero(linha[1]))
+            for i, nivel in colunas.items():
+                m = _CELULA_9_9.fullmatch(linha[i])
+                if not m:
+                    raise FalhaDeExtracao(f"9.9 {rotulo} {categoria}: célula {linha[i]!r}")
+                r = det[(categoria, ferramenta, nivel)]
+                a, b = int(r["acertos"]), int(r["base"])
+                inf, sup = wilson(a, b)
+                onde = f"{ferramenta} {categoria} nível {nivel}"
+                # o CSV, a quatro casas, tem de ser o recálculo arredondado:
+                # CSV defasado não passa em silêncio (revisão, observação)
+                resultados += [
+                    par(f"{onde}: CSV wilson_inf = recálculo", float(r["wilson_inf"]), arredonda(inf, 4)),
+                    par(f"{onde}: CSV wilson_sup = recálculo", float(r["wilson_sup"]), arredonda(sup, 4)),
+                ]
+                resultados += [
+                    par(f"{onde}: acertos", int(m.group(1)), a),
+                    par(f"{onde}: n", n, b),
+                    par(f"{onde}: taxa", float(m.group(2).replace(",", ".")), taxa_exata(a, b)),
+                    par(f"{onde}: Wilson inferior", float(m.group(3).replace(",", ".")), arredonda(100 * inf, 1)),
+                    par(f"{onde}: Wilson superior", float(m.group(4).replace(",", ".")), arredonda(100 * sup, 1)),
+                ]
+        resultados.append(par(f"{rotulo}: categorias acima do limiar", acima, sorted(vistas)))
+    return resultados
+
+
+@verificacao("9.9-abaixo", "9.9", "results/por-cwe/deteccao-por-categoria.csv")
+def _(doc, f):
+    det = deteccao_por_categoria(f)
+    tab = tabela_rotulada(doc.secao("### 9.9"), "Categorias abaixo do limiar", "9.9")
+    n_de = {c: int(r["n"]) for (c, _, _), r in det.items()}
+    abaixo = {c for (c, _, _), r in det.items() if r["acima_do_limiar"] == "nao"}
+    unitarias = sorted(c for c in abaixo if n_de[c] == 1 and c != "SEM_PRIMARIO")
+    ferramentas = [FERRAMENTA_DO_ROTULO[c.rsplit(" 1 / 4e", 1)[0]] for c in tab[0][2:]]
+    resultados, vistas = [], []
+    for linha in tab[1:]:
+        rotulo = linha[0].strip("`")
+        if rotulo.startswith("dez categorias"):
+            grupo = unitarias
+        else:
+            grupo = [rotulo]
+            vistas.append(rotulo)
+        resultados.append(par(f"{rotulo}: n", int(um_numero(linha[1])), sum(n_de[c] for c in grupo)))
+        if len(linha[2:]) != len(ferramentas) or len(ferramentas) != 3:
+            raise FalhaDeExtracao(f"9.9 abaixo: linha {rotulo!r} com {len(linha[2:])} células de ferramenta")
+        for ferramenta, celula in zip(ferramentas, linha[2:]):
+            partes = [p.strip() for p in celula.split("/")]
+            if len(partes) != 2:
+                raise FalhaDeExtracao(f"9.9 abaixo: {rotulo} {ferramenta}: célula {celula!r} sem 'nível 1 / 4e'")
+            for nivel, texto in zip(("1", "4e"), partes):
+                linhas_csv = [det[(c, ferramenta, nivel)] for c in grupo]
+                onde = f"{rotulo} {ferramenta} nível {nivel}"
+                if texto == "n.s.a.":
+                    resultados.append(par(f"{onde}: não se aplica", True,
+                                          all(r["base"] == "0" and r["nao_se_aplica"] == "1" for r in linhas_csv)))
+                else:
+                    resultados.append(par(onde, int(texto), sum(int(r["acertos"]) for r in linhas_csv)))
+                    # número onde o CSV diz não se aplica não passa por ser 0
+                    # (revisão, risco 2)
+                    resultados.append(par(f"{onde}: aplica-se", True,
+                                          all(r["nao_se_aplica"] == "0" for r in linhas_csv)))
+    texto = "\n".join(doc.secao("### 9.9"))
+    g = busca_unica(texto, r"dez categorias de 1 CVE são CWE-(\d+), ([\d, ]+) e (\d+), discriminadas", "9.9")
+    listadas = sorted(f"CWE-{int(x):03d}" for x in [g[0]] + re.findall(r"\d+", g[1]) + [g[2]])
+    resultados += [
+        par("rótulo 'dez categorias de 1 CVE'", 10, len(unitarias)),
+        par("as dez categorias de 1 CVE nomeadas", unitarias, listadas),
+        par("categorias abaixo do limiar com n > 1 na tabela",
+            sorted(c for c in abaixo if n_de[c] > 1 or c == "SEM_PRIMARIO"), sorted(vistas)),
+    ]
+    return resultados
+
+
+@verificacao("9.9-leitura", "9.9", "deteccao-por-categoria.csv, capacidade-por-cwe.csv, circularidade.json, distribuicao-primario.csv, logs")
+def _(doc, f):
+    det = deteccao_por_categoria(f)
+    texto = "\n".join(doc.secao("### 9.9"))
+    seis = sorted({c for (c, _, _), r in det.items() if r["acima_do_limiar"] == "sim"})
+
+    def a(c, ferr, nivel):
+        return int(det[(c, ferr, nivel)]["acertos"])
+
+    def busca(padrao):
+        achados = re.findall(padrao, texto)
+        if len(achados) != 1:
+            raise FalhaDeExtracao(f"9.9: padrão {padrao!r} casou {len(achados)} vezes")
+        return achados[0]
+
+    r = []
+    # critério
+    categorias = {c for (c, _, _) in det}
+    n_de = {c: int(det[(c, "codeql", "1")]["n"]) for c in categorias}
+    g = busca(r"As (\d+) categorias, (\d+) com primário e a categoria `SEM_PRIMARIO`, formam uma partição do denominador de (\d+)")
+    r += [par("categorias", int(g[0]), len(categorias)),
+          par("categorias com primário", int(g[1]), len(categorias - {"SEM_PRIMARIO"})),
+          par("denominador", int(g[2]), sum(n_de.values()))]
+    extenso = {"cinco": 5, "seis": 6, "sete": 7, "oito": 8}
+    g = busca(r"As (\w+) categorias com (\d+) CVEs ou mais recebem taxa")
+    k = int(g[1])
+    r += [par("categorias acima do limiar", extenso.get(g[0], g[0]), len(seis)),
+          # o limiar do texto é o que o CSV aplicou (revisão, observação)
+          par(f"acima_do_limiar == (n >= {k})", True,
+              all((det[(c, "codeql", "1")]["acima_do_limiar"] == "sim") == (n_de[c] >= k) for c in categorias))]
+    g = busca(r"Nenhuma categoria tem entre (\d+) e (\d+) CVEs")
+    r.append(par(f"categorias com n entre {g[0]} e {g[1]}", 0,
+                 sum(1 for n in n_de.values() if int(g[0]) <= n <= int(g[1]))))
+    g = busca(r"qualquer limiar de (\d+) a (\d+) produziria o mesmo corte")
+    cortes = {frozenset(c for c in categorias if n_de[c] >= limiar) for limiar in range(int(g[0]), int(g[1]) + 1)}
+    r.append(par(f"limiares de {g[0]} a {g[1]} dão o mesmo corte", 1, len(cortes)))
+    # ordem no nível 4 estrito
+    busca(r"No nível 4 estrito, o CodeQL lidera nas seis categorias")
+    r.append(par("CodeQL > as outras duas no 4e, nas seis", True,
+                 all(a(c, "codeql", "4e") > max(a(c, "semgrep", "4e"), a(c, "snyk-code", "4e")) for c in seis)))
+    r.append(par("Semgrep >= Snyk Code no 4e, nas seis", True,
+                 all(a(c, "semgrep", "4e") >= a(c, "snyk-code", "4e") for c in seis)))
+    busca(r"os empates são em CWE-400 e CWE-094, com zero nas duas")
+    r.append(par("empates Semgrep = Snyk no 4e", ["CWE-094", "CWE-400"],
+                 sorted(c for c in seis if a(c, "semgrep", "4e") == a(c, "snyk-code", "4e"))))
+    r.append(par("empates com zero", True, all(a(c, "semgrep", "4e") == 0 for c in ("CWE-094", "CWE-400"))))
+    g = busca(r"o Semgrep chega ao arquivo em (\d+) de (\d+) CVEs, contra (\d+) do CodeQL")
+    r += [par("Semgrep CWE-022 nível 1", int(g[0]), a("CWE-022", "semgrep", "1")),
+          par("n de CWE-022", int(g[1]), n_de["CWE-022"]),
+          par("CodeQL CWE-022 nível 1", int(g[2]), a("CWE-022", "codeql", "1"))]
+    g = busca(r"passa de (\d+) CVEs no nível 1 para (\d+) no nível 3; em poluição de protótipo, de (\d+) para (\d+)")
+    r += [par("Semgrep CWE-022 nível 1", int(g[0]), a("CWE-022", "semgrep", "1")),
+          par("Semgrep CWE-022 nível 3", int(g[1]), a("CWE-022", "semgrep", "3")),
+          par("Semgrep CWE-915 nível 1", int(g[2]), a("CWE-915", "semgrep", "1")),
+          par("Semgrep CWE-915 nível 3", int(g[3]), a("CWE-915", "semgrep", "3"))]
+    # ReDoS
+    g = busca(r"não produz alerta no arquivo do ground truth em nenhum dos (\d+) CVEs")
+    r += [par("n de CWE-400", int(g), n_de["CWE-400"]),
+          par("Snyk CWE-400 nível 1", 0, a("CWE-400", "snyk-code", "1"))]
+    g = busca(r"O Semgrep chega ao arquivo em (\d+), e à natureza certa em nenhum")
+    r += [par("Semgrep CWE-400 nível 1", int(g), a("CWE-400", "semgrep", "1")),
+          par("Semgrep CWE-400 nível 2 estrita", 0, a("CWE-400", "semgrep", "2e"))]
+    g = busca(r"O CodeQL chega ao arquivo e à natureza em (\d+), mas à linha em (\d+)")
+    r += [par("CodeQL CWE-400 nível 2 estrita", int(g[0]), a("CWE-400", "codeql", "2e")),
+          par("CodeQL CWE-400 nível 3", int(g[1]), a("CWE-400", "codeql", "3"))]
+    busca(r"é a categoria em que ele mais perde do nível 2 para o 3")
+    perdas = {c: a(c, "codeql", "2e") - a(c, "codeql", "3") for c in seis}
+    maior = max(perdas.values())
+    r.append(par("categoria de maior perda 2e → 3 do CodeQL", ["CWE-400"],
+                 sorted(c for c, p in perdas.items() if p == maior)))
+    # generosa x estrita
+    g = busca(r"(\d+) contra (\d+) no nível 2, e (\d+) contra (\d+) no nível 4")
+    r += [par("Snyk CWE-022 2 generosa", int(g[0]), a("CWE-022", "snyk-code", "2g")),
+          par("Snyk CWE-022 2 estrita", int(g[1]), a("CWE-022", "snyk-code", "2e")),
+          par("Snyk CWE-022 4 generosa", int(g[2]), a("CWE-022", "snyk-code", "4g")),
+          par("Snyk CWE-022 4 estrita", int(g[3]), a("CWE-022", "snyk-code", "4e"))]
+    busca(r"Nas demais células a diferença é de 0 ou 1")
+    excecoes = sorted(
+        f"{c} {ferr} {n}" for (c, ferr, niv) in det if niv in ("2g", "4g")
+        for n in [niv[0]]
+        if a(c, ferr, niv) - a(c, ferr, n + "e") > 1
+    )
+    r.append(par("células com generosa − estrita > 1", ["CWE-022 snyk-code 2", "CWE-022 snyk-code 4"], excecoes))
+    g = busca(r"mostra o CWE-023 em alertas do Snyk Code em (\d+) CVEs")
+    cap = {(x["ferramenta"], x["versao"], x["categoria"]): x for x in f.csv("results/capacidade/capacidade-por-cwe.csv")}
+    r.append(par("Snyk CWE-023, CVEs com alerta (versão principal)", int(g),
+                 int(cap[("snyk-code", "js_ts_extensao", "CWE-023")]["cves_com_achado"])))
+    g = busca(r"Em injeção de código, com (\d+) CVEs, o intervalo do CodeQL no nível 4 estrito vai de (\d+,\d)% a (\d+,\d)%")
+    inf, sup = f.wilson(a("CWE-094", "codeql", "4e"), n_de["CWE-094"])
+    r += [par("n de CWE-094", int(g[0]), n_de["CWE-094"]),
+          par("CodeQL CWE-094 4e, Wilson inferior", float(g[1].replace(",", ".")), arredonda(100 * inf, 1)),
+          par("CodeQL CWE-094 4e, Wilson superior", float(g[2].replace(",", ".")), arredonda(100 * sup, 1))]
+    # circularidade
+    herdados = set(f.particao("ref")["grupos"]["herdado"])
+    dist = {x["gt_cwe_primary"]: x["cves"].split("|") for x in f.csv("results/por-cwe/distribuicao-primario.csv")}
+    busca(r"Em cinco das seis categorias a maior parte dos CVEs tem etiqueta herdada")
+    r.append(par("categorias, das seis, com maioria herdada", 5,
+                 sum(1 for c in seis if 2 * len(set(dist[c]) & herdados) > len(dist[c]))))
+    g = busca(r"nenhum dos (\d+) é herdado sob a âncora")
+    r += [par("n de CWE-915", int(g), len(dist["CWE-915"])),
+          par("CWE-915 herdados", 0, len(set(dist["CWE-915"]) & herdados))]
+    g = busca(r"Nele o CodeQL acerta (\d+) no nível 4 estrito, contra (\d+) do Semgrep e (\d+) do Snyk Code")
+    r += [par("CWE-915 4e CodeQL", int(g[0]), a("CWE-915", "codeql", "4e")),
+          par("CWE-915 4e Semgrep", int(g[1]), a("CWE-915", "semgrep", "4e")),
+          par("CWE-915 4e Snyk Code", int(g[2]), a("CWE-915", "snyk-code", "4e"))]
+    # os cinco SEM_ARQUIVO_ANALISAVEL
+    g = busca(r"\*\*Os (\w+) CVEs sem material analisável do Snyk Code\*\*")
+    lido = extenso.get(g, g)
+    g = busca(r"caem em CWE-022 \((\d+)\), CWE-079 \((\d+)\) e CWE-116 \((\d+)\)")
+    sem_arquivo = {c for c, reg in f.logs_campanha("snyk-code").items() if reg["status"] == "SEM_ARQUIVO_ANALISAVEL"}
+    primario = {cve: c for c, cves in dist.items() for cve in cves}
+    contagem = Counter(primario[c] for c in sem_arquivo)
+    r += [par("SEM_ARQUIVO_ANALISAVEL no Snyk Code", lido, len(sem_arquivo)),
+          par("distribuição dos cinco por primário",
+              {"CWE-022": int(g[0]), "CWE-079": int(g[1]), "CWE-116": int(g[2])}, dict(contagem))]
+    return r
+
+
+# ---- 9.11 capacidade empírica e delimitação por linguagem -----------------
+def capacidade_txt_secao(f, numero):
+    """Linhas da seção `numero` do capacidade.txt (cabeçalho 'N. TITULO')."""
+    linhas = f.capacidade_txt.splitlines()
+    inicio = [i for i, l in enumerate(linhas) if re.match(rf"{numero}\. [A-Z]", l)]
+    if len(inicio) != 1:
+        raise FalhaDeExtracao(f"capacidade.txt: seção {numero} casou {len(inicio)} vezes")
+    fim = next((j for j in range(inicio[0] + 1, len(linhas)) if re.match(r"\d+\. [A-Z]", linhas[j])), len(linhas))
+    return linhas[inicio[0]:fim]
+
+
+def extensoes_fora(f):
+    """{ferramenta: {extensão: (achados, cves)}} e {ferramenta: total}, do capacidade.txt."""
+    saida, totais, corrente = {}, {}, None
+    for linha in capacidade_txt_secao(f, 5):
+        m = re.fullmatch(r"  (codeql|semgrep|snyk-code) — (\d+) achados fora de JS/TS", linha)
+        if m:
+            corrente = m.group(1)
+            totais[corrente] = int(m.group(2))
+            saida[corrente] = {}
+            continue
+        m = re.fullmatch(r"  (\.\S+|\(sem extensao\))\s+(\d+)\s+(\d+)", linha)
+        if m and corrente:
+            saida[corrente][m.group(1)] = (int(m.group(2)), int(m.group(3)))
+    return saida, totais
+
+
+def delimitacao(f):
+    return {(x["ferramenta"], x["criterio"], x["celula"]): x for x in f.csv("results/capacidade/delimitacao-linguagem.csv")}
+
+
+@verificacao("9.11-delimitacao", "9.11", "results/capacidade/delimitacao-linguagem.csv + relatórios de normalização")
+def _(doc, f):
+    d = delimitacao(f)
+    texto = "\n".join(doc.secao("### 9.11"))
+    bloco = doc.secao("### 9.11")
+    r = []
+    total = {ferr: int(d[(ferr, "extensao", "js_ts")]["achados"]) + int(d[(ferr, "extensao", "fora")]["achados"])
+             for ferr in FERRAMENTAS}
+    m = re.findall(r"Os totais conferem com os relatórios de normalização: ([\d.]+), ([\d.]+) e ([\d.]+) alertas", texto)
+    if len(m) != 1:
+        raise FalhaDeExtracao(f"9.11: totais casaram {len(m)} vezes")
+    for ferr, bruto in zip(FERRAMENTAS, m[0]):
+        relatorios = sum(x["achados"]["total"] for x in f.relatorios_normalizacao(ferr))
+        r += [par(f"{ferr}: total, delimitação", um_numero(bruto), total[ferr]),
+              par(f"{ferr}: total, relatórios de normalização", um_numero(bruto), relatorios)]
+    g = busca_unica(texto, r"O universo são todos os CVEs com resultado normalizado: (\d+) no CodeQL e no Semgrep, (\d+) no Snyk Code", "9.11")
+    cap = f.csv("results/capacidade/capacidade-por-cwe.csv")
+    universo = {x["ferramenta"]: int(x["universo_cves"]) for x in cap}
+    r += [par("universo CodeQL", int(g[0]), universo["codeql"]),
+          par("universo Semgrep", int(g[0]), universo["semgrep"]),
+          par("universo Snyk Code", int(g[1]), universo["snyk-code"])]
+    tab = tabela_rotulada(bloco, "Delimitação por linguagem", "9.11")
+    for rotulo, ferr in FERRAMENTA_DO_ROTULO.items():
+        linha = doc.linha_da_tabela(tab, rotulo)
+        js, pjs = numeros(linha[1])
+        fo, pfo = numeros(linha[2])
+        cjs = d[(ferr, "extensao", "js_ts")]
+        cfo = d[(ferr, "extensao", "fora")]
+        r += [par(f"{ferr}: alertas em JS/TS", js, int(cjs["achados"])),
+              par(f"{ferr}: % em JS/TS", pjs, taxa_exata(int(cjs["achados"]), total[ferr])),
+              par(f"{ferr}: alertas fora", fo, int(cfo["achados"])),
+              par(f"{ferr}: % fora", pfo, taxa_exata(int(cfo["achados"]), total[ferr])),
+              par(f"{ferr}: CVEs com alerta fora", um_numero(linha[3]), int(cfo["cves_com_achado"]))]
+    tab = tabela_rotulada(bloco, "No Semgrep, os dois critérios cruzados", "9.11")
+    celulas = {("regra de JS/TS", 1): "regra_js_ts|arquivo_js_ts", ("regra de JS/TS", 2): "regra_js_ts|arquivo_fora",
+               ("regra de outra linguagem", 1): "regra_fora|arquivo_js_ts",
+               ("regra de outra linguagem", 2): "regra_fora|arquivo_fora"}
+    for (rotulo, col), celula in celulas.items():
+        linha = doc.linha_da_tabela(tab, rotulo)
+        r.append(par(f"2x2 {celula}", um_numero(linha[col]),
+                     int(d[("semgrep", "regra_x_extensao", celula)]["achados"])))
+    m = re.findall(r"Os dois critérios concordam em (\d+,\d+)% dos alertas", texto)
+    if len(m) != 1:
+        raise FalhaDeExtracao(f"9.11: concordância casou {len(m)} vezes")
+    concordam = sum(int(d[("semgrep", "regra_x_extensao", c)]["achados"])
+                    for c in ("regra_js_ts|arquivo_js_ts", "regra_fora|arquivo_fora"))
+    r.append(par("concordância dos dois critérios (%)", um_numero(m[0]),
+                 taxa_exata(concordam, total["semgrep"], casas=2)))
+    return r
+
+
+@verificacao("9.11-extensoes", "9.11", "results/capacidade/capacidade.txt + delimitacao-linguagem.csv")
+def _(doc, f):
+    texto = "\n".join(doc.secao("### 9.11"))
+    ext, totais = extensoes_fora(f)
+    d = delimitacao(f)
+    r = []
+
+    def busca(padrao):
+        achados = re.findall(padrao, texto)
+        if len(achados) != 1:
+            raise FalhaDeExtracao(f"9.11: padrão {padrao!r} casou {len(achados)} vezes")
+        return achados[0]
+
+    for ferr in FERRAMENTAS:
+        r.append(par(f"{ferr}: fora de JS/TS, capacidade.txt = CSV", totais[ferr],
+                     int(d[(ferr, "extensao", "fora")]["achados"])))
+    g = busca(r"No CodeQL, ([\d.]+) dos ([\d.]+) em `\.html`")
+    r += [par("CodeQL .html", um_numero(g[0]), ext["codeql"][".html"][0]),
+          par("CodeQL fora", um_numero(g[1]), totais["codeql"])]
+    # cada reaparição do número, lida no seu contexto (revisão, defeito 1);
+    # e nenhuma outra: o número não pode aparecer fora dos contextos lidos
+    for padrao in (r"e seus ([\d.]+) alertas ali", r"pelas regras dos ([\d.]+) alertas"):
+        r.append(par(f"CodeQL .html em {padrao!r}", um_numero(busca(padrao)), ext["codeql"][".html"][0]))
+    r.append(par("ocorrências de '600' na 9.11", 3, len(re.findall(r"(?<![\d.,])600(?![\d,])", texto))))
+    g = busca(r"No Semgrep, ([\d.]+) dos ([\d.]+) em `\.html`")
+    r += [par("Semgrep .html", um_numero(g[0]), ext["semgrep"][".html"][0]),
+          par("Semgrep fora", um_numero(g[1]), totais["semgrep"])]
+    g = busca(r"`\.java` \((\d+)\), `\.jsp` \((\d+)\), `\.php` \((\d+)\), `\.cc` \((\d+)\)")
+    snyk = ext["snyk-code"]
+    for e, v in zip((".java", ".jsp", ".php", ".cc"), g):
+        r.append(par(f"Snyk Code {e}", int(v), snyk[e][0]))
+    r.append(par("Snyk Code: as quatro são as maiores", [".java", ".jsp", ".php", ".cc"],
+                 sorted(snyk, key=lambda e: (-snyk[e][0], e))[:4]))
+    g = busca(r"analisou arquivos de outras linguagens em (\d+) dos (\d+) CVEs")
+    m = [re.search(r"CVEs com alguma lang analisada fora de JS/TS: (\d+) de (\d+)", l) for l in capacidade_txt_secao(f, 7)]
+    m = [x for x in m if x]
+    if len(m) != 1:
+        raise FalhaDeExtracao(f"capacidade.txt: linha de cobertura casou {len(m)} vezes")
+    r += [par("Snyk: CVEs com lang fora de JS/TS", int(g[0]), int(m[0].group(1))),
+          par("Snyk: universo", int(g[1]), int(m[0].group(2)))]
+    # concentração
+    sec6 = capacidade_txt_secao(f, 6)
+    def linha_unica(padrao):
+        achados = [m for m in (re.fullmatch(padrao, l) for l in sec6) if m]
+        if len(achados) != 1:
+            raise FalhaDeExtracao(f"capacidade.txt: {padrao!r} casou {len(achados)} vezes")
+        return achados[0]
+
+    tot = int(linha_unica(r"  total (\d+) achados, em \d+ CVEs com achado de \d+").group(1))
+    cves = {m.group(1): int(m.group(2)) for m in (re.fullmatch(r"  (CVE-\S+)\s+(\d+)\s+[\d.]+", l) for l in sec6) if m}
+    dez = int(linha_unica(r"  dez maiores somam (\d+) \([\d.]+\)").group(1))
+    regras = [m.groups() for m in (re.fullmatch(r"  (\S+)\s+(\d+)\s+[\d.]+ (\S+)\s+(sim|nao)", l) for l in sec6) if m]
+    g = busca(r"Um único CVE, o `(CVE-[\d-]+)`, responde por ([\d.]+) alertas \((\d+,\d)%\), e os dez maiores por (\d+,\d)%")
+    maior = max(cves, key=lambda c: (cves[c], c))
+    r += [par("maior CVE do Semgrep", g[0], maior),
+          par("alertas do maior CVE", um_numero(g[1]), cves[maior]),
+          par("% do maior CVE", um_numero(g[2]), taxa_exata(cves[maior], tot)),
+          par("% dos dez maiores", um_numero(g[3]), taxa_exata(dez, tot)),
+          par("dez CVEs listados no capacidade.txt", 10, len(cves)),
+          par("dez maiores = soma dos listados", dez, sum(cves.values()))]
+    g = busca(r"declarada como genérica, responde por ([\d.]+) alertas \((\d+,\d)%\)")
+    regra_maior = regras[0]
+    r += [par("regra de maior volume", "html.security.audit.missing-integrity.missing-integrity", regra_maior[0]),
+          par("regra de maior volume é a de maior contagem", True, all(int(regra_maior[1]) >= int(x[1]) for x in regras)),
+          par("alertas da maior regra", um_numero(g[0]), int(regra_maior[1])),
+          par("% da maior regra", um_numero(g[1]), taxa_exata(int(regra_maior[1]), tot)),
+          par("linguagem declarada da maior regra", "generic", regra_maior[2])]
+    g = busca(r"nesta campanha são (\d+,\d)% e (\d+,\d)%")
+    r += [par("Semgrep: % em JS/TS", um_numero(g[0]),
+              taxa_exata(int(d[("semgrep", "extensao", "js_ts")]["achados"]), tot)),
+          par("% da maior regra (repetido)", um_numero(g[1]), taxa_exata(int(regra_maior[1]), tot))]
+    r.append(par("total do Semgrep no capacidade.txt = relatórios", tot,
+                 sum(x["achados"]["total"] for x in f.relatorios_normalizacao("semgrep"))))
+    return r
+
+
+# O 77% da 9.5 em família própria, e não dentro da 9.11 (revisão): falha de
+# extração de outra afirmação da 9.11 não pode levar esta junto.
+LOTES_CAMPANHA = tuple(f"cves-sast-batch-{x}" for x in ("aa", "ab", "ac", "ad", "ae", "af", "ag", "ah"))
+LOTES_EM_SERIE = LOTES_CAMPANHA[:2]  # aa e ab, 16/09; os seis últimos, 17/09 (CLAUDE.md)
+
+
+@verificacao("9.5-concentracao", "9.5, 9.11",
+             "results/semgrep/treated + logs/campanha-2026-09-17 (logs de execução e relatórios de normalização)")
+def _(doc, f):
+    """Os dez maiores CVEs dos SEIS ÚLTIMOS lotes sobre os achados desses
+    lotes — o recorte da 9.5, distinto do dos oito lotes da 9.11."""
+    base = f.raiz / "logs/campanha-2026-09-17"
+    lotes = tuple(sorted(p.name for p in base.glob("cves-sast-batch-*")))
+    # lotes por NOME, e não por posição (revisão, risco 1)
+    if lotes != LOTES_CAMPANHA:
+        raise FalhaDeExtracao(f"lotes da campanha: {lotes}")
+    ultimos = [l for l in LOTES_CAMPANHA if l not in LOTES_EM_SERIE]
+    # cada CVE em exatamente um lote, lido lote a lote e não pelo dicionário
+    # que sobrescreve (revisão, risco 2)
+    lote_de = defaultdict(set)
+    for lote in LOTES_CAMPANHA:
+        with open(base / lote / "execution-log-semgrep.csv", encoding="utf-8") as fh:
+            for reg in csv.DictReader(fh):
+                lote_de[reg["cve"]].add(lote)
+    em_varios = sorted(c for c, ls in lote_de.items() if len(ls) != 1)
+    por_cve = {t["metadata"]["cve_id"]: len(t["findings"]) for t in f.tratados("semgrep")}
+    sem_log = sorted(set(por_cve) - set(lote_de))
+    seis = {c: n for c, n in por_cve.items() if lote_de[c] & set(ultimos)}
+    extenso = {"dez": 10, "doze": 12, "oito": 8, "cinco": 5, "seis": 6, "sete": 7}
+    g = busca_unica("\n".join(doc.secao("### 9.5")),
+                    r"Nos (\w+) últimos lotes, (\w+) CVEs somam (\d+)% dos achados da ferramenta", "9.5")
+    n_lotes, n_cves = extenso.get(g[0], g[0]), extenso.get(g[1], g[1])
+    if not isinstance(n_cves, int):
+        raise FalhaDeExtracao(f"9.5: número de CVEs {g[1]!r}")
+    maiores = sum(sorted(seis.values(), reverse=True)[:n_cves])
+    pct = taxa_exata(maiores, sum(seis.values()), casas=0)
+    # contraprova do denominador pelos relatórios de normalização (revisão)
+    relatorios = sum(
+        json.loads((base / l / "normalize-report-semgrep.json").read_text(encoding="utf-8"))["achados"]["total"]
+        for l in ultimos
+    )
+    remissao = busca_unica("\n".join(doc.secao("### 9.11")),
+                           r"a Seção 9\.5 registra (\d+)% para os (\w+) maiores dos (\w+) últimos lotes, recorte distinto",
+                           "9.11")
+    return [
+        par("CVEs em mais de um lote", [], em_varios),
+        par("CVEs com tratado sem linha de log", [], sem_log),
+        par("9.5: número de lotes", n_lotes, len(ultimos)),
+        par("9.5: denominador, tratados = relatórios de normalização", relatorios, sum(seis.values())),
+        par("9.5: dez maiores dos seis últimos lotes (%)", int(g[2]), pct),
+        par("9.11: remissão ao recorte da 9.5 (%)", int(remissao[0]), pct),
+        par("9.11: remissão, número de CVEs", n_cves, extenso.get(remissao[1], remissao[1])),
+        par("9.11: remissão, número de lotes", n_lotes, extenso.get(remissao[2], remissao[2])),
+    ]
+
+
+@verificacao("9.11-capacidade", "9.11", "results/capacidade/capacidade-por-cwe.csv, tratados, distribuicao-primario.csv")
+def _(doc, f):
+    cap = [x for x in f.csv("results/capacidade/capacidade-por-cwe.csv") if x["versao"] == "js_ts_extensao"]
+    por = {(x["ferramenta"], x["categoria"]): x for x in cap}
+    texto = "\n".join(doc.secao("### 9.11"))
+    tab = tabela_rotulada(doc.secao("### 9.11"), "Capacidade, versão principal", "9.11")
+    colunas = {}
+    for i, c in enumerate(tab[0]):
+        m = re.fullmatch(r"(CodeQL|Semgrep|Snyk Code) \(de (\d+)\)", c)
+        if m:
+            colunas[i] = (FERRAMENTA_DO_ROTULO[m.group(1)], int(m.group(2)))
+    if len(colunas) != 3:
+        raise FalhaDeExtracao(f"9.11: cabeçalho da capacidade {tab[0]}")
+    r = []
+    posicoes = [int(l[0]) for l in tab[1:] if l[0].isdigit()]
+    busca_unica("\n".join(doc.secao("### 9.11")), r"As (oito) categorias com mais CVEs", "9.11")
+    r.append(par("posições da tabela", list(range(1, 9)), posicoes))
+    for i, (ferr, universo) in colunas.items():
+        ordem = [x for x in cap if x["ferramenta"] == ferr]
+        # a posição vem da ordem do CSV: confere-se que ela é a de CVEs
+        # decrescente, e que não há empate na fronteira 8/9 (revisão, risco 5)
+        chave = [(-int(x["cves_com_achado"]), -int(x["achados"])) for x in ordem]
+        r.append(par(f"{ferr}: CSV em ordem de CVEs e achados decrescentes", True, chave == sorted(chave)))
+        r.append(par(f"{ferr}: sem empate de CVEs entre a 8ª e a 9ª", True,
+                     int(ordem[7]["cves_com_achado"]) > int(ordem[8]["cves_com_achado"])))
+        r.append(par(f"{ferr}: universo", universo, int(ordem[0]["universo_cves"])))
+        for linha in tab[1:]:
+            if linha[0].isdigit():
+                pos = int(linha[0])
+                m = re.fullmatch(r"(CWE-\d+): (\d+)", linha[i])
+                if not m:
+                    raise FalhaDeExtracao(f"9.11: célula {linha[i]!r}")
+                r += [par(f"{ferr} posição {pos}: categoria", m.group(1), ordem[pos - 1]["categoria"]),
+                      par(f"{ferr} posição {pos}: CVEs", int(m.group(2)), int(ordem[pos - 1]["cves_com_achado"]))]
+            elif linha[0] == "Categorias distintas":
+                r.append(par(f"{ferr}: categorias distintas", um_numero(linha[i]),
+                             sum(1 for x in ordem if int(x["cves_com_achado"]) > 0)))
+            else:
+                raise FalhaDeExtracao(f"9.11: linha {linha[0]!r}")
+    # multi-CWE, recontado dos tratados — caminho independente do capacidade-empirica.py
+    js_ts = {"js", "jsx", "mjs", "cjs", "ts", "tsx", "mts", "cts"}
+
+    def em_js_ts(caminho):
+        nome = caminho.rsplit("/", 1)[-1]
+        return "." in nome and nome.rsplit(".", 1)[1].lower() in js_ts
+
+    multi, alertas = {}, {}
+    for ferr in FERRAMENTAS:
+        achados = [a for t in f.tratados(ferr) for a in t["findings"] if em_js_ts(a["file_path"])]
+        alertas[ferr] = len(achados)
+        multi[ferr] = sum(1 for a in achados if len(a["cwe"]) > 1)
+    m = re.findall(r"dos ([\d.]+) alertas do CodeQL em JS/TS, ([\d.]+) têm mais de um CWE; no Semgrep, nenhum; no Snyk Code, ([\d.]+) de ([\d.]+)", texto)
+    if len(m) != 1:
+        raise FalhaDeExtracao(f"9.11: frase de multi-CWE casou {len(m)} vezes")
+    g = m[0]
+    r += [par("CodeQL: alertas em JS/TS", um_numero(g[0]), alertas["codeql"]),
+          par("CodeQL: com mais de um CWE", um_numero(g[1]), multi["codeql"]),
+          par("Semgrep: com mais de um CWE", 0, multi["semgrep"]),
+          par("Snyk Code: com mais de um CWE", um_numero(g[2]), multi["snyk-code"]),
+          par("Snyk Code: alertas em JS/TS", um_numero(g[3]), alertas["snyk-code"])]
+    m = re.findall(r"(\d+) CVEs em CWE-022 e (\d+) em cada um de CWE-023, 036, 073 e 099", texto)
+    if len(m) != 1:
+        raise FalhaDeExtracao(f"9.11: frase de travessia casou {len(m)} vezes")
+    r.append(par("CodeQL CWE-022", int(m[0][0]), int(por[("codeql", "CWE-022")]["cves_com_achado"])))
+    for c in ("CWE-023", "CWE-036", "CWE-073", "CWE-099"):
+        r.append(par(f"CodeQL {c}", int(m[0][1]), int(por[("codeql", c)]["cves_com_achado"])))
+    m = [busca_unica(texto, r"Os (\d+) contra (\d+) medem a prática de etiquetagem", "9.11")]
+    distintas = {ferr: sum(1 for x in cap if x["ferramenta"] == ferr and int(x["cves_com_achado"]) > 0) for ferr in FERRAMENTAS}
+    r += [par("categorias do CodeQL (ressalva)", int(m[0][0]), distintas["codeql"]),
+          par("categorias do Semgrep (ressalva)", int(m[0][1]), distintas["semgrep"])]
+    m = [busca_unica(texto, r"O CodeQL reporta alertas de CWE-400 em (\d+) CVEs, e o ground truth tem (\d+) CVEs dessa categoria", "9.11")]
+    dist = {x["gt_cwe_primary"]: int(x["n"]) for x in f.csv("results/por-cwe/distribuicao-primario.csv")}
+    r += [par("CodeQL CWE-400, CVEs com alerta", int(m[0][0]), int(por[("codeql", "CWE-400")]["cves_com_achado"])),
+          par("CWE-400 no ground truth (primário)", int(m[0][1]), dist["CWE-400"])]
+    return r
+
+
+# Afirmações declaradas NÃO conferíveis a partir do repositório: impressas na
+# saída, nunca contadas como falha. (padrão no texto, seção, motivo)
+NAO_CONFERIVEIS = [
+    (r"só 20,7% dos alertas do Semgrep", "### 9.11", "campanha preliminar: dados não versionados neste repositório"),
+    (r"respondia por 56,5% do total", "### 9.11", "campanha preliminar: dados não versionados neste repositório"),
+]
+
+
 # ---- coerência interna do próprio documento ------------------------------
 @verificacao("coerencia-interna", "várias", "o próprio documento")
 def _(doc, f):
@@ -1710,6 +2327,23 @@ MUTACOES = [
     ("7.7: ganho da sobreposição", "**5, 1 e 13 achados**", "**6, 1 e 13 achados**", "7.7-linha"),
     ("6.1: alertas do full scan do NodeGoat", "| NodeGoat | Full | 3 | 7 | 9 | 10 | 29 |", "| NodeGoat | Full | 3 | 7 | 9 | 10 | 30 |", "6.1-zap"),
     ("8.8: sobrecarga do laço", "ficou entre 1 e 4 segundos por lote", "ficou entre 1 e 5 segundos por lote", "8.8-sobrecarga"),
+    ("9.9: limite superior de uma célula acima do limiar", "| 14 | 7 · 50,0% [26,8; 73,2]", "| 14 | 7 · 50,0% [26,8; 73,3]", "9.9-acima"),
+    ("9.9: limite pelo CSV arredondado duas vezes (54,7)", "4 · 28,6% [11,7; 54,6] | 4 · 28,6%", "4 · 28,6% [11,7; 54,7] | 4 · 28,6%", "9.9-acima"),
+    ("9.9: contagem abaixo do limiar", "| CWE-116 | 9 | 8 / 7 |", "| CWE-116 | 9 | 8 / 6 |", "9.9-abaixo"),
+    ("9.9: soma das dez categorias de 1 CVE", "| dez categorias de 1 CVE | 10 | 5 / 2 |", "| dez categorias de 1 CVE | 10 | 5 / 3 |", "9.9-abaixo"),
+    ("9.9: número da leitura", "contra 17 do CodeQL", "contra 18 do CodeQL", "9.9-leitura"),
+    ("9.11: concordância dos dois critérios", "concordam em 99,01%", "concordam em 99,02%", "9.11-delimitacao"),
+    ("9.11: alertas do CodeQL em .html", "No CodeQL, 600 dos 673", "No CodeQL, 601 dos 673", "9.11-extensoes"),
+    ("9.11: célula da tabela de capacidade", "| 3 | CWE-079: 91 |", "| 3 | CWE-079: 92 |", "9.11-capacidade"),
+    ("9.11: reaparição do 600 na ressalva", "e seus 600 alertas ali", "e seus 610 alertas ali", "9.11-extensoes"),
+    ("9.9: 'n.s.a.' trocado por 0", "| `SEM_PRIMARIO` | 1 | 0 / n.s.a. | 0 / n.s.a. | 0 / n.s.a. |",
+     "| `SEM_PRIMARIO` | 1 | 0 / 0 | 0 / n.s.a. | 0 / n.s.a. |", "9.9-abaixo"),
+    ("9.9: 'cinco' CVEs sem material analisável", "**Os cinco CVEs sem material analisável", "**Os seis CVEs sem material analisável", "9.9-leitura"),
+    ("9.5: dez maiores dos seis últimos lotes", "dez CVEs somam 77% dos achados", "dez CVEs somam 78% dos achados", "9.5-concentracao"),
+    ("9.11: remissão ao 77% da 9.5", "a Seção 9.5 registra 77%", "a Seção 9.5 registra 76%", "9.5-concentracao"),
+    ("9.5: número de CVEs do recorte", "Nos seis últimos lotes, dez CVEs somam", "Nos seis últimos lotes, doze CVEs somam", "9.5-concentracao"),
+    ("9.5: número de lotes do recorte", "Nos seis últimos lotes, dez CVEs", "Nos sete últimos lotes, dez CVEs", "9.5-concentracao"),
+    ("9.9: limiar do critério", "qualquer limiar de 10 a 14 produziria", "qualquer limiar de 10 a 15 produziria", "9.9-leitura"),
 ]
 
 
@@ -1722,9 +2356,18 @@ def controle_positivo(doc, fontes):
         except FalhaDeExtracao as exc:
             print(f"  NÃO APLICÁVEL  {descricao}: {exc}")
             continue
+        # A família tem de estar limpa sem a mutação, e o mutante tem de
+        # produzir divergência de valor, não falha de extração: sem isso, uma
+        # família que já falha por extração "acusaria" qualquer mutante.
+        base = [l for l in roda(doc, fontes, apenas={alvo}) if not l["ok"]]
+        if base:
+            print(f"  BASE SUJA      {descricao} → {alvo} ({len(base)} divergência(s) sem mutação)")
+            continue
         linhas = roda(mutante, fontes, apenas={alvo})
-        divergentes = [l for l in linhas if not l["ok"]]
-        if divergentes:
+        divergentes = [l for l in linhas if not l["ok"] and not l["falha"]]
+        if any(l["falha"] for l in linhas):
+            print(f"  FALHA          {descricao} → {alvo}: o mutante quebrou a extração")
+        elif divergentes:
             acusadas += 1
             print(f"  ACUSADA        {descricao} → {alvo} ({len(divergentes)} divergência(s))")
         else:
@@ -1757,6 +2400,15 @@ def main():
     for ident, n in sorted(por_familia.items()):
         ruins = sum(1 for l in linhas if l["id"] == ident and not l["ok"])
         print(f"  {ident:28s} {n:4d}  divergentes: {ruins}")
+
+    print("\nnão conferíveis a partir do repositório (declarados, não contados como falha):")
+    for padrao, prefixo, motivo in NAO_CONFERIVEIS:
+        try:
+            doc.inline(prefixo, padrao)
+            estado = "presente"
+        except FalhaDeExtracao as exc:
+            estado = f"extração: {exc}"
+        print(f"  {prefixo.strip()} {padrao!r} — {motivo} [{estado}]")
 
     ok_controle = True
     if args.controle_positivo:

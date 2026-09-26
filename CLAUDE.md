@@ -1544,9 +1544,9 @@ continua não classificável.
 **A versão vigente é a `docs/metodologia-V10.md`, de 22/09/2026, e ela é
 parcial.** Documento de método **e resultados**, cobrindo as campanhas SAST e
 DAST; revoga a frase da V9 de que "nenhum resultado de detecção é apresentado
-aqui". As seções **9.8** (resultados da versão corrigida), **9.9** (detecção por
-CWE), **10** (resultados DAST) e **11** (análise comparativa) estão **a
-preencher**, e a versão só fecha com as quatro.
+aqui". As seções **9.8** (resultados da versão corrigida), **10** (resultados
+DAST) e **11** (análise comparativa) estão **a preencher**, e a versão só fecha
+com as três.
 
 **Numeração nova:** as seções 9, 10 e 11 da V9 passaram a **12** (ameaças), **13**
 (decisões) e **14** (pendências), para que os resultados venham depois do método.
@@ -1558,13 +1558,11 @@ versionou a V10, por ter cumprido a função; está no histórico, versionada em
 `f6bd601`, e recuperável por
 `git show f6bd601:docs/pauta-metodologia-V10.md`.
 
-**Três promessas da V9 ainda não cumpridas, a fazer antes de fechar a V10:**
-
-- a **detecção por CWE, por ferramenta** (§7.7). O cruzamento apurou por
-  ferramenta; a decomposição por CWE não existe;
-- a **tabela de capacidade empírica** por ferramenta (§7.6);
-- a **proporção dos achados do Semgrep fora de JavaScript/TypeScript**,
-  declarada (§7.6).
+**As três promessas da V9 foram cumpridas em 26/09/2026:** a detecção por CWE
+(§9.9 da V10, critério na §9 do `criterios-cruzamento.md`), a tabela de
+capacidade empírica e a proporção dos achados do Semgrep fora de JS/TS (§9.11
+da V10, critério na §10). As seções que ainda faltam para fechar a V10 são a
+9.8, a 10 e a 11.
 
 **Registrado noutras seções, e não repetido aqui:**
 

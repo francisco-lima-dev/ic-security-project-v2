@@ -4,7 +4,7 @@
 
 Francisco Sales de Lima Junior
 
-22 de setembro de 2026 — versão parcial: resultados SAST da campanha de detecção; campanha da versão corrigida, DAST e análise comparativa a preencher
+22 de setembro de 2026, revista em 26 de setembro de 2026 — versão parcial: resultados SAST da campanha de detecção, incluídas a decomposição por categoria de CWE e a capacidade empírica; campanha da versão corrigida, DAST e análise comparativa a preencher
 
 ---
 
@@ -21,7 +21,10 @@ O estado de cada parte do estudo, nesta versão:
 - **Campanha SAST de detecção — executada.** Rodou em 16 e 17 de setembro de
   2026, sobre os 223 CVEs do benchmark, nas três ferramentas, precedida do
   ensaio de fumaça de 16 de setembro (Seção 8). Seus resultados constam da
-  Seção 9.
+  Seção 9. A decomposição da detecção por categoria de CWE (Seção 9.9) e a
+  capacidade empírica com a delimitação por linguagem (Seção 9.11) foram
+  apuradas em 26 de setembro de 2026, sobre os mesmos resultados, sem nova
+  execução de ferramenta.
 - **Campanha SAST da versão corrigida — a executar.** Mede o falso positivo e o
   verdadeiro negativo, na forma definida na Seção 7.3, e completa a matriz de
   confusão. Até ela existir, os resultados SAST são a metade positiva da matriz.
@@ -55,6 +58,17 @@ apuram a proveniência do ground truth integram o repositório desde setembro de
 ## Registro de alterações
 
 ### Versão 10
+
+**Revisão de 26/09/2026.** Acréscimos dentro da Versão 10, sem mudança de método:
+
+| Seção | Tipo | Alteração |
+|---|---|---|
+| Nota | Acréscimo | Decomposição por categoria e capacidade empírica apuradas |
+| 7.6, 7.7 | Correção | Estado das apurações atualizado, com remissão aos resultados; em 7.6, a proporção fora de JS/TS deixa de ser dita descartada |
+| 9.9 | Acréscimo | Detecção por categoria de CWE, pelo critério da §9 do documento de critérios |
+| 9.11 | Acréscimo | Nova seção: capacidade empírica e delimitação por linguagem |
+| 13 | Acréscimo | Decisões 91 a 96 |
+| 14 | Correção | Apurações prometidas retiradas; duas verificações novas |
 
 Esta versão muda a natureza do documento, que passa de método a **método e
 resultados**, e incorpora a execução da campanha SAST de detecção, o ensaio de
@@ -1371,9 +1385,9 @@ A tabela de capacidade por ferramenta reflete capacidade empírica — as catego
 
 A tabela contabiliza achados brutos, sem filtragem prévia contra o ground truth. Mede-se ali abrangência; a acurácia é objeto da matriz de confusão. A separação torna as duas apurações independentes entre si.
 
-Registra-se que o conjunto de regras do Semgrep abrange linguagens diversas, de modo que parte substancial de seus achados recai fora do escopo de JavaScript e TypeScript. A delimitação por linguagem é aplicada nesta etapa, e não na coleta, e a proporção descartada é declarada — constitui, ela própria, indicativo do esforço de triagem imposto pela ferramenta em sua configuração predefinida.
+Registra-se que o conjunto de regras do Semgrep abrange linguagens diversas, de modo que parte substancial de seus achados recai fora do escopo de JavaScript e TypeScript. A delimitação por linguagem é aplicada nesta etapa, e não na coleta, e a proporção de achados fora de JavaScript e TypeScript é declarada; esses achados não são descartados, e sim publicados na versão que abrange todos os achados (Seção 9.11) — constitui, ela própria, indicativo do esforço de triagem imposto pela ferramenta em sua configuração predefinida.
 
-**Estado nesta versão: a tabela de capacidade e a delimitação por linguagem do Semgrep ainda não foram apuradas.** Os dados necessários estão nos resultados normalizados versionados, e as duas apurações são pendências registradas na Seção 14. Indício da magnitude: só no repositório do `CVE-2018-14380`, o Semgrep varreu 1.165 arquivos Java.
+**Estado nesta versão.** A tabela de capacidade e a delimitação por linguagem foram apuradas em 26 de setembro de 2026, pelo critério da §10 do documento de critérios (`docs/criterios-cruzamento.md`), fixado antes de qualquer contagem. Os resultados estão na Seção 9.11.
 
 ### 7.7 Métricas
 
@@ -1388,7 +1402,7 @@ Registra-se que o conjunto de regras do Semgrep abrange linguagens diversas, de 
 
 **Nesta versão, só o recall está apurado.** Precisão, especificidade e F1 dependem da campanha da versão corrigida. A redação dos resultados precisa declarar o escopo em toda ocorrência: "precisão" sem qualificação sugere a leitura sobre todos os alertas, que o conjunto não permite (Seção 7.3).
 
-**A apuração por CWE**, objetivo declarado desde as versões anteriores, **ainda não foi feita**: o cruzamento apurou por ferramenta. É pendência registrada na Seção 14.
+**A apuração por CWE** está na Seção 9.9, pelo critério da §9 do documento de critérios, fixado antes de qualquer número por categoria.
 
 **Volume de alertas.** Caracteriza-se, descritivamente, o volume de alertas por ferramenta e sua distribuição entre CVEs. É declarado como caracterização, **nunca** como medida de qualidade: mede quanto a ferramenta reporta, não quanto acerta, e, pelo argumento da Seção 7.3, alertas fora do ponto da falha não são classificáveis.
 
@@ -1681,9 +1695,76 @@ Os dez divergentes — `CVE-2018-18282`, `CVE-2018-3738`, `CVE-2019-13127`, `CVE
 
 Falso positivo e verdadeiro negativo, e com eles precisão, especificidade e F1, na forma que a Seção 7.3 vier a fixar.
 
-### 9.9 Detecção por CWE — a preencher
+### 9.9 Detecção por categoria de CWE
 
-Os acertos por categoria de vulnerabilidade, por ferramenta e por nível. Pendência da Seção 14: os dados estão na matriz versionada.
+**Critério.** Fixado na §9 de `docs/criterios-cruzamento.md` em 25 de setembro de 2026 (commit `6e0a7cb`), antes de qualquer número por categoria. A categoria de um CVE é o seu CWE primário (Seção 7.4) — sempre a do CVE, nunca a do alerta. As 28 categorias, 27 com primário e a categoria `SEM_PRIMARIO`, formam uma partição do denominador de 220. As seis categorias com 10 CVEs ou mais recebem taxa, acompanhada do intervalo de Wilson de 95%, sem correção de continuidade, com z = 1,96, como **descrição** da incerteza e não como teste de hipótese. As demais aparecem só em contagens, e o grupo que formam não recebe taxa agregada, por ser heterogêneo. Nenhuma categoria tem entre 10 e 13 CVEs, de modo que qualquer limiar de 10 a 14 produziria o mesmo corte.
+
+**Procedimento.** Produzido por `tools/deteccao-por-cwe.py`, com saídas em `results/por-cwe/deteccao-por-categoria.csv` e `.txt`. O programa **reagrupa** a matriz de detecção publicada (Seção 9.2), identificada por sha256, e não recomputa detecção. Controles: a soma das categorias reconstrói as 21 células da Seção 9.2 e os agregados do cruzamento, sem divergência; e o recorte dos 22 CVEs de poluição de protótipo reproduz a apuração da Seção 9.10. **Limite declarado:** o deslocamento de um acerto entre duas categorias, com o total mantido, não é detectado pela reconstrução; o que o impede é a identidade da matriz por sha256.
+
+**Categorias acima do limiar.** As tabelas trazem os níveis 1, 2 estrita, 3 e 4 estrita. Os sete níveis, com as variantes generosas, estão no CSV. Cada célula traz acertos sobre n, a taxa e o intervalo.
+
+**CodeQL**
+
+| Categoria | n | Nível 1 | Nível 2 estrita | Nível 3 | Nível 4 estrita |
+|---|---:|---|---|---|---|
+| CWE-079 (XSS) | 47 | 24 · 51,1% [37,2; 64,7] | 23 · 48,9% [35,3; 62,8] | 18 · 38,3% [25,8; 52,6] | 18 · 38,3% [25,8; 52,6] |
+| CWE-022 (travessia de caminho) | 29 | 17 · 58,6% [40,7; 74,5] | 14 · 48,3% [31,4; 65,6] | 15 · 51,7% [34,4; 68,6] | 13 · 44,8% [28,4; 62,5] |
+| CWE-400 (ReDoS) | 26 | 21 · 80,8% [62,1; 91,5] | 19 · 73,1% [53,9; 86,3] | 9 · 34,6% [19,4; 53,8] | 9 · 34,6% [19,4; 53,8] |
+| CWE-078 (injeção de comando) | 25 | 22 · 88,0% [70,0; 95,8] | 22 · 88,0% [70,0; 95,8] | 15 · 60,0% [40,7; 76,6] | 15 · 60,0% [40,7; 76,6] |
+| CWE-915 (poluição de protótipo) | 23 | 18 · 78,3% [58,1; 90,3] | 17 · 73,9% [53,5; 87,5] | 15 · 65,2% [44,9; 81,2] | 14 · 60,9% [40,8; 77,8] |
+| CWE-094 (injeção de código) | 14 | 7 · 50,0% [26,8; 73,2] | 7 · 50,0% [26,8; 73,2] | 4 · 28,6% [11,7; 54,6] | 4 · 28,6% [11,7; 54,6] |
+
+**Semgrep**
+
+| Categoria | n | Nível 1 | Nível 2 estrita | Nível 3 | Nível 4 estrita |
+|---|---:|---|---|---|---|
+| CWE-079 | 47 | 17 · 36,2% [24,0; 50,5] | 6 · 12,8% [6,0; 25,2] | 6 · 12,8% [6,0; 25,2] | 6 · 12,8% [6,0; 25,2] |
+| CWE-022 | 29 | 22 · 75,9% [57,9; 87,8] | 16 · 55,2% [37,5; 71,6] | 2 · 6,9% [1,9; 22,0] | 2 · 6,9% [1,9; 22,0] |
+| CWE-400 | 26 | 8 · 30,8% [16,5; 50,0] | 0 · 0,0% [0,0; 12,9] | 2 · 7,7% [2,1; 24,1] | 0 · 0,0% [0,0; 12,9] |
+| CWE-078 | 25 | 16 · 64,0% [44,5; 79,8] | 10 · 40,0% [23,4; 59,3] | 8 · 32,0% [17,2; 51,6] | 8 · 32,0% [17,2; 51,6] |
+| CWE-915 | 23 | 12 · 52,2% [33,0; 70,8] | 11 · 47,8% [29,2; 67,0] | 1 · 4,3% [0,8; 21,0] | 1 · 4,3% [0,8; 21,0] |
+| CWE-094 | 14 | 5 · 35,7% [16,3; 61,2] | 0 · 0,0% [0,0; 21,5] | 1 · 7,1% [1,3; 31,5] | 0 · 0,0% [0,0; 21,5] |
+
+**Snyk Code**
+
+| Categoria | n | Nível 1 | Nível 2 estrita | Nível 3 | Nível 4 estrita |
+|---|---:|---|---|---|---|
+| CWE-079 | 47 | 11 · 23,4% [13,6; 37,2] | 5 · 10,6% [4,6; 22,6] | 8 · 17,0% [8,9; 30,1] | 4 · 8,5% [3,4; 19,9] |
+| CWE-022 | 29 | 16 · 55,2% [37,5; 71,6] | 1 · 3,4% [0,6; 17,2] | 12 · 41,4% [25,5; 59,3] | 1 · 3,4% [0,6; 17,2] |
+| CWE-400 | 26 | 0 · 0,0% [0,0; 12,9] | 0 · 0,0% [0,0; 12,9] | 0 · 0,0% [0,0; 12,9] | 0 · 0,0% [0,0; 12,9] |
+| CWE-078 | 25 | 2 · 8,0% [2,2; 25,0] | 1 · 4,0% [0,7; 19,5] | 1 · 4,0% [0,7; 19,5] | 1 · 4,0% [0,7; 19,5] |
+| CWE-915 | 23 | 1 · 4,3% [0,8; 21,0] | 0 · 0,0% [0,0; 14,3] | 0 · 0,0% [0,0; 14,3] | 0 · 0,0% [0,0; 14,3] |
+| CWE-094 | 14 | 1 · 7,1% [1,3; 31,5] | 0 · 0,0% [0,0; 21,5] | 0 · 0,0% [0,0; 21,5] | 0 · 0,0% [0,0; 21,5] |
+
+**Categorias abaixo do limiar**, só em contagens, nos níveis 1 e 4 estrita. As demais células estão no CSV.
+
+| Categoria | n | CodeQL 1 / 4e | Semgrep 1 / 4e | Snyk Code 1 / 4e |
+|---|---:|---|---|---|
+| CWE-116 | 9 | 8 / 7 | 5 / 2 | 3 / 0 |
+| CWE-601 | 7 | 5 / 3 | 3 / 0 | 3 / 0 |
+| CWE-020 | 6 | 4 / 4 | 2 / 0 | 0 / 0 |
+| CWE-089 | 4 | 1 / 1 | 0 / 0 | 2 / 0 |
+| CWE-770 | 4 | 0 / 0 | 0 / 0 | 0 / 0 |
+| CWE-312 | 3 | 2 / 2 | 0 / 0 | 0 / 0 |
+| CWE-730 | 3 | 1 / 0 | 0 / 0 | 2 / 0 |
+| CWE-918 | 3 | 2 / 2 | 1 / 1 | 1 / 0 |
+| CWE-200 | 2 | 1 / 0 | 2 / 0 | 0 / 0 |
+| CWE-338 | 2 | 1 / 0 | 0 / 0 | 0 / 0 |
+| CWE-352 | 2 | 1 / 0 | 2 / 0 | 2 / 0 |
+| dez categorias de 1 CVE | 10 | 5 / 2 | 3 / 0 | 1 / 0 |
+| `SEM_PRIMARIO` | 1 | 0 / n.s.a. | 0 / n.s.a. | 0 / n.s.a. |
+
+As dez categorias de 1 CVE são CWE-125, 327, 399, 404, 444, 502, 668, 754, 807 e 829, discriminadas no CSV.
+
+**Leitura.** *Passagem de interpretação.*
+
+- **No nível 4 estrito, o CodeQL lidera nas seis categorias**, e o Semgrep fica à frente ou empatado com o Snyk Code em todas; os empates são em CWE-400 e CWE-094, com zero nas duas. **A ordem não vale em todos os níveis:** no nível 1, em travessia de caminho, o Semgrep chega ao arquivo em 22 de 29 CVEs, contra 17 do CodeQL.
+- **O Semgrep perde o ponto da falha em duas categorias específicas.** Em travessia de caminho, passa de 22 CVEs no nível 1 para 2 no nível 3; em poluição de protótipo, de 12 para 1. Isso é compatível com regras que reportam um ponto do arquivo distante da linha registrada, mas o estudo não mede o mecanismo.
+- **Em ReDoS (CWE-400), o Snyk Code não produz alerta no arquivo do ground truth em nenhum dos 26 CVEs.** O Semgrep chega ao arquivo em 8, e à natureza certa em nenhum. O CodeQL chega ao arquivo e à natureza em 19, mas à linha em 9: é a categoria em que ele mais perde do nível 2 para o 3.
+- **A expectativa registrada na §9 do documento de critérios não se confirmou.** Esperava-se que a diferença entre as variantes generosa e estrita se concentrasse em CWE-079, CWE-116 e CWE-094. Ela se concentra no **Snyk Code em travessia de caminho**: 8 contra 1 no nível 2, e 5 contra 1 no nível 4. Nas demais células a diferença é de 0 ou 1. O padrão é compatível com o Snyk Code etiquetar travessia de caminho como CWE-023, que pertence ao conjunto declarado pelo benchmark mas não é o primário: a Seção 9.11 mostra o CWE-023 em alertas do Snyk Code em 52 CVEs. A correspondência não foi conferida alerta a alerta.
+- **A incerteza é grande.** Em injeção de código, com 14 CVEs, o intervalo do CodeQL no nível 4 estrito vai de 11,7% a 54,6%. Nenhuma comparação entre ferramentas ou categorias é declarada significativa a partir dos intervalos.
+- **Circularidade.** Em cinco das seis categorias a maior parte dos CVEs tem etiqueta herdada do CodeQL (Seção 9.10). O CWE-915 é a exceção: nenhum dos 23 é herdado sob a âncora. Nele o CodeQL acerta 14 no nível 4 estrito, contra 1 do Semgrep e 0 do Snyk Code. No maior recorte livre de circularidade, a vantagem do CodeQL se mantém.
+- **Os cinco CVEs sem material analisável do Snyk Code** (Seção 4.6) caem em CWE-022 (2), CWE-079 (2) e CWE-116 (1), e rebaixam por construção os números da ferramenta nessas categorias.
 
 ### 9.10 Circularidade da proveniência — apuração
 
@@ -1731,6 +1812,56 @@ Diferença de taxa entre o grupo herdado e o não herdado, em pontos percentuais
 - Os cinco CVEs de ausência de material analisável do Snyk Code estão todos no grupo herdado.
 
 **Os 22 CVEs de poluição de protótipo e a escolha da âncora.** Os 22 CVEs que separam o estado de referência do catálogo do estado de sensibilidade (Seção 2.2.2) estão no grupo não herdado sob a âncora, e todos têm primário CWE-915. Sobre eles, o CodeQL acerta 17 no nível 1 e 13 no nível 4 estrita; o Semgrep, 12 e 1; o Snyk Code, 1 e 0. **Excluídos os 22 dos dois grupos, as partições pelas duas referências coincidem** — 161 e 37 CVEs —, e as tabelas ficam idênticas. **A escolha da âncora não altera a análise de circularidade**; a diferença entre 163 e 185 é exatamente esses 22.
+
+### 9.11 Capacidade empírica e delimitação por linguagem
+
+**Critério.** Fixado na §10 de `docs/criterios-cruzamento.md` em 25 de setembro de 2026 (commit `ec1a351`), antes de qualquer contagem de alerta. **Descritivo: mede o que cada ferramenta reporta, e não o que acerta.** Nada aqui é cruzado com o ground truth, e nenhum número desta seção é medida de qualidade. O eixo é o CWE do **alerta**, e não o do CVE. O universo são todos os CVEs com resultado normalizado: 221 no CodeQL e no Semgrep, 216 no Snyk Code. A unidade principal é o número de CVEs com ao menos um alerta da categoria.
+
+Produzido por `tools/regras-linguagens-semgrep.py` e `tools/capacidade-empirica.py`, com saídas em `results/capacidade/`. Os totais conferem com os relatórios de normalização: 3.230, 11.768 e 3.666 alertas.
+
+**Delimitação por linguagem, pela extensão do arquivo do alerta.**
+
+| Ferramenta | Alertas em JS/TS | Alertas fora de JS/TS | CVEs com alerta fora |
+|---|---:|---:|---:|
+| CodeQL | 2.557 (79,2%) | 673 (20,8%) | 52 |
+| Semgrep | 3.232 (27,5%) | 8.536 (72,5%) | 99 |
+| Snyk Code | 2.773 (75,6%) | 893 (24,4%) | 33 |
+
+**No Semgrep, os dois critérios cruzados**, em alertas:
+
+| | arquivo JS/TS | arquivo fora |
+|---|---:|---:|
+| regra de JS/TS | 3.213 | 98 |
+| regra de outra linguagem | 19 | 8.438 |
+
+Os dois critérios concordam em 99,01% dos alertas. A linguagem da regra foi lida do conjunto de regras por analisador YAML, e não do prefixo do identificador: o próprio conjunto contém regras genéricas com prefixo `javascript.`.
+
+**Onde caem os alertas fora de JS/TS.** No CodeQL, 600 dos 673 em `.html`. No Semgrep, 7.803 dos 8.536 em `.html`. No Snyk Code, em linguagens de fato distintas: `.java` (273), `.jsp` (236), `.php` (162), `.cc` (93). O inventário de cobertura do Snyk Code confirma que ele analisou arquivos de outras linguagens em 111 dos 216 CVEs.
+
+**Concentração no Semgrep.** Um único CVE, o `CVE-2018-20801`, responde por 5.850 alertas (49,7%), e os dez maiores por 73,2%, nos oito lotes; a Seção 9.5 registra 77% para os dez maiores dos seis últimos lotes, recorte distinto. Uma única regra, de verificação de atributo de integridade em elemento HTML, declarada como genérica, responde por 6.333 alertas (53,8%).
+
+**A expectativa registrada na §10 do documento de critérios se confirmou.** Na campanha preliminar, só 20,7% dos alertas do Semgrep eram de JavaScript ou TypeScript, e a mesma regra respondia por 56,5% do total; nesta campanha são 27,5% e 53,8%. Os números da campanha preliminar constam apenas deste documento, e não são reconferíveis a partir do repositório.
+
+**Capacidade, versão principal** (alertas em arquivo JS/TS). As oito categorias com mais CVEs, por ferramenta; a tabela completa está em `results/capacidade/capacidade-por-cwe.csv`.
+
+| | CodeQL (de 221) | Semgrep (de 221) | Snyk Code (de 216) |
+|---|---|---|---|
+| 1 | CWE-400: 118 | CWE-1333: 91 | CWE-319: 70 |
+| 2 | CWE-116: 92 | CWE-022: 87 | CWE-079: 62 |
+| 3 | CWE-079: 91 | CWE-915: 49 | CWE-023: 52 |
+| 4 | CWE-020: 84 | CWE-319: 41 | CWE-770: 50 |
+| 5 | CWE-730: 83 | CWE-095: 27 | CWE-200: 46 |
+| 6 | CWE-1333: 76 | CWE-352: 25 | CWE-916: 28 |
+| 7 | CWE-078: 72 | CWE-078: 23 | CWE-547: 27 |
+| 8 | CWE-080: 63 | CWE-079: 23 | CWE-094: 25 |
+| Categorias distintas | 68 | 22 | 34 |
+
+**Ressalvas.** *Passagem de interpretação nas duas primeiras.*
+
+- **O número de categorias não é comparável entre as ferramentas.** Um alerta com vários CWEs conta em cada um, e a prática de etiquetagem difere: dos 2.557 alertas do CodeQL em JS/TS, 1.953 têm mais de um CWE; no Semgrep, nenhum; no Snyk Code, 511 de 2.773. No CodeQL, os cinco identificadores de travessia de caminho aparecem juntos: 23 CVEs em CWE-022 e 22 em cada um de CWE-023, 036, 073 e 099 — a mesma família de etiquetas que o ground truth herdou (Seção 2.2.2). Os 68 contra 22 medem a prática de etiquetagem, e não a abrangência.
+- **O critério da extensão tem um segundo ponto cego, não previsto na §10:** o JavaScript embutido em páginas HTML. O extrator do CodeQL analisa scripts em `.html`, e seus 600 alertas ali são, provavelmente, sobre código JavaScript, que o critério conta como fora de JS/TS. No Semgrep, os alertas em `.html` vêm quase todos de regras de HTML. O critério trata as duas ferramentas de forma assimétrica. A hipótese é verificável pelas regras dos 600 alertas, e não foi verificada (Seção 14).
+- **Capacidade não é detecção.** O CodeQL reporta alertas de CWE-400 em 118 CVEs, e o ground truth tem 26 CVEs dessa categoria. A capacidade mostra quais categorias a ferramenta emite, e não se as emite onde há falha.
+- No Snyk Code, o campo de linguagem do inventário de cobertura é uma **extensão de arquivo**, e não um nome de linguagem; `.es6` e `.vue` ficam fora de JS/TS pela definição adotada.
 
 ---
 
@@ -1978,6 +2109,12 @@ A observação tem alcance além deste estudo, e por isso é declarada em lugar 
 | 88 | Saídas de análise determinísticas, sem carimbo de execução, com o resumo das entradas e do código que as produziu | 5.5 |
 | 89 | Apuração da circularidade da proveniência com os níveis sem CWE como controle interno | 9.10 |
 | 90 | Documento de método e resultados | Nota |
+| 91 | Categoria da detecção por CWE: o CWE primário do CVE, nunca o do alerta, em partição do denominador, com a reconstrução da matriz publicada como controle | 9.9 |
+| 92 | Limiar k = 10: taxa só para categorias com 10 CVEs ou mais; abaixo, contagens, sem taxa agregada | 9.9 |
+| 93 | Intervalo de Wilson de 95%, sem correção de continuidade, z = 1,96, como descrição da incerteza e não como teste | 9.9 |
+| 94 | Capacidade empírica: eixo no CWE do alerta, universo de todos os CVEs com resultado, unidade principal em CVEs | 9.11 |
+| 95 | Delimitação por JS/TS por dois critérios, extensão do arquivo e linguagem da regra, com o da extensão como principal | 9.11 |
+| 96 | Linguagem da regra do Semgrep lida por analisador YAML dentro da imagem da campanha, nunca pelo prefixo do identificador | 9.11 |
 
 ---
 
@@ -1995,20 +2132,14 @@ Registram-se as questões ainda em aberto no momento desta redação.
 
 **CWE primário do conjunto CWE-250 + CWE-400.** Único conjunto da tabela da Seção 7.4 ainda sem definição. A descrição registrada não corresponde a nenhum dos dois identificadores declarados, o que exige exame do diff de correção. Afeta um CVE, o `CVE-2018-16472`, ao qual a variante estrita não se aplica.
 
-### Apurações prometidas e ainda não feitas
-
-Constam das versões anteriores e dependem apenas dos dados já versionados:
-
-- **detecção por CWE**, por ferramenta e por nível (Seções 7.7 e 9.9);
-- **tabela de capacidade empírica** por ferramenta (Seção 7.6);
-- **proporção dos achados do Semgrep fora de JavaScript e TypeScript**, declarada (Seção 7.6).
-
 ### Verificações abertas
 
 - **Ramo de arquivo não considerado.** Não ocorreu em 223 CVEs e continua exercitado só por fixture (Seção 9.7).
 - **Divergências do inventário do CodeQL.** A hipótese sobre os dez casos (Seção 9.6) é verificável pelas notificações de erro de extração, e não foi verificada.
 - **Texto fora do repertório ASCII** nos achados reais, e **dois avisos de execução sem fixture** (Seção 5.6). O campo que declara a origem da data de análise admite valor que a versão fixada do CodeQL não produz (Seção 8.6); o tratamento permanece como salvaguarda.
 - **Segundo defeito de permissão** do CodeQL, não medido no ambiente da campanha (Seção 4.7).
+- **Alertas do CodeQL em `.html`.** Se os 600 alertas são sobre JavaScript embutido, o que confirmaria o segundo ponto cego do critério da extensão (Seção 9.11). Verificável pelas regras dos alertas.
+- **Etiquetagem do Snyk Code em travessia de caminho.** Se a diferença entre as variantes, concentrada em CWE-022 (Seção 9.9), vem de alertas etiquetados CWE-023. Verificável alerta a alerta nos resultados normalizados.
 
 ### Trabalho restante para fechar esta versão
 
@@ -2016,6 +2147,6 @@ Constam das versões anteriores e dependem apenas dos dados já versionados:
 - os **resultados DAST** (Seção 10);
 - a **análise comparativa** (Seção 11).
 
-**Nota sobre pendências resolvidas nesta versão.** O universo de referência do verdadeiro negativo resolve-se pela versão corrigida (Seção 7.3). O limite de tempo das análises foi decidido (Seção 4.4). As verificações que a versão anterior remetia ao ambiente da campanha foram todas feitas: o identificador de usuário e o defeito do diretório pessoal (Seção 4.7); a duração do CodeQL no ambiente da campanha (Seções 4.4 e 9.4); o TypeScript atravessando o laço (Seção 8.7); a execução sem rede do Semgrep (Seção 12.1); a completude do inventário do CodeQL em repositórios de grande porte (Seção 9.6); e a duração da normalização sobre o conjunto completo (Seção 5.6).
+**Nota sobre pendências resolvidas nesta versão.** O universo de referência do verdadeiro negativo resolve-se pela versão corrigida (Seção 7.3). O limite de tempo das análises foi decidido (Seção 4.4). As verificações que a versão anterior remetia ao ambiente da campanha foram todas feitas: o identificador de usuário e o defeito do diretório pessoal (Seção 4.7); a duração do CodeQL no ambiente da campanha (Seções 4.4 e 9.4); o TypeScript atravessando o laço (Seção 8.7); a execução sem rede do Semgrep (Seção 12.1); a completude do inventário do CodeQL em repositórios de grande porte (Seção 9.6); e a duração da normalização sobre o conjunto completo (Seção 5.6). As três apurações prometidas desde as versões anteriores — a detecção por CWE, a tabela de capacidade empírica e a proporção dos alertas do Semgrep fora de JavaScript e TypeScript — foram feitas em 26 de setembro de 2026 (Seções 9.9 e 9.11).
 
 **Nota.** A pendência relativa ao critério de agrupamento por família de CWE, registrada nesta seção na versão 3, foi resolvida e consta da Seção 7.1.
