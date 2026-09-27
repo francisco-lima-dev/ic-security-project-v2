@@ -1,0 +1,4 @@
+invocacao,cve,achados_novo,achados_campanha,lista_identica,so_no_novo,so_na_campanha,metadata_divergente
+T1,CVE-2017-16084,5,5,sim,0,0,analysis_date
+T2,CVE-2017-16084,5,5,sim,0,0,analysis_date
+T4,CVE-2018-20835,8,8,sim,0,0,analysis_date

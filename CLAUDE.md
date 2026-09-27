@@ -326,7 +326,9 @@ O gerador exige a flag `--force` para remover lotes existentes.
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
 `results/*/treated/`, `results/cruzamento/`, `results/proveniencia/`,
 `results/circularidade/`, `results/por-cwe/`, `results/capacidade/`, `results/zap/`, `logs/`
-(incluindo `normalize-report-<ferramenta>.json`), o pack vendorizado do
+(incluindo `normalize-report-<ferramenta>.json` e
+`logs/investigacao-snyk-403-2026-09-26/` — resumo sem segredo da investigação
+do 403; a saída de depuração não é versionada), o pack vendorizado do
 Semgrep e seu descritor, Dockerfiles, scripts, workflows.
 
 **`results/cruzamento/` entra no repositório ao lado de `results/*/treated/`,
@@ -1246,14 +1248,19 @@ procedência, o manifesto de sha256 e a varredura de segredo que precedeu o
 commit estão no `README.md` daquele diretório. Com isso, **tudo o que os 24
 artifacts continham está no repositório ou na cópia externa**.
 
-**Observação dos `container/lote.txt` do Snyk Code, não investigada:** todo
-teste com achados termina com `ERROR Forbidden (SNYK-CLI-0000)`, `403`,
-impresso **depois** do resumo do teste. São 133 de 133 testes com status `OK`,
-e nenhum dos 83 `SEM_ACHADOS`. O raw foi gravado e normalizado nos 133. O que
-a CLI tenta fazer quando recebe o 403, e se isso afeta algo além da
-mensagem, não foi apurado. **Investigação adiada** até a renovação da cota de
-testes do Snyk, esgotada em 21/09/2026; ver o item do Snyk Code em "Falso
-positivo na versão corrigida".
+**Observação dos `container/lote.txt` do Snyk Code — investigada em
+26/09/2026.** Todo teste do Snyk Code com achados terminou com mensagem de
+acesso negado (HTTP 403), impressa depois do resumo: 133 de 133 testes com
+achados, e nenhum dos 83 sem achados. A investigação, com quatro invocações
+sobre a imagem da campanha, estabeleceu que a recusa incide sobre uma única
+requisição — a leitura do nome curto da organização, feita antes da análise
+—, e que o envio do código, a análise e a obtenção dos resultados respondem
+normalmente. O código de saída não muda: a mensagem só é anexada ao fim. Nos
+dois CVEs com achados, em três execuções, o resultado é idêntico, campo a
+campo, ao da campanha, mais de uma semana depois. **A recusa é cosmética
+quanto aos dados.** A extensão aos 133 testes é inferência: o mecanismo não
+depende do CVE, mas a amostra é de dois. O registro está em
+`logs/investigacao-snyk-403-2026-09-26/`.
 
 ## Cruzamento SAST — resultados (18/09/2026)
 
@@ -1527,15 +1534,9 @@ continua não classificável.
 - **A campanha de julho de 2026, que rodou no HEAD, não substitui a segunda.**
   O HEAD difere do código vulnerável por anos de mudanças, e não só pela
   correção, o que desfaz a comparação controlada que o benchmark propõe.
-- **Snyk Code.** A cota de testes da conta usada na campanha **esgotou em
-  21/09/2026**, e a investigação do 403 (ver "Observação dos
-  `container/lote.txt` do Snyk Code") fica **adiada até a renovação**. Cada
-  execução do Snyk Code consome um teste. A investigação gasta de 4 a 6; a
-  segunda campanha soma outros 216, se repetir a cobertura da primeira; no pior
-  caso, com a primeira campanha do Snyk refeita, as duas somam **432**. Se a
-  cota for resolvida com outra conta, **as duas campanhas do Snyk precisam
-  rodar na mesma conta**, ou o 403 precisa ser investigado antes, para saber se
-  depende da conta.
+- **Snyk Code.** A investigação do 403 foi feita em 26/09/2026 com 4 testes e
+  o classificou como cosmético; ver `logs/investigacao-snyk-403-2026-09-26/`.
+  As duas campanhas do Snyk Code rodam na mesma conta.
 - Os dois `PostPatchCommit` malformados do benchmark passam a afetar a segunda
   campanha; ver os defeitos conhecidos do conjunto.
 
@@ -1569,8 +1570,10 @@ da V10, critério na §10). As seções que ainda faltam para fechar a V10 são 
 - **A sondagem de disponibilidade antes da campanha** está em "Obtenção do
   código". A última registrada é a de 10/09/2026, seis dias antes da
   campanha, e o denominador saiu da medição da própria campanha.
-- **A cota do Snyk Code e o adiamento da investigação do 403** estão no item
-  do Snyk Code em "Falso positivo na versão corrigida".
+- **A investigação do 403 do Snyk Code**, feita em 26/09/2026 e que o
+  classificou como cosmético, está em "Observação dos `container/lote.txt` do
+  Snyk Code — investigada em 26/09/2026", com o registro em
+  `logs/investigacao-snyk-403-2026-09-26/`.
 
 ### Conferência dos números da metodologia (22/09/2026)
 

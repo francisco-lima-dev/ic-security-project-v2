@@ -64,12 +64,15 @@ apuram a proveniência do ground truth integram o repositório desde setembro de
 | Seção | Tipo | Alteração |
 |---|---|---|
 | Nota | Acréscimo | Decomposição por categoria e capacidade empírica apuradas |
+| 5.5 | Correção | As imagens passam a constar como públicas, verificado por obtenção anônima |
 | 7.6, 7.7 | Correção | Estado das apurações atualizado, com remissão aos resultados; em 7.6, a proporção fora de JS/TS deixa de ser dita descartada |
+| 8.8 | Acréscimo | Recusa de acesso do Snyk Code investigada: cosmética quanto aos dados |
 | 9.5 | Correção | O denominador dos 77% passa a ser explícito: os achados dos seis últimos lotes, e não o total da ferramenta |
 | 9.9 | Acréscimo | Detecção por categoria de CWE, pelo critério da §9 do documento de critérios |
 | 9.11 | Acréscimo | Nova seção: capacidade empírica e delimitação por linguagem |
-| 13 | Acréscimo | Decisões 91 a 96 |
-| 14 | Correção | Apurações prometidas retiradas; duas verificações novas |
+| 12.1 | Correção | Primeira condição do Snyk Code resolvida; imagens públicas |
+| 13 | Acréscimo | Decisões 91 a 97 |
+| 14 | Correção | Apurações prometidas retiradas; duas verificações novas; pendência do Snyk Code resolvida; licenças das imagens |
 
 Esta versão muda a natureza do documento, que passa de método a **método e
 resultados**, e incorpora a execução da campanha SAST de detecção, o ensaio de
@@ -1084,7 +1087,7 @@ As saídas brutas permanecem fora do controle de versão por serem volumosas e i
 
 **Saídas de análise determinísticas.** Os resultados do cruzamento, as saídas do cotejo de proveniência e a apuração da circularidade não gravam carimbo de execução: mesmas entradas e mesmo código produzem os mesmos bytes, conferido sob variação da semente de dispersão do interpretador. Cada saída registra o sha256 das entradas e dos programas que a produziram. Diferença no controle de versão, após reexecução, é mudança de entrada ou de código, nunca de relógio. Os programas recusam gravar nas saídas versionadas se alguma entrada estiver fora do repositório, porque o caminho da máquina do operador iria para elas.
 
-**Imagens privadas no registro.** As três imagens publicadas no GitHub Container Registry permanecem **privadas**, com a decisão de torná-las públicas pendente da leitura das licenças do conjunto de regras do Semgrep e do bundle do CodeQL. Enquanto forem privadas, um terceiro não obtém as imagens pelos digests registrados: pode reconstruí-las a partir dos Dockerfiles versionados, mas obtém bytes diferentes, porque centenas de pacotes são resolvidos no momento da construção. Pendência registrada na Seção 14.
+**Imagens públicas no registro.** As três imagens da campanha estão acessíveis sem credencial no GitHub Container Registry, verificado em 26 de setembro de 2026 por obtenção anônima do manifesto e da imagem pelos digests registrados. As versões anteriores deste documento as davam como privadas. Um terceiro obtém, portanto, os bytes exatos que a campanha executou. A decisão de mantê-las públicas foi tomada em 26 de setembro de 2026; a leitura das licenças do conjunto de regras do Semgrep e do bundle do CodeQL quanto à redistribuição continua pendente (Seção 14).
 
 Os scripts de caracterização do ground truth referidos nas Seções 2.2.1 e 2.2.2 são versionados junto ao estudo, de modo que os números ali declarados possam ser reproduzidos por terceiros a partir do repositório do benchmark.
 
@@ -1577,7 +1580,7 @@ A campanha de detecção rodou em oito lotes, sobre os 223 CVEs, no commit anter
 
 **Nenhum lote precisou ser refeito.** Nos 24 jobs: as conferências do registro sem incoerência; a normalização sem falhas, sem saídas brutas órfãs nem ilegíveis; o portão de lote sem saída bruta satisfeito; nenhum estouro de limite; o controle do diretório pessoal e a sonda de rede com o resultado do ensaio de fumaça em todos os lotes. A sobrecarga do laço — duração do container menos a soma das durações por CVE — ficou entre 1 e 4 segundos por lote.
 
-**Observação não investigada, registrada.** Todo teste do Snyk Code com achados terminou com mensagem de acesso negado (HTTP 403), impressa **depois** do resumo do teste: 133 de 133 testes com achados, e nenhum dos 83 sem achados. A saída bruta foi gravada e normalizada nos 133. O que a ferramenta tenta fazer ao receber a recusa, e se isso afeta algo além da mensagem, não foi apurado (Seções 12.1 e 14).
+**Recusa de acesso no Snyk Code — investigada em 26 de setembro de 2026.** Todo teste do Snyk Code com achados terminou com mensagem de acesso negado (HTTP 403), impressa depois do resumo: 133 de 133 testes com achados, e nenhum dos 83 sem achados. A investigação, com quatro invocações sobre a imagem da campanha, estabeleceu que a recusa incide sobre uma única requisição — a leitura do nome curto da organização, feita antes da análise —, e que o envio do código, a análise e a obtenção dos resultados respondem normalmente. O código de saída não muda: a mensagem só é anexada ao fim. Nos dois CVEs com achados, em três execuções, o resultado é idêntico, campo a campo, ao da campanha, mais de uma semana depois. **A recusa é cosmética quanto aos dados.** A extensão aos 133 testes é inferência: o mecanismo não depende do CVE, mas a amostra é de dois. O registro está em `logs/investigacao-snyk-403-2026-09-26/`.
 
 Os resultados estão na Seção 9.
 
@@ -1901,7 +1904,7 @@ Estrutura prevista:
 
 **O Semgrep opera sem rede, mas tenta alcançá-la.** Medido com controle positivo no ensaio de fumaça: sob isolamento total de rede, o Semgrep completa a varredura, mas leva cerca de **110 segundos** num único arquivo, contra cerca de 13 segundos de um lote inteiro com rede — reproduzido no hospedeiro local (109 e 113 segundos) e no ambiente da campanha (112 segundos). A afirmação correta é que ele **opera sem rede, tentando alcançá-la e esperando o tempo esgotar** — o que difere de não a usar.
 
-**O Snyk Code tem duas condições abertas que dependem do serviço.** A primeira: todo teste com achados terminou com recusa de acesso (HTTP 403), impressa depois do resumo (Seção 8.8). A saída bruta foi gravada nos 133 casos, o que mostra que o gravado está íntegro, não que nada deixou de ser gravado. Como o Snyk Code é a ferramenta de menor detecção do estudo, um defeito silencioso contra ela inflaria a diferença entre as ferramentas na direção em que já é grande; a investigação está pendente (Seção 14). A segunda: **a análise ocorre no serviço, e o motor e as regras dele não são fixados pela imagem** — rodar o mesmo CVE em outra data pode dar outro resultado. A campanha da versão corrigida, se executada em data distinta da de detecção, precisa declarar essa condição, e as duas campanhas do Snyk Code devem rodar na mesma conta, para que a diferença entre elas não inclua mudança de permissão.
+**O Snyk Code depende do serviço, em duas condições.** A primeira, a recusa de acesso ao fim dos testes com achados (Seção 8.8), foi investigada e é cosmética: incide sobre a leitura do nome da organização, antes da análise, e não altera resultado nem código de saída. A segunda permanece: a análise ocorre no serviço, e o motor e as regras dele não são fixados pela imagem, de modo que o mesmo CVE pode dar outro resultado em outra data. A investigação de 26 de setembro de 2026 reproduziu, campo a campo, o resultado de dois CVEs mais de uma semana depois da campanha, o que é indício de estabilidade no intervalo, e não garantia. A campanha da versão corrigida, executada em data distinta, declara essa condição, e as duas campanhas do Snyk Code rodam na mesma conta.
 
 **Imagens base — resolvida.** A versão anterior deste documento registrava que as imagens Docker não eram fixadas por identidade de conteúdo, admitindo variação entre reconstruções — condição agravada pela reconstrução a cada execução, que multiplicava as oportunidades de variação ao longo de uma mesma campanha. A construção única com referência por identidade de conteúdo (Seção 4.5) fecha essa ameaça e torna citável, no relatório de cada lote, a imagem efetivamente empregada.
 
@@ -1919,7 +1922,7 @@ O que a decisão introduz em troca está declarado na Seção 4.5: a possibilida
 
 **Amostra do ensaio local.** Quatro CVEs efetivamente analisados, em repositórios de uma única linguagem. Propriedades verificadas sobre essa amostra — inclusive a completude do inventário de arquivos do CodeQL e a suficiência da chave de ordenação — valiam para a faixa observada. **A campanha reconferiu as duas em escala**: o inventário bateu em 211 dos 221 CVEs, até 5.693 arquivos, com as divergências todas no sentido que exclui teto de enumeração (Seção 9.6); a chave de ordenação não teve colisão em 18.664 achados (Seção 5.6).
 
-**Imagens privadas.** As imagens da campanha permanecem privadas no registro (Seção 5.5). A reprodução exata depende de acesso concedido; a reconstrução independente, a partir dos Dockerfiles versionados, é aproximada.
+**Imagens públicas.** As imagens da campanha estão acessíveis sem credencial (Seção 5.5), e a reprodução exata não depende de acesso concedido.
 
 ### 12.2 Delimitação do conjunto de dados
 
@@ -2116,6 +2119,7 @@ A observação tem alcance além deste estudo, e por isso é declarada em lugar 
 | 94 | Capacidade empírica: eixo no CWE do alerta, universo de todos os CVEs com resultado, unidade principal em CVEs | 9.11 |
 | 95 | Delimitação por JS/TS por dois critérios, extensão do arquivo e linguagem da regra, com o da extensão como principal | 9.11 |
 | 96 | Linguagem da regra do Semgrep lida por analisador YAML dentro da imagem da campanha, nunca pelo prefixo do identificador | 9.11 |
+| 97 | Imagens da campanha mantidas públicas, com a leitura das licenças pendente | 5.5 |
 
 ---
 
@@ -2127,9 +2131,9 @@ Registram-se as questões ainda em aberto no momento desta redação.
 
 **Desenho da campanha da versão corrigida** (Seção 7.3). Em ordem: a leitura — matriz de quatro células, reconhecimento condicionado à detecção, ou as duas; o critério de localização do ponto da falha depois da correção; os níveis aplicáveis; o tratamento dos dois `PostPatchCommit` malformados (Seção 2.2.3) e a conferência dos demais; o denominador. Tudo fixado no documento de critérios antes de qualquer resultado.
 
-**Snyk Code.** A investigação da recusa de acesso ao fim dos testes com achados (Seções 8.8 e 12.1) está adiada: a cota de testes da conta empregada esgotou-se em 21 de setembro de 2026. A investigação consome de quatro a seis testes; a campanha da versão corrigida, 216; no pior caso — recusa que afete os achados e obrigue a refazer a campanha de detecção da ferramenta —, 432. Se a cota for resolvida com outra conta, as duas campanhas do Snyk Code devem rodar na mesma conta, ou a recusa precisa ser investigada antes, para saber se depende da conta. Os números do Snyk Code não devem ser apresentados como definitivos sem a investigação ou sem a declaração explícita da limitação.
+**Snyk Code.** A recusa de acesso foi investigada em 26 de setembro de 2026 e é cosmética (Seção 8.8): os números da ferramenta na campanha de detecção valem. As duas campanhas do Snyk Code rodam na mesma conta.
 
-**Publicação das imagens.** As três imagens da campanha permanecem privadas no registro, com a decisão pendente da leitura das licenças do conjunto de regras do Semgrep e do bundle do CodeQL (Seção 5.5).
+**Licenças das imagens.** As imagens foram mantidas públicas (Seção 5.5). A leitura das licenças do conjunto de regras do Semgrep e do bundle do CodeQL, quanto à redistribuição em imagem pública, não foi feita.
 
 **CWE primário do conjunto CWE-250 + CWE-400.** Único conjunto da tabela da Seção 7.4 ainda sem definição. A descrição registrada não corresponde a nenhum dos dois identificadores declarados, o que exige exame do diff de correção. Afeta um CVE, o `CVE-2018-16472`, ao qual a variante estrita não se aplica.
 

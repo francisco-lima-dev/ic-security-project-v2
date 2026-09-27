@@ -17,6 +17,7 @@ afirmável.
 """
 
 import argparse
+import datetime
 import csv
 import json
 import pathlib
@@ -1652,6 +1653,158 @@ def _(doc, f):
     ]
 
 
+# ---- 8.8 recusa de acesso do Snyk Code (403) ------------------------------
+INVESTIGACAO_403 = "logs/investigacao-snyk-403-2026-09-26"
+
+
+def lote_txt_403(f):
+    """{cve: {"403": n, "antes_do_resumo": n}} nos container/lote.txt da campanha.
+
+    Um bloco se abre em 'Testing /tmp/src-<CVE> ...' e se fecha em qualquer
+    linha que cite OUTRO /tmp/src-<CVE>, ou comece por [<CVE>] (a forma dos
+    avisos do script) — os SEM_ARQUIVO_ANALISAVEL e os ERRO_*
+    não imprimem 'Testing', e a saída deles caía no bloco anterior (revisão,
+    risco 1). Um 403 é atribuído ao bloco em que está; bloco aberto por outro
+    caminho entra no dicionário com "testado": False. 403 antes do primeiro
+    bloco é falha, nunca descartado."""
+    saida = {}
+    for lote in sorted((f.raiz / "logs/campanha-2026-09-17").glob("cves-sast-batch-*")):
+        atual = None
+        with open(lote / "snyk-code/container/lote.txt", encoding="utf-8", errors="replace") as fh:
+            for linha in fh:
+                m = re.search(r"Testing /tmp/src-(CVE-\d+-\d+) \.\.\.", linha)
+                if m:
+                    if saida.get(m.group(1), {}).get("testado"):
+                        raise FalhaDeExtracao(f"lote.txt: {m.group(1)} testado mais de uma vez")
+                    atual = m.group(1)
+                    saida[atual] = {"testado": True, "403": 0, "antes_do_resumo": 0, "resumo": False}
+                    continue
+                outro = re.search(r"/tmp/src-(CVE-\d+-\d+)|^\[(CVE-\d+-\d+)\]", linha)
+                citado = outro and (outro.group(1) or outro.group(2))
+                if citado and citado != atual:
+                    atual = citado
+                    saida.setdefault(atual, {"testado": False, "403": 0, "antes_do_resumo": 0, "resumo": False})
+                if atual and "Test Summary" in linha:
+                    saida[atual]["resumo"] = True
+                if "Status:  403" in linha:
+                    if atual is None:
+                        raise FalhaDeExtracao(f"lote.txt de {lote.name}: 403 antes de qualquer CVE")
+                    saida[atual]["403"] += 1
+                    if not saida[atual]["resumo"]:
+                        saida[atual]["antes_do_resumo"] += 1
+    return saida
+
+
+def _investigacao(f):
+    inv = f.csv(f"{INVESTIGACAO_403}/invocacoes.csv")
+    comp = f.csv(f"{INVESTIGACAO_403}/comparacao.csv")
+    reqs = [l.split(" ") for l in (f.raiz / INVESTIGACAO_403 / "requisicoes-T1.txt").read_text(encoding="utf-8").splitlines()]
+    if any(len(q) != 4 for q in reqs):
+        raise FalhaDeExtracao("requisicoes-T1.txt: linha sem os quatro campos método, host, caminho, status")
+    return inv, comp, reqs
+
+
+EXTENSO = {"duas": 2, "dois": 2, "três": 3, "quatro": 4, "cinco": 5, "seis": 6}
+
+
+@verificacao("8.8-snyk-403", "8.8, 12.1",
+             f"{INVESTIGACAO_403}/ + logs/campanha-2026-09-17/ (logs e container/lote.txt) + tratados do Snyk Code")
+def _(doc, f):
+    """Afirmações do TEXTO, cada uma lida dele e comparada com fonte."""
+    texto = "\n".join(doc.secao("### 8.8"))
+    texto_12_1 = "\n".join(doc.secao("### 12.1"))
+    inv, comp, reqs = _investigacao(f)
+    r = []
+
+    # 133 e 83 contra a SAÍDA do lote, cruzada por CVE com o status do log
+    g = busca_unica(texto, r"impressa depois do resumo: (\d+) de (\d+) testes com achados, e nenhum dos (\d+) sem achados", "8.8")
+    logs = f.logs_campanha("snyk-code")
+    blocos = lote_txt_403(f)
+    ok = [c for c, reg in logs.items() if reg["status"] == "OK"]
+    sem = [c for c, reg in logs.items() if reg["status"] == "SEM_ACHADOS"]
+    testados = sorted(c for c, b in blocos.items() if b["testado"])
+    r += [par("campanha: testes com achados com exatamente um 403", int(g[0]),
+              sum(1 for c in ok if blocos.get(c, {}).get("403") == 1)),
+          par("campanha: testes com achados", int(g[1]), len(ok)),
+          par("campanha: testes sem achados", int(g[2]), len(sem)),
+          par("campanha: testes sem achados com 403", 0, sum(1 for c in sem if blocos.get(c, {}).get("403", 0))),
+          par("campanha: 403 em bloco de CVE não testado", 0,
+              sum(b["403"] for b in blocos.values() if not b["testado"])),
+          par("campanha: 403 impresso antes do resumo", 0, sum(b["antes_do_resumo"] for b in blocos.values())),
+          par("campanha: CVEs testados = OK + SEM_ACHADOS", sorted(ok + sem), testados)]
+
+    g = busca_unica(texto, r"A investigação, com (\w+) invocações sobre a imagem da campanha", "8.8")
+    r.append(par("invocações", EXTENSO.get(g, g), len(inv)))
+
+    # uma única requisição recusada: a leitura da organização, antes do envio
+    busca_unica(texto, r"a recusa incide sobre uma única requisição — a leitura do nome curto da organização, feita antes da análise", "8.8")
+    recusadas = [i for i, q in enumerate(reqs) if q[3] == "403"]
+    envio = [i for i, q in enumerate(reqs) if q[0] == "POST" and q[2] == "/bundle"]
+    r += [par("T1: respostas 403", 1, len(recusadas)),
+          par("T1: a recusada é a leitura da organização", True,
+              len(recusadas) == 1 and reqs[recusadas[0]][0] == "GET"
+              and re.fullmatch(r"/rest/orgs/<org>(\?.*)?", reqs[recusadas[0]][2]) is not None),
+          par("T1: a recusa vem antes do envio do código", True,
+              len(recusadas) == 1 and len(envio) == 1 and recusadas[0] < envio[0])]
+    busca_unica(texto, r"o envio do código, a análise e a obtenção dos resultados respondem normalmente", "8.8")
+    r.append(par("T1: as demais respostas são 2xx", True,
+                 all(q[3].startswith("2") for i, q in enumerate(reqs) if i not in recusadas)))
+
+    # código de saída: sem o 403 virar erro (2) — 1 com achados, 0 sem, como
+    # a semântica do Snyk que o run_snyk-code.sh documenta (revisão, risco 3)
+    busca_unica(texto, r"O código de saída não muda: a mensagem só é anexada ao fim", "8.8")
+    for x in inv:
+        esperado = 1 if int(x["achados"]) > 0 else 0
+        r.append(par(f"{x['invocacao']}: código da CLI = semântica sem erro", esperado, int(x["codigo_cli"])))
+        m = re.search(r"snyk exit (\d+)", logs[x["cve"]]["mensagem"])
+        r.append(par(f"{x['invocacao']}: código da CLI = o da campanha", int(m.group(1)) if m else None,
+                     int(x["codigo_cli"])))
+
+    # dois CVEs com achados, três execuções; achados contra o tratado versionado
+    g = busca_unica(texto, r"Nos (\w+) CVEs com achados, em (\w+) execuções, o resultado é idêntico, campo a campo, ao da campanha, mais de uma semana depois", "8.8")
+    r += [par("CVEs com achados comparados", EXTENSO.get(g[0], g[0]), len({x["cve"] for x in comp})),
+          par("execuções comparadas", EXTENSO.get(g[1], g[1]), len(comp))]
+    tratados = {t["metadata"]["cve_id"]: t for t in f.tratados("snyk-code")}
+    for x in comp:
+        t = tratados.get(x["cve"])
+        r.append(par(f"{x['invocacao']} {x['cve']}: achados da campanha = tratado versionado",
+                     len(t["findings"]) if t else None, int(x["achados_campanha"])))
+        # "mais de uma semana depois": data da análise da campanha contra a da investigação
+        dias = (datetime.date(2026, 9, 26) - datetime.date.fromisoformat(t["metadata"]["analysis_date"][:10])).days if t else None
+        r.append(par(f"{x['cve']}: mais de uma semana entre a campanha e a investigação", True, dias is not None and dias > 7))
+    g = busca_unica(texto, r"mas a amostra é de (\w+)\.", "8.8")
+    r.append(par("amostra (CVEs)", EXTENSO.get(g, g), len({x["cve"] for x in comp})))
+    g = busca_unica(texto_12_1, r"reproduziu, campo a campo, o resultado de (\w+) CVEs", "12.1")
+    r.append(par("12.1: CVEs reproduzidos", EXTENSO.get(g, g), len({x["cve"] for x in comp})))
+    return r
+
+
+@verificacao("8.8-snyk-403-arquivos", "—", f"{INVESTIGACAO_403}/ (consistência interna, não afirmação do texto)")
+def _(doc, f):
+    """Consistência entre os arquivos da investigação. NÃO confere o texto —
+    separada da família do texto para não inflar as afirmações conferidas
+    (revisão, risco 2). O "idêntico, campo a campo" em si não é reconferível
+    do repositório: está em NAO_CONFERIVEIS."""
+    inv, comp, reqs = _investigacao(f)
+    por_inv = {x["invocacao"]: x for x in inv}
+    r = [par("invocações nomeadas T1 a T4", ["T1", "T2", "T3", "T4"], [x["invocacao"] for x in inv]),
+         par("403 presente sse há achados", True,
+             all((x["403_presente"] == "sim") == (int(x["achados"]) > 0) for x in inv)),
+         par("comparadas = as invocações com achados", sorted(x["invocacao"] for x in inv if int(x["achados"]) > 0),
+             sorted(x["invocacao"] for x in comp))]
+    for x in comp:
+        onde = f"{x['invocacao']} {x['cve']}"
+        r += [par(f"{onde}: arquivo declara lista idêntica", "sim", x["lista_identica"]),
+              par(f"{onde}: arquivo declara 0 só no novo e 0 só na campanha", (0, 0),
+                  (int(x["so_no_novo"]), int(x["so_na_campanha"]))),
+              par(f"{onde}: arquivo declara divergência só na data", "analysis_date", x["metadata_divergente"]),
+              par(f"{onde}: achados novos = invocação", int(por_inv[x["invocacao"]]["achados"]), int(x["achados_novo"]))]
+    # identificador da organização mascarado em toda forma de caminho (risco 4)
+    r.append(par("organização mascarada em /orgs/ e em org=", [],
+                 [q[2] for q in reqs if re.search(r"(/orgs/|[?&]org=)(?!<org>)", q[2])]))
+    return r
+
+
 # ---- 9.9 detecção por categoria de CWE ------------------------------------
 # Fonte: results/por-cwe/deteccao-por-categoria.csv. Taxa e limites do
 # intervalo são arredondados a UMA casa a partir do VALOR EXATO — a taxa como
@@ -2232,6 +2385,8 @@ def _(doc, f):
 # Afirmações declaradas NÃO conferíveis a partir do repositório: impressas na
 # saída, nunca contadas como falha. (padrão no texto, seção, motivo)
 NAO_CONFERIVEIS = [
+    (r"o resultado é idêntico, campo a campo, ao da campanha", "### 8.8",
+     "SARIF e tratados das invocações de 26/09/2026 não são versionados; o repositório guarda só o resumo da comparação"),
     (r"só 20,7% dos alertas do Semgrep", "### 9.11", "campanha preliminar: dados não versionados neste repositório"),
     (r"respondia por 56,5% do total", "### 9.11", "campanha preliminar: dados não versionados neste repositório"),
 ]
@@ -2343,6 +2498,12 @@ MUTACOES = [
     ("9.11: remissão ao 77% da 9.5", "a Seção 9.5 registra 77%", "a Seção 9.5 registra 76%", "9.5-concentracao"),
     ("9.5: número de CVEs do recorte", "Nos seis últimos lotes, dez CVEs somam", "Nos seis últimos lotes, doze CVEs somam", "9.5-concentracao"),
     ("9.5: número de lotes do recorte", "Nos seis últimos lotes, dez CVEs", "Nos sete últimos lotes, dez CVEs", "9.5-concentracao"),
+    ("8.8: número de invocações", "com quatro invocações sobre a imagem", "com cinco invocações sobre a imagem", "8.8-snyk-403"),
+    ("8.8: testes com achados e com 403", "133 de 133 testes com achados, e nenhum", "132 de 133 testes com achados, e nenhum", "8.8-snyk-403"),
+    ("8.8: testes sem achados", "e nenhum dos 83 sem achados", "e nenhum dos 84 sem achados", "8.8-snyk-403"),
+    ("8.8: execuções comparadas", "em três execuções, o resultado", "em duas execuções, o resultado", "8.8-snyk-403"),
+    ("8.8: amostra", "mas a amostra é de dois.", "mas a amostra é de três.", "8.8-snyk-403"),
+    ("12.1: CVEs reproduzidos", "o resultado de dois CVEs mais de uma semana", "o resultado de três CVEs mais de uma semana", "8.8-snyk-403"),
     ("9.9: limiar do critério", "qualquer limiar de 10 a 14 produziria", "qualquer limiar de 10 a 15 produziria", "9.9-leitura"),
 ]
 
