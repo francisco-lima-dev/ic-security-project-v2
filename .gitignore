@@ -22,6 +22,12 @@
 # Saída bruta das ferramentas (SARIF/JSON grandes, regeneráveis).
 # O schema comum em results/*/treated/ é versionado.
 results/*/raw/
+# Defensiva. O raw da campanha da versão corrigida nasce em
+# results/<ferramenta>/raw/, como o da detecção, e já cai no padrão acima; só
+# os tratados IMPORTADOS vão para results/corrigida/<ferramenta>/treated/.
+# Um raw copiado para results/corrigida/<ferramenta>/raw/ não seria pego pelo
+# padrão acima, porque o `*` não atravessa `/`.
+results/corrigida/*/raw/
 
 # Clones temporários do código vulnerável (um por CVE).
 src-CVE-*/

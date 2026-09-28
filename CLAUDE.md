@@ -328,7 +328,9 @@ O gerador exige a flag `--force` para remover lotes existentes.
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
 `results/*/treated/`, `results/cruzamento/`, `results/proveniencia/`,
 `results/circularidade/`, `results/por-cwe/`, `results/capacidade/`, `results/pares/`,
-`results/zap/`, `datasets/postpatch-expansoes.csv`, `logs/` (incluindo `logs/pares/`)
+`results/zap/`, `datasets/postpatch-expansoes.csv`, `logs/` (incluindo `logs/pares/`),
+`results/corrigida/*/treated/` e `logs/campanha-corrigida-<AAAA-MM-DD>/` (campanha
+da versão corrigida; ver a seção de convenções dela)
 (incluindo `normalize-report-<ferramenta>.json` e
 `logs/investigacao-snyk-403-2026-09-26/` — resumo sem segredo da investigação
 do 403; a saída de depuração não é versionada), o pack vendorizado do
@@ -402,7 +404,8 @@ em 28/09/2026**, saídas do `tools/caracteriza-pares.py`, que caracteriza o par
   malformados com as quatro condições avaliadas; fica em `datasets/` porque é
   dado de entrada da segunda campanha, e o `cve-metadata.csv` não é editado.
 
-**Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
+**Ignorados:** `results/*/raw/` e `results/corrigida/*/raw/` — regra própria no
+`.gitignore`, porque o `*` de `results/*/raw/` não atravessa `/` —, clones temporários (`src-CVE-*`),
 databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`, os
 catálogos externos do cotejo (`catalogos/`).
 
@@ -1556,6 +1559,60 @@ continua não classificável.
   As duas campanhas do Snyk Code rodam na mesma conta.
 - Os dois `PostPatchCommit` malformados do benchmark passam a afetar a segunda
   campanha; ver os defeitos conhecidos do conjunto.
+
+## Campanha da versão corrigida — convenções
+
+Preparada em 28/09/2026. Critérios na §11 do `docs/criterios-cruzamento.md`.
+
+- **Mesmas imagens, mesmos digests, mesmos scripts** da campanha de detecção.
+  Quem decide o commit é a **lista**: os `run_*.sh` fazem checkout do terceiro
+  campo e conferem `git rev-parse HEAD` contra ele, seja qual for.
+- **Listas:** `datasets/listas/cves-sast-corrigida.txt` (220, a completa, que
+  o `normalize.py` recebe), `cves-sast-corrigida-batch-aa` a `ah` e
+  `cves-sast-corrigida-fumaca` (ensaio, 7 CVEs). Geradas por
+  `node tools/generate-lists.js --corrigida` (e `--corrigida --ids` para a
+  fumaça). O terceiro campo é o `PostPatchCommit`; os dois malformados entram
+  pela expansão de `datasets/postpatch-expansoes.csv`, só com as quatro
+  condições `sim`. As exclusões vêm da coluna `fora_do_denominador` de
+  `results/pares/pares.csv`; a partição, dos `cves-sast-batch-<xx>` existentes
+  — cada lote corrigido é o de detecção de mesma letra menos as exclusões.
+- **Os campos de ground truth da lista (`CWEs`, `FilePath`, `FileLine`)
+  continuam os do benchmark**, do lado vulnerável. O ponto na versão corrigida
+  **não vai na lista**: vem de `results/pares/pares.csv` (`gt_tipo_ponto`,
+  `gt_ponto_post`) no cruzamento.
+- **Entrada `campanha` do `analise-lote.yml`**, `deteccao` ou `corrigida`, sem
+  default. `tools/confere-campanha.sh`, no preparo e antes de qualquer pull,
+  exige `-corrigida-` no nome do lote da campanha corrigida e recusa
+  `corrigida` em qualquer ponto do nome na de detecção; escolhe também a lista
+  completa do `normalize.py`. A campanha vai no nome do artifact
+  (`lote-<campanha>-<lote>-<ferramenta>-<run>-<tentativa>`) e no README dele.
+- **Destinos:** `results/corrigida/<ferramenta>/treated/` e
+  `logs/campanha-corrigida-<AAAA-MM-DD>/cves-sast-corrigida-batch-<xx>/`,
+  gravados por `tools/importa-artifacts.py`, que recusa destino da outra
+  campanha, tratado cujo `metadata.commit` não seja o commit da lista do lote
+  e sobrescrita. Dentro do runner o container e o `normalize.py` continuam
+  escrevendo em `results/<ferramenta>/`; a separação por campanha acontece na
+  importação. O importador confere também a coluna `commit` do log de execução
+  contra a lista do lote: o `metadata.commit` do tratado vem da lista completa
+  e só prova que o `normalize.py` usou a lista certa.
+- **Não rodar lote `cves-sast-corrigida-*` localmente sobre a árvore de
+  trabalho com raw ou tratado da detecção.** No runner o preparo tira os
+  tratados versionados e derruba o job com raw presente; no hospedeiro não há
+  guarda equivalente. Raw de detecção que sobrou faz o laço registrar
+  `PULADO`, e o `normalize.py` grava `metadata.commit` = PostPatchCommit — que
+  vem da lista — sobre achados do PrePatchCommit; com `--overwrite`, sobrescreve
+  os tratados versionados da detecção. Execução local da campanha corrigida
+  exige `results/<ferramenta>/raw/` vazio e `--treated-dir` fora de
+  `results/<ferramenta>/treated/`.
+- **Mensagens com "PrePatchCommit" que não mudaram.** A mensagem de
+  `ERRO_CHECKOUT` `HEAD ... nao e o PrePatchCommit`, nos três `run_*.sh`
+  (`run_codeql.sh:411`, `run_semgrep.sh:359`, `run_snyk-code.sh:413`), lê-se
+  na campanha corrigida como "não é o commit da lista": a asserção compara com
+  o commit da lista, qualquer que seja. O mesmo vale para
+  `PrePatchCommit de ... nao e 40 hex`, do `normalize.py` (linha 315), que o
+  gerador impede de disparar. O texto não foi alterado para preservar as
+  imagens e os digests da campanha de detecção. O `check-log.py` e o
+  `cruza-deteccao.py` não leem esse texto (verificado em 28/09/2026).
 
 ## Metodologia V10 — natureza e pendências (21/09/2026)
 

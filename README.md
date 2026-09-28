@@ -265,6 +265,32 @@ before spending hours on the full run:
 | `CVE-2016-1000229` | linxiaowu66/swagger-ui | end of the name collision (see below) |
 | `CVE-2017-16042` | tj/node-growl | small repo, old CVE |
 
+### Corrected-version lists (`--corrigida`)
+
+The second campaign — recognition of the fix, §11 of
+`docs/criterios-cruzamento.md` — runs the same images and scripts over the
+**PostPatchCommit**. Its lists come from `node tools/generate-lists.js
+--corrigida` and sit next to the detection lists, which are never touched:
+
+| List | Content |
+|---|---|
+| `cves-sast-corrigida.txt` | the 220 CVEs of the detection denominator |
+| `cves-sast-corrigida-batch-aa..ah` | same letter as the detection batch, minus the exclusions |
+| `cves-sast-corrigida-fumaca` | 7-CVE smoke list (`--corrigida --ids`) |
+
+- Same 6-field format. The third field is the **PostPatchCommit**.
+- `CWES`, `FILEPATH` and `FILELINE` are still the **benchmark's**, i.e. the
+  vulnerable side. **The point in the fixed version is not in the list**: it
+  comes from `results/pares/pares.csv` (`gt_tipo_ponto`, `gt_ponto_post`) at
+  cross-matching time.
+- The two malformed PostPatchCommits enter only as expanded in
+  `datasets/postpatch-expansoes.csv`, and only with all four conditions `sim`;
+  a malformed value without a valid expansion aborts with nothing written.
+- The three exclusions are read from the `fora_do_denominador` column of
+  `results/pares/pares.csv`, and the partition from the existing
+  `cves-sast-batch-*` files — nothing is retyped or recomputed.
+- `--force` in one mode never removes a list of the other.
+
 ---
 
 ## Generator validations

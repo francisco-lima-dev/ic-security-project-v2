@@ -41,6 +41,32 @@
  * inteiro como o modo de lotes — mesmas validações bloqueantes, mesmos
  * avisos. ID ausente do conjunto, repetido ou malformado é fatal e nada é
  * escrito. Aqui o --force só autoriza sobrescrever a própria <saida>.
+ *
+ * Modo da versão corrigida (--corrigida), para a campanha de reconhecimento
+ * da correção (§11 do docs/criterios-cruzamento.md):
+ *
+ *   node tools/generate-lists.js --corrigida [--force]
+ *       → cves-sast-corrigida.txt e cves-sast-corrigida-batch-aa..
+ *   node tools/generate-lists.js --corrigida --ids ... --saida cves-sast-corrigida-<nome>
+ *
+ *   - mesmo formato de seis campos; o TERCEIRO passa a ser o PostPatchCommit.
+ *     CWES, FILEPATH e FILELINE continuam os do benchmark (lado vulnerável):
+ *     o ponto na versão corrigida NÃO vai na lista, vem de
+ *     results/pares/pares.csv no cruzamento;
+ *   - PostPatchCommit malformado só entra expandido por
+ *     datasets/postpatch-expansoes.csv, e só com as quatro condições "sim".
+ *     Malformado sem expansão válida é fatal, e nada é escrito;
+ *   - universo: os CVEs do denominador. As exclusões são lidas da coluna
+ *     fora_do_denominador de results/pares/pares.csv (que as importa do
+ *     tools/cruza-deteccao.py), nunca redigitadas aqui; o PrePatchCommit e o
+ *     PostPatchCommit resolvido são conferidos contra as colunas pre e post
+ *     do mesmo arquivo;
+ *   - partição: o CVE vai para o lote de mesma letra em que está nos
+ *     cves-sast-batch-<xx> EXISTENTES, lidos do disco, na ordem deles. A
+ *     divisão não é recalculada.
+ *
+ * O modo de detecção não muda: sem --corrigida, a saída é a de sempre, byte a
+ * byte, e o --force de um modo nunca remove lista do outro.
  */
 
 const fs   = require('fs');
@@ -59,21 +85,33 @@ const BATCH_SIZE       = 30;
 
 const BATCH_RE = /^cves-sast-batch-[a-z]{2}$/;
 
+// Modo da versão corrigida.
+const IN_EXPANSOES = path.join(ROOT, 'datasets', 'postpatch-expansoes.csv');
+const IN_PARES     = path.join(ROOT, 'results', 'pares', 'pares.csv');
+const CORR_FULL         = path.join(OUT_DIR, 'cves-sast-corrigida.txt');
+const CORR_BATCH_PREFIX = path.join(OUT_DIR, 'cves-sast-corrigida-batch-');
+const CORR_BATCH_RE     = /^cves-sast-corrigida-batch-[a-z]{2}$/;
+// Os 220 do denominador da detecção: 223 menos as três exclusões nominadas.
+// O número é conferência; QUAIS são as exclusões vem do pares.csv.
+const EXPECTED_CORRIGIDA = 220;
+
 // ── argumentos ──
 function usageError(msg) {
   console.error(`\n❌ ${msg}`);
-  console.error('   Uso: node tools/generate-lists.js [--force]');
-  console.error('        node tools/generate-lists.js --ids CVE-A,CVE-B,... --saida cves-sast-<nome> [--force]\n');
+  console.error('   Uso: node tools/generate-lists.js [--corrigida] [--force]');
+  console.error('        node tools/generate-lists.js [--corrigida] --ids CVE-A,CVE-B,... --saida cves-sast-<nome> [--force]\n');
   process.exit(2);
 }
 
 const argv   = process.argv.slice(2);
 let FORCE    = false;
+let CORRIGIDA = false;
 let idsArg   = null;
 let saidaArg = null;
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (a === '--force') { FORCE = true; continue; }
+  if (a === '--corrigida') { CORRIGIDA = true; continue; }
   if (a === '--ids' || a === '--saida') {
     const v = argv[i + 1];
     if (v === undefined || v.startsWith('--')) usageError(`${a} exige um valor`);
@@ -211,7 +249,23 @@ const staleBatches = fs.existsSync(OUT_DIR)
   ? fs.readdirSync(OUT_DIR).filter(f => BATCH_RE.test(f)).sort()
   : [];
 
-if (!MODO_IDS && staleBatches.length && !FORCE) {
+// No modo corrigido, o que o --force removeria são os lotes CORRIGIDOS e a
+// lista completa corrigida — nunca um lote de detecção.
+const staleCorrigida = fs.existsSync(OUT_DIR)
+  ? fs.readdirSync(OUT_DIR)
+      .filter(f => CORR_BATCH_RE.test(f) || f === path.basename(CORR_FULL)).sort()
+  : [];
+
+if (CORRIGIDA && !MODO_IDS && staleCorrigida.length && !FORCE) {
+  fail(`Já existem ${staleCorrigida.length} lista(s) corrigida(s) em datasets/listas/ — nada foi escrito`, [
+    ...staleCorrigida.map(f => `seria removido: datasets/listas/${f}`),
+    '',
+    'Regerar apaga esses arquivos antes de escrever os novos.',
+    'Confirme com:  node tools/generate-lists.js --corrigida --force',
+  ]);
+}
+
+if (!CORRIGIDA && !MODO_IDS && staleBatches.length && !FORCE) {
   fail(`Já existem ${staleBatches.length} batch(es) em datasets/listas/ — nada foi escrito`, [
     ...staleBatches.map(f => `seria removido: datasets/listas/${f}`),
     '',
@@ -257,8 +311,15 @@ if (MODO_IDS) {
   // --force daquele modo, e o teste passaria a ter duas fontes.
   if (!SAIDA_RE.test(saidaArg)) {
     problemas.push(`--saida: nome inválido "${saidaArg}" (esperado cves-sast-<nome>, só [a-z0-9-], sem diretório)`);
-  } else if (BATCH_RE.test(saidaArg) || saidaArg === path.basename(OUT_TESTE)) {
+  } else if (BATCH_RE.test(saidaArg) || CORR_BATCH_RE.test(saidaArg) ||
+             saidaArg === path.basename(OUT_TESTE)) {
     problemas.push(`--saida: "${saidaArg}" pertence ao modo de lotes, não ao modo por IDs`);
+  } else if (CORRIGIDA && !saidaArg.startsWith('cves-sast-corrigida-')) {
+    // O nome carrega a campanha: o workflow exige "-corrigida-" no nome do
+    // lote da campanha corrigida, e o recusa no da campanha de detecção.
+    problemas.push(`--saida: "${saidaArg}" no modo --corrigida precisa começar por cves-sast-corrigida-`);
+  } else if (!CORRIGIDA && saidaArg.includes('corrigida')) {
+    problemas.push(`--saida: "${saidaArg}" é nome de lista corrigida; use --corrigida`);
   }
 
   if (problemas.length) fail(`Argumentos do modo por IDs inválidos (${problemas.length} problema(s))`, problemas);
@@ -411,7 +472,7 @@ dataRows.forEach((cols, idx) => {
     }
   }
 
-  records.push({ cve, repository, commit: prePatch, cwes, filePath, fileLine, fileLines });
+  records.push({ cve, repository, commit: prePatch, postPatch, cwes, filePath, fileLine, fileLines });
 });
 
 if (records.length !== EXPECTED_RECORDS) {
@@ -426,7 +487,12 @@ if (warnings.length) {
     console.warn(`   • ${w.cve}: "${w.value}" (${w.len} chars)`);
   }
   console.warn('   Defeito presente no benchmark original da OpenSSF, não introduzido aqui.');
-  console.warn('   O campo não é usado pelo pipeline SAST — a geração continua normalmente.');
+  if (CORRIGIDA) {
+    console.warn('   No modo --corrigida o campo É o commit da lista: só entra expandido por');
+    console.warn('   datasets/postpatch-expansoes.csv, com as quatro condições "sim".');
+  } else {
+    console.warn('   O campo não é usado pelo pipeline SAST — a geração continua normalmente.');
+  }
 }
 
 if (pathWarnings.length) {
@@ -437,6 +503,163 @@ if (pathWarnings.length) {
   console.warn('   Defeito presente no benchmark original da OpenSSF, não introduzido aqui.');
   console.warn('   O caminho entra na lista COMO VEIO; quem normaliza é tools/normalize.py,');
   console.warn('   que grava o valor original em gt_file_path_original. A geração continua.');
+}
+
+// ─────────────────────────────────────────────────────────────
+// Modo da versão corrigida: resolução do PostPatchCommit, universo e partição
+// ─────────────────────────────────────────────────────────────
+//
+// Tudo aqui é leitura e validação: nenhum arquivo é escrito antes de a última
+// conferência passar. Qualquer problema é fatal e lista todos os problemas.
+
+const HEX40 = /^[0-9a-f]{40}$/;
+
+/** Lê um CSV com cabeçalho e devolve objetos, conferindo as colunas exigidas. */
+function lerCsvComCabecalho(arquivo, exigidas, rotulo) {
+  if (!fs.existsSync(arquivo)) fail(`${rotulo} não encontrado`, [`Esperado em: ${arquivo}`]);
+  const linhas = parseCsv(fs.readFileSync(arquivo, 'utf8'));
+  if (linhas.length === 0) fail(`${rotulo} vazio`, [arquivo]);
+  const cab = linhas[0].map(h => h.trim());
+  const faltam = exigidas.filter(c => !cab.includes(c));
+  if (faltam.length) fail(`${rotulo}: colunas ausentes`, faltam.map(c => `falta: ${c}`));
+  const problemas = [];
+  const objs = [];
+  linhas.slice(1).forEach((cols, i) => {
+    if (cols.length !== cab.length) {
+      problemas.push(`${rotulo} linha ${i + 2}: ${cols.length} campos, esperado ${cab.length}`);
+      return;
+    }
+    const o = {};
+    cab.forEach((c, j) => { o[c] = cols[j].trim(); });
+    objs.push(o);
+  });
+  if (problemas.length) fail(`${rotulo} malformado`, problemas);
+  return objs;
+}
+
+let corrigidos  = null;   // registros do universo, com commit = PostPatchCommit
+let exclusoes   = null;   // Map cve -> motivo, lido do pares.csv
+let particao    = null;   // Map letra -> [cve, ...] na ordem do lote de detecção
+let expandidos  = [];     // [{cve, original, expandido}]
+
+if (CORRIGIDA) {
+  const problemas = [];
+  const byCveC = new Map(records.map(r => [r.cve, r]));
+
+  // --- expansões dos PostPatchCommit malformados ---
+  const COND = ['c1_prefixo_unico', 'c2_e_commit', 'c3_pre_ancestral', 'c4_arquivo_alterado'];
+  const exp = lerCsvComCabecalho(IN_EXPANSOES,
+    ['cve', 'valor_original', 'valor_expandido', ...COND], 'postpatch-expansoes.csv');
+  const expPorCve = new Map();
+  for (const e of exp) {
+    if (expPorCve.has(e.cve)) { problemas.push(`expansões: CVE repetido ${e.cve}`); continue; }
+    expPorCve.set(e.cve, e);
+    const r = byCveC.get(e.cve);
+    if (!r) { problemas.push(`expansões: ${e.cve} ausente do benchmark`); continue; }
+    if (e.valor_original !== r.postPatch) {
+      problemas.push(`expansões: ${e.cve} valor_original "${e.valor_original}" difere do PostPatchCommit do benchmark "${r.postPatch}"`);
+    }
+    if (HEX40.test(r.postPatch)) {
+      problemas.push(`expansões: ${e.cve} tem PostPatchCommit bem formado no benchmark; expansão não se aplica`);
+    }
+  }
+
+  // --- PostPatchCommit resolvido, para os 223 ---
+  const postDe = new Map();
+  for (const r of records) {
+    if (HEX40.test(r.postPatch)) { postDe.set(r.cve, r.postPatch); continue; }
+    const e = expPorCve.get(r.cve);
+    if (!e) {
+      problemas.push(`${r.cve}: PostPatchCommit malformado "${r.postPatch}" sem linha em postpatch-expansoes.csv`);
+      continue;
+    }
+    const naoSim = COND.filter(c => e[c] !== 'sim');
+    if (naoSim.length) {
+      problemas.push(`${r.cve}: expansão sem as quatro condições "sim" (${naoSim.map(c => `${c}=${e[c]}`).join(', ')})`);
+      continue;
+    }
+    if (!HEX40.test(e.valor_expandido)) {
+      problemas.push(`${r.cve}: valor_expandido "${e.valor_expandido}" não é 40 hex`);
+      continue;
+    }
+    if (!e.valor_expandido.startsWith(r.postPatch)) {
+      problemas.push(`${r.cve}: valor_expandido "${e.valor_expandido}" não começa pelo valor original "${r.postPatch}"`);
+      continue;
+    }
+    postDe.set(r.cve, e.valor_expandido);
+    expandidos.push({ cve: r.cve, original: r.postPatch, expandido: e.valor_expandido });
+  }
+  for (const [cve, post] of postDe) {
+    const r = byCveC.get(cve);
+    if (post === r.commit) problemas.push(`${cve}: PostPatchCommit igual ao PrePatchCommit (${post})`);
+    if (post.includes(',')) problemas.push(`${cve}: PostPatchCommit contém vírgula`);
+  }
+
+  // --- exclusões e conferência contra o pares.csv ---
+  const pares = lerCsvComCabecalho(IN_PARES, ['cve', 'fora_do_denominador', 'pre', 'post'],
+    'results/pares/pares.csv');
+  const paresPorCve = new Map();
+  for (const p of pares) {
+    if (paresPorCve.has(p.cve)) problemas.push(`pares.csv: CVE repetido ${p.cve}`);
+    paresPorCve.set(p.cve, p);
+  }
+  const semPar = records.filter(r => !paresPorCve.has(r.cve)).map(r => r.cve);
+  const semReg = [...paresPorCve.keys()].filter(c => !byCveC.has(c));
+  for (const c of semPar) problemas.push(`pares.csv: falta ${c}`);
+  for (const c of semReg) problemas.push(`pares.csv: ${c} não está no benchmark`);
+  exclusoes = new Map();
+  for (const p of pares) {
+    if (p.fora_do_denominador) exclusoes.set(p.cve, p.fora_do_denominador);
+    const r = byCveC.get(p.cve);
+    if (!r) continue;
+    if (p.pre !== r.commit) problemas.push(`${p.cve}: pre do pares.csv "${p.pre}" difere do PrePatchCommit "${r.commit}"`);
+    const post = postDe.get(p.cve);
+    if (post !== undefined && p.post !== post) {
+      problemas.push(`${p.cve}: post do pares.csv "${p.post}" difere do PostPatchCommit resolvido "${post}"`);
+    }
+  }
+
+  // --- partição: os lotes de detecção existentes, lidos do disco ---
+  const lotesDet = fs.existsSync(OUT_DIR)
+    ? fs.readdirSync(OUT_DIR).filter(f => BATCH_RE.test(f)).sort() : [];
+  if (lotesDet.length === 0) problemas.push('nenhum cves-sast-batch-<xx> em datasets/listas/: a partição não tem fonte');
+  particao = new Map();
+  const loteDe = new Map();
+  for (const f of lotesDet) {
+    const letra = f.slice('cves-sast-batch-'.length);
+    const cves = [];
+    const texto = fs.readFileSync(path.join(OUT_DIR, f), 'utf8');
+    texto.split('\n').forEach((l, i) => {
+      if (l === '') return;
+      const cve = l.split(',')[0];
+      if (!byCveC.has(cve)) { problemas.push(`${f} linha ${i + 1}: ${cve} fora do benchmark`); return; }
+      if (loteDe.has(cve)) { problemas.push(`${cve} em dois lotes de detecção: ${loteDe.get(cve)} e ${letra}`); return; }
+      loteDe.set(cve, letra);
+      cves.push(cve);
+    });
+    particao.set(letra, cves);
+  }
+
+  corrigidos = [];
+  for (const r of records) {
+    if (exclusoes.has(r.cve)) continue;
+    if (!loteDe.has(r.cve)) {
+      problemas.push(`${r.cve}: fora da partição (em nenhum cves-sast-batch-<xx>)`);
+      continue;
+    }
+    const post = postDe.get(r.cve);
+    if (post === undefined) continue;   // já reportado acima
+    corrigidos.push({ ...r, commit: post, lote: loteDe.get(r.cve) });
+  }
+  for (const c of exclusoes.keys()) {
+    if (!byCveC.has(c)) problemas.push(`exclusão ${c} não está no benchmark`);
+  }
+  if (!problemas.length && corrigidos.length !== EXPECTED_CORRIGIDA) {
+    problemas.push(`universo da versão corrigida = ${corrigidos.length}, esperado ${EXPECTED_CORRIGIDA} ` +
+      `(${records.length} menos ${exclusoes.size} exclusão(ões): ${[...exclusoes.keys()].join(', ')})`);
+  }
+
+  if (problemas.length) fail(`Validação do modo --corrigida falhou (${problemas.length} problema(s))`, problemas);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -471,13 +694,25 @@ if (MODO_IDS) {
       ausentes.map(c => `não encontrado: ${c}`));
   }
 
-  const selecionados = idsPedidos.map(c => byCve.get(c));
+  let selecionados;
+  if (CORRIGIDA) {
+    // Só CVE do universo: uma exclusão não entra nem em lista avulsa.
+    const byCveCorr = new Map(corrigidos.map(r => [r.cve, r]));
+    const fora = idsPedidos.filter(c => !byCveCorr.has(c));
+    if (fora.length) {
+      fail(`${fora.length} CVE(s) pedido(s) fora do universo da versão corrigida`,
+        fora.map(c => `${c}: ${exclusoes.get(c) || 'fora do universo'}`));
+    }
+    selecionados = idsPedidos.map(c => byCveCorr.get(c));
+  } else {
+    selecionados = idsPedidos.map(c => byCve.get(c));
+  }
   fs.mkdirSync(OUT_DIR, { recursive: true });
   writeList(OUT_IDS, selecionados.map(toLine));
 
   const barIds = '═'.repeat(62);
   console.log(`\n${barIds}`);
-  console.log('✅ LISTA POR ID GERADA — todas as validações passaram');
+  console.log(`✅ LISTA POR ID GERADA${CORRIGIDA ? ' (VERSÃO CORRIGIDA: PostPatchCommit)' : ''} — todas as validações passaram`);
   console.log(barIds);
   console.log(`Origem          : datasets/cve-metadata.csv`);
   console.log(`Registros lidos : ${records.length} (esperado ${EXPECTED_RECORDS})`);
@@ -488,6 +723,64 @@ if (MODO_IDS) {
     console.log(`  ${String(i + 1).padStart(2)}  ${r.cve.padEnd(17)} ${r.filePath}`);
   });
   console.log(`${barIds}\n`);
+  process.exit(0);
+}
+
+// modo corrigido, lotes ----------------------------------------------------
+//
+// Termina aqui: cves-sast.txt, os batches de detecção e o cves-sast-teste não
+// são tocados.
+if (CORRIGIDA) {
+  const porCve = new Map(corrigidos.map(r => [r.cve, r]));
+  const planos = [];
+  for (const [letra, cvesDet] of particao) {
+    const cves = cvesDet.filter(c => !exclusoes.has(c));
+    if (cves.length === 0) fail('Lote corrigido vazio', [`lote ${letra}`]);
+    planos.push({ file: path.basename(CORR_BATCH_PREFIX + letra), letra, cves });
+  }
+
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  for (const f of staleCorrigida) fs.unlinkSync(path.join(OUT_DIR, f));
+  writeList(CORR_FULL, corrigidos.map(toLine));
+  for (const pl of planos) writeList(path.join(OUT_DIR, pl.file), pl.cves.map(c => toLine(porCve.get(c))));
+
+  // Releitura do que foi escrito: cada lote corrigido é o lote de detecção de
+  // mesma letra menos as exclusões, e o terceiro campo é o PostPatchCommit.
+  const releitura = [];
+  let total = 0;
+  for (const pl of planos) {
+    const linhas = fs.readFileSync(path.join(OUT_DIR, pl.file), 'utf8').split('\n').filter(Boolean);
+    const cves = linhas.map(l => l.split(',')[0]);
+    if (cves.join(',') !== pl.cves.join(',')) releitura.push(`${pl.file}: CVEs diferem do lote de detecção ${pl.letra} menos as exclusões`);
+    for (const l of linhas) {
+      const [cve, , commit] = l.split(',');
+      const r = porCve.get(cve);
+      if (commit !== r.commit) releitura.push(`${pl.file}: ${cve} commit ${commit} não é o PostPatchCommit resolvido`);
+      if (commit === byCve.get(cve).commit) releitura.push(`${pl.file}: ${cve} traz o PrePatchCommit`);
+    }
+    total += linhas.length;
+  }
+  if (total !== EXPECTED_CORRIGIDA) releitura.push(`lotes corrigidos somam ${total}, esperado ${EXPECTED_CORRIGIDA}`);
+  if (releitura.length) fail('Releitura das listas corrigidas falhou (os arquivos FORAM escritos; conferir)', releitura);
+
+  const barC = '═'.repeat(62);
+  console.log(`\n${barC}`);
+  console.log('✅ LISTAS DA VERSÃO CORRIGIDA GERADAS — todas as validações passaram');
+  console.log(barC);
+  console.log(`Origem                : datasets/cve-metadata.csv, datasets/postpatch-expansoes.csv,`);
+  console.log(`                        results/pares/pares.csv, datasets/listas/cves-sast-batch-*`);
+  console.log(`Registros lidos       : ${records.length} (esperado ${EXPECTED_RECORDS})`);
+  console.log(`Exclusões (pares.csv) : ${[...exclusoes].map(([c, m]) => `${c} (${m})`).join(', ')}`);
+  console.log(`Linhas geradas        : ${corrigidos.length}  → datasets/listas/${path.basename(CORR_FULL)}`);
+  console.log(`Commit na lista       : PostPatchCommit; CWEs, FilePath e FileLine do benchmark`);
+  console.log(`Expandidos            : ${expandidos.map(e => `${e.cve} "${e.original}" → ${e.expandido}`).join('; ') || 'nenhum'}`);
+  console.log('');
+  console.log('Lotes (partição da detecção, menos as exclusões):');
+  for (const pl of planos) {
+    const det = particao.get(pl.letra).length;
+    console.log(`  ${pl.file.padEnd(32)} ${String(pl.cves.length).padStart(3)} linhas  (detecção: ${det})`);
+  }
+  console.log(`${barC}\n`);
   process.exit(0);
 }
 

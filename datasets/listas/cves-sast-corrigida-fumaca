@@ -1,0 +1,7 @@
+CVE-2017-16119,https://github.com/jshttp/fresh.git,21a0f0c2a5f447e0d40bc16be0c23fa98a7b46ec,CWE-730|CWE-400,index.js,22
+CVE-2018-3772,https://github.com/vvo/node-whereis.git,0f64e3780235004fb6e43bfd153ea3e0e210ee2b,CWE-078|CWE-088,index.js,4
+CVE-2017-16030,https://github.com/3rd-Eden/useragent.git,b18cf7c2a13c994ea8d6d0d132feef4eb8193c36,CWE-730|CWE-400,lib/regexps.js,887
+CVE-2019-13506,https://github.com/Rich-Harris/devalue.git,14cae90d1fcd5e0083e3a1741238e017684890d7,CWE-094|CWE-079|CWE-116,src/index.ts,190
+CVE-2017-18352,https://github.com/GoogleChrome/rendertron.git,324ac99732c943d7b16aead2fceaa8b31a458eaa,CWE-079|CWE-116,src/main.js,106
+CVE-2018-11093,https://github.com/ckeditor/ckeditor5-link.git,8cb782eceba10fc481e4021cb5d25b2a85d1b04e,CWE-079|CWE-116,src/ui/linkactionsview.js,209
+CVE-2018-14040,https://github.com/twbs/bootstrap.git,2a5ba23ce8f041f3548317acc992ed8a736b609d,CWE-079|CWE-116,js/collapse.js,140

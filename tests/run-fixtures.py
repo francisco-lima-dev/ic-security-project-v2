@@ -1388,6 +1388,9 @@ def main():
 
     secao_cruzamento(tmp)
     secao_pares(tmp)
+    secao_gerador(tmp)
+    secao_confere_campanha(tmp)
+    secao_importa(tmp)
 
     print("\n%d verificacoes, %d falha(s)" % (verificacoes, len(falhas)))
     for descricao in falhas:
@@ -2451,6 +2454,357 @@ def secao_pares(tmp):
     motivos = mod.conferir_vocabulario(ruim)
     checar(any("relacao" in m for m in motivos) and any("alinhada" in m for m in motivos),
            "vocabulario: valor fora do conjunto e coluna desalinhada acusados", motivos)
+
+
+# ============================================================ generate-lists.js
+# O gerador deriva ROOT de __dirname: roda sobre uma COPIA da arvore minima em
+# tmp, e nada aqui escreve em datasets/listas/ do repositorio. As entradas sao
+# as versionadas; os mutantes alteram so a copia.
+GERADOR = RAIZ / "tools" / "generate-lists.js"
+LISTAS = RAIZ / "datasets" / "listas"
+LOTES_DET = ["cves-sast-batch-%s" % l for l in ("aa", "ab", "ac", "ad", "ae", "af", "ag", "ah")]
+LOTES_CORR = ["cves-sast-corrigida-batch-%s" % l for l in ("aa", "ab", "ac", "ad", "ae", "af", "ag", "ah")]
+EXPANDIDOS_GER = {"CVE-2017-18352": "324ac99732c943d7b16aead2fceaa8b31a458eaa",
+                  "CVE-2018-11093": "8cb782eceba10fc481e4021cb5d25b2a85d1b04e"}
+
+
+def _arvore_gerador(destino):
+    """Copia minima: o gerador, as tres entradas e as listas versionadas."""
+    (destino / "tools").mkdir(parents=True)
+    (destino / "datasets" / "listas").mkdir(parents=True)
+    (destino / "results" / "pares").mkdir(parents=True)
+    shutil.copy2(GERADOR, destino / "tools" / "generate-lists.js")
+    for nome in ("cve-metadata.csv", "postpatch-expansoes.csv"):
+        shutil.copy2(RAIZ / "datasets" / nome, destino / "datasets" / nome)
+    shutil.copy2(RAIZ / "results" / "pares" / "pares.csv", destino / "results" / "pares" / "pares.csv")
+    for arq in LISTAS.iterdir():
+        if arq.is_file():
+            shutil.copy2(arq, destino / "datasets" / "listas" / arq.name)
+    return destino
+
+
+def _gerar(arvore, *args):
+    return subprocess.run(["node", str(arvore / "tools" / "generate-lists.js"), *args],
+                          capture_output=True, text=True, stdin=subprocess.DEVNULL)
+
+
+def _estado_listas(arvore):
+    d = arvore / "datasets" / "listas"
+    return {a.name: hashlib.sha256(a.read_bytes()).hexdigest() for a in sorted(d.iterdir())}
+
+
+def secao_gerador(tmp):
+    import csv as _csv
+    print("\n== generate-lists.js: deteccao byte a byte e modo --corrigida ==")
+    base = tmp / "gerador"
+
+    # --- deteccao: reproduz as listas existentes, byte a byte ---
+    arv = _arvore_gerador(base / "det")
+    p = _gerar(arv, "--force")
+    checar(p.returncode == 0, "deteccao: --force sai 0", p.stderr[-600:])
+    fum = [l.split(",")[0] for l in (LISTAS / "cves-sast-fumaca").read_text().splitlines() if l]
+    p2 = _gerar(arv, "--ids", ",".join(fum), "--saida", "cves-sast-fumaca", "--force")
+    checar(p2.returncode == 0, "deteccao: --ids da fumaca sai 0", p2.stderr[-600:])
+    for nome in ["cves-sast.txt"] + LOTES_DET + ["cves-sast-teste", "cves-sast-fumaca"]:
+        checar((arv / "datasets" / "listas" / nome).read_bytes() == (LISTAS / nome).read_bytes(),
+               "deteccao: %s regerada identica, byte a byte, a versionada" % nome)
+
+    # --- corrigida: referencia independente, pelo csv do Python ---
+    meta = {r["CVE"]: r for r in _csv.DictReader(open(RAIZ / "datasets" / "cve-metadata.csv",
+                                                       newline="", encoding="utf-8"))}
+    pares = {r["cve"]: r for r in _ler_csv(RAIZ / "results" / "pares" / "pares.csv")}
+    fora = {c for c, r in pares.items() if r["fora_do_denominador"]}
+    arv = _arvore_gerador(base / "corr")
+    antes_det = {k: v for k, v in _estado_listas(arv).items() if "corrigida" not in k}
+    for nome in ["cves-sast-corrigida.txt"] + LOTES_CORR + ["cves-sast-corrigida-fumaca"]:
+        (arv / "datasets" / "listas" / nome).unlink()
+    p = _gerar(arv, "--corrigida")
+    checar(p.returncode == 0, "corrigida: geracao sai 0", p.stderr[-800:])
+    d = arv / "datasets" / "listas"
+    completa = d / "cves-sast-corrigida.txt"
+    linhas = completa.read_text(encoding="utf-8").splitlines() if completa.exists() else []
+    checar(len(linhas) == 220, "corrigida: lista completa com 220 linhas", len(linhas))
+    checar(completa.exists() and completa.read_bytes().endswith(b"\n"),
+           "corrigida: lista completa termina com quebra de linha")
+    checar({l.split(",")[0] for l in linhas} == set(meta) - fora and len(fora) == 3,
+           "corrigida: universo = 223 menos as 3 exclusoes do pares.csv", sorted(fora))
+    ok_commit, ok_campos, com_pre = True, True, []
+    det_por_cve = {l.split(",")[0]: l for l in (LISTAS / "cves-sast.txt").read_text().splitlines() if l}
+    for l in linhas:
+        c = l.split(",")
+        post = EXPANDIDOS_GER.get(c[0], meta[c[0]]["PostPatchCommit"])
+        ok_commit &= c[2] == post
+        if c[2] == meta[c[0]]["PrePatchCommit"]:
+            com_pre.append(c[0])
+        dc = det_por_cve[c[0]].split(",")
+        ok_campos &= c[:2] == dc[:2] and c[3:] == dc[3:]
+    checar(ok_commit, "corrigida: o terceiro campo e o PostPatchCommit do benchmark (ou a expansao)")
+    checar(not com_pre, "corrigida: nenhum PrePatchCommit no lugar do corrigido", com_pre)
+    checar(ok_campos, "corrigida: os outros cinco campos sao os da lista de deteccao (ground truth do benchmark)")
+    for cve, post in EXPANDIDOS_GER.items():
+        checar(any(l.startswith(cve + ",") and l.split(",")[2] == post for l in linhas),
+               "corrigida: %s entra expandido (%s)" % (cve, post[:10]))
+    for det, corr in zip(LOTES_DET, LOTES_CORR):
+        esperado = [l.split(",")[0] for l in (LISTAS / det).read_text().splitlines() if l]
+        esperado = [c for c in esperado if c not in fora]
+        obtido = [l.split(",")[0] for l in (d / corr).read_text().splitlines() if l] if (d / corr).exists() else None
+        checar(obtido == esperado, "corrigida: %s = %s menos as exclusoes, na mesma ordem" % (corr, det))
+        checar((d / corr).exists() and (LISTAS / corr).exists()
+               and (d / corr).read_bytes() == (LISTAS / corr).read_bytes(),
+               "corrigida: %s regerado identico ao do repositorio" % corr)
+    checar(completa.read_bytes() == (LISTAS / "cves-sast-corrigida.txt").read_bytes(),
+           "corrigida: cves-sast-corrigida.txt regerada identica a do repositorio")
+    depois_det = {k: v for k, v in _estado_listas(arv).items() if "corrigida" not in k}
+    checar(antes_det == depois_det, "corrigida: nenhuma lista de deteccao tocada")
+
+    fumc = [l.split(",")[0] for l in (LISTAS / "cves-sast-corrigida-fumaca").read_text().splitlines() if l]
+    p = _gerar(arv, "--corrigida", "--ids", ",".join(fumc), "--saida", "cves-sast-corrigida-fumaca")
+    checar(p.returncode == 0 and (d / "cves-sast-corrigida-fumaca").read_bytes()
+           == (LISTAS / "cves-sast-corrigida-fumaca").read_bytes(),
+           "corrigida: fumaca regerada identica a do repositorio", p.stderr[-400:])
+
+    # --- fronteira entre os modos ---
+    estado = _estado_listas(arv)
+    p = _gerar(arv, "--corrigida")
+    checar(p.returncode == 1 and "--corrigida --force" in p.stderr and _estado_listas(arv) == estado,
+           "corrigida: listas existentes sem --force abortam sem escrever", p.stderr[-300:])
+    p = _gerar(arv, "--force")
+    checar(p.returncode == 0 and all(_estado_listas(arv)[n] == estado[n] for n in estado if "corrigida" in n),
+           "deteccao --force nao remove nem altera lista corrigida", p.stderr[-300:])
+    p = _gerar(arv, "--corrigida", "--force")
+    checar(p.returncode == 0 and all(_estado_listas(arv)[n] == estado[n] for n in estado),
+           "corrigida --force regera as corrigidas identicas e nao toca a deteccao", p.stderr[-300:])
+    p = _gerar(arv, "--corrigida", "--ids", "CVE-2018-8035", "--saida", "cves-sast-corrigida-x")
+    checar(p.returncode == 1 and "fora do universo" in p.stderr and not (d / "cves-sast-corrigida-x").exists(),
+           "corrigida --ids: exclusao do denominador e fatal", p.stderr[-300:])
+    p = _gerar(arv, "--corrigida", "--ids", "CVE-2017-16119", "--saida", "cves-sast-x")
+    checar(p.returncode == 1 and "cves-sast-corrigida-" in p.stderr and not (d / "cves-sast-x").exists(),
+           "corrigida --ids: saida sem -corrigida- e recusada", p.stderr[-300:])
+    p = _gerar(arv, "--ids", "CVE-2017-16119", "--saida", "cves-sast-corrigida-y")
+    checar(p.returncode == 1 and "use --corrigida" in p.stderr and not (d / "cves-sast-corrigida-y").exists(),
+           "deteccao --ids: saida com nome de corrigida e recusada", p.stderr[-300:])
+
+    # --- mutantes: cada um aborta, e nada e escrito ---
+    def mutante(nome, alterar, marca):
+        arv_m = _arvore_gerador(base / ("m-" + re.sub(r"[^a-z0-9]+", "-", nome)))
+        for n in ["cves-sast-corrigida.txt"] + LOTES_CORR:
+            (arv_m / "datasets" / "listas" / n).unlink()
+        alterar(arv_m)
+        antes = _estado_listas(arv_m)
+        pm = _gerar(arv_m, "--corrigida")
+        checar(pm.returncode == 1 and marca in pm.stderr, "mutante acusado: %s" % nome, pm.stderr[-500:])
+        checar(_estado_listas(arv_m) == antes, "mutante %s: nada escrito" % nome)
+
+    def trocar(rel, velho, novo):
+        def f(a):
+            arq = a / rel
+            t = arq.read_text(encoding="utf-8")
+            assert t.count(velho) == 1, (rel, velho)
+            arq.write_text(t.replace(velho, novo), encoding="utf-8")
+        return f
+
+    mutante("expansao com uma condicao nao",
+            trocar("datasets/postpatch-expansoes.csv", "8cb782eceba10fc481e4021cb5d25b2a85d1b04e,sim,sim,sim,sim",
+                   "8cb782eceba10fc481e4021cb5d25b2a85d1b04e,sim,sim,nao,sim"),
+            "c3_pre_ancestral=nao")
+
+    def sem_expansao(a):
+        arq = a / "datasets" / "postpatch-expansoes.csv"
+        arq.write_text("".join(l for l in arq.read_text(encoding="utf-8").splitlines(True)
+                               if not l.startswith("CVE-2017-18352,")), encoding="utf-8")
+    mutante("malformado sem expansao", sem_expansao, "CVE-2017-18352: PostPatchCommit malformado")
+    mutante("expansao que nao comeca pelo original",
+            trocar("datasets/postpatch-expansoes.csv", ",8cb782eceba10fc481e4021cb5d25b2a85d1b04e,",
+                   ",9cb782eceba10fc481e4021cb5d25b2a85d1b04e,"),
+            "não começa pelo valor original")
+
+    def virgula(a):
+        arq = a / "datasets" / "cve-metadata.csv"
+        t = arq.read_text(encoding="utf-8")
+        linha = next(l for l in t.splitlines() if l.startswith("CVE-2017-16119,"))
+        assert linha.count(',"index.js",') == 1, linha
+        arq.write_text(t.replace(linha, linha.replace(',"index.js",', ',"ind,ex.js",')), encoding="utf-8")
+    mutante("virgula no FilePath", virgula, "contém vírgula")
+
+    def fora_particao(a):
+        arq = a / "datasets" / "listas" / "cves-sast-batch-ac"
+        linhas_ = arq.read_text(encoding="utf-8").splitlines(True)
+        arq.write_text("".join(linhas_[1:]), encoding="utf-8")
+    cve_ac = (LISTAS / "cves-sast-batch-ac").read_text().split(",", 1)[0]
+    mutante("CVE fora da particao", fora_particao, "%s: fora da partição" % cve_ac)
+
+    def duplicado_particao(a):
+        primeira = (a / "datasets" / "listas" / "cves-sast-batch-aa").read_text().splitlines(True)[1]
+        arq = a / "datasets" / "listas" / "cves-sast-batch-ab"
+        arq.write_text(arq.read_text() + primeira)
+    mutante("CVE em dois lotes", duplicado_particao, "em dois lotes de detecção")
+
+    def post_divergente(a):
+        arq = a / "results" / "pares" / "pares.csv"
+        linhas_ = arq.read_text(encoding="utf-8").splitlines(True)
+        i = next(i for i, l in enumerate(linhas_) if l.startswith("CVE-2017-16119,"))
+        cols = linhas_[i].split(",")
+        cols[4] = "f" * 40
+        linhas_[i] = ",".join(cols)
+        arq.write_text("".join(linhas_), encoding="utf-8")
+    mutante("post do pares.csv divergente", post_divergente, "difere do PostPatchCommit resolvido")
+
+    def exclusao_extra(a):
+        arq = a / "results" / "pares" / "pares.csv"
+        linhas_ = arq.read_text(encoding="utf-8").splitlines(True)
+        i = next(i for i, l in enumerate(linhas_) if l.startswith("CVE-2017-16119,"))
+        cols = linhas_[i].split(",")
+        cols[2] = "exclusao_de_mutante"
+        linhas_[i] = ",".join(cols)
+        arq.write_text("".join(linhas_), encoding="utf-8")
+    mutante("exclusao a mais no pares.csv", exclusao_extra, "esperado 220")
+
+
+# ============================================================ confere-campanha.sh
+CONFERE = RAIZ / "tools" / "confere-campanha.sh"
+
+
+def secao_confere_campanha(tmp):
+    print("\n== confere-campanha.sh: campanha x lote ==")
+
+    def rodar(*a):
+        return subprocess.run([str(CONFERE), *a], capture_output=True, text=True, stdin=subprocess.DEVNULL)
+    for campanha, lote, rc, saida, marca in (
+            ("deteccao", "cves-sast-batch-aa", 0, "lista_completa=datasets/listas/cves-sast.txt\n", ""),
+            ("corrigida", "cves-sast-corrigida-batch-aa", 0,
+             "lista_completa=datasets/listas/cves-sast-corrigida.txt\n", ""),
+            ("corrigida", "cves-sast-batch-aa", 1, "", "campanha=corrigida com lote 'cves-sast-batch-aa'"),
+            ("deteccao", "cves-sast-corrigida-batch-aa", 1, "",
+             "campanha=deteccao com lote 'cves-sast-corrigida-batch-aa'"),
+            ("deteccao", "cves-sast-corrigida.txt", 1, "", "campanha=deteccao"),
+            ("corrigida", "cves-sast-corrigida.txt", 1, "", "nao contem '-corrigida-'"),
+            ("", "cves-sast-batch-aa", 1, "", "entrada 'campanha' vazia (lote 'cves-sast-batch-aa')"),
+            ("Deteccao", "cves-sast-batch-aa", 1, "", "desconhecida: 'Deteccao'"),
+            ("corrigida", "", 1, "", "entrada 'lote' vazia")):
+        pc = rodar(campanha, lote)
+        checar(pc.returncode == rc and pc.stdout == saida and marca in pc.stderr,
+               "confere-campanha: campanha=%r lote=%r sai %d" % (campanha, lote, rc),
+               (pc.returncode, pc.stdout, pc.stderr[-200:]))
+    pc = rodar("deteccao")
+    checar(pc.returncode == 2 and pc.stdout == "", "confere-campanha: numero errado de argumentos sai 2")
+
+
+# ============================================================ importa-artifacts.py
+IMPORTA = RAIZ / "tools" / "importa-artifacts.py"
+
+
+def _artifact_sintetico(base, campanha, lote, ferramenta, tratados, lista_rel, log_commits=None):
+    art = base
+    (art / "results" / ferramenta / "treated").mkdir(parents=True)
+    (art / "logs").mkdir(parents=True)
+    (art / "README.txt").write_text(
+        "Artefato do lote %s — ferramenta %s\n\ncampanha: %s\nlote: %s\nferramenta: %s\n"
+        % (lote, ferramenta, campanha, lote, ferramenta), encoding="utf-8")
+    for cve, commit in tratados.items():
+        _escrever_json(art / "results" / ferramenta / "treated" / (cve + ".json"),
+                       {"metadata": {"cve_id": cve, "tool": ferramenta, "commit": commit}, "findings": []})
+    log_commits = tratados if log_commits is None else log_commits
+    (art / "logs" / ("execution-log-%s.csv" % ferramenta)).write_text(
+        "cve,repo,commit,status,mensagem,duracao_segundos\n"
+        + "".join("%s,https://x/r.git,%s,OK,HEAD conferido,1\n" % (c, k) for c, k in log_commits.items()),
+        encoding="utf-8")
+    _escrever_json(art / "logs" / ("normalize-report-%s.json" % ferramenta), {"lista": lista_rel})
+    return art
+
+
+def secao_importa(tmp):
+    print("\n== importa-artifacts.py: destino, commit e sobrescrita ==")
+    base = tmp / "importa"
+    raiz = base / "raiz"
+    (raiz / "datasets" / "listas").mkdir(parents=True)
+    pre = {"CVE-2099-0101": "a" * 40, "CVE-2099-0102": "b" * 40}
+    post = {"CVE-2099-0101": "c" * 40, "CVE-2099-0102": "d" * 40}
+    lote_c, lote_d = "cves-sast-corrigida-batch-zz", "cves-sast-batch-zz"
+    for lote, commits in ((lote_c, post), (lote_d, pre)):
+        (raiz / "datasets" / "listas" / lote).write_text(
+            "".join("%s,https://x/r.git,%s,CWE-079,a.js,1\n" % (c, k) for c, k in commits.items()),
+            encoding="utf-8")
+    rel_c = "/w/datasets/listas/cves-sast-corrigida.txt"
+    rel_d = "/w/datasets/listas/cves-sast.txt"
+
+    def importar(art, campanha, *extra):
+        return subprocess.run([sys.executable, str(IMPORTA), "--artifact", str(art), "--campanha", campanha,
+                               "--data", "2026-10-01", "--raiz", str(raiz), *extra],
+                              capture_output=True, text=True, stdin=subprocess.DEVNULL)
+
+    def arvore():
+        return sorted(str(p.relative_to(raiz)) for p in raiz.rglob("*") if p.is_file())
+
+    listas_so = arvore()
+    n = [0]
+
+    def art(campanha, lote, tratados, lista_rel, ferramenta="semgrep", log_commits=None):
+        n[0] += 1
+        return _artifact_sintetico(base / ("art%d" % n[0]), campanha, lote, ferramenta, tratados, lista_rel,
+                                   log_commits)
+
+    # caminho feliz, corrigida
+    a_ok = art("corrigida", lote_c, post, rel_c)
+    pi = importar(a_ok, "corrigida")
+    esperado = sorted(listas_so + [
+        "results/corrigida/semgrep/treated/CVE-2099-0101.json",
+        "results/corrigida/semgrep/treated/CVE-2099-0102.json",
+        "logs/campanha-corrigida-2026-10-01/%s/execution-log-semgrep.csv" % lote_c,
+        "logs/campanha-corrigida-2026-10-01/%s/normalize-report-semgrep.json" % lote_c,
+        "logs/campanha-corrigida-2026-10-01/%s/semgrep/README.txt" % lote_c])
+    checar(pi.returncode == 0 and arvore() == esperado,
+           "importa: corrigida grava em results/corrigida/ e logs/campanha-corrigida-<data>/",
+           (pi.returncode, pi.stderr[-400:], arvore()))
+    checar((raiz / "results/corrigida/semgrep/treated/CVE-2099-0101.json").read_bytes()
+           == (a_ok / "results/semgrep/treated/CVE-2099-0101.json").read_bytes(),
+           "importa: copia byte a byte")
+    estado = arvore()
+
+    def recusa(nome, pr, marca):
+        checar(pr.returncode == 1 and marca in pr.stderr and arvore() == estado,
+               "importa recusa %s, sem gravar nada" % nome, (pr.returncode, pr.stderr[-500:]))
+
+    # guarda 3: sobrescrita
+    recusa("destino existente (mesmo artifact de novo)", importar(a_ok, "corrigida"), "não sobrescrevo")
+
+    # guarda 1: destino por campanha, nos dois sentidos
+    a1 = art("corrigida", lote_c, post, rel_c, "codeql")
+    recusa("tratado da corrigida em results/<ferramenta>/treated/",
+           importar(a1, "corrigida", "--treated-dir", str(raiz / "results" / "codeql" / "treated")),
+           "a campanha corrigida só grava em")
+    a2 = art("deteccao", lote_d, pre, rel_d, "codeql")
+    recusa("tratado da deteccao em results/corrigida/",
+           importar(a2, "deteccao", "--treated-dir", str(raiz / "results" / "corrigida" / "codeql" / "treated")),
+           "nunca sob results/corrigida/")
+
+    # guarda 2: commit do tratado
+    a3 = art("corrigida", lote_c, dict(post, **{"CVE-2099-0102": pre["CVE-2099-0102"]}), rel_c, "codeql")
+    recusa("tratado com PrePatchCommit na campanha corrigida", importar(a3, "corrigida"),
+           "não é o PostPatchCommit da lista do lote")
+    a3b = art("corrigida", lote_c, post, rel_c, "codeql",
+              log_commits=dict(post, **{"CVE-2099-0101": pre["CVE-2099-0101"]}))
+    recusa("log de execucao com o PrePatchCommit analisado (tratado integro)", importar(a3b, "corrigida"),
+           "CVE-2099-0101 analisado em")
+    a4 = art("corrigida", lote_c, dict(post, **{"CVE-2099-0999": "e" * 40}), rel_c, "codeql")
+    recusa("tratado de CVE fora do lote", importar(a4, "corrigida"), "CVE fora do lote")
+
+    # acessorias
+    a5 = art("deteccao", lote_d, pre, rel_d, "codeql")
+    recusa("campanha do README diferente da pedida", importar(a5, "corrigida"), "difere da pedida")
+    a6 = art("corrigida", lote_d, pre, rel_c, "codeql")
+    recusa("lote de deteccao declarado como corrigida", importar(a6, "corrigida"), "confere-campanha.sh recusou")
+    a7 = art("corrigida", lote_c, post, rel_d, "codeql")
+    recusa("normalize-report contra a lista da outra campanha", importar(a7, "corrigida"),
+           "normaliza contra cves-sast-corrigida.txt")
+
+    # deteccao pelo destino padrao funciona, e nao encosta em results/corrigida/
+    a8 = art("deteccao", lote_d, pre, rel_d, "codeql")
+    pd8 = importar(a8, "deteccao")
+    checar(pd8.returncode == 0 and (raiz / "results/codeql/treated/CVE-2099-0101.json").exists()
+           and (raiz / "logs/campanha-2026-10-01" / lote_d / "execution-log-codeql.csv").exists()
+           and not (raiz / "results/corrigida/codeql").exists(),
+           "importa: deteccao grava em results/<ferramenta>/treated/ e logs/campanha-<data>/",
+           pd8.stderr[-300:])
 
 
 if __name__ == "__main__":

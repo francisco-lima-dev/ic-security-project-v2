@@ -26,6 +26,14 @@
 #   - todo comando que toca a rede tem limite de tempo proprio: o travamento
 #     de julho de 2026 foi numa operacao de rede sem limite.
 #
+# DUAS CAMPANHAS, MESMO WORKFLOW. A entrada `campanha` (deteccao | corrigida,
+# sem default) diz qual; a LISTA e que decide o commit analisado — os run_*.sh
+# fazem checkout do que ela traz, PrePatchCommit nas listas de deteccao,
+# PostPatchCommit nas cves-sast-corrigida-*. O tools/confere-campanha.sh, no
+# preparo e antes de qualquer pull, falha o job se as duas divergirem, e
+# escolhe a lista completa que o normalize.py recebe. Imagens, digests,
+# limites e demais passos sao os mesmos nas duas.
+#
 # O QUE ESTE WORKFLOW NAO FAZ: nao constroi nem publica imagem (daí
 # `packages: read`, nunca `write`), nao commita — as sondagens datadas que ele
 # grava sao observacao, e entram no repositorio por commit do operador.
@@ -50,6 +58,13 @@ on:
     inputs:
       lote:
         description: "Arquivo em datasets/listas/, sem diretorio (ex.: cves-sast-fumaca)"
+        required: true
+        type: string
+      # Sem default, de proposito, e `string` e nao `choice`: a interface
+      # pre-seleciona a primeira opcao de um `choice`, e o disparo esquecido
+      # viraria deteccao em silencio. Vazio para no confere-campanha.sh.
+      campanha:
+        description: "deteccao (PrePatchCommit) ou corrigida (PostPatchCommit). Sem default"
         required: true
         type: string
       # Os tres limites existem para que a decisao de H4 seja aplicada sem
@@ -145,6 +160,7 @@ jobs:
       IMAGEM: ${{ matrix.imagem }}
       DIGEST: ${{ matrix.digest }}
       LOTE: ${{ inputs.lote }}
+      CAMPANHA: ${{ inputs.campanha }}
       LOTE_SEGUNDOS: ${{ matrix.lote_s }}
       POS_MIN: ${{ matrix.pos_min }}
       JOB_MIN: ${{ matrix.job_min }}
@@ -180,9 +196,27 @@ jobs:
               exit 1
           fi
 
+          # Campanha x lote, antes de qualquer pull e de qualquer nome derivado
+          # da campanha. O script nomeia entrada e lista na falha; o stdout dele
+          # e so a linha lista_completa=, capturada em ATRIBUICAO para que o
+          # `-e` alcance a falha.
+          CONFERE="$(tools/confere-campanha.sh "$CAMPANHA" "$LOTE")"
+          LISTA_COMPLETA="${CONFERE#lista_completa=}"
+          if [ "$LISTA_COMPLETA" = "$CONFERE" ] || [ -z "$LISTA_COMPLETA" ]; then
+              echo "ERRO: saida inesperada do confere-campanha.sh: '$CONFERE'" >&2
+              exit 1
+          fi
+          if [ ! -f "$LISTA_COMPLETA" ]; then
+              echo "ERRO: lista completa da campanha $CAMPANHA inexistente: $LISTA_COMPLETA" >&2
+              exit 1
+          fi
+          echo "campanha: $CAMPANHA | lote: $LOTE | lista completa: $LISTA_COMPLETA"
+
           # run_attempt no nome: a reexecucao de um job falho produziria
-          # artifact homonimo, e o nome tem de identificar a tentativa.
-          NOME="lote-$LOTE-$FERRAMENTA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          # artifact homonimo, e o nome tem de identificar a tentativa. A
+          # campanha vai no nome para que os artifacts das duas nao se
+          # confundam.
+          NOME="lote-$CAMPANHA-$LOTE-$FERRAMENTA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
           SAIDA="$RUNNER_TEMP/$NOME"
           # OUTPUT antes de qualquer trabalho. Emitido no fim, uma falha no
           # meio faria o upload cair no literal de fallback, e o que ja tivesse
@@ -192,6 +226,7 @@ jobs:
               printf 'nome=%s\n' "$NOME"
               printf 'data=%s\n' "$DATA"
               printf 'inicio_job=%s\n' "$INICIO_JOB"
+              printf 'lista_completa=%s\n' "$LISTA_COMPLETA"
           } >> "$GITHUB_OUTPUT"
           mkdir -p "$SAIDA/container" "$SAIDA/portoes" "$SAIDA/datasets/sondagens"
           LEIA="$SAIDA/README.txt"
@@ -199,7 +234,7 @@ jobs:
           # O README nasce aqui, com o aviso de protocolo, para existir mesmo
           # se o job morrer no passo seguinte.
           case "$LOTE" in
-              cves-sast-fumaca|cves-sast-teste) ENSAIO="sim" ;;
+              cves-sast-fumaca|cves-sast-teste|cves-sast-corrigida-fumaca) ENSAIO="sim" ;;
               *) ENSAIO="nao" ;;
           esac
           {
@@ -223,6 +258,13 @@ jobs:
               printf '  * Lote sem raw algum FALHA o job. Mas o job verde NAO significa lote\n'
               printf '    inteiro analisado: lote com parte dos CVEs em ERRO_* termina verde.\n'
               printf '    Ler a contagem de status abaixo.\n\n'
+              printf 'campanha: %s\n' "$CAMPANHA"
+              if [ "$CAMPANHA" = "corrigida" ]; then
+                  printf 'commit_analisado: PostPatchCommit (versao corrigida)\n'
+              else
+                  printf 'commit_analisado: PrePatchCommit (versao vulneravel)\n'
+              fi
+              printf 'lista_completa_do_normalize: %s\n' "$LISTA_COMPLETA"
               printf 'lote: %s\n' "$LOTE"
               printf 'ferramenta: %s\n' "$FERRAMENTA"
               printf 'imagem_pedida: ghcr.io/<dono>/%s@%s\n' "$IMAGEM" "$DIGEST"
@@ -330,7 +372,7 @@ jobs:
           fi
 
           {
-              printf '## Lote `%s` — %s\n\n' "$LOTE" "$FERRAMENTA"
+              printf '## Lote `%s` — %s — campanha %s\n\n' "$LOTE" "$FERRAMENTA" "$CAMPANHA"
               printf '%s registros em `%s`; raw no inicio: %s\n' "$REGISTROS" "$LISTA" "$ESTADO_RAW"
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -866,14 +908,19 @@ jobs:
         # o mtime nao sobrevive ao artifact. Normalizar depois do download
         # gravaria a hora do download como data da analise, sem erro visivel.
         #
-        # Sem --lista: o default e a lista COMPLETA, que e o que o
-        # normalize.py quer (os campos de ground truth vem dela). O --lista
-        # dele tem semantica OPOSTA ao --lista-lote do check-log.py.
+        # --lista recebe a lista COMPLETA da campanha, escolhida pelo
+        # confere-campanha.sh no preparo: cves-sast.txt na deteccao,
+        # cves-sast-corrigida.txt na corrigida. Os campos de ground truth e o
+        # metadata.commit vem dela. Caminho absoluto sob o workspace, a mesma
+        # forma do default do normalize.py, que era o usado antes da entrada
+        # `campanha`. O --lista dele tem semantica OPOSTA ao --lista-lote do
+        # check-log.py.
         if: ${{ !cancelled() && steps.lote.outcome != 'skipped' }}
         timeout-minutes: 5
         shell: bash --noprofile --norc -euo pipefail {0}
         env:
           SAIDA: ${{ steps.preparar.outputs.saida }}
+          LISTA_COMPLETA: ${{ steps.preparar.outputs.lista_completa }}
         run: |
           if [ ! -f "$SAIDA/container/lote.txt" ]; then
               echo "o lote nao chegou a rodar (pre-voo ou guarda anterior); nada a normalizar"
@@ -881,9 +928,18 @@ jobs:
               exit 0
           fi
           ARQ="$SAIDA/portoes/normalize.txt"
-          if python3 tools/normalize.py --tool "$FERRAMENTA" > "$ARQ" 2>&1; then RC=0; else RC=$?; fi
+          if [ -z "$LISTA_COMPLETA" ]; then
+              echo "ERRO: lista completa da campanha ausente do output do preparo" >&2
+              exit 1
+          fi
+          if python3 tools/normalize.py --tool "$FERRAMENTA" \
+                  --lista "$GITHUB_WORKSPACE/$LISTA_COMPLETA" > "$ARQ" 2>&1; then
+              RC=0
+          else
+              RC=$?
+          fi
           cat "$ARQ"
-          printf 'normalize.py: rc=%s\n' "$RC" >> "$SAIDA/README.txt"
+          printf 'normalize.py: rc=%s (--lista %s)\n' "$RC" "$LISTA_COMPLETA" >> "$SAIDA/README.txt"
           # rc 1 = CVE com falha ou raw orfao; rc 2 = sem diretorio de raw.
           # Os dois sao defeito real e falham o job.
           exit "$RC"
