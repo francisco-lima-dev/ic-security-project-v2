@@ -1,0 +1,211 @@
+Caracterizacao dos pares (PrePatchCommit, PostPatchCommit)
+Propriedade do ground truth. Nenhuma ferramenta SAST rodou; nenhum
+resultado de ferramenta foi lido.
+
+  csv desta execucao (sha256): 0294da8a37565e0364805b50d1b11ed285de96fc5f7fd8734e77cc44098ccc8a
+
+Fontes (sha256):
+  metadata  datasets/cve-metadata.csv  d202df0214078faf2d4be53f94789b2e153baa5f898205572b7539c9ef44f598
+  lista     datasets/listas/cves-sast.txt  7b300e43c561470a7d4952cdd0789cd231fab2f3b38a00f047967bb6ab49b277
+  codigo    tools/caracteriza-pares.py  1712ccf677e6950f068bb26c492dc87123576018357b462402570cc4ab43ccd1
+  codigo    tools/normalize.py  0e2a0b1229762732a62579fac1a1411a9549249cd5fccd32e17caf45b258b1d0
+  codigo    tools/cruza-deteccao.py  8fea5aaba3202b019b92fd27ad6472b7c9ef7eab31dfa5a3130f1e266053c44c
+  git       git version 2.55.0  
+
+CVEs: 223
+
+status:
+  OK                                        222
+  ERRO_CLONE_RECUSA                           1
+
+post_existe:
+  sim                                       221
+  indeterminado                               1
+  nao                                         1
+
+Malformados:
+  CVE-2017-18352  '324ac99732c943d7b16aead2fceaa8b31a458e' -> 324ac99732c943d7b16aead2fceaa8b31a458eaa
+    c1 sim | c2 sim | c3 sim | c4 sim
+    candidatos: 324ac99732c943d7b16aead2fceaa8b31a458eaa:commit
+    motivo: expandido: as quatro condicoes valem
+  CVE-2018-11093  '8cb782e' -> 8cb782eceba10fc481e4021cb5d25b2a85d1b04e
+    c1 sim | c2 sim | c3 sim | c4 sim
+    candidatos: 8cb782eceba10fc481e4021cb5d25b2a85d1b04e:commit
+    motivo: expandido: as quatro condicoes valem
+
+relacao:
+  post_descende_de_pre                      221
+  (vazio)                                     2
+
+distancia (so post_descende_de_pre, 221):
+  1                                         209
+  2 a 5                                       9
+  6 a 20                                      2
+  mais de 20                                  1
+
+pre_e_pai_de_post:
+  sim                                       220
+  (vazio)                                     2
+  nao                                         1
+
+gt_arquivo_no_pre:
+  sim                                       221
+  (vazio)                                     2
+
+gt_arquivo_no_post:
+  presente                                  221
+  (vazio)                                     2
+
+gt_arquivo_alterado:
+  sim                                       197
+  nao                                        24
+  (vazio)                                     2
+
+linhas do ground truth em trecho alterado, por CVE:
+  todas                                     121
+  nenhuma                                   100
+  (nao computado)                             2
+
+Listas nominais:
+  post ausente ou indeterminado (2):
+    CVE-2016-1000229  ERRO_CLONE_RECUSA  relacao=- post=indeterminado arquivo=- linhas=-
+    CVE-2018-8035  OK  relacao=- post=nao arquivo=- linhas=-
+  relacao diferente de post_descende_de_pre (2):
+    CVE-2016-1000229  ERRO_CLONE_RECUSA  relacao=- post=indeterminado arquivo=- linhas=-
+    CVE-2018-8035  OK  relacao=- post=nao arquivo=- linhas=-
+  arquivo do ground truth nao alterado (24):
+    CVE-2017-16003  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16018  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16030  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16877  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-1002204  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16484  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-6184  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10090  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10759  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10767  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10776  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10778  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-13127  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-18954  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-5483  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-11021  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-14000  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15092  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15119  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15135  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-4051  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-5251  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-7752  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-7763  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+  arquivo do ground truth removido (0):
+  arquivo do ground truth renomeado (0):
+  arquivo do ground truth fora do pre (0):
+  nenhuma linha em trecho alterado (100):
+    CVE-2017-1001004  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16003  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16006  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16018  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16026  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16029  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16030  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16034  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16083  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16084  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16098  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16100  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16224  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16226  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-16877  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-18354  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2017-18355  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-1000086  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-1000096  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-1002204  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-11798  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-13863  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16472  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16479  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16480  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16484  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16485  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16487  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-16490  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-20834  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-20835  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-21036  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3712  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3713  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3718  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3719  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3721  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3722  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3725  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao|nao|nao|nao|nao
+    CVE-2018-3728  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3731  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3733  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3747  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3750  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-3770  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-6184  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-6333  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-6341  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2018-6342  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10061  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10090  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-1020012  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10742  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10744  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10746  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10747  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10750  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10759  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10767  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10776  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10777  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-10778  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-11358  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-12041  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-13127  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-13173  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-13506  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-15479  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-15658  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-15782  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-17495  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-18954  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-5413  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-5414  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-5444  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-5479  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-5483  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2019-5484  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-11021  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-11079  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-14000  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15092  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15119  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15135  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15152  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-15256  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-26226  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-27666  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-4051  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-5251  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-5258  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-7699  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-7752  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-7763  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-8116  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-8135  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-8192  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-8203  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-8205  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+    CVE-2020-8244  OK  relacao=post_descende_de_pre post=sim arquivo=presente linhas=nao
+  linhas nao computadas (2):
+    CVE-2016-1000229  ERRO_CLONE_RECUSA  relacao=- post=indeterminado arquivo=- linhas=-
+    CVE-2018-8035  OK  relacao=- post=nao arquivo=- linhas=-
+
+gt_linhas_em_trecho_alterado e gt_linhas_deslocadas sao descricao, nao
+criterio: como o ponto da falha e localizado na versao corrigida e
+decisao da §8 do docs/criterios-cruzamento.md.

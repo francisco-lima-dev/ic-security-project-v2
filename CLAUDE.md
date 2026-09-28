@@ -325,7 +325,8 @@ O gerador exige a flag `--force` para remover lotes existentes.
 **Versionados:** `datasets/` (incluindo `cwe-primario.csv` e
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
 `results/*/treated/`, `results/cruzamento/`, `results/proveniencia/`,
-`results/circularidade/`, `results/por-cwe/`, `results/capacidade/`, `results/zap/`, `logs/`
+`results/circularidade/`, `results/por-cwe/`, `results/capacidade/`, `results/pares/`,
+`results/zap/`, `datasets/postpatch-expansoes.csv`, `logs/` (incluindo `logs/pares/`)
 (incluindo `normalize-report-<ferramenta>.json` e
 `logs/investigacao-snyk-403-2026-09-26/` — resumo sem segredo da investigação
 do 403; a saída de depuração não é versionada), o pack vendorizado do
@@ -384,6 +385,20 @@ conferido com quatro `PYTHONHASHSEED` distintos. O CSV gravado é relido antes
 de ocupar o nome definitivo, e o script recusa gravar dentro do repositório se
 alguma entrada estiver fora dele. Nesta fase não contém contagem de achado
 alguma. O `README.md` do diretório traz o comando e a procedência.
+
+**`results/pares/`, `logs/pares/` e `datasets/postpatch-expansoes.csv` entram
+em 28/09/2026**, saídas do `tools/caracteriza-pares.py`, que caracteriza o par
+(`PrePatchCommit`, `PostPatchCommit`) de cada CVE sem rodar ferramenta alguma:
+
+- `results/pares/` — a tabela por CVE e o relatório de contagens, que
+  sustentam o desenho da campanha da versão corrigida e a decisão da §8 do
+  `docs/criterios-cruzamento.md`; a classificação é determinística, e só
+  `duracao_segundos` varia entre execuções.
+- `logs/pares/` — o log por CVE e o registro por repositório (modo do clone,
+  código de retorno, duração, tamanho), evidência de como cada par foi obtido.
+- `datasets/postpatch-expansoes.csv` — a expansão dos `PostPatchCommit`
+  malformados com as quatro condições avaliadas; fica em `datasets/` porque é
+  dado de entrada da segunda campanha, e o `cve-metadata.csv` não é editado.
 
 **Ignorados:** `results/*/raw/`, clones temporários (`src-CVE-*`),
 databases do CodeQL, `node_modules/`, o clone `ossf-cve-benchmark/`, os
@@ -1658,6 +1673,11 @@ terá. Repositório privado sairia `ACESSIVEL` na sondagem e `ERRO_FETCH` na
 execução, que é exatamente a divergência que a sondagem existe para
 antecipar. O script neutraliza a configuração global e o helper antes de
 sondar.
+
+**Pendência, não corrigida (28/09/2026):** o `tools/probe-repos.sh` **não**
+neutraliza o `~/.netrc`, que o libcurl lê por conta própria sobre HTTPS, por
+fora do credential helper. O `tools/caracteriza-pares.py` o neutraliza, rodando
+o git com `HOME` vazio.
 
 ## Defeitos conhecidos do conjunto de dados
 

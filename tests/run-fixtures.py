@@ -1387,6 +1387,7 @@ def main():
            "metrica de vigilancia cairia a zero sem sinal", pd.stdout)
 
     secao_cruzamento(tmp)
+    secao_pares(tmp)
 
     print("\n%d verificacoes, %d falha(s)" % (verificacoes, len(falhas)))
     for descricao in falhas:
@@ -1999,6 +2000,327 @@ def secao_cruzamento(tmp):
            "parada avisa que as saidas pre-existentes nao foram atualizadas")
     checar(alvo.read_bytes() == original_alvo and retrato_logs() == original_logs,
            "mutantes desfeitos: universo restaurado")
+
+
+# ============================================================ caracteriza-pares.py
+# Repositorio git sintetico construido aqui, por
+# tests/fixtures/pares/repo_sintetico.py, com o valor esperado de cada coluna
+# por caso. E o controle positivo da classificacao: todo sim, nao e zero do
+# conjunto real so vale se o mesmo codigo acertou o caso conhecido.
+PARES = RAIZ / "tools" / "caracteriza-pares.py"
+COLUNAS_ASSERTADAS_PARES = (
+    "repositorio", "fora_do_denominador", "pre", "post", "post_malformado", "status",
+    "pre_existe", "post_existe", "post_tipo", "relacao", "distancia", "pre_e_pai_de_post",
+    "arquivos_alterados", "gt_arquivo", "gt_arquivo_no_pre", "gt_arquivo_no_post",
+    "gt_arquivo_alterado", "gt_linhas", "gt_linhas_em_trecho_alterado",
+    "gt_linhas_deslocadas")
+
+
+def _ler_csv(caminho):
+    import csv as _csv
+    with open(caminho, newline="", encoding="utf-8") as arquivo:
+        return list(_csv.DictReader(arquivo))
+
+
+def _rodar_pares(fx, saida, workdir, extra=()):
+    comando = [sys.executable, str(PARES), "--metadata", str(fx.metadata),
+               "--lista", str(fx.lista), "--saida-dir", str(saida),
+               "--expansoes", str(saida / "expansoes.csv"), "--log-dir", str(saida / "logs"),
+               "--workdir", str(workdir), *extra]
+    return subprocess.run(comando, capture_output=True, text=True, stdin=subprocess.DEVNULL)
+
+
+def secao_pares(tmp):
+    print("\n== caracteriza-pares.py: repositorio sintetico ==")
+    sys.path.insert(0, str(FIXTURES / "pares"))
+    import repo_sintetico
+    base = tmp / "pares"
+    base.mkdir()
+    fx = repo_sintetico.construir(base / "repo")
+    workdir = base / "work"
+    workdir.mkdir()
+    saida = base / "saida"
+
+    p = _rodar_pares(fx, saida, workdir)
+    checar(p.returncode == 0, "pares: execucao sobre a fixture sai com 0", p.stderr[-1500:])
+    if p.returncode != 0:
+        return
+    linhas = {l["cve"]: l for l in _ler_csv(saida / "pares.csv")}
+    checar(sorted(linhas) == sorted(c[0] for c in fx.casos),
+           "pares: uma linha por CVE da fixture (%d)" % len(fx.casos), sorted(linhas))
+    for cve, descricao, url, pre, post, arquivo, gt_linhas, esperado in fx.casos:
+        esperado = dict(esperado)
+        esperado.setdefault("repositorio", url)
+        esperado.setdefault("pre", pre)
+        esperado.setdefault("post", post)
+        esperado.setdefault("gt_arquivo", arquivo)
+        esperado.setdefault("gt_linhas", "|".join(map(str, gt_linhas)))
+        linha = linhas.get(cve, {})
+        for coluna in COLUNAS_ASSERTADAS_PARES:
+            checar(linha.get(coluna) == esperado[coluna],
+                   "pares %s (%s): %s = %r" % (cve, descricao, coluna, esperado[coluna]),
+                   "obtido %r" % linha.get(coluna))
+
+    expansoes = {e["cve"]: e for e in _ler_csv(saida / "expansoes.csv")}
+    checar(sorted(expansoes) == sorted(fx.expansoes),
+           "pares: uma linha de expansao por post malformado, e so eles", sorted(expansoes))
+    for cve, (valor, c1, c2, c3, c4) in sorted(fx.expansoes.items()):
+        e = expansoes.get(cve, {})
+        for coluna, v in (("valor_expandido", valor), ("c1_prefixo_unico", c1),
+                          ("c2_e_commit", c2), ("c3_pre_ancestral", c3),
+                          ("c4_arquivo_alterado", c4)):
+            checar(e.get(coluna) == v, "expansao %s: %s = %r" % (cve, coluna, v),
+                   "obtido %r (motivo %r)" % (e.get(coluna), e.get("motivo")))
+    amb = expansoes.get("CVE-2099-0010", {})
+    checar(len(amb.get("candidatos", "").split("|")) >= 2
+           and all(c.split(":")[0].startswith(fx.ambiguo) for c in amb["candidatos"].split("|")),
+           "expansao: prefixo ambiguo lista os candidatos, todos com o prefixo",
+           amb.get("candidatos"))
+    checar(all(":blob" not in e["candidatos"] for e in expansoes.values()),
+           "expansao: blobs nao entram entre os candidatos")
+
+    log = _ler_csv(saida / "logs" / "caracterizacao-pares.csv")
+    checar([l["cve"] for l in log] == sorted(linhas) and
+           all(l["status"] == linhas[l["cve"]]["status"] for l in log),
+           "log: uma linha por CVE, status igual ao do pares.csv")
+    checar(all("," not in l["mensagem"] for l in log), "log: mensagem sem virgula")
+    msg = {l["cve"]: l["mensagem"] for l in log}
+    checar("post obtido por fetch" in msg["CVE-2099-0018"],
+           "log: commit fora de ramo obtido por fetch por SHA, e registrado", msg["CVE-2099-0018"])
+    checar("post inexistente" in msg["CVE-2099-0016"] and "not our ref" in msg["CVE-2099-0016"],
+           "log: 'not our ref' registrado como inexistente", msg["CVE-2099-0016"])
+    checar("pre inexistente" in msg["CVE-2099-0017"], "log: pre inexistente registrado",
+           msg["CVE-2099-0017"])
+    checar("descascado" in msg["CVE-2099-0009"], "log: tag descascada para commit registrada",
+           msg["CVE-2099-0009"])
+    checar("clone parcial saiu com" in msg["CVE-2099-0021"]
+           and "clone completo saiu com" in msg["CVE-2099-0021"],
+           "log: repositorio inexistente registra as duas tentativas", msg["CVE-2099-0021"])
+    checar("saiu com 128: fatal:" in msg["CVE-2099-0021"]
+           and "and the repository exists" not in msg["CVE-2099-0021"],
+           "log: a causa gravada e a linha fatal:, nao a continuacao final do stderr",
+           msg["CVE-2099-0021"])
+    checar("ausente do pre" in msg["CVE-2099-0019"], "log: arquivo do gt fora do pre registrado")
+
+    clones = {c["repositorio"]: c for c in _ler_csv(saida / "logs" / "clones.csv")}
+    checar(clones.get(fx.url, {}).get("modo") == "parcial", "clones: servidor com filtro -> parcial",
+           clones.get(fx.url))
+    checar(clones.get(fx.url_sem_filtro, {}).get("modo") == "completo_filtro_ignorado",
+           "clones: servidor que ignora o filtro -> registrado como completo",
+           clones.get(fx.url_sem_filtro))
+    checar(clones.get(fx.url_inexistente, {}).get("modo") == "completo_apos_falha_do_parcial"
+           and clones[fx.url_inexistente]["estouro"] == "nao;nao",
+           "clones: parcial recusado cai para completo, recusado tambem, sem estouro",
+           clones.get(fx.url_inexistente))
+    checar(int(clones.get(fx.url, {}).get("tamanho_bytes") or 0) > 0, "clones: tamanho medido")
+    checar(list(workdir.iterdir()) == [], "pares: clones removidos do workdir ao fim",
+           list(workdir.iterdir()))
+    residuos = [q for q in saida.rglob(".caracteriza-tmp-*")]
+    checar(residuos == [], "pares: nenhum temporario de escrita remanescente", residuos)
+
+    # Determinismo: mesma entrada, mesma classificacao; o .txt nao leva duracao.
+    saida2 = base / "saida2"
+    p2 = _rodar_pares(fx, saida2, workdir)
+    sem_duracao = lambda cam: [{k: v for k, v in l.items() if k != "duracao_segundos"}
+                               for l in _ler_csv(cam)]
+    checar(p2.returncode == 0 and sem_duracao(saida / "pares.csv") == sem_duracao(saida2 / "pares.csv"),
+           "pares: segunda execucao da a mesma classificacao")
+    checar((saida / "pares.txt").read_bytes() == (saida2 / "pares.txt").read_bytes(),
+           "pares: pares.txt byte-identico entre execucoes")
+    checar((saida / "expansoes.csv").read_bytes() == (saida2 / "expansoes.csv").read_bytes(),
+           "pares: expansoes byte-identicas entre execucoes")
+
+    ocultos = [str(workdir), str(workdir.resolve())]
+    for arquivo in list(saida.rglob("*.csv")) + list(saida.rglob("*.txt")):
+        texto = arquivo.read_text(encoding="utf-8")
+        checar(not any(d in texto for d in ocultos),
+               "pares: caminho do workdir nao vai a %s" % arquivo.name)
+
+    def stub(nome, gatilho, acao):
+        # O sleep NAO e exec: fica filho do shell, segurando os pipes. So a
+        # morte do grupo o alcanca; kill() no processo de topo nao bastaria
+        # (revisao, F1).
+        caminho = base / nome
+        caminho.write_text("#!/bin/sh\nfor a in \"$@\"; do\n  if [ \"$a\" = \"%s\" ]; then %s; fi\n"
+                           "done\nexec git \"$@\"\n" % (gatilho, acao), encoding="utf-8")
+        caminho.chmod(0o755)
+        return caminho
+
+    stub_lento = stub("git-lento", "clone", "sleep 60; exit 0")
+    saida3 = base / "saida-estouro"
+    import time as _time
+    inicio = _time.monotonic()
+    p3 = _rodar_pares(fx, saida3, workdir, ["--cves", "CVE-2099-0001", "--git", str(stub_lento),
+                                            "--timeout-clone", "1"])
+    decorrido = _time.monotonic() - inicio
+    checar(p3.returncode == 0, "estouro: execucao termina com 0", p3.stderr[-800:])
+    if p3.returncode == 0:
+        l3 = _ler_csv(saida3 / "pares.csv")
+        c3 = _ler_csv(saida3 / "logs" / "clones.csv")
+        checar(len(l3) == 1 and l3[0]["status"] == "ERRO_CLONE_ESTOURO",
+               "estouro: status ERRO_CLONE_ESTOURO, distinto de recusa", l3)
+        checar(c3[0]["estouro"] == "sim" and "excedeu 1s" in c3[0]["mensagem"],
+               "estouro: registrado como tal, sem segunda tentativa", c3)
+    checar(decorrido < 20, "estouro: o stub (sleep 60) e morto no limite, com o grupo",
+           "%.1fs" % decorrido)
+    checar(list(workdir.iterdir()) == [], "estouro: workdir limpo")
+
+    # Estouro de fetch por SHA: indeterminado, nunca "nao".
+    stub_fetch = stub("git-fetch-lento", "fetch", "sleep 60; exit 0")
+    s4 = base / "saida-fetch"
+    p4 = _rodar_pares(fx, s4, workdir, ["--cves", "CVE-2099-0018", "--git", str(stub_fetch),
+                                        "--timeout-fetch", "1"])
+    if p4.returncode == 0:
+        l4 = _ler_csv(s4 / "pares.csv")[0]
+        m4 = _ler_csv(s4 / "logs" / "caracterizacao-pares.csv")[0]["mensagem"]
+        checar(l4["post_existe"] == "indeterminado" and "excedeu 1s" in m4,
+               "estouro de fetch: post_existe indeterminado, registrado como estouro", (l4, m4))
+    else:
+        checar(False, "estouro de fetch: execucao sai com 0", p4.stderr[-600:])
+
+    # Erro de inspecao depois da expansao: o CVE sai ERRO_INSPECAO, a linha de
+    # expansao sobrevive e a execucao nao para (revisao, 1).
+    stub_rl = stub("git-rev-list-falha", "rev-list", "echo 'error: stub' >&2; exit 3")
+    s5 = base / "saida-inspecao"
+    p5 = _rodar_pares(fx, s5, workdir, ["--cves", "CVE-2099-0012,CVE-2099-0001",
+                                        "--git", str(stub_rl)])
+    checar(p5.returncode == 0, "erro de inspecao: execucao sai com 0", p5.stderr[-600:])
+    if p5.returncode == 0:
+        l5 = {l["cve"]: l for l in _ler_csv(s5 / "pares.csv")}
+        e5 = {e["cve"]: e for e in _ler_csv(s5 / "expansoes.csv")}
+        checar(l5["CVE-2099-0012"]["status"] == "ERRO_INSPECAO"
+               and l5["CVE-2099-0001"]["status"] == "ERRO_INSPECAO",
+               "erro de inspecao: status ERRO_INSPECAO por CVE", l5)
+        checar(e5.get("CVE-2099-0012", {}).get("valor_expandido") == fx.commits["C2"],
+               "erro de inspecao: a expansao ja feita e preservada", e5)
+    stub_ob = stub("git-objetos-falha", "--batch-all-objects", "echo 'error: stub' >&2; exit 3")
+    s6 = base / "saida-objetos"
+    p6 = _rodar_pares(fx, s6, workdir, ["--cves", "CVE-2099-0010", "--git", str(stub_ob)])
+    checar(p6.returncode == 0, "falha na listagem de objetos: execucao sai com 0", p6.stderr[-600:])
+    if p6.returncode == 0:
+        e6 = _ler_csv(s6 / "expansoes.csv")
+        checar(len(e6) == 1 and "inspecao interrompida" in e6[0]["motivo"]
+               and e6[0]["c1_prefixo_unico"] == "nao_avaliada",
+               "falha na listagem de objetos: malformado com linha nao avaliada", e6)
+
+    # Recusa de clone que cita o destino, como o fatal: real faz: o caminho do
+    # workdir nao pode chegar ao log nem ao clones.csv (revisao, 6). Sem este
+    # caso a assercao de ocultacao acima passava tambem sem ocultar nada.
+    stub_dest = stub("git-cita-destino", "clone",
+                     'eval d=\\${$#}; echo "fatal: could not create work tree dir $d" >&2; exit 128')
+    s7 = base / "saida-destino"
+    p7 = _rodar_pares(fx, s7, workdir, ["--cves", "CVE-2099-0001", "--git", str(stub_dest)])
+    if p7.returncode == 0:
+        textos = "".join(q.read_text(encoding="utf-8") for q in s7.rglob("*.csv"))
+        checar("could not create work tree dir <clone>" in textos
+               and not any(d in textos for d in ocultos),
+               "recusa citando o destino: caminho trocado por <clone> no log e no clones.csv",
+               textos[-400:])
+    else:
+        checar(False, "recusa citando o destino: execucao sai com 0", p7.stderr[-600:])
+
+    # Versao minima: 2.45.0, a do GIT_NO_LAZY_FETCH. Um git que se declara
+    # 2.44 e recusado antes de qualquer clone; o 2.45 passa.
+    for versao, recusa in (("2.44.9", True), ("2.45.0", False)):
+        stub_v = stub("git-versao-%s" % versao, "version",
+                      "echo 'git version %s'; exit 0" % versao)
+        pv = _rodar_pares(fx, base / ("saida-versao-" + versao), workdir,
+                          ["--cves", "CVE-2099-0001", "--git", str(stub_v)])
+        if recusa:
+            checar(pv.returncode == 2 and "git 2.45 ou posterior" in pv.stderr
+                   and not (base / ("saida-versao-" + versao)).exists(),
+                   "versao: git 2.44 recusado, nada escrito", pv.stderr[-300:])
+        else:
+            checar(pv.returncode == 0, "versao: git 2.45 aceito", pv.stderr[-300:])
+    checar("git version " in (saida / "pares.txt").read_text(encoding="utf-8"),
+           "versao: a versao do git usada vai ao pares.txt")
+
+    # Divergencia entre metadata e lista: parada, nada escrito.
+    meta_ruim = base / "metadata-divergente.csv"
+    meta_ruim.write_text(fx.metadata.read_text(encoding="utf-8").replace('"f.js",5', '"f.js",6', 1),
+                         encoding="utf-8")
+    p = subprocess.run([sys.executable, str(PARES), "--metadata", str(meta_ruim), "--lista",
+                        str(fx.lista), "--saida-dir", str(base / "saida-div"), "--expansoes",
+                        str(base / "saida-div" / "e.csv"), "--log-dir", str(base / "saida-div"),
+                        "--workdir", str(workdir)], capture_output=True, text=True)
+    checar(p.returncode == 2 and "nao conferem" in p.stderr and "linhas [6]" in p.stderr
+           and not (base / "saida-div").exists(),
+           "metadata x lista: linha divergente e parada, nada escrito", p.stderr[-400:])
+
+    # SIGTERM no meio do clone: sai 130, sem resto no workdir.
+    import signal as _signal
+    proc = subprocess.Popen([sys.executable, str(PARES), "--metadata", str(fx.metadata),
+                             "--lista", str(fx.lista), "--saida-dir", str(base / "saida-sig"),
+                             "--expansoes", str(base / "saida-sig" / "e.csv"),
+                             "--log-dir", str(base / "saida-sig"), "--workdir", str(workdir),
+                             "--cves", "CVE-2099-0001", "--git", str(stub_lento)],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    _time.sleep(3)
+    proc.send_signal(_signal.SIGTERM)
+    try:
+        _, err = proc.communicate(timeout=30)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        _, err = proc.communicate()
+    checar(proc.returncode == 130 and "Workdir sem resto" in err
+           and "Nenhuma saida escrita" in err,
+           "SIGTERM: sai 130, clone removido, nada escrito", err[-400:])
+    checar(list(workdir.iterdir()) == [] and not (base / "saida-sig").exists(),
+           "SIGTERM: workdir e saida vazios de fato", list(workdir.iterdir()))
+
+    # Guardas, todas antes de qualquer clone ou escrita.
+    p = subprocess.run([sys.executable, str(PARES), "--workdir", str(workdir),
+                        "--cves", "CVE-2019-12041"], capture_output=True, text=True)
+    checar(p.returncode == 2 and "subconjunto" in p.stderr,
+           "guarda: --cves com saidas padrao (no repositorio) e recusado", p.stderr[-400:])
+    p = _rodar_pares(fx, base / "saida-guarda", RAIZ / "tools")
+    checar(p.returncode == 2 and "--workdir dentro do repositorio" in p.stderr,
+           "guarda: workdir dentro do repositorio e recusado", p.stderr[-400:])
+    p = subprocess.run([sys.executable, str(PARES), "--metadata", str(fx.metadata),
+                        "--lista", str(fx.lista), "--workdir", str(workdir)],
+                       capture_output=True, text=True)
+    checar(p.returncode == 2 and "exige entradas dentro dele" in p.stderr,
+           "guarda: saida no repositorio com entrada de fora e recusada", p.stderr[-400:])
+    p = _rodar_pares(fx, base / "saida-guarda", workdir, ["--timeout-fetch", "0"])
+    checar(p.returncode == 2 and "inteiro positivo" in p.stderr,
+           "guarda: limite 0 (que desligaria o timeout) e recusado", p.stderr[-400:])
+    checar(not (base / "saida-guarda").exists(), "guarda: nada escrito nas recusas")
+
+    # Funcoes puras e releitura, por importacao.
+    mod = _importar("caracteriza_pares", PARES)
+    t, s, b = mod.trechos_do_diff("diff --git a/x b/x\n@@ -0,0 +1,3 @@\n+a\n@@ -9 +12 @@\n-x\n+y\n")
+    checar(t == [(0, 0, 1, 3), (9, 1, 12, 1)] and s == 1 and not b,
+           "trechos: contagem omitida vale 1", t)
+    checar(mod.classificar_linhas([1, 5, 9, 10], t) == [(False, 4), (False, 8), (True, None), (False, 13)],
+           "linhas: insercao no topo desloca todas; linha no trecho e alterada")
+    t, _, _ = mod.trechos_do_diff("diff --git a/x b/x\n@@ -3,2 +2,0 @@\n-a\n-b\n")
+    checar(mod.classificar_linhas([2, 3, 4, 5], t) == [(False, 2), (True, None), (True, None), (False, 3)],
+           "linhas: remocao de duas linhas desloca as seguintes em -2")
+    t, _, _ = mod.trechos_do_diff("diff --git a/x b/x\n@@ -5,0 +6,2 @@\n+a\n+b\n")
+    checar(mod.classificar_linhas([5, 6], t) == [(False, 5), (False, 8)],
+           "linhas: pura insercao depois da linha 5 nao altera a 5 e desloca a 6")
+    _, _, b = mod.trechos_do_diff("diff --git a/x b/x\nBinary files a/x and b/x differ\n")
+    checar(b, "trechos: diff binario reconhecido")
+
+    memoria = [l for l in _ler_csv(saida / "pares.csv")]
+    alvo = base / "mutante.csv"
+    original = (saida / "pares.csv").read_text(encoding="utf-8")
+    for nome, texto, marca in (
+            ("celula alterada", original.replace(",post_descende_de_pre,", ",sem_relacao,", 1),
+             "coluna relacao"),
+            ("linha removida", "\n".join(original.splitlines()[:-1]) + "\n", "ausente do arquivo"),
+            ("cabecalho alterado", original.replace("relacao", "relação", 1), "cabecalho"),
+            ("campo excedente", original.replace("\n", ",x\n", 2).replace(",x\n", "\n", 1),
+             "numero de campos")):
+        alvo.write_text(texto, encoding="utf-8")
+        motivos = mod.conferir_csv(alvo, mod.COLUNAS_CSV, memoria, ignorar=("duracao_segundos",))
+        checar(any(marca in m for m in motivos), "releitura acusa %s" % nome, motivos[:2])
+    checar(mod.conferir_csv(saida / "pares.csv", mod.COLUNAS_CSV, memoria) == [],
+           "releitura: arquivo gravado passa contra si mesmo")
+    ruim = [dict(memoria[0], relacao="talvez"), dict(memoria[1], gt_linhas_deslocadas="1|2|3")]
+    motivos = mod.conferir_vocabulario(ruim)
+    checar(any("relacao" in m for m in motivos) and any("alinhada" in m for m in motivos),
+           "vocabulario: valor fora do conjunto e coluna desalinhada acusados", motivos)
 
 
 if __name__ == "__main__":
