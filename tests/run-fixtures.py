@@ -2013,7 +2013,7 @@ COLUNAS_ASSERTADAS_PARES = (
     "pre_existe", "post_existe", "post_tipo", "relacao", "distancia", "pre_e_pai_de_post",
     "arquivos_alterados", "gt_arquivo", "gt_arquivo_no_pre", "gt_arquivo_no_post",
     "gt_arquivo_alterado", "gt_linhas", "gt_linhas_em_trecho_alterado",
-    "gt_linhas_deslocadas")
+    "gt_linhas_deslocadas", "gt_tipo_ponto", "gt_ponto_post")
 
 
 def _ler_csv(caminho):
@@ -2301,6 +2301,136 @@ def secao_pares(tmp):
            "linhas: pura insercao depois da linha 5 nao altera a 5 e desloca a 6")
     _, _, b = mod.trechos_do_diff("diff --git a/x b/x\nBinary files a/x and b/x differ\n")
     checar(b, "trechos: diff binario reconhecido")
+
+    # Pontos na versao corrigida: funcao pura, contra blocos conhecidos.
+    chamadas = []
+
+    def n_post_19():
+        chamadas.append(1)
+        return 19
+    t = [(8, 1, 8, 3), (12, 3, 14, 4), (20, 2, 19, 0), (5, 2, 4, 0)]
+    pts = mod.pontos_no_post([2, 8, 13, 21, 6, 30], t, n_post_19)
+    checar([(a, b) for a, b, _ in pts] ==
+           [("inalterada", "2"), ("trecho", "8-10"), ("trecho", "14-17"),
+            ("so_remocao", "del:19:fim"), ("so_remocao", "del:5"), ("inalterada", "29")],
+           "pontos: inalterada deslocada, trecho pelo lado post, remocao no meio e no fim",
+           pts)
+    checar(mod.pontos_no_post([2], [(8, 1, 8, 3)], lambda: 1 / 0) == [("inalterada", "2", None)],
+           "pontos: sem so_remocao, o numero de linhas do post nao e pedido")
+    checar(mod.pontos_no_post([3], [(1, 5, 0, 0)], lambda: 0) == [("so_remocao", "del:0:fim", (1, 5, 0, 0))],
+           "pontos: arquivo removido (n_post = 0) sai del:0:fim")
+
+    txt = (saida / "pares.txt").read_text(encoding="utf-8")
+    for padrao, descricao in (
+            (r"\n  inalterada +\d+\n", "contagem por tipo de ponto"),
+            (r"CVEs por combinacao de gt_tipo_ponto:", "contagem por combinacao"),
+            (r"\n  inalterada\+trecho +3\n", "combinacao inalterada+trecho (0008, 0027, 0031)"),
+            (r"dez maiores trechos", "secao dos dez maiores trechos"),
+            (r"CVE-2099-0028 +linha 6  del:5  ", "remocao no meio listada com o ponto"),
+            (r"CVE-2099-0029 +linha 21  del:19:fim  ", "remocao no fim listada com a marca"),
+            (r"CVE-2099-0005 +linha 2  del:0:fim  ", "arquivo removido listado como del:0:fim"),
+            (r"alguma linha so_remocao \(4\)", "quatro CVEs com so_remocao"),
+            (r"CVE-2099-0030 +linha 4  del:4  ", "remocao em arquivo sem \\n final: del:4"),
+            (r"alem do fim do arquivo no pre \(1 CVEs", "um CVE com linha alem do fim do pre"),
+            (r"CVE-2099-0031 +linhas 50  \(pre com 10 linhas\)", "linha 50 de um pre de 10"),
+            (r"tamanho do pre indeterminado: nenhum", "tamanho do pre sempre determinado")):
+        checar(re.search(padrao, txt), "pares.txt: %s" % descricao, padrao)
+    maiores = txt.split("dez maiores trechos", 1)[1].splitlines()[1]
+    checar(maiores.split()[0] == "CVE-2099-0027" and " 4 linhas  pre 12-14  post 12-15 " in maiores,
+           "pares.txt: o maior trecho e o 3 -> 4 do CVE-2099-0027, com os dois intervalos", maiores)
+    faixa = txt.split("tamanho do trecho", 1)[1].split("\n\n", 1)[0]
+    # 12 linhas trecho: dez de tamanho 1 (0001, 0002, 0003, 0008, 0009, 0012,
+    # 0018, 0020, 0025, 0031) e duas de 2 a 5 (0026: 8-10; 0027: 12-15).
+    checar("(12):" in faixa and re.search(r"\n  1 +10\n", faixa)
+           and re.search(r"\n  2 a 5 +2\n", faixa) and re.search(r"\n  mais de 100 +0$", faixa),
+           "pares.txt: 12 linhas trecho, 10 de tamanho 1 e 2 de 2 a 5", faixa)
+    checar("alem do fim do pre (10 linhas): 50" in msg["CVE-2099-0031"],
+           "log: linha alem do fim do pre registrada", msg["CVE-2099-0031"])
+    checar(mod.pontos_no_post([1], [(1, 2, 0, 0)], lambda: 5) == [("so_remocao", "del:1", (1, 2, 0, 0))],
+           "pontos: remocao no topo com post nao vazio sai del:1 (revisao 2, 5c)")
+
+    # Regressao: contra a propria saida, passa; com uma celula antiga mudada,
+    # para sem gravar; coluna nova e duracao nao entram na comparacao.
+    ref = base / "referencia.csv"
+    ref.write_text((saida / "pares.csv").read_text(encoding="utf-8"), encoding="utf-8")
+    s8 = base / "saida-regressao"
+    p8 = _rodar_pares(fx, s8, workdir, ["--regressao-contra", str(ref)])
+    checar(p8.returncode == 0 and "colunas da referencia identicas" in p8.stderr,
+           "regressao: saida igual a referencia passa", p8.stderr[-400:])
+    antigo = [l for l in _ler_csv(ref)]
+    colunas_antigas = [c for c in antigo[0] if c not in ("gt_tipo_ponto", "gt_ponto_post")]
+    import csv as _csv
+    with open(ref, "w", newline="", encoding="utf-8") as arq:
+        w_ = _csv.DictWriter(arq, fieldnames=colunas_antigas, lineterminator="\n",
+                             extrasaction="ignore")
+        w_.writeheader()
+        for l in antigo:
+            w_.writerow(dict(l, duracao_segundos="999"))
+    p8 = _rodar_pares(fx, base / "saida-regressao-antiga", workdir, ["--regressao-contra", str(ref)])
+    checar(p8.returncode == 0,
+           "regressao: referencia sem as colunas novas e com duracao diferente passa",
+           p8.stderr[-400:])
+    for l in antigo:
+        if l["cve"] == "CVE-2099-0001":
+            l["gt_linhas_deslocadas"] = "4"
+    with open(ref, "w", newline="", encoding="utf-8") as arq:
+        w_ = _csv.DictWriter(arq, fieldnames=colunas_antigas, lineterminator="\n",
+                             extrasaction="ignore")
+        w_.writeheader()
+        w_.writerows(antigo)
+    s9 = base / "saida-regressao-div"
+    p9 = _rodar_pares(fx, s9, workdir, ["--regressao-contra", str(ref)])
+    checar(p9.returncode == 2 and "CVE-2099-0001 gt_linhas_deslocadas" in p9.stderr
+           and not s9.exists(),
+           "regressao: celula antiga divergente e parada, nada gravado", p9.stderr[-400:])
+
+    # Referencias defeituosas: recusadas ANTES de qualquer clone (revisao 2,
+    # riscos 1 e 2), sem gravar nada.
+    boa = _ler_csv(saida / "pares.csv")
+    cab = list(boa[0])
+
+    def escrever_ref(nome, colunas, linhas_ref):
+        caminho = base / nome
+        with open(caminho, "w", newline="", encoding="utf-8") as arq:
+            w_ = _csv.DictWriter(arq, fieldnames=colunas, lineterminator="\n", extrasaction="ignore")
+            w_.writeheader()
+            w_.writerows(linhas_ref)
+        return caminho
+    vazia = base / "ref-vazia.csv"
+    vazia.write_text("", encoding="utf-8")
+    for nome, ref_arq, marca in (
+            ("caminho inexistente", base / "nao-existe.csv", "ilegivel"),
+            ("so a coluna cve", escrever_ref("ref-so-cve.csv", ["cve"], boa), "sem as colunas antigas"),
+            ("sem a coluna status", escrever_ref("ref-sem-status.csv",
+                                                 [c for c in cab if c != "status"], boa),
+             "'status'"),
+            ("CVE repetido", escrever_ref("ref-repetido.csv", cab, boa + boa[:1]), "CVE repetido"),
+            ("CVE ausente", escrever_ref("ref-falta.csv", cab, boa[1:]), "CVEs diferem"),
+            ("arquivo vazio", vazia, "sem as colunas antigas")):
+        pr = _rodar_pares(fx, base / "saida-ref-ruim", workdir, ["--regressao-contra", str(ref_arq)])
+        checar(pr.returncode == 2 and marca in pr.stderr and "antes de qualquer clone" in pr.stderr
+               or (marca == "ilegivel" and pr.returncode == 2 and marca in pr.stderr),
+               "regressao: referencia com %s recusada" % nome, pr.stderr[-300:])
+        checar("] clone " not in pr.stderr and not (base / "saida-ref-ruim").exists(),
+               "regressao: %s recusada sem clone e sem gravar" % nome)
+    p10 = subprocess.run([sys.executable, str(PARES), "--workdir", str(workdir),
+                          "--regressao-contra", str(ref)], capture_output=True, text=True)
+    checar(p10.returncode == 2 and "exige entradas dentro dele" in p10.stderr and str(ref) in p10.stderr,
+           "guarda: referencia de fora com saida no repositorio e recusada", p10.stderr[-300:])
+    checar("regressao" in (s8 / "pares.txt").read_text(encoding="utf-8").split("Fontes", 1)[1][:2000],
+           "pares.txt: a regressao feita fica registrada nas fontes, com o sha256")
+
+    # Mutantes das conferencias novas de conferir_vocabulario (revisao 2, 5a).
+    base_voc = next(l for l in boa if l["cve"] == "CVE-2099-0027")
+    for nome, mudanca, marca in (
+            ("tipo fora do vocabulario", {"gt_tipo_ponto": "inalterada|talvez"}, "gt_tipo_ponto"),
+            ("inalterada com deslocada vazia", {"gt_linhas_deslocadas": "|"}, "discorda"),
+            ("trecho com deslocada preenchida", {"gt_linhas_deslocadas": "2|13"}, "discorda"),
+            ("ponto diferente da deslocada", {"gt_ponto_post": "3|12-15"}, "discorda"),
+            ("colunas preenchidas pela metade", {"gt_tipo_ponto": "", "gt_ponto_post": ""}, "metade")):
+        motivos_v = mod.conferir_vocabulario([dict(base_voc, **mudanca)])
+        checar(any(marca in m for m in motivos_v), "vocabulario acusa %s" % nome, motivos_v)
+    checar(mod.conferir_vocabulario([base_voc]) == [], "vocabulario: linha integra passa")
 
     memoria = [l for l in _ler_csv(saida / "pares.csv")]
     alvo = base / "mutante.csv"

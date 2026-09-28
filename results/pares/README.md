@@ -40,6 +40,29 @@ sobreviveu à correção sem mudança — não que a correção deixou de tocar 
 defeito, que pode ter sido corrigido noutra linha do mesmo arquivo ou noutro
 arquivo.
 
+## Pontos na versão corrigida — também descrição
+
+Duas colunas acrescentadas em 28/09/2026, **depois** das existentes, que não
+mudaram. Alinhadas a `gt_linhas`, separadas por `|`. Informam a §8, que decide
+como usá-las; não são critério.
+
+O bloco vem do cabeçalho `@@ -a,b +c,d @@` do mesmo diff `-U0`: lado `pre` de
+`a` a `a+b-1`, lado `post` de `c` a `c+d-1`; contagem omitida vale 1.
+
+| `gt_tipo_ponto` | quando | `gt_ponto_post` |
+|---|---|---|
+| `inalterada` | a linha não cai em bloco com `b ≥ 1` | o número dela no `post` (igual a `gt_linhas_deslocadas`) |
+| `trecho` | cai em bloco com `b ≥ 1` e `d ≥ 1` | `inicio-fim` do lado `post` desse bloco |
+| `so_remocao` | cai em bloco com `d = 0` | `del:N`, com `N = c + 1`: no git, `+c,0` quer dizer que as linhas saíram **depois** da linha `c` do `post` |
+
+Se `c + 1` passa do fim do arquivo no `post`, `N` é a última linha e a marca é
+`del:N:fim`. Arquivo ausente do `post` tem zero linhas, e sai `del:0:fim`
+(nenhum caso nos 223: nenhum arquivo do ground truth foi removido).
+
+O `pares.txt` traz as contagens por tipo (por linha e por CVE), o tamanho dos
+trechos (`fim - inicio + 1`) em faixas, os dez maiores trechos com os dois
+intervalos, e a lista nominal dos `so_remocao`.
+
 ## Como cada coluna é obtida
 
 - **Clone por repositório**, 186, e não por CVE:

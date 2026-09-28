@@ -136,7 +136,10 @@ COLUNAS_CSV = [
     "pre_e_pai_de_post", "arquivos_alterados", "gt_arquivo", "gt_arquivo_no_pre",
     "gt_arquivo_no_post", "gt_arquivo_alterado", "gt_linhas",
     "gt_linhas_em_trecho_alterado", "gt_linhas_deslocadas", "duracao_segundos",
+    # Acrescentadas em 28/09/2026, depois das existentes: as antigas nao mudam.
+    "gt_tipo_ponto", "gt_ponto_post",
 ]
+TIPOS_PONTO = {"inalterada", "trecho", "so_remocao"}
 COLUNAS_EXPANSOES = [
     "cve", "valor_original", "valor_expandido", "c1_prefixo_unico", "c2_e_commit",
     "c3_pre_ancestral", "c4_arquivo_alterado", "candidatos", "motivo",
@@ -399,6 +402,38 @@ def trechos_do_diff(texto):
     return trechos, secoes, binario
 
 
+def pontos_no_post(linhas, trechos, n_post):
+    """Para cada linha do lado pre: (tipo, ponto no post, bloco ou None).
+
+    Descricao, nao criterio: a §8 do docs/criterios-cruzamento.md decide o uso.
+    Bloco (a, b, c, d) do -U0: lado pre de a a a+b-1, lado post de c a c+d-1.
+      inalterada  a linha nao cai em bloco com b >= 1; ponto = o numero dela
+                  no post, pelo deslocamento de classificar_linhas
+      trecho      a linha cai em bloco com b >= 1 e d >= 1; ponto = "c-(c+d-1)",
+                  o lado post do bloco que a substituiu
+      so_remocao  a linha cai em bloco com d = 0. No git, +c,0 quer dizer que as
+                  linhas sairam DEPOIS da linha c do post; ponto = "del:N", com
+                  N = c+1. Se c+1 passa do fim do post (n_post linhas), N = n_post
+                  e a marca e "del:N:fim"; arquivo ausente do post da n_post = 0,
+                  logo "del:0:fim".
+    n_post e chamado so se houver so_remocao (e uma funcao: contar exige o blob).
+    """
+    saida = []
+    for (alterada, deslocada), linha in zip(classificar_linhas(linhas, trechos), linhas):
+        if not alterada:
+            saida.append(("inalterada", str(deslocada), None))
+            continue
+        bloco = next(t for t in trechos if t[1] > 0 and t[0] <= linha <= t[0] + t[1] - 1)
+        a, b, c, d = bloco
+        if d >= 1:
+            saida.append(("trecho", "%d-%d" % (c, c + d - 1), bloco))
+            continue
+        total = n_post()
+        n = c + 1
+        saida.append(("so_remocao", "del:%d" % n if n <= total else "del:%d:fim" % total, bloco))
+    return saida
+
+
 def classificar_linhas(linhas, trechos):
     """Para cada linha do lado pre: (alterada, numero no post ou None).
 
@@ -540,8 +575,19 @@ class Inspetor:
                     return "renomeado:%s" % novo, blob_pre != self.blob(post, novo), novo
         return "removido", True, None
 
+    def linhas_no_post(self, post, caminho_post):
+        """Numero de linhas do arquivo no commit dado (post, ou pre na conferencia
+        do fim do arquivo); 0 se o caminho e None (arquivo ausente)."""
+        if caminho_post is None:
+            return 0
+        r = self.g(["cat-file", "-p", "%s:%s" % (post, caminho_post)],
+                   timeout=self.timeout_fetch, lazy=True)
+        if r.rc != 0 or r.estouro:
+            raise ErroInspecao(r.causa("cat-file -p <post>:<caminho>"))
+        return r.out.count("\n") + (1 if r.out and not r.out.endswith("\n") else 0)
+
     def linhas(self, pre, post, caminho, caminho_post, linhas):
-        """[(alterada, deslocada)] ou None se indeterminado."""
+        """([(alterada, deslocada)], trechos) ou None se indeterminado."""
         caminhos = [caminho] + ([caminho_post] if caminho_post not in (None, caminho) else [])
         r = self.g(["diff", "-U0", "--no-color", "--no-ext-diff", "-M", pre, post, "--", *caminhos],
                    timeout=self.timeout_fetch, lazy=True)
@@ -554,7 +600,7 @@ class Inspetor:
         if secoes != 1:
             self.notas.append("diff com %d secoes: linhas indeterminadas" % secoes)
             return None
-        return classificar_linhas(linhas, trechos)
+        return classificar_linhas(linhas, trechos), trechos
 
 
 class ErroInspecao(Exception):
@@ -653,7 +699,8 @@ def linha_vazia(registro, fora):
         "gt_arquivo_no_pre": "", "gt_arquivo_no_post": "", "gt_arquivo_alterado": "",
         "gt_linhas": "|".join(map(str, registro["gt_linhas"])),
         "gt_linhas_em_trecho_alterado": "", "gt_linhas_deslocadas": "",
-        "duracao_segundos": "",
+        "duracao_segundos": "", "gt_tipo_ponto": "", "gt_ponto_post": "",
+        "_blocos": [], "_alem_do_pre": None,
     }
 
 
@@ -735,14 +782,42 @@ def caracterizar(inspetor, registro, linha, objetos, estado):
     if not linhas:
         return expansao
     if not alterado:
-        classes = [(False, l) for l in linhas]
+        classes, trechos = [(False, l) for l in linhas], []
     else:
-        classes = inspetor.linhas(pre_c, post_c, caminho, caminho_post, linhas)
-    if classes is None:
-        return expansao
+        resultado = inspetor.linhas(pre_c, post_c, caminho, caminho_post, linhas)
+        if resultado is None:
+            return expansao
+        classes, trechos = resultado
+    contagem = []
+
+    def n_post():
+        if not contagem:
+            contagem.append(inspetor.linhas_no_post(post_c, caminho_post))
+        return contagem[0]
+    # Os pontos saem ANTES de qualquer coluna de linha ser preenchida: um
+    # ErroInspecao aqui (cat-file do post) deixa as quatro vazias, e nao duas
+    # preenchidas e duas vazias (revisao 2, risco 3).
+    pontos = pontos_no_post(linhas, trechos, n_post)
+    # Linha do gt alem do fim do arquivo no pre nao cai em bloco algum e sairia
+    # "inalterada" sem sustentacao (revisao 2, risco 4). Registrada, sem mudar
+    # classificacao: a falha na contagem vira nota, nunca ERRO_INSPECAO.
+    try:
+        n_pre = inspetor.linhas_no_post(pre_c, caminho)
+        alem = [l for l in linhas if l > n_pre]
+        if alem:
+            inspetor.notas.append("linha do gt alem do fim do pre (%d linhas): %s"
+                                  % (n_pre, "|".join(map(str, alem))))
+        linha["_alem_do_pre"] = (alem, n_pre)
+    except ErroInspecao as erro:
+        inspetor.notas.append("tamanho do arquivo no pre indeterminado: %s" % erro)
+        linha["_alem_do_pre"] = None
     linha["gt_linhas_em_trecho_alterado"] = "|".join("sim" if a else "nao" for a, _ in classes)
     # Posicional, alinhado a gt_linhas: vazio na posicao das alteradas.
     linha["gt_linhas_deslocadas"] = "|".join("" if a else str(n) for a, n in classes)
+    linha["gt_tipo_ponto"] = "|".join(t for t, _, _ in pontos)
+    linha["gt_ponto_post"] = "|".join(p for _, p, _ in pontos)
+    # Fora do CSV (chave com _): blocos para o pares.txt (dez maiores trechos).
+    linha["_blocos"] = [(l, t, bl) for l, (t, _, bl) in zip(linhas, pontos)]
     return expansao
 
 
@@ -925,6 +1000,66 @@ def conferir_csv(caminho, colunas, esperado, chave="cve", ignorar=()):
     return motivos
 
 
+# Colunas que toda referencia tem de trazer: as da primeira versao, 28/09/2026.
+COLUNAS_ANTIGAS = [c for c in COLUNAS_CSV if c not in ("gt_tipo_ponto", "gt_ponto_post")]
+
+
+def carregar_referencia(referencia, esperados):
+    """(colunas, {cve: linha}) de um pares.csv anterior, validado ANTES dos
+    clones: caminho errado ou referencia defeituosa nao pode custar a
+    execucao inteira (revisao 2, risco 1). Levanta Parada.
+
+    Exige as colunas antigas todas (uma referencia so com `cve` passaria
+    vazia; risco 2), nenhuma coluna desconhecida, nenhum CVE repetido, e o
+    conjunto de CVEs igual ao selecionado.
+    """
+    try:
+        with open(referencia, newline="", encoding="utf-8") as arquivo:
+            leitor = csv.DictReader(arquivo)
+            cabecalho = list(leitor.fieldnames or [])
+            registros = list(leitor)
+    except (OSError, UnicodeDecodeError, csv.Error) as erro:
+        raise Parada("referencia da regressao ilegivel", ["%s: %s" % (type(erro).__name__, erro)])
+    motivos = []
+    faltam = [c for c in COLUNAS_ANTIGAS if c not in cabecalho]
+    if faltam:
+        motivos.append("referencia sem as colunas antigas %s" % faltam)
+    desconhecidas = [c for c in cabecalho if c not in COLUNAS_CSV]
+    if desconhecidas:
+        motivos.append("colunas da referencia ausentes da saida: %s" % desconhecidas)
+    ref, repetidos = {}, []
+    for r in registros:
+        if None in r or None in r.values():
+            motivos.append("referencia: linha com numero de campos diferente do cabecalho")
+            continue
+        if r.get("cve") in ref:
+            repetidos.append(r.get("cve"))
+        ref[r.get("cve")] = r
+    if repetidos:
+        motivos.append("CVE repetido na referencia: %s" % sorted(set(repetidos)))
+    if set(ref) != set(esperados):
+        motivos.append("CVEs diferem: so na referencia %s; so na selecao %s" % (
+            sorted(set(ref) - set(esperados))[:10], sorted(set(esperados) - set(ref))[:10]))
+    if motivos:
+        raise Parada("referencia da regressao recusada, antes de qualquer clone", motivos)
+    return [c for c in cabecalho if c != "duracao_segundos"], ref
+
+
+def regressao(carregada, linhas):
+    """Toda coluna da referencia, fora duracao_segundos, igual em todo CVE."""
+    colunas, ref = carregada
+    motivos = []
+    atual = {l["cve"]: l for l in linhas}
+    if set(ref) != set(atual):
+        motivos.append("CVEs diferem: so na referencia %s; so na saida %s" % (
+            sorted(set(ref) - set(atual)), sorted(set(atual) - set(ref))))
+    for cve in sorted(set(ref) & set(atual)):
+        for c in colunas:
+            if ref[cve][c] != str(atual[cve][c]):
+                motivos.append("%s %s: referencia %r, agora %r" % (cve, c, ref[cve][c], atual[cve][c]))
+    return motivos
+
+
 def conferir_vocabulario(linhas):
     motivos = []
     for l in linhas:
@@ -939,9 +1074,24 @@ def conferir_vocabulario(linhas):
         if no_post not in ("", "presente", "removido") and not no_post.startswith("renomeado:"):
             motivos.append("%s: gt_arquivo_no_post %r" % (l["cve"], no_post))
         n = len(l["gt_linhas"].split("|")) if l["gt_linhas"] else 0
-        for coluna in ("gt_linhas_em_trecho_alterado", "gt_linhas_deslocadas"):
+        for coluna in ("gt_linhas_em_trecho_alterado", "gt_linhas_deslocadas",
+                       "gt_tipo_ponto", "gt_ponto_post"):
             if l[coluna] and len(l[coluna].split("|")) != n:
                 motivos.append("%s: %s nao alinhada a gt_linhas" % (l["cve"], coluna))
+        # As quatro colunas de linha saem juntas ou nenhuma (revisao 2, risco 3).
+        if bool(l["gt_linhas_em_trecho_alterado"]) != bool(l["gt_tipo_ponto"]):
+            motivos.append("%s: colunas de linha preenchidas pela metade" % l["cve"])
+        if l["gt_tipo_ponto"] and not set(l["gt_tipo_ponto"].split("|")) <= TIPOS_PONTO:
+            motivos.append("%s: gt_tipo_ponto %r" % (l["cve"], l["gt_tipo_ponto"]))
+        # O ponto das inalteradas e o numero deslocado: as duas colunas tem de
+        # concordar posicao a posicao.
+        if l["gt_tipo_ponto"]:
+            for tipo, ponto, desl in zip(l["gt_tipo_ponto"].split("|"),
+                                         l["gt_ponto_post"].split("|"),
+                                         l["gt_linhas_deslocadas"].split("|")):
+                if (tipo == "inalterada") != (desl != "") or (tipo == "inalterada" and ponto != desl):
+                    motivos.append("%s: gt_ponto_post discorda de gt_linhas_deslocadas" % l["cve"])
+                    break
         if l["distancia"] and l["relacao"] != "post_descende_de_pre":
             motivos.append("%s: distancia sem post_descende_de_pre" % l["cve"])
     return motivos
@@ -1080,6 +1230,52 @@ def gerar_txt(linhas, expansoes, fontes, sha_csv, subconjunto):
     bloco("linhas do ground truth em trecho alterado, por CVE:",
           sorted(contagem.items(), key=lambda i: (-i[1], i[0])))
 
+    # Pontos na versao corrigida (descricao para a §8, nao criterio).
+    por_tipo, combinacoes, tamanhos, blocos, remocoes = {}, {}, [], {}, []
+    for l in linhas:
+        if not l["gt_tipo_ponto"]:
+            continue
+        tipos = l["gt_tipo_ponto"].split("|")
+        for t in tipos:
+            por_tipo[t] = por_tipo.get(t, 0) + 1
+        chave = "+".join(sorted(set(tipos)))
+        combinacoes[chave] = combinacoes.get(chave, 0) + 1
+        # `blk`, e nao `bloco`: o nome e da funcao auxiliar deste gerar_txt.
+        for (lin, tipo, blk), ponto in zip(l["_blocos"], l["gt_ponto_post"].split("|")):
+            if tipo == "trecho":
+                a, b, c, d = blk
+                tamanhos.append(d)
+                blocos[(l["cve"], blk)] = (l["cve"], l["gt_arquivo"], a, a + b - 1, c, c + d - 1, d)
+            elif tipo == "so_remocao":
+                remocoes.append((l["cve"], l["gt_arquivo"], lin, ponto, blk))
+    bloco("linhas do ground truth por gt_tipo_ponto:",
+          sorted(por_tipo.items(), key=lambda i: (-i[1], i[0])))
+    bloco("CVEs por combinacao de gt_tipo_ponto:",
+          sorted(combinacoes.items(), key=lambda i: (-i[1], i[0])))
+    faixas_t = [("1", lambda n: n == 1), ("2 a 5", lambda n: 2 <= n <= 5),
+                ("6 a 20", lambda n: 6 <= n <= 20), ("21 a 100", lambda n: 21 <= n <= 100),
+                ("mais de 100", lambda n: n > 100)]
+    bloco("tamanho do trecho (fim - inicio + 1), por linha do tipo trecho (%d):" % len(tamanhos),
+          [(nome, sum(1 for n in tamanhos if f(n))) for nome, f in faixas_t])
+    w("dez maiores trechos (um por bloco; empate por CVE):")
+    maiores = sorted(blocos.values(), key=lambda b: (-b[6], b[0], b[2]))[:10]
+    for cve, arquivo, pa, pb, pc, pd, n in maiores:
+        w("  %-17s %4d linhas  pre %d-%d  post %d-%d  %s" % (cve, n, pa, pb, pc, pd, arquivo))
+    w("")
+    alem = [(l["cve"], l["_alem_do_pre"]) for l in linhas
+            if l["_alem_do_pre"] and l["_alem_do_pre"][0]]
+    sem_tamanho = [l["cve"] for l in linhas if l["gt_tipo_ponto"] and l["_alem_do_pre"] is None]
+    w("linhas do ground truth alem do fim do arquivo no pre (%d CVEs; o tipo sai "
+      "inalterada sem sustentacao):" % len(alem))
+    for cve, (fora_do_fim, n_pre) in alem:
+        w("  %-17s linhas %s  (pre com %d linhas)" % (cve, "|".join(map(str, fora_do_fim)), n_pre))
+    w("  tamanho do pre indeterminado: %s" % (", ".join(sem_tamanho) or "nenhum"))
+    w("")
+    w("CVEs com alguma linha so_remocao (%d):" % len({r[0] for r in remocoes}))
+    for cve, arquivo, lin, ponto, (a, b, c, d) in remocoes:
+        w("  %-17s linha %d  %s  (bloco -%d,%d +%d,0)  %s" % (cve, lin, ponto, a, b, c, arquivo))
+    w("")
+
     w("Listas nominais:")
     criterios = [
         ("post ausente ou indeterminado", lambda l: l["post_existe"] != "sim"),
@@ -1128,7 +1324,8 @@ def executar(args):
             raise Parada("com --cves (subconjunto), toda saida tem de ficar fora do "
                          "repositorio", dentro)
     if any(dentro_do_repo(s) for s in saidas):
-        fora = [str(e) for e in (metadata, lista) if not dentro_do_repo(e)]
+        entradas = [metadata, lista] + ([Path(args.regressao_contra)] if args.regressao_contra else [])
+        fora = [str(e) for e in entradas if not dentro_do_repo(e)]
         if fora:
             raise Parada("saida dentro do repositorio exige entradas dentro dele", fora)
     if dentro_do_repo(workdir):
@@ -1168,12 +1365,16 @@ def _executar(args, metadata, lista, saida, expansoes_arq, log_dir, workdir):
     registros = carregar_entradas(metadata, lista, norm)
 
     selecionados = sorted(registros)
+    referencia = None
     if args.cves:
         pedidos = [c.strip() for c in args.cves.split(",") if c.strip()]
         desconhecidos = [c for c in pedidos if c not in registros]
         if desconhecidos:
             raise Parada("--cves com CVE fora do conjunto", desconhecidos)
         selecionados = sorted(set(pedidos))
+
+    if args.regressao_contra:
+        referencia = carregar_referencia(Path(args.regressao_contra), selecionados)
 
     por_repo = {}
     for cve in selecionados:
@@ -1205,6 +1406,13 @@ def _executar(args, metadata, lista, saida, expansoes_arq, log_dir, workdir):
     motivos = conferir_vocabulario(linhas)
     if motivos:
         raise Parada("vocabulario", motivos)
+    if referencia is not None:
+        motivos = regressao(referencia, linhas)
+        if motivos:
+            raise Parada("regressao contra %s: colunas antigas divergem" % args.regressao_contra,
+                         motivos)
+        print("regressao contra %s: todas as colunas da referencia identicas, fora "
+              "duracao_segundos (%d CVEs)" % (args.regressao_contra, len(linhas)), file=sys.stderr)
 
     texto_csv = csv_texto(COLUNAS_CSV, linhas)
     fontes = [("metadata", rotulo(metadata), sha256_arquivo(metadata)),
@@ -1213,6 +1421,11 @@ def _executar(args, metadata, lista, saida, expansoes_arq, log_dir, workdir):
               ("codigo", rotulo(NORMALIZE), sha256_arquivo(NORMALIZE)),
               ("codigo", rotulo(CRUZA), sha256_arquivo(CRUZA))]
     fontes.append(("git", args.git_versao, ""))
+    if args.regressao_contra:
+        # Registra no artefato que a garantia foi conferida, e contra o que
+        # (revisao 2, observacao 6). Caminho coberto pela guarda de entrada.
+        fontes.append(("regressao", rotulo(args.regressao_contra) + " (colunas antigas "
+                       "identicas)", sha256_arquivo(args.regressao_contra)))
     texto_txt = gerar_txt(linhas, expansoes, fontes,
                           hashlib.sha256(texto_csv.encode("utf-8")).hexdigest(),
                           bool(args.cves))
@@ -1245,6 +1458,9 @@ def main(argv=None):
     p.add_argument("--timeout-fetch", type=int, default=TIMEOUT_FETCH_PADRAO)
     p.add_argument("--timeout-clone", type=int, default=TIMEOUT_CLONE_PADRAO)
     p.add_argument("--git", default="git", help="binario do git (fixtures)")
+    p.add_argument("--regressao-contra",
+                   help="pares.csv anterior: toda coluna dele, fora duracao_segundos, tem de "
+                        "sair identica, ou nada e gravado")
     args = p.parse_args(argv)
 
     def ao_sinal(numero, _quadro):

@@ -40,6 +40,11 @@ real só vale se o mesmo código acertou o caso conhecido.
 | `CVE-2099-0021` | repositório inexistente: parcial e completo recusados |
 | `CVE-2099-0022` | repositório inexistente com `post` malformado: linha de expansão com as quatro condições não avaliadas |
 | `CVE-2099-0023` | prefixo que passaria c1–c3 com o arquivo do ground truth ausente do `pre`: c4 falsa (sem a guarda, `alterado` saía verdadeiro por comparação contra nada) |
+| `CVE-2099-0025` | modificação 1 → 1 em `m.js`: `trecho`, `5-5` |
+| `CVE-2099-0026` | modificação 1 → 3: `trecho`, `8-10` |
+| `CVE-2099-0027` | bloco de 3 linhas `pre` trocado por 4 `post`, com o gt no meio (`trecho`, `12-15`), e uma linha inalterada acima (`inalterada`, `2`) |
+| `CVE-2099-0028` | remoção pura no meio (`-5,2 +4,0`): `so_remocao`, `del:5` |
+| `CVE-2099-0029` | remoção pura no fim (`-20,2 +19,0`, post com 19 linhas): `so_remocao`, `del:19:fim` |
 | `CVE-2099-0024` | prefixo de commit que só entra no clone pelo fetch de **outro** CVE (o 0018, ordenado antes): c1 falsa, porque os candidatos são listados logo após o clone |
 
 Além dos casos, a seção exercita, com `git` substituto (`--git`): estouro de

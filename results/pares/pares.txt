@@ -2,15 +2,16 @@ Caracterizacao dos pares (PrePatchCommit, PostPatchCommit)
 Propriedade do ground truth. Nenhuma ferramenta SAST rodou; nenhum
 resultado de ferramenta foi lido.
 
-  csv desta execucao (sha256): 0294da8a37565e0364805b50d1b11ed285de96fc5f7fd8734e77cc44098ccc8a
+  csv desta execucao (sha256): fd8fc5daf90de100df949c410d4b554af785fec584d674235e8e2b691db4dbc4
 
 Fontes (sha256):
   metadata  datasets/cve-metadata.csv  d202df0214078faf2d4be53f94789b2e153baa5f898205572b7539c9ef44f598
   lista     datasets/listas/cves-sast.txt  7b300e43c561470a7d4952cdd0789cd231fab2f3b38a00f047967bb6ab49b277
-  codigo    tools/caracteriza-pares.py  1712ccf677e6950f068bb26c492dc87123576018357b462402570cc4ab43ccd1
+  codigo    tools/caracteriza-pares.py  8a9826bdc56233ba0ef9df2a4a766b4c3b4326c659d84f37b8f2b12a1cb0e926
   codigo    tools/normalize.py  0e2a0b1229762732a62579fac1a1411a9549249cd5fccd32e17caf45b258b1d0
   codigo    tools/cruza-deteccao.py  8fea5aaba3202b019b92fd27ad6472b7c9ef7eab31dfa5a3130f1e266053c44c
   git       git version 2.55.0  
+  regressao results/pares/pares.csv (colunas antigas identicas)  0294da8a37565e0364805b50d1b11ed285de96fc5f7fd8734e77cc44098ccc8a
 
 CVEs: 223
 
@@ -65,6 +66,48 @@ linhas do ground truth em trecho alterado, por CVE:
   todas                                     121
   nenhuma                                   100
   (nao computado)                             2
+
+linhas do ground truth por gt_tipo_ponto:
+  trecho                                    119
+  inalterada                                104
+  so_remocao                                  8
+
+CVEs por combinacao de gt_tipo_ponto:
+  trecho                                    113
+  inalterada                                100
+  so_remocao                                  8
+
+tamanho do trecho (fim - inicio + 1), por linha do tipo trecho (119):
+  1                                          65
+  2 a 5                                      34
+  6 a 20                                     19
+  21 a 100                                    1
+  mais de 100                                 0
+
+dez maiores trechos (um por bloco; empate por CVE):
+  CVE-2020-7676       24 linhas  pre 217-223  post 243-266  src/jqLite.js
+  CVE-2018-16462      17 linhas  pre 54-64  post 45-61  index.js
+  CVE-2018-1000620    14 linhas  pre 31-32  post 30-43  lib/index.js
+  CVE-2018-16478      13 linhas  pre 68-80  post 87-99  simplehttpserver/simplehttpserver.js
+  CVE-2019-8903       13 linhas  pre 7330-7330  post 7329-7341  index.js
+  CVE-2017-16014      11 linhas  pre 225-229  post 225-235  lib/node-http-proxy.js
+  CVE-2017-1000219     8 linhas  pre 81-110  post 74-81  index.js
+  CVE-2018-14380       8 linhas  pre 45-52  post 46-53  graylog2-web-interface/src/components/search/QueryInput.ts
+  CVE-2019-16763       8 linhas  pre 2383-2384  post 2384-2391  src/js/pannellum.js
+  CVE-2017-16082       7 linhas  pre 69-72  post 70-76  lib/result.js
+
+linhas do ground truth alem do fim do arquivo no pre (0 CVEs; o tipo sai inalterada sem sustentacao):
+  tamanho do pre indeterminado: nenhum
+
+CVEs com alguma linha so_remocao (8):
+  CVE-2017-16043    linha 318  del:317  (bloco -317,4 +316,0)  client/js/shout.js
+  CVE-2017-16118    linha 14  del:9  (bloco -9,7 +8,0)  index.js
+  CVE-2017-16119    linha 22  del:17  (bloco -17,7 +16,0)  index.js
+  CVE-2018-16460    linha 8  del:15  (bloco -8,9 +14,0)  lib/index.js
+  CVE-2018-20801    linha 2430  del:2444  (bloco -2430,4 +2443,0)  js/parts/SvgRenderer.js
+  CVE-2019-10761    linha 332  del:330  (bloco -330,8 +329,0)  lib/contextify.js
+  CVE-2020-26256    linha 7  del:7  (bloco -7,2 +6,0)  packages/parse/src/parser/Parser.ts
+  CVE-2020-7720     linha 2539  del:2516  (bloco -2516,96 +2515,0)  lib/util.js
 
 Listas nominais:
   post ausente ou indeterminado (2):

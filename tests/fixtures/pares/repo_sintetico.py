@@ -109,6 +109,22 @@ def construir(tmp):
     k[1] = "K2"; r.escrever("k.js", k); c["C7"] = r.commit("C7")
     f8 = ["a", "b", "c"] + f[:8] + ["F9"] + f[9:]
     r.escrever("f.js", f8); c["C8"] = r.commit("C8")
+    # Pontos na versao corrigida (gt_tipo_ponto, gt_ponto_post), em m.js.
+    m = ["m%d" % i for i in range(1, 21)]
+    r.escrever("m.js", m); c["C9"] = r.commit("C9")
+    m[4] = "M5"; r.escrever("m.js", m); c["C10"] = r.commit("C10")          # 1 -> 1, linha 5
+    m = m[:7] + ["X1", "X2", "X3"] + m[8:]; r.escrever("m.js", m)           # 1 -> 3, linha 8
+    c["C11"] = r.commit("C11")                                              # 22 linhas
+    m = m[:11] + ["Y1", "Y2", "Y3", "Y4"] + m[14:]; r.escrever("m.js", m)   # 12-14 -> 12-15
+    c["C12"] = r.commit("C12")                                              # 23 linhas
+    m = m[:4] + m[6:]; r.escrever("m.js", m); c["C13"] = r.commit("C13")    # remove 5-6: 21
+    m = m[:19]; r.escrever("m.js", m); c["C14"] = r.commit("C14")           # remove 20-21: 19
+    # Arquivo SEM quebra de linha final: a contagem de linhas do post tem de
+    # somar a ultima linha, que nao termina em \n (revisao 2, 5b).
+    (r.caminho / "o.js").write_text("n1\nn2\nn3\nn4\nn5", encoding="utf-8")
+    c["C15"] = r.commit("C15")
+    (r.caminho / "o.js").write_text("n1\nn2\nn3\nn5", encoding="utf-8")      # remove 4: 4 linhas
+    c["C16"] = r.commit("C16")
 
     r.git("checkout", "-q", "-b", "outro", c["C0"])
     r.escrever("f.js", ["F1"] + ["f%d" % i for i in range(2, 11)])
@@ -271,6 +287,63 @@ def construir(tmp):
          url, c["C1"], _prefixo_unico(nao_blob, c["P1"]), "f.js", [7],
          **dict(base, **nada, post_malformado="nao_expandido"))
 
+    alterado_m = dict(base, relacao=V, distancia="1", pre_e_pai_de_post="sim",
+                      arquivos_alterados="1", gt_arquivo_no_post="presente",
+                      gt_arquivo_alterado="sim")
+    caso("CVE-2099-0025", "modificacao 1 -> 1", url, c["C9"], c["C10"], "m.js", [5],
+         **alterado_m, gt_linhas_em_trecho_alterado="sim", gt_linhas_deslocadas="")
+    caso("CVE-2099-0026", "modificacao 1 -> 3", url, c["C10"], c["C11"], "m.js", [8],
+         **alterado_m, gt_linhas_em_trecho_alterado="sim", gt_linhas_deslocadas="")
+    caso("CVE-2099-0027", "bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima",
+         url, c["C11"], c["C12"], "m.js", [2, 13],
+         **alterado_m, gt_linhas_em_trecho_alterado="nao|sim", gt_linhas_deslocadas="2|")
+    caso("CVE-2099-0028", "remocao pura no meio do arquivo", url, c["C12"], c["C13"], "m.js", [6],
+         **alterado_m, gt_linhas_em_trecho_alterado="sim", gt_linhas_deslocadas="")
+    caso("CVE-2099-0029", "remocao pura no fim do arquivo", url, c["C13"], c["C14"], "m.js", [21],
+         **alterado_m, gt_linhas_em_trecho_alterado="sim", gt_linhas_deslocadas="")
+
+    caso("CVE-2099-0030", "remocao pura em arquivo sem quebra de linha final",
+         url, c["C15"], c["C16"], "o.js", [4],
+         **alterado_m, gt_linhas_em_trecho_alterado="sim", gt_linhas_deslocadas="")
+    caso("CVE-2099-0031", "linha do gt alem do fim do arquivo no pre (f.js tem 10)",
+         url, c["C1"], c["C2"], "f.js", [5, 50],
+         **alterado_m, gt_linhas_em_trecho_alterado="sim|nao", gt_linhas_deslocadas="|50")
+
+    # (gt_tipo_ponto, gt_ponto_post) por caso; ausente = colunas vazias (linhas
+    # nao computadas). Contas na historia de m.js acima e no cabecalho do modulo.
+    pontos = {
+        "CVE-2099-0001": ("trecho", "5-5"),
+        "CVE-2099-0002": ("trecho", "5-5"),
+        "CVE-2099-0003": ("trecho", "1-1"),
+        "CVE-2018-1000096": ("inalterada", "5"),
+        # Arquivo removido: bloco -1,5 +0,0; o post nao tem o arquivo, n_post = 0.
+        "CVE-2099-0005": ("so_remocao", "del:0:fim"),
+        "CVE-2099-0006": ("inalterada", "12"),
+        "CVE-2099-0007": ("inalterada", "3"),
+        "CVE-2099-0008": ("inalterada|trecho", "5|12-12"),
+        "CVE-2099-0009": ("trecho", "5-5"),
+        "CVE-2099-0012": ("trecho", "5-5"),
+        "CVE-2099-0015": ("inalterada", "5"),
+        "CVE-2099-0018": ("trecho", "7-7"),
+        "CVE-2099-0020": ("trecho", "5-5"),
+        "CVE-2099-0025": ("trecho", "5-5"),
+        "CVE-2099-0026": ("trecho", "8-10"),
+        "CVE-2099-0027": ("inalterada|trecho", "2|12-15"),
+        # -5,2 +4,0: sairam depois da linha 4 do post; N = 5, dentro das 21.
+        "CVE-2099-0028": ("so_remocao", "del:5"),
+        # -20,2 +19,0: N = 20 passa das 19 linhas do post; N = 19, marcado.
+        "CVE-2099-0029": ("so_remocao", "del:19:fim"),
+        # -4 +3,0 num post de 4 linhas ("n1\nn2\nn3\nn5", sem \n final): N = 4,
+        # dentro. Contar so os \n daria 3 linhas e del:3:fim.
+        "CVE-2099-0030": ("so_remocao", "del:4"),
+        # A linha 50 nao existe no pre; sai inalterada, e o log e o pares.txt o dizem.
+        "CVE-2099-0031": ("trecho|inalterada", "5-5|50"),
+    }
+    for cve, *_, esperado in casos:
+        tipo, ponto = pontos.get(cve, ("", ""))
+        esperado.setdefault("gt_tipo_ponto", tipo)
+        esperado.setdefault("gt_ponto_post", ponto)
+    fx.pontos = pontos
     fx.casos = casos
     # Expansoes esperadas: (valor_expandido, c1, c2, c3, c4)
     fx.expansoes = {
