@@ -254,6 +254,8 @@ descritiva, nunca medida de qualidade.
 (25/09/2026): categoria, limiar e tratamento do grupo "outros" são de lá.
 **A capacidade empírica e a delimitação por linguagem estão na §10**
 (25/09/2026): eixo, universo, unidades e os dois critérios de JS/TS.
+**Os critérios da versão corrigida estão na §11** (28/09/2026): duas leituras,
+ponto por tipo, níveis 3 e 4, denominador de 212, sem análise.
 
 ## Formato das listas de entrada
 

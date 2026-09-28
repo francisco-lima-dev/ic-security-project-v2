@@ -424,6 +424,7 @@ emenda da §1. Localizar "o mesmo ponto" depois da correção — cuja linha pod
 mudar de número, ou deixar de existir — e decidir quais dos cinco níveis se
 aplicam à versão corrigida são decisões **a fixar neste documento antes de
 qualquer resultado da segunda campanha**, como foi feito na primeira.
+**Fixado na §11, em 28/09/2026.**
 
 **A primeira decisão do desenho da segunda campanha é a escolha entre duas
 leituras:** a matriz de quatro células da emenda da §1, que trata cada CVE como
@@ -630,6 +631,113 @@ comparáveis diretamente.
 
 ---
 
+## 11. Critérios da versão corrigida
+
+Fixado em 28/09/2026, antes de qualquer execução da campanha da versão
+corrigida e de qualquer resultado dela. Parte da caracterização dos pares
+(`results/pares/`), que é propriedade do ground truth. Resolve o que a §8
+deixava em aberto.
+
+### As duas leituras
+
+**Principal: a matriz de quatro células** da emenda da §1. Cada CVE tem um
+ponto vulnerável, no `PrePatchCommit`, e um ponto corrigido, no
+`PostPatchCommit`, avaliados de forma independente, com o mesmo denominador
+nas três ferramentas.
+
+**Secundária: a leitura condicional da ferramenta de relatório do
+benchmark**, reproduzida como descrita na §8, para comparação com o próprio
+benchmark e com trabalhos que o usam: para os CVEs detectados na versão
+vulnerável pelo critério do benchmark (igualdade exata de arquivo e linha com
+alguma weakness), a correção conta como reconhecida se ao menos uma das
+regras que acertaram produz menos alertas no repositório corrigido do que no
+vulnerável; sem detecção, o CVE é não computável. Esta leitura cria um
+denominador por ferramenta, e por isso não é a principal.
+
+### O ponto corrigido
+
+O arquivo é o do ground truth, normalizado. Nenhum arquivo do ground truth foi
+removido nem renomeado pela correção. O ponto depende do que a correção fez
+com a linha registrada, segundo `gt_tipo_ponto`:
+
+- **`inalterada`** (100 CVEs caracterizados): a linha continua no código
+  corrigido. O ponto é a mesma linha, no número que ela tem no `post`
+  (`gt_ponto_post`). Um alerta ali significa que a ferramenta não reconheceu
+  uma correção feita em outro lugar — outra linha do mesmo arquivo, ou outro
+  arquivo, em 24 deles.
+- **`trecho`** (113 CVEs): a linha foi substituída. O ponto é o intervalo do
+  lado `post` do bloco que a substituiu. Nenhum trecho passa de 24 linhas, e
+  99 das 119 linhas têm trecho de até 5.
+- **`so_remocao`** (8 CVEs): a linha foi apagada sem substituição. Não há
+  ponto correspondente no código corrigido: a linha vizinha à remoção é
+  escolha por adjacência, e a ferramenta não tem como alertar sobre código que
+  não existe. **Os 8 ficam fora da apuração principal da versão corrigida,
+  para as três ferramentas**, como propriedade do ground truth. São
+  `CVE-2017-16043`, `CVE-2017-16118`, `CVE-2017-16119`, `CVE-2018-16460`,
+  `CVE-2018-20801`, `CVE-2019-10761`, `CVE-2020-26256` e `CVE-2020-7720`.
+
+Nos CVEs com mais de uma linha registrada, todas são do mesmo tipo, e basta o
+alerta casar qualquer uma delas.
+
+**Casamento: o mesmo da §3**, por sobreposição do intervalo do achado com o
+ponto, sem banda de tolerância, com `line_end` nulo valendo o ponto
+`line_start`. No tipo `trecho`, o ponto pode ter mais de uma linha, o que é
+mais generoso que a linha única do lado vulnerável; a assimetria é declarada.
+
+### Os níveis
+
+**Só os níveis que usam a linha: 3, 4 generosa e 4 estrita.** No código
+corrigido, os níveis 1 e 2, que avaliam só o arquivo, marcariam falso positivo
+por qualquer alerta no arquivo, o que mistura o ponto corrigido com o resto do
+código, que não é classificável. Em cada nível, VP e FN vêm do mesmo nível na
+versão vulnerável, e FP e VN, do mesmo nível na versão corrigida. A variante
+estrita não se aplica ao `CVE-2018-16472`, como na primeira campanha.
+
+### O denominador
+
+**212 CVEs na matriz de quatro células**: os 220 do denominador da detecção
+menos os 8 `so_remocao`, iguais para as três ferramentas e nos dois lados da
+matriz, de modo que precisão, especificidade e F1 saiam de um mesmo conjunto.
+O recall sobre os 220, já publicado, é mantido, e a diferença entre ele e o
+recall sobre os 212 é declarada.
+
+**A campanha roda sobre os 220**, inclusive os 8 `so_remocao`: os resultados
+deles alimentam a análise de sensibilidade e a leitura secundária, que não
+depende de ponto.
+
+Código indisponível no `PostPatchCommit` sairia do denominador pelo mesmo
+motivo das baixas da detecção. Na caracterização, nenhum CVE do denominador
+tem esse problema.
+
+### Sem análise
+
+No lado corrigido, a ausência de alerta só é verdadeiro negativo se a
+ferramenta analisou o código. Quando o registro de execução traz
+`SEM_ARQUIVO_ANALISAVEL` ou qualquer estado de erro, o CVE vai para a
+categoria **sem análise**: não conta como VN, o que premiaria a ferramenta por
+não analisar, nem como FP, o que afirmaria um alerta que não existiu. O
+denominador não muda: especificidade = VN / 212, e a categoria sem análise é
+reportada ao lado, como a parte que falta. A precisão, VP / (VP + FP), não é
+afetada.
+
+### Sensibilidade
+
+Apura-se também uma versão com os 8 `so_remocao` incluídos, usando como ponto
+a linha seguinte à remoção (`gt_ponto_post`, `del:N`). Ela existe para mostrar
+quanto a exclusão muda o resultado, e não substitui a principal. Se algum dos
+8 não for analisado por alguma ferramenta, a sensibilidade é reportada sem
+ele, e isso é declarado.
+
+### Expectativa declarada antes do número
+
+Espera-se falso positivo concentrado no grupo `inalterada`, em que a linha do
+ground truth continua no código corrigido, e maior nas ferramentas que casam
+padrão sintático do que no CodeQL, que analisa fluxo de dados e tende a
+reconhecer uma guarda inserida antes do ponto. É expectativa para ser
+confrontada, e não critério.
+
+---
+
 ## Registro de alterações
 
 | Data | Commit | Seção | Alteração |
@@ -640,3 +748,4 @@ comparáveis diretamente.
 | 21/09/2026 | o desta entrada | §1, §6, §8 | emenda: o falso positivo existe, na versão corrigida e no ponto da falha. O trecho da §1 que afirmava a inexistência do negativo fica marcado como superado e preservado. §6 ganha nota de que os parágrafos sobre alertas fora do ponto continuam valendo. §8 registra o critério da versão corrigida como não fixado e as duas leituras possíveis. Datada do dia da descoberta; redigida e commitada em 22/09/2026 |
 | 25/09/2026 | o desta entrada | §9 | seção nova: decomposição da detecção por categoria de CWE. Categoria é o `gt_cwe_primary` do CVE; limiar k = 10, fixado pela distribuição em `results/por-cwe/`, antes de qualquer número de detecção por categoria; grupo "outros" sem taxa agregada; intervalo de Wilson de 95% nas seis categorias acima do limiar |
 | 25/09/2026 | o desta entrada | §10 | seção nova: capacidade empírica e delimitação por linguagem. Eixo é o CWE do achado; universo são todos os CVEs com tratado; unidade principal são CVEs com achado da categoria; JS/TS por dois critérios, extensão do arquivo e linguagem da regra (tabela em `results/capacidade/`), com os pontos cegos de cada um; a versão principal é a restrita a arquivo JS/TS. Fixada antes de qualquer contagem |
+| 28/09/2026 | o desta entrada | §8, §11 | critérios da versão corrigida fixados antes da campanha: duas leituras, ponto corrigido por tipo, níveis 3 e 4, denominador de 212, categoria sem análise, sensibilidade |
