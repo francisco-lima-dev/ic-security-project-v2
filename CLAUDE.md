@@ -1624,6 +1624,124 @@ Preparada em 28/09/2026. Critérios na §11 do `docs/criterios-cruzamento.md`.
   Até a correção de 28/09/2026 os três eram recusados; qualquer outro nome que
   não seja `CVE-*.json` continua recusado.
 
+## Campanha da versão corrigida — execução (29/09/2026)
+
+Números de execução, **sem leitura de detecção**: nada aqui compara achado
+com o ponto corrigido, e FP, VN, precisão e especificidade da §11 do
+`docs/criterios-cruzamento.md` vêm em apuração própria. Registro completo, com
+procedência, manifesto de sha256 e varredura de segredo, em
+`logs/campanha-corrigida-2026-09-29/README.md`.
+
+Oito lotes, os 220 CVEs do denominador sobre o `PostPatchCommit`, commit
+`91ed31a` em todos, três limites de análise em **900 s** conferidos pela linha
+do container em **24 de 24 jobs**, os três digests vigentes. Os 24 jobs
+saíram `success`; nenhum lote foi refeito.
+
+| Lote | Execução | CodeQL | Semgrep | Snyk Code |
+|---|---|---:|---:|---:|
+| `aa` | `36509298178` | 24m17s | 9m53s | 9m59s |
+| `ab` | `36540758244` | 27m13s | 12m54s | 9m06s |
+| `ac` | `36540761783` | 32m24s | 16m57s | 10m31s |
+| `ad` | `36540764816` | 30m16s | 14m36s | 9m33s |
+| `ae` | `36540768455` | 39m08s | 20m36s | 10m23s |
+| `af` | `36540772285` | 30m22s | 12m20s | 12m59s |
+| `ag` | `36540775631` | 34m06s | 12m22s | 10m19s |
+| `ah` | `36540779107` | 15m09s | 8m03s | 6m20s |
+
+Duração de **job**. O `aa` rodou sozinho, às 01:44 UTC, com leitura antes dos
+demais; `ab` a `ah` foram disparados juntos às 08:07 UTC e terminaram em
+**39 minutos de relógio para 191 CVEs**. O job do CodeQL do `ah` só começou às
+08:14, seis minutos depois dos outros — provavelmente fila de runner, com 21
+jobs disparados juntos; não verificado, e não é falha. A campanha inteira é de 29/09/2026 e não atravessou a meia-noite
+UTC.
+
+**Imagem do runner: `ubuntu24` / `20260920.314.1`** nos 24 jobs, a mesma do
+ensaio de 28/09 e distinta da campanha de detecção (`20260907.300.1`); uid:gid
+`1001:1001`.
+
+### Status
+
+| | OK | SEM_ACHADOS | SEM_ARQUIVO_ANALISAVEL | ERRO_ANALISE |
+|---|---:|---:|---:|---:|
+| CodeQL | 169 | 51 | — | 0 |
+| Semgrep | 179 | 41 | — | 0 |
+| Snyk Code | 132 | 82 | 5 | 1 |
+
+**Nenhum `ERRO_FETCH` nem `ERRO_CHECKOUT`**: os 660 pares (CVE, ferramenta)
+foram analisados no `PostPatchCommit` da lista, com `HEAD conferido`,
+inclusive os dois expandidos e os quatro do Bootstrap cujo `PrePatchCommit`
+só é alcançável por `v3-dev`. **Fallback de obtenção: 0 em 660**, nenhum `excedeu`.
+
+**`SEM_ARQUIVO_ANALISAVEL`: os cinco da detecção, e só eles** —
+`CVE-2018-16479`, `CVE-2018-16480`, `CVE-2018-3731`, `CVE-2018-3747` e
+`CVE-2019-5423`, os de arquivo sem extensão (`bin/http-live`, `bin/public`).
+Expectativa declarada antes do disparo, confirmada 5 de 5.
+
+**O `ERRO_ANALISE` é o `CVE-2019-15479` no Snyk Code** (lote `af`, "snyk saiu
+com 2"): a CLI não alcançou a API, `SNYK-OS-7001`, `net/http: TLS handshake
+timeout`, status 504, antes de a linha `Testing` do CVE ser impressa. Causa de
+rede, registrada pela própria ferramenta; sem raw. Na detecção o mesmo CVE saiu
+`OK`. Pela §11 conta como **sem análise** no Snyk Code, não como VN nem FP.
+
+**O 403 do Snyk Code** apareceu em 131 dos 132 testes com achados, e em nenhum
+dos 82 sem achados. A exceção é o `CVE-2018-3726` (lote `ad`): no lugar do 403,
+a mesma requisição final recebeu o timeout `SNYK-OS-7001` / 504, **depois** do
+resumo com os 15 achados, com exit 1 e raw gravado. Coerente com a
+investigação de 26/09 — a requisição que falha é posterior à análise.
+
+### Portões
+
+Nos 24 jobs: conferências (1), (2) e (4) do `check-log.py` em zero; a (3) igual
+ao `SEM_ARQUIVO_ANALISAVEL` de cada lote; `normalize.py` contra
+`cves-sast-corrigida.txt`, com zero falhas, zero órfãos e zero raws ilegíveis;
+portão de lote sem raw OK; sondagem de `HOME` com `DEFEITO MEDIDO` e rede do
+Semgrep `OPERA SEM REDE` em todos; `df -h` inalterado antes e depois em 23 dos
+24 jobs, e de 59 G para 60 G no do Semgrep do `ac` — o lote do `CVE-2018-20801`.
+Sobrecarga do laço — container menos a soma das durações por CVE —: 1 a 11 s
+por job.
+
+### Duração por CVE
+
+| Ferramenta | mediana | média | máximo | q1–q3 | soma |
+|---|---:|---:|---:|---|---:|
+| CodeQL | 46 s | 60,7 s | 317 s | 44–61 s | 3,71 h |
+| Semgrep | 18 s | 23,5 s | 207 s | 16–21 s | 1,44 h |
+| Snyk Code | 13 s | 19,9 s | 153 s | 10–22,75 s | 1,21 h |
+
+**Convenção: as 220 linhas do registro por ferramenta**, incluídas a do
+`ERRO_ANALISE` e as cinco `SEM_ARQUIVO_ANALISAVEL` do Snyk Code. Os máximos
+do CodeQL e do Semgrep são o `CVE-2018-20801` (lote `ac`); o do Snyk Code, o
+`CVE-2017-1000427` (lote `aa`), que levou 18 s na detecção. **Os 900 s não
+foram exercidos.**
+
+### Cobertura, volume e normalização
+
+`gt_file_scanned`: CodeQL **220 `true`**, Semgrep **220 `true`**, Snyk Code
+**214 `null`**. Nenhum `false`.
+
+**Achados brutos — volume reportado, NÃO detecção nem falso positivo:**
+CodeQL **3007**, Semgrep **11724**, Snyk Code **3657**. O `CVE-2018-20801`
+responde sozinho por **5850** achados do Semgrep, com raw de 144,1 MiB, como na
+detecção.
+
+Tratados: 220 / 220 / 214, em `results/corrigida/<ferramenta>/treated/`, 2,2 /
+10,6 / 2,4 MiB. Normalização somada nos oito lotes: 1,00 / 28,46 / 0,26 s.
+
+### Raws, cópia externa e expiração
+
+Raws: 220 / 220 / 214, **621,5 MiB** descomprimidos (57,3 / 547,9 / 16,3).
+Cópia externa, fora da árvore, um `tar` por ferramenta com `zstd`:
+
+| Arquivo | bytes | sha256 |
+|---|---:|---|
+| `raws-codeql-2026-09-29.tar.zst` | 1.776.490 | `525b68a8130fdac9709ad708acebe6734d49c19278b0e0bbd9f6b76c132bfe31` |
+| `raws-semgrep-2026-09-29.tar.zst` | 8.000.143 | `62e9c02ef472580848010a5b27fbd862dbea032d283726e8bbbf99a56a717d7a` |
+| `raws-snyk-code-2026-09-29.tar.zst` | 747.900 | `27720a9b3ab3fea3256269447724404dc7eea1d959f2ff4e1537155a5aa0face` |
+
+Os três passam em `zstd -t`, e os 654 raws contidos são idênticos, por sha256,
+aos dos artifacts, com a contagem por lote batendo. **Os artifacts das oito
+execuções expiram em 28/12/2026** (90 dias do início, todas de 29/09).
+
 ## Metodologia V10 — natureza e pendências (21/09/2026)
 
 **A versão vigente é a `docs/metodologia-V10.md`, de 22/09/2026, e ela é

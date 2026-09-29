@@ -1,0 +1,99 @@
+Artefato do lote cves-sast-corrigida-batch-ab — ferramenta semgrep
+====================================================================
+
+AVISO DE PROTOCOLO — ler antes de usar qualquer coisa deste artifact
+
+  * Regra do ensaio de fumaca (cves-sast-fumaca): os resultados de
+    DETECCAO de ensaio sao descartados; preservam-se so o log de
+    execucao e o normalize-report. Este lote nao e o de ensaio.
+  * NUNCA descompactar este artifact dentro de results/*/raw/ de uma
+    arvore de trabalho que depois va rodar lote. No runner a idempotencia
+    e inerte, porque o ambiente nasce limpo; localmente ela PULARIA os
+    CVEs cujo raw ja existe, e o lote sairia incompleto sem erro visivel.
+  * Lote sem raw algum FALHA o job. Mas o job verde NAO significa lote
+    inteiro analisado: lote com parte dos CVEs em ERRO_* termina verde.
+    Ler a contagem de status abaixo.
+
+campanha: corrigida
+commit_analisado: PostPatchCommit (versao corrigida)
+lista_completa_do_normalize: datasets/listas/cves-sast-corrigida.txt
+lote: cves-sast-corrigida-batch-ab
+ferramenta: semgrep
+imagem_pedida: ghcr.io/<dono>/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000
+preparado_em: 2026-09-29T08:07:35Z
+workflow_run_id: 36540758244
+workflow_run_attempt: 1
+commit: 91ed31aa9a8067033c227f89d15493e079be05fb
+runner_image_os: ubuntu24
+runner_image_version: 20260920.314.1
+uid_do_runner: 1001
+gid_do_runner: 1001
+lista: datasets/listas/cves-sast-corrigida-batch-ab
+registros_na_lista: 29
+linhas_fisicas_na_lista: 29
+quebra_de_linha_final: presente
+
+estado herdado do checkout, movido para fora do workspace:
+  logs/execution-log-semgrep.csv (6 linhas)
+  logs/normalize-report-semgrep.json (120 linhas)
+  results/semgrep/treated/*.json: 221 arquivo(s)
+  results/semgrep/raw no inicio: ausente (nao versionado), 0 entradas
+
+portao previo (tests/run-fixtures.py): rc=0 | 1468 verificacoes, 0 falha(s)
+imagem_usada: ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000
+repodigest_conferido: ghcr.io/francisco-lima-dev/ic-security-lab-semgrep@sha256:de71bdfbdf81d495781a4c80052c5f7d128ec9b76eba2304978e08b88ba5d000
+image_id: sha256:87c196298d41e95c2f6a3887730aaa78f9744e88c96b8f093dbb9a884aeca3b7
+controle do HOME: DEFEITO MEDIDO — sem -e HOME=/tmp falha (rc=1); com -e HOME=/tmp opera
+pre-voo da imagem: OK (linha de limites conferida; parada em "ERRO: lista nao encontrada: /workspace/datasets/listas/.prevoo-inexistente")
+normalize.py: rc=0 (--lista datasets/listas/cves-sast-corrigida.txt)
+check-log.py: rc=0
+portao de lote sem raw: OK — 29 de 29 CVEs do lote com raw
+rede do Semgrep: OPERA SEM REDE — scan com o pack vendorizado completou sob --network=none (rc=0, 1 arquivo(s) em paths.scanned, 112s).
+
+====================================================================
+DESFECHO DOS PASSOS
+====================================================================
+preparar: success
+portao previo (fixtures): success
+imagem por digest: success
+controle do HOME (nao fatal): success
+lote: success
+normalize.py: success
+check-log.py: success
+portao de lote sem raw: success
+rede do Semgrep (nao fatal, so no Semgrep): success
+resultados e logs copiados para o artifact: sim
+
+--- container
+inicio: 2026-09-29T08:08:08Z
+fim: 2026-09-29T08:18:27Z
+duracao_segundos: 619
+rc_container: 0
+limite_do_lote_segundos: 5400 (teto 5400; decorrido no job ao iniciar 33; disponivel 5457)
+estouro_do_limite_do_lote: nao
+laco_chegou_ao_fim: sim
+limites_pedidos: -e TIMEOUT_ANALISE=900
+limites_esperados: limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+limites_efetivos: limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+limites_conferidos: sim
+
+--- contagens
+raws (CVE-*): 29
+tratados (*.json): 29
+linhas no log de execucao (com cabecalho): 30
+
+--- portoes (linhas emitidas pelos proprios scripts)
+[tests/run-fixtures.py]
+1468 verificacoes, 0 falha(s)
+[tools/normalize.py]
+  processados: 29 | pulados: 0 | com falha: 0
+  linhas da lista sem raw: 191 | raws sem linha na lista: 0
+  achados: 369 (sem CWE: 0)
+[tools/check-log.py]
+  linhas no log: 29 | CVEs distintos apos deduplicacao: 29 | raws: 29
+  ultimo status por CVE: {'OK': 21, 'SEM_ACHADOS': 8}
+  (1) raw existe e o ultimo status e de erro: 0
+  (2) status OK/SEM_ACHADOS e nao existe raw: 0
+  (3) SEM_ARQUIVO_ANALISAVEL sem raw: 0  (ESPERADO — resultado, nao falha)
+  (4) CVE do lote sem raw e sem linha de log: 0 de 29
+      fallback de clone completo: 0

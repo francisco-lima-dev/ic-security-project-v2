@@ -1,0 +1,30 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2018-3721,https://github.com/lodash/lodash.git,d8e069cc3410082e44eb18fcf8e7f3d08ebe1d4a,OK,snyk 1.1306.1; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 15 achados; snyk exit 1; HEAD conferido,34
+CVE-2018-3722,https://github.com/jonschlinkert/merge-deep.git,2c33634da7129a5aefcc262d2fec2e72224404e5,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,16
+CVE-2018-3725,https://github.com/herber/hekto.git,c33aaae609c7236a7cb555a62d8b99dfbcb5da09,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2018-3726,https://github.com/omphalos/crud-file-server.git,4155bfe068bf211b49a0b3ffd06e78cbaf1b40fa,OK,15 achados; snyk exit 1; HEAD conferido,44
+CVE-2018-3728,https://github.com/hapijs/hoek.git,32ed5c9413321fbc37da5ca81a7cbab693786dee,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,19
+CVE-2018-3731,https://github.com/tnantoka/public.git,eae8ad8017b260f8667ded5e12801bd72b877af2,SEM_ARQUIVO_ANALISAVEL,nenhum projeto suportado (exit 3); HEAD conferido,2
+CVE-2018-3732,https://github.com/pillarjs/resolve-path.git,fe5b8052cafd35fcdafe9210e100e9050b37d2a0,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2018-3733,https://github.com/omphalos/crud-file-server.git,4fc3b404f718abb789f4ce4272c39c7a138c7a82,OK,15 achados; snyk exit 1; HEAD conferido,10
+CVE-2018-3736,https://github.com/TooTallNate/node-https-proxy-agent.git,1c24219df87524e6ed973127e81f30801d658f07,OK,10 achados; snyk exit 1; HEAD conferido,11
+CVE-2018-3737,https://github.com/joyent/node-sshpk.git,46065d38a5e6d1bccf86d3efb2fb83c14e3f9957,OK,1 achados; snyk exit 1; HEAD conferido,9
+CVE-2018-3738,https://github.com/protobufjs/protobuf.js.git,2ee1028d631a328e152d7e09f2a0e0c5c83dc2aa,OK,5 achados; snyk exit 1; HEAD conferido,16
+CVE-2018-3743,https://github.com/herber/hekto.git,408dd526e706246e2c2f378580c66036b768520e,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,10
+CVE-2018-3746,https://github.com/fagbokforlaget/pdfinfojs.git,5cc59cd8aa13ca8d16bb41da8affdfef370ad4fd,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2018-3747,https://github.com/tnantoka/public.git,a754943e2b7348e366d4f2a5319cb12fa873a725,SEM_ARQUIVO_ANALISAVEL,nenhum projeto suportado (exit 3); HEAD conferido,2
+CVE-2018-3750,https://github.com/unclechu/node-deep-extend.git,9423fae877e2ab6b4aecc4db79a0ed63039d4703,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,16
+CVE-2018-3752,https://github.com/schnittstabil/merge-options.git,d4a93bc2890455e0931ac0779667023e6cb101d4,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,19
+CVE-2018-3757,https://github.com/roest01/node-pdf-image.git,15c13846a966c8513e30aff58471163a872b3b6d,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,15
+CVE-2018-3770,https://github.com/alanshaw/markdown-pdf.git,5a3d30d1b1ea26702be671e6cbce2dc093e8604f,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,8
+CVE-2018-3772,https://github.com/vvo/node-whereis.git,0f64e3780235004fb6e43bfd153ea3e0e210ee2b,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,19
+CVE-2018-3783,https://github.com/JasonEtco/flintcms.git,4ae34238ce39fde00dfa15082397541758c07af1,OK,36 achados; snyk exit 1; HEAD conferido,12
+CVE-2018-3786,https://github.com/eggjs/egg-scripts.git,b98fd03d1e3aaed68004b881f0b3d42fe47341dd,OK,1 achados; snyk exit 1; HEAD conferido,11
+CVE-2018-6184,https://github.com/zeit/next.js.git,0b6575b47085e4fd86ed657ee66f5136a650acdf,OK,35 achados; snyk exit 1; HEAD conferido,27
+CVE-2018-6333,https://github.com/facebookarchive/nuclide.git,65f6bbd683404be1bb569b8d1be84b5d4c74a324,OK,74 achados; snyk exit 1; HEAD conferido,39
+CVE-2018-6341,https://github.com/facebook/react.git,ff41519ec2fea37643ecae7f87f8e15856247faf,OK,14 achados; snyk exit 1; HEAD conferido,17
+CVE-2018-6342,https://github.com/facebook/create-react-app.git,577a274d8cf829941d848ce10f69d2a4935a9f2a,OK,8 achados; snyk exit 1; HEAD conferido,11
+CVE-2018-7560,https://github.com/myshenin/aws-lambda-multipart-parser.git,56ccb03af4dddebc2b2defb348b6558783d5757e,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,8
+CVE-2018-7651,https://github.com/npm/ssri.git,d0ebcdc22cb5c8f47f89716d08b3518b2485d65d,OK,2 achados; snyk exit 1; HEAD conferido,49
+CVE-2019-10061,https://github.com/peterbraden/node-opencv.git,81a4b8620188e89f7e4fc985f3c89b58d4bcc86b,OK,18 achados; snyk exit 1; HEAD conferido,19
+CVE-2019-10090,https://github.com/apache/jspwiki.git,139746f7c25b84049437d1d9eed9456446a08bf7,OK,463 achados; snyk exit 1; HEAD conferido,50

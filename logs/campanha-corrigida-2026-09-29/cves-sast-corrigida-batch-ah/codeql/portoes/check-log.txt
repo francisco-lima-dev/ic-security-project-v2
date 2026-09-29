@@ -1,0 +1,18 @@
+--- coerencia log x raw: codeql ---
+  log: /home/runner/work/ic-security-project-v2/ic-security-project-v2/logs/execution-log-codeql.csv
+  raw: /home/runner/work/ic-security-project-v2/ic-security-project-v2/results/codeql/raw
+  linhas no log: 13 | CVEs distintos apos deduplicacao: 13 | raws: 13
+  ultimo status por CVE: {'OK': 12, 'SEM_ACHADOS': 1}
+
+  (1) raw existe e o ultimo status e de erro: 0
+  (2) status OK/SEM_ACHADOS e nao existe raw: 0
+  (3) SEM_ARQUIVO_ANALISAVEL sem raw: 0  (ESPERADO — resultado, nao falha)
+  (4) CVE do lote sem raw e sem linha de log: 0 de 13
+
+  (5) obtencao do codigo — METRICA, nao conferencia
+      base: 13 CVEs apos deduplicacao (a ultima linha de cada um)
+      fallback de clone completo: 0
+        por vocabulario:  novo 0 | antigo 0  (o antigo e a redacao anterior a G-1b e NAO discrimina causa)
+        causa do fetch:   estouro do limite 0 | outro codigo 0 | indeterminada 0
+      clone de contingencia tambem falhou: 0
+        causa do clone:   estouro do limite 0 | outro codigo 0 | indeterminada 0

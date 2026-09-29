@@ -1,0 +1,2 @@
+limites efetivos em segundos: TIMEOUT_CREATE=900; TIMEOUT_ANALYZE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+ERRO: lista nao encontrada: /workspace/datasets/listas/.prevoo-inexistente

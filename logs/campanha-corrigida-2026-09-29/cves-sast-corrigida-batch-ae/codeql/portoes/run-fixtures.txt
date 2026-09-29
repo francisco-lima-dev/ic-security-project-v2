@@ -1,0 +1,1525 @@
+
+== CodeQL: casos normais ==
+  ok   codeql normal sai com 0
+  ok   5 CVEs processados
+  ok   nenhum raw orfao
+  ok   218 linhas da lista sem raw (223-5), normal e silencioso
+  ok   D.5 file_path normalizado: ./ , file:// e /tmp/src-CVE-*/ removidos
+  ok   D.5 CVE-2018-14040 → js/collapse.js
+  ok   2 achados com caminho transformado
+  ok   3 motivos aplicados — grandeza distinta da anterior, e nomeada
+  ok   3 motivos ao todo, um caminho acumulando dois
+  ok   D.5 cada transformacao traz antes E depois
+  ok   D.5 antes e depois efetivamente diferem
+  ok   CWE do CodeQL: external/cwe/cwe-079 → CWE-079
+  ok   has_cwe true quando ha CWE
+  ok   achado sem CWE → cwe: [] e has_cwe: false
+  ok   regra vinda de tool.extensions[] resolvida
+  ok   regra resolvida SEM defaultConfiguration.level → unknown
+  ok   regra NAO resolvida NAO colapsa em unknown
+  ok   contador (1) de D.6 separado: 1 regra resolvida sem nivel
+  ok   contador (2) de D.6 separado: 1 regra nao resolvida
+  ok   error→high, note→low
+  ok   security-severity '6.1' → 6.1 float
+  ok   security-severity 5 → 5.0 float
+  ok   line_end aceita nulo (ausente no CodeQL)
+  ok   achados ordenados pela chave total
+  ok   finding_id no formato <tool>:<CVE>:<NNNN>
+  ok   1 colisao sob a chave total, contada e reportada
+  ok   gt_file_scanned do CodeQL: true pela notificacao de extraidos
+  ok   arquivo extraido e sem achado sai true, nao null
+  ok   toolExecutionNotifications contadas
+  ok   campos sem fonte no CodeQL ficam null, nao zero
+  ok   gt_file_affected e gt_file_affected_method NAO sobrevivem ao 1.2
+  ok   o caminho continua legivel em details[], sem virar conclusao
+  ok   metadata basico
+  ok   commit vem da LISTA de entrada
+  ok   CodeQL: rules_total 104, rules_applied NULO
+  ok   rules_id_sha256 nulo fora do Semgrep — nao ha pack de arquivo
+  ok   o motivo acompanha o true, nao so o null, e nomeia o universo
+  ok   conferencia do teto: notificacao x artifacts depurado
+  ok   o .rb citado por notificacao de outra linguagem sai de artifacts na depuracao — usar artifacts cru reportaria varrido o que o extrator de JS nao tocou
+  ok   analysis_date de invocations[0].endTimeUtc, origem 'tool'
+  ok   gt_cwe_primary do conjunto CWE-079|CWE-116
+  ok   gt_file_lines lista de inteiros
+  ok   conjunto vazio → primario null SEM consultar a tabela
+  ok   conjunto vazio contado no relatorio
+  ok   sem invocations → analysis_date por mtime, origem declarada
+  ok   sem fonte alguma de diagnostico → contagens null e details vazio
+  ok   notificacao ausente → null, NUNCA false
+  ok   e o motivo diz que faltou o inventario, nao que faltou o arquivo
+  ok   gt_file_path ausente do inventario → false
+  ok   o motivo acompanha o false e nomeia o universo
+  ok   o relatorio do CodeQL passa a ter os tres estados
+  ok   raw sem achados produz tratado com findings: []
+  ok   conjunto unitario → o proprio, SEM consultar a tabela
+  ok   conjunto presente com primario vazio → null
+  ok   primario indefinido contado SEPARADAMENTE do conjunto vazio
+  ok   campo presente e vazio → 0, distinto de null
+  ok   gt_file_path sem extensao preservado
+
+== CodeQL: raw ilegivel e raw orfao ==
+  ok   raw ilegivel/orfao → saida NAO nula
+  ok   D.8 raw truncado NAO produz tratado
+  ok   2 raws ilegiveis contados
+  ok   raw orfao e falha ruidosa, nomeado no relatorio
+  ok   raw orfao nao produz tratado
+  ok   os defeitos aparecem no stderr
+  ok   SARIF com runs[] e SEM results[] nao vira findings: []
+  ok   SARIF sem results[] contado como raw ilegivel, como no Semgrep
+
+== Ground truth com barra inicial (CVE-2019-12041) ==
+  ok   CVE com /index.js processa sem falha
+  ok   barra inicial do ground truth removida
+  ok   caminho original do benchmark preservado no tratado
+  ok   gt_file_scanned agora casa com paths.scanned (era false por causa da barra)
+  ok   normalizacao do ground truth registrada com antes/depois
+  ok   avisado no stderr, nao so no relatorio
+
+== Caminho absoluto sob prefixo nao previsto ==
+  ok   caminho absoluto PRESERVADO, nao mutilado
+  ok   caminho absoluto contado em campo proprio
+  ok   a nota NAO afirma 'tudo limpo' quando sobrou caminho absoluto
+  ok   o resumo do console mostra os absolutos, nao so o JSON
+  ok   o resumo imprime o CAMINHO do relatorio, nao o dicionario
+
+== Semgrep ==
+  ok   semgrep normal sai com 0
+  ok   extra.metadata.cwe como CADEIA NUA extraida corretamente
+  ok   cadeia nua NAO vira has_cwe false
+  ok   ocorrencia de cadeia nua contada no relatorio
+  ok   extra.metadata.cwe como LISTA, CWE-79 → CWE-079
+  ok   MEDIUM → medium
+  ok   ERROR → high
+  ok   metadata sem cwe → []; INFO → low
+  ok   rules_applied de .time.rules[]; ruleset do descritor vendorizado
+  ok   o campo antigo rules_loaded NAO sobrevive ao lado do novo
+  ok   ruleset e ESTRUTURA, com sha256 e obtained_at do descritor
+  ok   ruleset traz rules_id_sha256: o sha256 identifica o ARQUIVO, este identifica o CONJUNTO (o registry serve em ordem nao deterministica)
+  ok   Semgrep nao tem carimbo de tempo → mtime, origem declarada
+  ok   gt_file_scanned true: paths.scanned contem js/collapse.js
+  ok   errors e paths.skipped contados; notifications null
+  ok   Semgrep nao tem toolExecutionNotifications → null, nunca falha
+  ok   no Semgrep o details[] segue trazendo o caminho mencionado
+  ok   paths.scanned passa pela MESMA normalizacao de caminho
+  ok   gt_file_scanned false quando o arquivo nao foi varrido
+  ok   os dois errors[] contados
+  ok   errors[].type como CADEIA NUA vai para o detalhe
+  ok   errors[].type como UNIAO ETIQUETADA tem a etiqueta extraida; sem isso o detalhe sai sem dizer que erro foi
+  ok   contagem true/false/null com a lista dos false
+  ok   o motivo e agregado nos TRES estados, nao so no null
+  ok   no Semgrep o motivo nomeia o universo VARRIDOS nos dois booleanos
+  ok   so rules_applied > rules_total e anomalia; 370 e 12 NAO sao
+  ok   a anomalia aparece no console, nao so no JSON do relatorio
+  ok   sem paths.scanned → null COM motivo declarado
+
+== Semgrep: falhas previstas ==
+  ok   semgrep com defeitos → saida nao nula
+  ok   ausencia de .time e FALHA, nao rules_applied null
+  ok   severidade fora da tabela falha nomeando valor e CVE
+  ok   nenhum tratado escrito para os dois casos com defeito
+  ok   sem .time e severidade invalida NAO contam como raw ilegivel
+  ok   os dois contam como CVE com falha
+
+== Conjunto de CWE ausente da tabela ==
+  ok   conjunto ausente da tabela → falha ruidosa
+  ok   conjunto ausente contado em campo PROPRIO, distinto de primario vazio
+  ok   ausente da tabela NAO se confunde com primario indefinido
+
+== Validacao da lista de entrada ==
+  ok   lista com commit-curto.txt e falha ruidosa no normalizador, nao linha pulada
+  ok   lista com cve-invalido.txt e falha ruidosa no normalizador, nao linha pulada
+
+== level 'none' do enum SARIF ==
+  ok   'none' continua derrubando o CVE, nao e mapeado
+  ok   a mensagem nomeia 'none' como valor legal nao previsto, nao como lixo
+  ok   nenhum tratado escrito para o CVE com 'none'
+
+== Snyk Code ==
+  ok   snyk normal sai com 0
+  ok   Snyk: ruleset nulo inteiro e rules_applied nulo
+  ok   analysis_date extraido de automationDetails.id
+  ok   coverage integro em metadata (so no Snyk)
+  ok   coverage agregada NAO decide sobre um arquivo → null, nao true
+  ok   motivo do null declarado
+  ok   toolExecutionNotifications ausente → null, NUNCA falha
+  ok   FAILED_PARSING promovido a errors: 7 .html + 1 .xml
+  ok   o detalhe declara que a contagem nao discrimina caminhos
+  ok   o CVE entra em cves_com_erro pela cobertura, nao so por notificacao
+  ok   CWE do Snyk: 'CWE-79' → CWE-079
+  ok   results[].level do Snyk; security_severity nulo fora do CodeQL
+  ok   properties.cwe como cadeia nua no Snyk
+  ok   ruleId ausente de driver.rules[] no Snyk tambem nao vira unknown
+  ok   entrada FAILED_PARSING com caminho tambem conta como erro
+  ok   coverage com inventario de caminhos → gt_file_scanned true
+  ok   sem automationDetails → mtime
+  ok   notificacao do Snyk contada e cruzada com o gt_file_path
+  ok   ./bin/public → bin/public
+
+== Snyk Code: raw vazio e truncado ==
+  ok   SARIF vazio/truncado do Snyk → saida nao nula
+  ok   D.8 SARIF vazio {} NAO vira findings: [] — e o caso que so aqui e pego
+  ok   2 raws ilegiveis contados
+
+== Idempotencia e schema_version ==
+  ok   segunda execucao pula os 5 pela idempotencia
+  ok   --overwrite reprocessa
+  ok   tratado com schema_version divergente NAO e pulado em silencio
+  ok   a divergencia de schema aparece no stderr
+  ok   --overwrite reprocessa o tratado de schema antigo
+
+== Estabilidade da ordenacao ==
+  ok   reordenar o raw NAO muda o tratado (ordem por chave total, nao de entrada)
+  ok   reordenar o raw do SEMGREP tambem nao muda o tratado
+
+== Colunas no schema e na chave de ordenacao ==
+  ok   codeql: todo achado tem column_start e column_end
+  ok   semgrep: todo achado tem column_start e column_end
+  ok   snyk-code: todo achado tem column_start e column_end
+  ok   o Semgrep grava coluna de fato, nao so a chave nula
+  ok   com a coluna na chave, nenhum achado do fixture empata em TODOS os campos que o schema grava
+
+== rules_applied: os dois limites ==
+  ok   rules_applied == 0 e anomalia: findings vazio nao significa ausencia de achados. A guarda `!=` antiga pegava isso de graca; a `>` sozinha deixaria sem vigia
+  ok   o limite inferior tambem grita no console
+  ok   o valor de rules_applied de CADA CVE fica registrado no relatorio, nao so as anomalias
+  ok   terceira forma de errors[].type e CONTADA, nao silenciada: sem isso o detalhe sai parecendo completo e sem dizer que erro foi
+
+== check-log.py ==
+  ok   check-log (1): raw existe com status de erro
+  ok   check-log (2): OK sem raw
+  ok   check-log (3): esperado, apenas contado
+  ok   dedup mantem a ULTIMA linha: CVE-D nao aparece como erro
+  ok   sem PULADO orfao, nada e reportado nessa categoria
+  ok   check-log com problemas → saida nao nula
+  ok   PULADO sem raw e anomalia: o raw existia quando o lote rodou
+  ok   PULADO orfao → saida nao nula
+  ok   sem --lista-lote, a (4) se declara NAO conferida em vez de calar
+  ok   a (4) acha o CVE que sumiu sem raw e sem linha de log
+  ok   o CVE sumido e nomeado
+  ok   CVE sumido → saida nao nula
+  ok   lista grande demais avisa que --lista-lote nao e a lista completa
+  ok   log ausente → mensagem clara e saida nao nula, sem excecao
+
+== Invariantes de acoplamento ==
+  ok   normalize.py nao referencia o log de execucao fora dos comentarios
+  ok   normalize.py nao importa nem invoca check-log.py
+  ok   check-log.py nao importa normalize.py
+
+== Obtencao do codigo: estouro distinguivel de recusa ==
+  ok   estouro do limite e recusa do servidor NAO produzem mais a mesma linha de log: era o defeito que contaminava a contagem de fallback
+  ok   o estouro do fetch e nomeado COM o valor do limite
+  ok   o estouro do clone de contingencia e nomeado COM o valor do limite
+  ok   a recusa do servidor e registrada com o codigo que o git devolveu
+  ok   recusa do servidor NUNCA e descrita como estouro de limite
+  ok   a mensagem nova nao tem virgula: o CSV continua com 6 campos
+  ok   o conjunto de status e fechado: a correcao muda a mensagem e NAO acrescenta status
+  ok   o bloco de obtencao foi localizavel nos tres scripts
+  ok   o bloco de obtencao e IDENTICO nos tres scripts: sem isso o ensaio acima valeria so para o CodeQL
+  ok   codeql: as 5 mensagens novas existem e nenhuma tem virgula
+  ok   semgrep: as 5 mensagens novas existem e nenhuma tem virgula
+  ok   snyk-code: as 5 mensagens novas existem e nenhuma tem virgula
+  ok   codeql: nao sobrou literal de limite fora da constante
+  ok   semgrep: nao sobrou literal de limite fora da constante
+  ok   snyk-code: nao sobrou literal de limite fora da constante
+
+== Limites de tempo: defaults, sobrescrita e guarda ==
+  ok   codeql: sem TIMEOUT_* no ambiente, os limites efetivos sao os defaults do codigo, e o script para na guarda seguinte
+  ok   codeql: TIMEOUT_* definido no ambiente sobrescreve o default, variavel a variavel
+  ok   codeql: TIMEOUT_CREATE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_CREATE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_ANALYZE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_ANALYZE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_FETCH definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_FETCH definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_CLONE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   codeql: TIMEOUT_CLONE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   semgrep: sem TIMEOUT_* no ambiente, os limites efetivos sao os defaults do codigo, e o script para na guarda seguinte
+  ok   semgrep: TIMEOUT_* definido no ambiente sobrescreve o default, variavel a variavel
+  ok   semgrep: TIMEOUT_ANALISE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_ANALISE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_FETCH definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_FETCH definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_CLONE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   semgrep: TIMEOUT_CLONE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   snyk-code: sem TIMEOUT_* no ambiente, os limites efetivos sao os defaults do codigo, e o script para na guarda seguinte
+  ok   snyk-code: TIMEOUT_* definido no ambiente sobrescreve o default, variavel a variavel
+  ok   snyk-code: TIMEOUT_ANALISE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_ANALISE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_FETCH definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_FETCH definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_CLONE definido VAZIO, e nao cai no default, para na guarda antes de qualquer trabalho
+  ok   snyk-code: TIMEOUT_CLONE definido ZERO, que desligaria o limite, para na guarda antes de qualquer trabalho
+  ok   check-log.py aceita as linhas novas sem anomalia: erro sem raw e o caso normal
+  ok   check-log.py continua classificando ERRO_FETCH como status de erro
+  ok   (5) reconhece o fallback em linha PRODUZIDA PELO SCRIPT, nao em fixture escrita a mao
+  ok   (5) classifica a linha real do script como vocabulario novo
+  ok   (5) discrimina a causa nas linhas reais: uma por estouro e uma por outro codigo
+  ok   (5) discrimina a causa do clone nas linhas reais
+  ok   nenhum segmento das linhas reais do script escapa ao vocabulario declarado: e a conferencia de que as constantes nao divergiram
+
+== Guarda de integridade em runtime (segunda comparacao) ==
+  ok   guarda: ENV coincide com o descritor -> execucao segue
+  ok   guarda: com ENV coincidente a execucao passa das PRE-CONDICOES, nao apenas da guarda — o log foi criado
+  ok   guarda: ENV DIVERGE do descritor -> aborta. E o modo de falha visado: descritor mudou e ninguem reconstruiu a imagem
+  ok   guarda: descritor ausente NAO aborta — abortar quebraria execucao legitima sem o volume montado
+  ok   guarda: o caso 'sem volume' sai com o aviso PROPRIO dela, nunca como divergencia — sao coisas distintas
+  ok   guarda: ENV ausente aborta — imagem construida sem --build-arg nao pode rodar lote
+  ok   guarda: descritor malformado sai como MALFORMADO, nao como imagem obsoleta — a mensagem tem de nomear a causa certa
+  ok   guarda do Snyk: ENV DIVERGE do descritor -> aborta
+  ok   guarda do Snyk: ENV coincide -> execucao segue
+  ok   guarda do Snyk: descritor ausente avisa e NAO aborta
+  ok   guarda do Snyk: ENV ausente aborta
+  ok   a guarda do Snyk aponta para o descritor versionado dele
+
+== check-log.py (5): fallback e estouro ==
+  ok   (5) conta os CVEs que usaram fallback — inclusive aquele cuja linha so traz a causa e nao repete o rotulo; o nao reconhecido NAO entra no total, porque nao se sabe que ele e fallback
+  ok   (5) separa os dois vocabularios em vez de uniformiza-los: parte do corpus NAO discrimina causa e isso tem de ficar visivel
+  ok   (5) discrimina estouro de outro codigo no fetch — junta-los desfaria a correcao da G-1b
+  ok   (5) conta os CVEs em que o clone de contingencia tambem falhou
+  ok   (5) discrimina estouro de outro codigo tambem no clone
+  ok   (5) reporta o que PARECE obtencao e nao casou: silenciar seria dizer zero por nao ter perguntado
+  ok   (5) nao conta como fallback um CVE que nao o usou
+  ok   (5) e METRICA: fallback contado NAO entra na conta de problemas e nao muda o codigo de saida
+  ok   (5) diz ZERO quando nao houve fallback — e um zero que foi perguntado, com as demais contagens tambem em zero
+  ok   (5) nao inventa nao-reconhecido: 'semgrep excedeu 1800s' e mensagem de ANALISE e nao tem cara de obtencao
+  ok   (5) declara que a base e o resultado da deduplicacao, nao o arquivo bruto
+  ok   (5) reconhece a forma (A) do vocabulario antigo — o rotulo sozinho — em vez de atribui-la a 'novo' por suposicao
+  ok   (5) poe a forma (A) em causa INDETERMINADA: sem ela o CVE sumiria dos tres baldes e as causas somariam menos que o total
+  ok   (5) confere a identidade aritmetica e ela fecha: toda causa tem balde
+  ok   (5) reporta o nao reconhecido SEM transformar em problema: metrica nao muda codigo de saida
+  ok   (5) opera sobre a ULTIMA linha de cada CVE: a reexecucao PULADO substitui a linha de fallback, e o fallback que houve passa a contar ZERO — deflacao, nao inflacao
+  ok   (5) avisa que a contagem e PISO quando ha PULADO: sem isso a metrica de vigilancia cairia a zero sem sinal
+
+== cruza-deteccao.py: universo sintetico sobre a lista real ==
+  ok   casos: cada (ferramenta, CVE) aparece uma vez
+  ok   caso C01: gt_assumido confere com a lista e a tabela
+  ok   caso C02: gt_assumido confere com a lista e a tabela
+  ok   caso C03: gt_assumido confere com a lista e a tabela
+  ok   caso C04: gt_assumido confere com a lista e a tabela
+  ok   caso C05: gt_assumido confere com a lista e a tabela
+  ok   caso C06: gt_assumido confere com a lista e a tabela
+  ok   caso C07: gt_assumido confere com a lista e a tabela
+  ok   caso C08: gt_assumido confere com a lista e a tabela
+  ok   caso C09: gt_assumido confere com a lista e a tabela
+  ok   caso C10: gt_assumido confere com a lista e a tabela
+  ok   caso C11: gt_assumido confere com a lista e a tabela
+  ok   caso C12: gt_assumido confere com a lista e a tabela
+  ok   caso C13: gt_assumido confere com a lista e a tabela
+  ok   caso C14: gt_assumido confere com a lista e a tabela
+  ok   caso C15: gt_assumido confere com a lista e a tabela
+  ok   caso C16: gt_assumido confere com a lista e a tabela
+  ok   caso C17: gt_assumido confere com a lista e a tabela
+  ok   caso C18: gt_assumido confere com a lista e a tabela
+  ok   caso C19: gt_assumido confere com a lista e a tabela
+  ok   caso C20: gt_assumido confere com a lista e a tabela
+  ok   caso C21: gt_assumido confere com a lista e a tabela
+  ok   caso C22: gt_assumido confere com a lista e a tabela
+  ok   caso C23: gt_assumido confere com a lista e a tabela
+  ok   caso C23: sem_tratado so em SEM_ARQUIVO_ANALISAVEL do Snyk
+  ok   fixture: os oito lotes reais cobrem a lista
+  ok   cruzamento sobre o universo sintetico sai com 0
+  ok   exatamente as quatro saidas, sem residuo temporario
+  ok   CSV termina com quebra de linha final
+  ok   CSV: toda linha com o numero de campos do cabecalho (nenhuma virgula em campo)
+  ok   CSV com uma linha por (CVE, ferramenta): 669
+  ok   codeql: 220 pares no denominador
+  ok   codeql: as tres exclusoes, cada uma com seu motivo
+  ok   codeql: fora do denominador nenhuma coluna de nivel e preenchida
+  ok   codeql: CVE-2018-1000096 fora da matriz mas COM tratado
+  ok   codeql: gt_cwes do CVE-2018-1000096 lido do tratado e vazio
+  ok   semgrep: 220 pares no denominador
+  ok   semgrep: as tres exclusoes, cada uma com seu motivo
+  ok   semgrep: fora do denominador nenhuma coluna de nivel e preenchida
+  ok   semgrep: CVE-2018-1000096 fora da matriz mas COM tratado
+  ok   semgrep: gt_cwes do CVE-2018-1000096 lido do tratado e vazio
+  ok   snyk-code: 220 pares no denominador
+  ok   snyk-code: as tres exclusoes, cada uma com seu motivo
+  ok   snyk-code: fora do denominador nenhuma coluna de nivel e preenchida
+  ok   snyk-code: CVE-2018-1000096 fora da matriz mas COM tratado
+  ok   snyk-code: gt_cwes do CVE-2018-1000096 lido do tratado e vazio
+  ok   caso C01 (codeql CVE-2017-16011) CSV: niveis [nivel_0-]
+  ok   caso C01 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C01 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C01: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C01: tratado_presente
+  ok   caso C02 (codeql CVE-2016-10735) CSV: niveis [nivel_0+, nivel_1-]
+  ok   caso C02 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C02 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C02: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C02: tratado_presente
+  ok   caso C03 (codeql CVE-2018-14040) CSV: niveis [nivel_1+, nivel_2_generosa-, nivel_2_estrita-, nivel_3-]
+  ok   caso C03 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C03 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C03: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C03: tratado_presente
+  ok   caso C04 (codeql CVE-2017-16042) CSV: niveis [nivel_2_generosa-, nivel_2_estrita-]
+  ok   caso C04 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C04 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C04: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C04: tratado_presente
+  ok   caso C05 (codeql CVE-2018-16472) CSV: niveis [estrita nao se aplica]
+  ok   caso C05 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C05 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C05: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C05: tratado_presente
+  ok   caso C06 (semgrep CVE-2016-10735) CSV: niveis [nivel_2_generosa+, nivel_2_estrita-]
+  ok   caso C06 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C06 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C06: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C06: tratado_presente
+  ok   caso C07 (semgrep CVE-2018-14040) CSV: niveis [nivel_2_generosa+, nivel_2_estrita+, nivel_4_generosa-, nivel_4_estrita-]
+  ok   caso C07 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C07 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C07: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C07: tratado_presente
+  ok   caso C08 (semgrep CVE-2017-16042) CSV: niveis [nivel_3+, nivel_4_generosa-, nivel_4_estrita-]
+  ok   caso C08 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C08 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C08: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C08: tratado_presente
+  ok   caso C09 (semgrep CVE-2017-16011) CSV: niveis [nivel_3-, nivel_2_estrita+]
+  ok   caso C09 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C09 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C09: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C09: tratado_presente
+  ok   caso C10 (semgrep CVE-2017-1000219) CSV: niveis [nivel_3+]
+  ok   caso C10 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C10 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C10: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C10: tratado_presente
+  ok   caso C11 (semgrep CVE-2017-16029) CSV: niveis [nivel_3-]
+  ok   caso C11 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C11 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C11: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C11: tratado_presente
+  ok   caso C12 (semgrep CVE-2017-16028) CSV: niveis [nivel_3+, nivel_4_generosa+, nivel_4_estrita+]
+  ok   caso C12 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C12 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C12: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C12: tratado_presente
+  ok   caso C13 (snyk-code CVE-2017-16028) CSV: niveis [nivel_3+, nivel_4_generosa+, nivel_4_estrita+]
+  ok   caso C13 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C13 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C13: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C13: tratado_presente
+  ok   caso C14 (snyk-code CVE-2016-10735) CSV: niveis [nivel_2_generosa+, nivel_2_estrita+, nivel_3+, nivel_4_generosa-, nivel_4_estrita-]
+  ok   caso C14 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C14 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C14: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C14: tratado_presente
+  ok   caso C15 (snyk-code CVE-2018-14040) CSV: niveis [nivel_4_generosa+, nivel_4_estrita-]
+  ok   caso C15 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C15 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C15: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C15: tratado_presente
+  ok   caso C16 (snyk-code CVE-2017-16042) CSV: niveis [nivel_4_generosa+, nivel_4_estrita+]
+  ok   caso C16 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C16 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C16: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C16: tratado_presente
+  ok   caso C17 (codeql CVE-2021-23364) CSV: niveis [nivel_3+, nivel_4_generosa+, nivel_4_estrita+]
+  ok   caso C17 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C17 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C17: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C17: tratado_presente
+  ok   caso C18 (codeql CVE-2019-12041) CSV: niveis [nivel_1+, nivel_4_estrita+]
+  ok   caso C18 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C18 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C18: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C18: tratado_presente
+  ok   caso C19 (codeql CVE-2017-1000219) CSV: niveis [nivel_0+, nivel_1-, gt_file_scanned false]
+  ok   caso C19 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C19 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C19: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C19: tratado_presente
+  ok   caso C20 (codeql CVE-2017-16029) CSV: niveis [nivel_3-, nivel_2_estrita+]
+  ok   caso C20 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C20 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C20: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C20: tratado_presente
+  ok   caso C21 (codeql CVE-2018-3725) CSV: niveis [nivel_3-]
+  ok   caso C21 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C21 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C21: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C21: tratado_presente
+  ok   caso C22 (snyk-code CVE-2017-15010) CSV: niveis [nivel_4_generosa+, nivel_4_estrita-, nivel_2_estrita-]
+  ok   caso C22 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C22 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C22: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C22: tratado_presente
+  ok   caso C23 (snyk-code CVE-2018-16479) CSV: niveis [nivel_0-, sem tratado no denominador]
+  ok   caso C23 JSON: niveis, com null onde a estrita nao se aplica
+  ok   caso C23 JSON: achados casados por finding_id, nivel a nivel
+  ok   caso C23: estrita_aplicavel, achados no arquivo e distancias (CSV e JSON)
+  ok   caso C23: tratado_presente
+  ok   codeql: agregados iguais aos derivados dos casos
+  ok   codeql: recontagem independente do CSV = agregados do JSON
+  ok   codeql: CSV e JSON concordam em cada (CVE, nivel) do denominador
+  ok   codeql: dos que acertam nivel 1, quantos acertam nivel 3
+  ok   codeql: estrita nao se aplica so ao CVE-2018-16472, contado a parte
+  ok   codeql: sem tratado no denominador = 0
+  ok   codeql: autoteste embutido, 34 mutantes em ['conferir_presenca', 'conferir_status_achados', 'validar_tratado'], cada um pela guarda pretendida
+  ok   codeql: tratados_validados e contagem da propria ferramenta
+  ok   codeql: o JSON carrega o sha256 do CSV da mesma execucao
+  ok   codeql: fontes.codigo traz o sha256 dos tres scripts que moldam o resultado
+  ok   codeql: status derivado dos 24 logs de lote, sem arquivo intermediario
+  ok   codeql: controle positivo embutido sem divergencia
+  ok   codeql: conferencia CSV x JSON zero, e a mesma conferencia acusa CSV adulterado
+  ok   codeql: nenhuma chave de precisao, falso positivo ou total de achados
+  ok   semgrep: agregados iguais aos derivados dos casos
+  ok   semgrep: recontagem independente do CSV = agregados do JSON
+  ok   semgrep: CSV e JSON concordam em cada (CVE, nivel) do denominador
+  ok   semgrep: dos que acertam nivel 1, quantos acertam nivel 3
+  ok   semgrep: estrita nao se aplica so ao CVE-2018-16472, contado a parte
+  ok   semgrep: sem tratado no denominador = 0
+  ok   semgrep: autoteste embutido, 34 mutantes em ['conferir_presenca', 'conferir_status_achados', 'validar_tratado'], cada um pela guarda pretendida
+  ok   semgrep: tratados_validados e contagem da propria ferramenta
+  ok   semgrep: o JSON carrega o sha256 do CSV da mesma execucao
+  ok   semgrep: fontes.codigo traz o sha256 dos tres scripts que moldam o resultado
+  ok   semgrep: status derivado dos 24 logs de lote, sem arquivo intermediario
+  ok   semgrep: controle positivo embutido sem divergencia
+  ok   semgrep: conferencia CSV x JSON zero, e a mesma conferencia acusa CSV adulterado
+  ok   semgrep: nenhuma chave de precisao, falso positivo ou total de achados
+  ok   snyk-code: agregados iguais aos derivados dos casos
+  ok   snyk-code: recontagem independente do CSV = agregados do JSON
+  ok   snyk-code: CSV e JSON concordam em cada (CVE, nivel) do denominador
+  ok   snyk-code: dos que acertam nivel 1, quantos acertam nivel 3
+  ok   snyk-code: estrita nao se aplica so ao CVE-2018-16472, contado a parte
+  ok   snyk-code: sem tratado no denominador = 5
+  ok   snyk-code: autoteste embutido, 34 mutantes em ['conferir_presenca', 'conferir_status_achados', 'validar_tratado'], cada um pela guarda pretendida
+  ok   snyk-code: tratados_validados e contagem da propria ferramenta
+  ok   snyk-code: o JSON carrega o sha256 do CSV da mesma execucao
+  ok   snyk-code: fontes.codigo traz o sha256 dos tres scripts que moldam o resultado
+  ok   snyk-code: status derivado dos 24 logs de lote, sem arquivo intermediario
+  ok   snyk-code: controle positivo embutido sem divergencia
+  ok   snyk-code: conferencia CSV x JSON zero, e a mesma conferencia acusa CSV adulterado
+  ok   snyk-code: nenhuma chave de precisao, falso positivo ou total de achados
+  ok   gt_file_scanned false sai 'false' no CSV e o CVE permanece no denominador
+  ok   codeql: gt_file_scanned por estado, balde false exercitado
+  ok   semgrep: gt_file_scanned por estado, balde false exercitado
+  ok   snyk-code: gt_file_scanned por estado, balde false exercitado
+  ok   gt_file_scanned null do Snyk sai 'null', distinto de vazio (sem tratado)
+  ok   gt_file_scanned vazio onde nao ha tratado
+  ok   segunda execucao: CSV byte-identico
+  ok   segunda execucao na mesma maquina: os tres JSON byte-identicos
+  ok   controle: o padrao de carimbo casa com os nomes que deveria pegar
+  ok   controle: o percurso das chaves alcanca chave aninhada em lista
+  ok   nenhuma chave com nome de carimbo de execucao nos JSON
+  ok   saida versionada recusa entradas de fora do repositorio
+  ok   results/cruzamento/ intocado pela recusa
+  ok   interface: so opcoes de caminho, nenhuma que selecione recorte
+
+== cruza-deteccao.py: mutantes (cada um tem de PARAR sem escrever saida) ==
+  ok   mutante acusado: tratado presente de CVE-2016-1000229 (repositorio inexistente)
+  ok   mutante 'tratado presente de CVE-2016-1000229 (repositorio inexistente)': nenhuma saida escrita nem alterada
+  ok   mutante acusado: tratado presente de CVE-2018-8035 (commit inexistente)
+  ok   mutante 'tratado presente de CVE-2018-8035 (commit inexistente)': nenhuma saida escrita nem alterada
+  ok   mutante acusado: baixa com status OK no log
+  ok   mutante 'baixa com status OK no log': nenhuma saida escrita nem alterada
+  ok   mutante acusado: baixa com o status do outro motivo (repositorio inexistente com ERRO_CHECKOUT)
+  ok   mutante 'baixa com o status do outro motivo (repositorio inexistente com ERRO_CHECKOUT)': nenhuma saida escrita nem alterada
+  ok   mutante acusado: CVE-2018-1000096 com gt_cwes nao vazio no tratado
+  ok   mutante 'CVE-2018-1000096 com gt_cwes nao vazio no tratado': nenhuma saida escrita nem alterada
+  ok   mutante acusado: lista em que CVE-2018-1000096 tem CWE
+  ok   mutante 'lista em que CVE-2018-1000096 tem CWE': nenhuma saida escrita nem alterada
+  ok   mutante acusado: lista com 222 CVEs
+  ok   mutante 'lista com 222 CVEs': nenhuma saida escrita nem alterada
+  ok   mutante acusado: lista com FileLine vazio num CVE do denominador
+  ok   mutante 'lista com FileLine vazio num CVE do denominador': nenhuma saida escrita nem alterada
+  ok   mutante acusado: codeql sem tratado e registro diz SEM_ACHADOS
+  ok   mutante 'codeql sem tratado e registro diz SEM_ACHADOS': nenhuma saida escrita nem alterada
+  ok   mutante acusado: codeql sem tratado com ERRO_ANALISE
+  ok   mutante 'codeql sem tratado com ERRO_ANALISE': nenhuma saida escrita nem alterada
+  ok   mutante acusado: semgrep sem tratado com SEM_ARQUIVO_ANALISAVEL (so o Snyk o admite)
+  ok   mutante 'semgrep sem tratado com SEM_ARQUIVO_ANALISAVEL (so o Snyk o admite)': nenhuma saida escrita nem alterada
+  ok   mutante acusado: snyk com tratado para CVE SEM_ARQUIVO_ANALISAVEL
+  ok   mutante 'snyk com tratado para CVE SEM_ARQUIVO_ANALISAVEL': nenhuma saida escrita nem alterada
+  ok   mutante acusado: log de lote sem um CVE
+  ok   mutante 'log de lote sem um CVE': nenhuma saida escrita nem alterada
+  ok   mutante acusado: log com status desconhecido
+  ok   mutante 'log com status desconhecido': nenhuma saida escrita nem alterada
+  ok   mutante acusado: log com linha fora do formato
+  ok   mutante 'log com linha fora do formato': nenhuma saida escrita nem alterada
+  ok   mutante acusado: log sem cabecalho
+  ok   mutante 'log sem cabecalho': nenhuma saida escrita nem alterada
+  ok   mutante acusado: log ausente
+  ok   mutante 'log ausente': nenhuma saida escrita nem alterada
+  ok   mutante acusado: CVE em dois lotes
+  ok   mutante 'CVE em dois lotes': nenhuma saida escrita nem alterada
+  ok   mutante acusado: CVE repetido no log
+  ok   mutante 'CVE repetido no log': nenhuma saida escrita nem alterada
+  ok   mutante acusado: OK no log e tratado sem achado
+  ok   mutante 'OK no log e tratado sem achado': nenhuma saida escrita nem alterada
+  ok   mutante acusado: SEM_ACHADOS no log e tratado com achado (caso C03)
+  ok   mutante 'SEM_ACHADOS no log e tratado com achado (caso C03)': nenhuma saida escrita nem alterada
+  ok   mutante acusado: CVE sem CWE sem tratado
+  ok   mutante 'CVE sem CWE sem tratado': nenhuma saida escrita nem alterada
+  ok   mutante acusado: tratado orfao
+  ok   mutante 'tratado orfao': nenhuma saida escrita nem alterada
+  ok   mutante acusado: arquivo inesperado no diretorio
+  ok   mutante 'arquivo inesperado no diretorio': nenhuma saida escrita nem alterada
+  ok   mutante acusado: tratado ilegivel
+  ok   mutante 'tratado ilegivel': nenhuma saida escrita nem alterada
+  ok   tratado ilegivel nao reaparece como 'tratado AUSENTE': presenca e do arquivo
+  ok   mutante acusado: topo com chave extra
+  ok   mutante 'topo com chave extra': nenhuma saida escrita nem alterada
+  ok   mutante acusado: schema_version 1.2
+  ok   mutante 'schema_version 1.2': nenhuma saida escrita nem alterada
+  ok   mutante acusado: metadata do snyk sem coverage
+  ok   mutante 'metadata do snyk sem coverage': nenhuma saida escrita nem alterada
+  ok   mutante acusado: tool divergente
+  ok   mutante 'tool divergente': nenhuma saida escrita nem alterada
+  ok   mutante acusado: gt_file_path divergente
+  ok   mutante 'gt_file_path divergente': nenhuma saida escrita nem alterada
+  ok   mutante acusado: gt_cwe_primary divergente
+  ok   mutante 'gt_cwe_primary divergente': nenhuma saida escrita nem alterada
+  ok   mutante acusado: commit divergente
+  ok   mutante 'commit divergente': nenhuma saida escrita nem alterada
+  ok   mutante acusado: achado sem chave
+  ok   mutante 'achado sem chave': nenhuma saida escrita nem alterada
+  ok   mutante acusado: cwe fora da forma canonica
+  ok   mutante 'cwe fora da forma canonica': nenhuma saida escrita nem alterada
+  ok   mutante acusado: has_cwe incoerente
+  ok   mutante 'has_cwe incoerente': nenhuma saida escrita nem alterada
+  ok   mutante acusado: line_start em texto
+  ok   mutante 'line_start em texto': nenhuma saida escrita nem alterada
+  ok   mutante acusado: line_end menor que line_start
+  ok   mutante 'line_end menor que line_start': nenhuma saida escrita nem alterada
+  ok   mutante acusado: file_path absoluto
+  ok   mutante 'file_path absoluto': nenhuma saida escrita nem alterada
+  ok   mutante acusado: finding_id de outro CVE
+  ok   mutante 'finding_id de outro CVE': nenhuma saida escrita nem alterada
+  ok   mutante acusado: finding_id repetido
+  ok   mutante 'finding_id repetido': nenhuma saida escrita nem alterada
+  ok   mutante acusado: parada com saida pre-existente
+  ok   mutante 'parada com saida pre-existente': nenhuma saida escrita nem alterada
+  ok   parada avisa que as saidas pre-existentes nao foram atualizadas
+  ok   mutantes desfeitos: universo restaurado
+
+== caracteriza-pares.py: repositorio sintetico ==
+  ok   pares: execucao sobre a fixture sai com 0
+  ok   pares: uma linha por CVE da fixture (31)
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): fora_do_denominador = ''
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): post_malformado = 'nao'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): status = 'OK'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): pre_existe = 'sim'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): post_existe = 'sim'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): post_tipo = 'commit'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): distancia = '1'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): arquivos_alterados = '1'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_linhas = '5'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0001 (post filho direto de pre, alterando a linha do gt): gt_ponto_post = '5-5'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): fora_do_denominador = ''
+  ok   pares CVE-2099-0002 (post a tres commits de pre): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): post = 'd8a40691edc8fe09eaa7a6f3fc9107007e5e695d'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): post_malformado = 'nao'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): status = 'OK'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): pre_existe = 'sim'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): post_existe = 'sim'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): post_tipo = 'commit'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): distancia = '3'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): pre_e_pai_de_post = 'nao'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): arquivos_alterados = '3'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_linhas = '5'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0002 (post a tres commits de pre): gt_ponto_post = '5-5'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): fora_do_denominador = ''
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): post = '686e4d22de807b93e074d3ec745eeaf07f4a392b'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): post_malformado = 'nao'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): status = 'OK'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): pre_existe = 'sim'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): post_existe = 'sim'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): post_tipo = 'commit'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): relacao = 'sem_relacao'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): distancia = ''
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): pre_e_pai_de_post = 'nao'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): arquivos_alterados = '2'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_linhas = '1'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0003 (post sem relacao com pre (outro ramo)): gt_ponto_post = '1-1'
+  ok   pares CVE-2018-1000096 (post igual a pre): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2018-1000096 (post igual a pre): fora_do_denominador = 'sem_cwe_no_ground_truth'
+  ok   pares CVE-2018-1000096 (post igual a pre): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2018-1000096 (post igual a pre): post = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2018-1000096 (post igual a pre): post_malformado = 'nao'
+  ok   pares CVE-2018-1000096 (post igual a pre): status = 'OK'
+  ok   pares CVE-2018-1000096 (post igual a pre): pre_existe = 'sim'
+  ok   pares CVE-2018-1000096 (post igual a pre): post_existe = 'sim'
+  ok   pares CVE-2018-1000096 (post igual a pre): post_tipo = 'commit'
+  ok   pares CVE-2018-1000096 (post igual a pre): relacao = 'iguais'
+  ok   pares CVE-2018-1000096 (post igual a pre): distancia = ''
+  ok   pares CVE-2018-1000096 (post igual a pre): pre_e_pai_de_post = 'nao'
+  ok   pares CVE-2018-1000096 (post igual a pre): arquivos_alterados = '0'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_arquivo = 'f.js'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_arquivo_alterado = 'nao'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_linhas = '5'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_linhas_em_trecho_alterado = 'nao'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_linhas_deslocadas = '5'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_tipo_ponto = 'inalterada'
+  ok   pares CVE-2018-1000096 (post igual a pre): gt_ponto_post = '5'
+  ok   pares CVE-2099-0005 (arquivo removido no post): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0005 (arquivo removido no post): fora_do_denominador = ''
+  ok   pares CVE-2099-0005 (arquivo removido no post): pre = 'd8a40691edc8fe09eaa7a6f3fc9107007e5e695d'
+  ok   pares CVE-2099-0005 (arquivo removido no post): post = '43eddd38e1d7301bfb3b90001856c9f84e9b6f18'
+  ok   pares CVE-2099-0005 (arquivo removido no post): post_malformado = 'nao'
+  ok   pares CVE-2099-0005 (arquivo removido no post): status = 'OK'
+  ok   pares CVE-2099-0005 (arquivo removido no post): pre_existe = 'sim'
+  ok   pares CVE-2099-0005 (arquivo removido no post): post_existe = 'sim'
+  ok   pares CVE-2099-0005 (arquivo removido no post): post_tipo = 'commit'
+  ok   pares CVE-2099-0005 (arquivo removido no post): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0005 (arquivo removido no post): distancia = '1'
+  ok   pares CVE-2099-0005 (arquivo removido no post): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0005 (arquivo removido no post): arquivos_alterados = '1'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_arquivo = 'h.js'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_arquivo_no_post = 'removido'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_linhas = '2'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_tipo_ponto = 'so_remocao'
+  ok   pares CVE-2099-0005 (arquivo removido no post): gt_ponto_post = 'del:0:fim'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): fora_do_denominador = ''
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): pre = '43eddd38e1d7301bfb3b90001856c9f84e9b6f18'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): post = 'a9c45d1ebadb42f4362de5b7242554a92acc5f54'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): post_malformado = 'nao'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): status = 'OK'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): pre_existe = 'sim'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): post_existe = 'sim'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): post_tipo = 'commit'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): distancia = '1'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): arquivos_alterados = '2'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_arquivo = 'r.js'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_arquivo_no_post = 'renomeado:lib/r2.js'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_linhas = '10'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_linhas_em_trecho_alterado = 'nao'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_linhas_deslocadas = '12'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_tipo_ponto = 'inalterada'
+  ok   pares CVE-2099-0006 (arquivo renomeado, linha do gt deslocada por insercao no topo): gt_ponto_post = '12'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): fora_do_denominador = ''
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): pre = 'a9c45d1ebadb42f4362de5b7242554a92acc5f54'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): post = '91860e94f9c53dc35489eb7c14236ba49f05b7df'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): post_malformado = 'nao'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): status = 'OK'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): pre_existe = 'sim'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): post_existe = 'sim'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): post_tipo = 'commit'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): distancia = '1'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): arquivos_alterados = '1'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_arquivo_alterado = 'nao'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_linhas = '3'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_linhas_em_trecho_alterado = 'nao'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_linhas_deslocadas = '3'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_tipo_ponto = 'inalterada'
+  ok   pares CVE-2099-0007 (correcao que nao toca o arquivo do gt): gt_ponto_post = '3'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): fora_do_denominador = ''
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): pre = '91860e94f9c53dc35489eb7c14236ba49f05b7df'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): post = '797d0d1076b79bd4597778d7b86d6eafdfdcc1fb'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): post_malformado = 'nao'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): status = 'OK'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): pre_existe = 'sim'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): post_existe = 'sim'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): post_tipo = 'commit'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): distancia = '1'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): arquivos_alterados = '1'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_linhas = '2|9'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_linhas_em_trecho_alterado = 'nao|sim'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_linhas_deslocadas = '5|'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_tipo_ponto = 'inalterada|trecho'
+  ok   pares CVE-2099-0008 (linha fora de trecho alterado, deslocada +3; outra alterada): gt_ponto_post = '5|12-12'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): fora_do_denominador = ''
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): post = 'c9734def0485f1acf78fc0842fe76207174924bf'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): post_malformado = 'nao'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): status = 'OK'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): pre_existe = 'sim'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): post_existe = 'sim'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): post_tipo = 'tag'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): distancia = '1'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): arquivos_alterados = '1'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_linhas = '5'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0009 (objeto de tag anotada no lugar do post): gt_ponto_post = '5-5'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): fora_do_denominador = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): post = '0'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): post_malformado = 'nao_expandido'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): status = 'OK'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): pre_existe = 'sim'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): post_tipo = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): relacao = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): distancia = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): arquivos_alterados = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_linhas = '5'
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0010 (prefixo ambiguo (1 caractere, dois commits)): gt_ponto_post = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): fora_do_denominador = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): post = '686'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): post_malformado = 'nao_expandido'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): status = 'OK'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): pre_existe = 'sim'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): post_tipo = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): relacao = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): distancia = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): arquivos_alterados = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_linhas = '1'
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0011 (prefixo unico de commit que nao descende de pre): gt_ponto_post = ''
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): fora_do_denominador = ''
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): post_malformado = 'expandido'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): status = 'OK'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): pre_existe = 'sim'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): post_existe = 'sim'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): post_tipo = 'commit'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): distancia = '1'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): arquivos_alterados = '1'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_linhas = '5'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0012 (prefixo unico que expande (quatro condicoes)): gt_ponto_post = '5-5'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): fora_do_denominador = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): pre = 'a9c45d1ebadb42f4362de5b7242554a92acc5f54'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): post = '918'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): post_malformado = 'nao_expandido'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): status = 'OK'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): pre_existe = 'sim'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): post_tipo = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): relacao = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): distancia = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): arquivos_alterados = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_linhas = '3'
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0013 (prefixo de descendente que nao altera o arquivo do gt): gt_ponto_post = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): fora_do_denominador = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): post = 'c9'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): post_malformado = 'nao_expandido'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): status = 'OK'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): pre_existe = 'sim'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): post_tipo = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): relacao = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): distancia = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): arquivos_alterados = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_linhas = '5'
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0014 (prefixo de objeto de tag): gt_ponto_post = ''
+  ok   pares CVE-2099-0015 (pre descende de post): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0015 (pre descende de post): fora_do_denominador = ''
+  ok   pares CVE-2099-0015 (pre descende de post): pre = 'd8a40691edc8fe09eaa7a6f3fc9107007e5e695d'
+  ok   pares CVE-2099-0015 (pre descende de post): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0015 (pre descende de post): post_malformado = 'nao'
+  ok   pares CVE-2099-0015 (pre descende de post): status = 'OK'
+  ok   pares CVE-2099-0015 (pre descende de post): pre_existe = 'sim'
+  ok   pares CVE-2099-0015 (pre descende de post): post_existe = 'sim'
+  ok   pares CVE-2099-0015 (pre descende de post): post_tipo = 'commit'
+  ok   pares CVE-2099-0015 (pre descende de post): relacao = 'pre_descende_de_post'
+  ok   pares CVE-2099-0015 (pre descende de post): distancia = ''
+  ok   pares CVE-2099-0015 (pre descende de post): pre_e_pai_de_post = 'nao'
+  ok   pares CVE-2099-0015 (pre descende de post): arquivos_alterados = '2'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_arquivo_alterado = 'nao'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_linhas = '5'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_linhas_em_trecho_alterado = 'nao'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_linhas_deslocadas = '5'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_tipo_ponto = 'inalterada'
+  ok   pares CVE-2099-0015 (pre descende de post): gt_ponto_post = '5'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): fora_do_denominador = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): post = 'dddddddddddddddddddddddddddddddddddddddd'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): post_malformado = 'nao'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): status = 'OK'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): pre_existe = 'sim'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): post_existe = 'nao'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): post_tipo = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): relacao = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): distancia = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): arquivos_alterados = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_linhas = '5'
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0016 (post inexistente (not our ref)): gt_ponto_post = ''
+  ok   pares CVE-2099-0017 (pre inexistente): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0017 (pre inexistente): fora_do_denominador = ''
+  ok   pares CVE-2099-0017 (pre inexistente): pre = 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+  ok   pares CVE-2099-0017 (pre inexistente): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0017 (pre inexistente): post_malformado = 'nao'
+  ok   pares CVE-2099-0017 (pre inexistente): status = 'OK'
+  ok   pares CVE-2099-0017 (pre inexistente): pre_existe = 'nao'
+  ok   pares CVE-2099-0017 (pre inexistente): post_existe = 'sim'
+  ok   pares CVE-2099-0017 (pre inexistente): post_tipo = 'commit'
+  ok   pares CVE-2099-0017 (pre inexistente): relacao = ''
+  ok   pares CVE-2099-0017 (pre inexistente): distancia = ''
+  ok   pares CVE-2099-0017 (pre inexistente): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0017 (pre inexistente): arquivos_alterados = ''
+  ok   pares CVE-2099-0017 (pre inexistente): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0017 (pre inexistente): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0017 (pre inexistente): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0017 (pre inexistente): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0017 (pre inexistente): gt_linhas = '5'
+  ok   pares CVE-2099-0017 (pre inexistente): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0017 (pre inexistente): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0017 (pre inexistente): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0017 (pre inexistente): gt_ponto_post = ''
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): fora_do_denominador = ''
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): post = '2769f9f1937fcc84bc99f5097197a6c4f6b9a687'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): post_malformado = 'nao'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): status = 'OK'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): pre_existe = 'sim'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): post_existe = 'sim'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): post_tipo = 'commit'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): distancia = '1'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): arquivos_alterados = '1'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_linhas = '7'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0018 (post so em refs/pull, obtido por fetch): gt_ponto_post = '7-7'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): fora_do_denominador = ''
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): post_malformado = 'nao'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): status = 'OK'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): pre_existe = 'sim'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): post_existe = 'sim'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): post_tipo = 'commit'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): distancia = '1'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): arquivos_alterados = '1'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_arquivo = 'nao/existe.js'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_arquivo_no_pre = 'nao'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_linhas = '5'
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0019 (arquivo do gt ausente do pre): gt_ponto_post = ''
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/sem-filtro.git'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): fora_do_denominador = ''
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): post_malformado = 'nao'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): status = 'OK'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): pre_existe = 'sim'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): post_existe = 'sim'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): post_tipo = 'commit'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): distancia = '1'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): arquivos_alterados = '1'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_linhas = '5'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0020 (servidor que ignora o filtro: mesmo resultado do caso 1): gt_ponto_post = '5-5'
+  ok   pares CVE-2099-0021 (repositorio inexistente): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/nao-existe'
+  ok   pares CVE-2099-0021 (repositorio inexistente): fora_do_denominador = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0021 (repositorio inexistente): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0021 (repositorio inexistente): post_malformado = 'nao'
+  ok   pares CVE-2099-0021 (repositorio inexistente): status = 'ERRO_CLONE_RECUSA'
+  ok   pares CVE-2099-0021 (repositorio inexistente): pre_existe = 'indeterminado'
+  ok   pares CVE-2099-0021 (repositorio inexistente): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0021 (repositorio inexistente): post_tipo = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): relacao = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): distancia = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): arquivos_alterados = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_linhas = '5'
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0021 (repositorio inexistente): gt_ponto_post = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/nao-existe'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): fora_do_denominador = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): post = 'abc1234'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): post_malformado = 'nao_expandido'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): status = 'ERRO_CLONE_RECUSA'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): pre_existe = 'indeterminado'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): post_tipo = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): relacao = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): distancia = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): arquivos_alterados = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_linhas = '5'
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0022 (repositorio inexistente, post malformado): gt_ponto_post = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): fora_do_denominador = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): post = '1cc'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): post_malformado = 'nao_expandido'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): status = 'OK'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): pre_existe = 'sim'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): post_tipo = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): relacao = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): distancia = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): arquivos_alterados = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_arquivo = 'nao/existe.js'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_linhas = '5'
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0023 (prefixo que passaria c1-c3, com o arquivo do gt ausente do pre): gt_ponto_post = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): fora_do_denominador = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): post = '27'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): post_malformado = 'nao_expandido'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): status = 'OK'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): pre_existe = 'sim'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): post_existe = 'indeterminado'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): post_tipo = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): relacao = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): distancia = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): pre_e_pai_de_post = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): arquivos_alterados = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_arquivo_no_pre = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_arquivo_no_post = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_arquivo_alterado = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_linhas = '7'
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_linhas_em_trecho_alterado = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_tipo_ponto = ''
+  ok   pares CVE-2099-0024 (prefixo de commit so obtido por fetch de outro CVE): gt_ponto_post = ''
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): fora_do_denominador = ''
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): pre = 'c4900e50a898e9817f26da29ceeea8b1cf430a9c'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): post = 'd2b7140ff8128fc88fb3d920a02d0b7330dc09cb'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): post_malformado = 'nao'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): status = 'OK'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): pre_existe = 'sim'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): post_existe = 'sim'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): post_tipo = 'commit'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): distancia = '1'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): arquivos_alterados = '1'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_arquivo = 'm.js'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_linhas = '5'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0025 (modificacao 1 -> 1): gt_ponto_post = '5-5'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): fora_do_denominador = ''
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): pre = 'd2b7140ff8128fc88fb3d920a02d0b7330dc09cb'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): post = 'c5895791212405d8e11df1d424bffbc34a267426'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): post_malformado = 'nao'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): status = 'OK'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): pre_existe = 'sim'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): post_existe = 'sim'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): post_tipo = 'commit'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): distancia = '1'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): arquivos_alterados = '1'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_arquivo = 'm.js'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_linhas = '8'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_tipo_ponto = 'trecho'
+  ok   pares CVE-2099-0026 (modificacao 1 -> 3): gt_ponto_post = '8-10'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): fora_do_denominador = ''
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): pre = 'c5895791212405d8e11df1d424bffbc34a267426'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): post = '0ff48c343558417f819d30771478b48ea3987e72'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): post_malformado = 'nao'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): status = 'OK'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): pre_existe = 'sim'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): post_existe = 'sim'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): post_tipo = 'commit'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): distancia = '1'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): arquivos_alterados = '1'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_arquivo = 'm.js'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_linhas = '2|13'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_linhas_em_trecho_alterado = 'nao|sim'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_linhas_deslocadas = '2|'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_tipo_ponto = 'inalterada|trecho'
+  ok   pares CVE-2099-0027 (bloco 3 -> 4 com o gt no meio, e uma linha inalterada acima): gt_ponto_post = '2|12-15'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): fora_do_denominador = ''
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): pre = '0ff48c343558417f819d30771478b48ea3987e72'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): post = '95bf5ae0292442ada110d8f959c62bbf2230ce3b'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): post_malformado = 'nao'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): status = 'OK'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): pre_existe = 'sim'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): post_existe = 'sim'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): post_tipo = 'commit'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): distancia = '1'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): arquivos_alterados = '1'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_arquivo = 'm.js'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_linhas = '6'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_tipo_ponto = 'so_remocao'
+  ok   pares CVE-2099-0028 (remocao pura no meio do arquivo): gt_ponto_post = 'del:5'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): fora_do_denominador = ''
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): pre = '95bf5ae0292442ada110d8f959c62bbf2230ce3b'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): post = 'fc7d403a2dbbb50d560f087421ecc0d5012613fb'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): post_malformado = 'nao'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): status = 'OK'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): pre_existe = 'sim'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): post_existe = 'sim'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): post_tipo = 'commit'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): distancia = '1'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): arquivos_alterados = '1'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_arquivo = 'm.js'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_linhas = '21'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_tipo_ponto = 'so_remocao'
+  ok   pares CVE-2099-0029 (remocao pura no fim do arquivo): gt_ponto_post = 'del:19:fim'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): fora_do_denominador = ''
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): pre = 'bcba7d5406ead881520d36b0cb03f8b46872ac39'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): post = 'acae84b314a22b65c28fbe5b95904074e90616a2'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): post_malformado = 'nao'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): status = 'OK'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): pre_existe = 'sim'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): post_existe = 'sim'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): post_tipo = 'commit'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): distancia = '1'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): arquivos_alterados = '1'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_arquivo = 'o.js'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_linhas = '4'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_linhas_em_trecho_alterado = 'sim'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_linhas_deslocadas = ''
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_tipo_ponto = 'so_remocao'
+  ok   pares CVE-2099-0030 (remocao pura em arquivo sem quebra de linha final): gt_ponto_post = 'del:4'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): repositorio = 'file:///tmp/fixtures-normalize-n0wnz8mx/pares/repo/origem'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): fora_do_denominador = ''
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): pre = '802bfe508bca5741586a260b37373cf70154e46e'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): post = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): post_malformado = 'nao'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): status = 'OK'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): pre_existe = 'sim'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): post_existe = 'sim'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): post_tipo = 'commit'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): relacao = 'post_descende_de_pre'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): distancia = '1'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): pre_e_pai_de_post = 'sim'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): arquivos_alterados = '1'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_arquivo = 'f.js'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_arquivo_no_pre = 'sim'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_arquivo_no_post = 'presente'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_arquivo_alterado = 'sim'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_linhas = '5|50'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_linhas_em_trecho_alterado = 'sim|nao'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_linhas_deslocadas = '|50'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_tipo_ponto = 'trecho|inalterada'
+  ok   pares CVE-2099-0031 (linha do gt alem do fim do arquivo no pre (f.js tem 10)): gt_ponto_post = '5-5|50'
+  ok   pares: uma linha de expansao por post malformado, e so eles
+  ok   expansao CVE-2099-0010: valor_expandido = ''
+  ok   expansao CVE-2099-0010: c1_prefixo_unico = 'nao'
+  ok   expansao CVE-2099-0010: c2_e_commit = 'nao_avaliada'
+  ok   expansao CVE-2099-0010: c3_pre_ancestral = 'nao_avaliada'
+  ok   expansao CVE-2099-0010: c4_arquivo_alterado = 'nao_avaliada'
+  ok   expansao CVE-2099-0011: valor_expandido = ''
+  ok   expansao CVE-2099-0011: c1_prefixo_unico = 'sim'
+  ok   expansao CVE-2099-0011: c2_e_commit = 'sim'
+  ok   expansao CVE-2099-0011: c3_pre_ancestral = 'nao'
+  ok   expansao CVE-2099-0011: c4_arquivo_alterado = 'nao_avaliada'
+  ok   expansao CVE-2099-0012: valor_expandido = '1ccee639a4ccacae8d80dd5255192e9e7dbbeaf5'
+  ok   expansao CVE-2099-0012: c1_prefixo_unico = 'sim'
+  ok   expansao CVE-2099-0012: c2_e_commit = 'sim'
+  ok   expansao CVE-2099-0012: c3_pre_ancestral = 'sim'
+  ok   expansao CVE-2099-0012: c4_arquivo_alterado = 'sim'
+  ok   expansao CVE-2099-0013: valor_expandido = ''
+  ok   expansao CVE-2099-0013: c1_prefixo_unico = 'sim'
+  ok   expansao CVE-2099-0013: c2_e_commit = 'sim'
+  ok   expansao CVE-2099-0013: c3_pre_ancestral = 'sim'
+  ok   expansao CVE-2099-0013: c4_arquivo_alterado = 'nao'
+  ok   expansao CVE-2099-0014: valor_expandido = ''
+  ok   expansao CVE-2099-0014: c1_prefixo_unico = 'sim'
+  ok   expansao CVE-2099-0014: c2_e_commit = 'nao'
+  ok   expansao CVE-2099-0014: c3_pre_ancestral = 'nao_avaliada'
+  ok   expansao CVE-2099-0014: c4_arquivo_alterado = 'nao_avaliada'
+  ok   expansao CVE-2099-0022: valor_expandido = ''
+  ok   expansao CVE-2099-0022: c1_prefixo_unico = 'nao_avaliada'
+  ok   expansao CVE-2099-0022: c2_e_commit = 'nao_avaliada'
+  ok   expansao CVE-2099-0022: c3_pre_ancestral = 'nao_avaliada'
+  ok   expansao CVE-2099-0022: c4_arquivo_alterado = 'nao_avaliada'
+  ok   expansao CVE-2099-0023: valor_expandido = ''
+  ok   expansao CVE-2099-0023: c1_prefixo_unico = 'sim'
+  ok   expansao CVE-2099-0023: c2_e_commit = 'sim'
+  ok   expansao CVE-2099-0023: c3_pre_ancestral = 'sim'
+  ok   expansao CVE-2099-0023: c4_arquivo_alterado = 'nao'
+  ok   expansao CVE-2099-0024: valor_expandido = ''
+  ok   expansao CVE-2099-0024: c1_prefixo_unico = 'nao'
+  ok   expansao CVE-2099-0024: c2_e_commit = 'nao_avaliada'
+  ok   expansao CVE-2099-0024: c3_pre_ancestral = 'nao_avaliada'
+  ok   expansao CVE-2099-0024: c4_arquivo_alterado = 'nao_avaliada'
+  ok   expansao: prefixo ambiguo lista os candidatos, todos com o prefixo
+  ok   expansao: blobs nao entram entre os candidatos
+  ok   log: uma linha por CVE, status igual ao do pares.csv
+  ok   log: mensagem sem virgula
+  ok   log: commit fora de ramo obtido por fetch por SHA, e registrado
+  ok   log: 'not our ref' registrado como inexistente
+  ok   log: pre inexistente registrado
+  ok   log: tag descascada para commit registrada
+  ok   log: repositorio inexistente registra as duas tentativas
+  ok   log: a causa gravada e a linha fatal:, nao a continuacao final do stderr
+  ok   log: arquivo do gt fora do pre registrado
+  ok   clones: servidor com filtro -> parcial
+  ok   clones: servidor que ignora o filtro -> registrado como completo
+  ok   clones: parcial recusado cai para completo, recusado tambem, sem estouro
+  ok   clones: tamanho medido
+  ok   pares: clones removidos do workdir ao fim
+  ok   pares: nenhum temporario de escrita remanescente
+  ok   pares: segunda execucao da a mesma classificacao
+  ok   pares: pares.txt byte-identico entre execucoes
+  ok   pares: expansoes byte-identicas entre execucoes
+  ok   pares: caminho do workdir nao vai a pares.csv
+  ok   pares: caminho do workdir nao vai a expansoes.csv
+  ok   pares: caminho do workdir nao vai a caracterizacao-pares.csv
+  ok   pares: caminho do workdir nao vai a clones.csv
+  ok   pares: caminho do workdir nao vai a pares.txt
+  ok   estouro: execucao termina com 0
+  ok   estouro: status ERRO_CLONE_ESTOURO, distinto de recusa
+  ok   estouro: registrado como tal, sem segunda tentativa
+  ok   estouro: o stub (sleep 60) e morto no limite, com o grupo
+  ok   estouro: workdir limpo
+  ok   estouro de fetch: post_existe indeterminado, registrado como estouro
+  ok   erro de inspecao: execucao sai com 0
+  ok   erro de inspecao: status ERRO_INSPECAO por CVE
+  ok   erro de inspecao: a expansao ja feita e preservada
+  ok   falha na listagem de objetos: execucao sai com 0
+  ok   falha na listagem de objetos: malformado com linha nao avaliada
+  ok   recusa citando o destino: caminho trocado por <clone> no log e no clones.csv
+  ok   versao: git 2.44 recusado, nada escrito
+  ok   versao: git 2.45 aceito
+  ok   versao: a versao do git usada vai ao pares.txt
+  ok   metadata x lista: linha divergente e parada, nada escrito
+  ok   SIGTERM: sai 130, clone removido, nada escrito
+  ok   SIGTERM: workdir e saida vazios de fato
+  ok   guarda: --cves com saidas padrao (no repositorio) e recusado
+  ok   guarda: workdir dentro do repositorio e recusado
+  ok   guarda: saida no repositorio com entrada de fora e recusada
+  ok   guarda: limite 0 (que desligaria o timeout) e recusado
+  ok   guarda: nada escrito nas recusas
+  ok   trechos: contagem omitida vale 1
+  ok   linhas: insercao no topo desloca todas; linha no trecho e alterada
+  ok   linhas: remocao de duas linhas desloca as seguintes em -2
+  ok   linhas: pura insercao depois da linha 5 nao altera a 5 e desloca a 6
+  ok   trechos: diff binario reconhecido
+  ok   pontos: inalterada deslocada, trecho pelo lado post, remocao no meio e no fim
+  ok   pontos: sem so_remocao, o numero de linhas do post nao e pedido
+  ok   pontos: arquivo removido (n_post = 0) sai del:0:fim
+  ok   pares.txt: contagem por tipo de ponto
+  ok   pares.txt: contagem por combinacao
+  ok   pares.txt: combinacao inalterada+trecho (0008, 0027, 0031)
+  ok   pares.txt: secao dos dez maiores trechos
+  ok   pares.txt: remocao no meio listada com o ponto
+  ok   pares.txt: remocao no fim listada com a marca
+  ok   pares.txt: arquivo removido listado como del:0:fim
+  ok   pares.txt: quatro CVEs com so_remocao
+  ok   pares.txt: remocao em arquivo sem \n final: del:4
+  ok   pares.txt: um CVE com linha alem do fim do pre
+  ok   pares.txt: linha 50 de um pre de 10
+  ok   pares.txt: tamanho do pre sempre determinado
+  ok   pares.txt: o maior trecho e o 3 -> 4 do CVE-2099-0027, com os dois intervalos
+  ok   pares.txt: 12 linhas trecho, 10 de tamanho 1 e 2 de 2 a 5
+  ok   log: linha alem do fim do pre registrada
+  ok   pontos: remocao no topo com post nao vazio sai del:1 (revisao 2, 5c)
+  ok   regressao: saida igual a referencia passa
+  ok   regressao: referencia sem as colunas novas e com duracao diferente passa
+  ok   regressao: celula antiga divergente e parada, nada gravado
+  ok   regressao: referencia com caminho inexistente recusada
+  ok   regressao: caminho inexistente recusada sem clone e sem gravar
+  ok   regressao: referencia com so a coluna cve recusada
+  ok   regressao: so a coluna cve recusada sem clone e sem gravar
+  ok   regressao: referencia com sem a coluna status recusada
+  ok   regressao: sem a coluna status recusada sem clone e sem gravar
+  ok   regressao: referencia com CVE repetido recusada
+  ok   regressao: CVE repetido recusada sem clone e sem gravar
+  ok   regressao: referencia com CVE ausente recusada
+  ok   regressao: CVE ausente recusada sem clone e sem gravar
+  ok   regressao: referencia com arquivo vazio recusada
+  ok   regressao: arquivo vazio recusada sem clone e sem gravar
+  ok   guarda: referencia de fora com saida no repositorio e recusada
+  ok   pares.txt: a regressao feita fica registrada nas fontes, com o sha256
+  ok   vocabulario acusa tipo fora do vocabulario
+  ok   vocabulario acusa inalterada com deslocada vazia
+  ok   vocabulario acusa trecho com deslocada preenchida
+  ok   vocabulario acusa ponto diferente da deslocada
+  ok   vocabulario acusa colunas preenchidas pela metade
+  ok   vocabulario: linha integra passa
+  ok   releitura acusa celula alterada
+  ok   releitura acusa linha removida
+  ok   releitura acusa cabecalho alterado
+  ok   releitura acusa campo excedente
+  ok   releitura: arquivo gravado passa contra si mesmo
+  ok   vocabulario: valor fora do conjunto e coluna desalinhada acusados
+
+== generate-lists.js: deteccao byte a byte e modo --corrigida ==
+  ok   deteccao: --force sai 0
+  ok   deteccao: --ids da fumaca sai 0
+  ok   deteccao: cves-sast.txt regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-aa regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-ab regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-ac regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-ad regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-ae regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-af regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-ag regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-batch-ah regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-teste regerada identica, byte a byte, a versionada
+  ok   deteccao: cves-sast-fumaca regerada identica, byte a byte, a versionada
+  ok   corrigida: geracao sai 0
+  ok   corrigida: lista completa com 220 linhas
+  ok   corrigida: lista completa termina com quebra de linha
+  ok   corrigida: universo = 223 menos as 3 exclusoes do pares.csv
+  ok   corrigida: o terceiro campo e o PostPatchCommit do benchmark (ou a expansao)
+  ok   corrigida: nenhum PrePatchCommit no lugar do corrigido
+  ok   corrigida: os outros cinco campos sao os da lista de deteccao (ground truth do benchmark)
+  ok   corrigida: CVE-2017-18352 entra expandido (324ac99732)
+  ok   corrigida: CVE-2018-11093 entra expandido (8cb782eceb)
+  ok   corrigida: cves-sast-corrigida-batch-aa = cves-sast-batch-aa menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-aa regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida-batch-ab = cves-sast-batch-ab menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-ab regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida-batch-ac = cves-sast-batch-ac menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-ac regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida-batch-ad = cves-sast-batch-ad menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-ad regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida-batch-ae = cves-sast-batch-ae menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-ae regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida-batch-af = cves-sast-batch-af menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-af regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida-batch-ag = cves-sast-batch-ag menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-ag regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida-batch-ah = cves-sast-batch-ah menos as exclusoes, na mesma ordem
+  ok   corrigida: cves-sast-corrigida-batch-ah regerado identico ao do repositorio
+  ok   corrigida: cves-sast-corrigida.txt regerada identica a do repositorio
+  ok   corrigida: nenhuma lista de deteccao tocada
+  ok   corrigida: fumaca regerada identica a do repositorio
+  ok   corrigida: listas existentes sem --force abortam sem escrever
+  ok   deteccao --force nao remove nem altera lista corrigida
+  ok   corrigida --force regera as corrigidas identicas e nao toca a deteccao
+  ok   corrigida --ids: exclusao do denominador e fatal
+  ok   corrigida --ids: saida sem -corrigida- e recusada
+  ok   deteccao --ids: saida com nome de corrigida e recusada
+  ok   mutante acusado: expansao com uma condicao nao
+  ok   mutante expansao com uma condicao nao: nada escrito
+  ok   mutante acusado: malformado sem expansao
+  ok   mutante malformado sem expansao: nada escrito
+  ok   mutante acusado: expansao que nao comeca pelo original
+  ok   mutante expansao que nao comeca pelo original: nada escrito
+  ok   mutante acusado: virgula no FilePath
+  ok   mutante virgula no FilePath: nada escrito
+  ok   mutante acusado: CVE fora da particao
+  ok   mutante CVE fora da particao: nada escrito
+  ok   mutante acusado: CVE em dois lotes
+  ok   mutante CVE em dois lotes: nada escrito
+  ok   mutante acusado: post do pares.csv divergente
+  ok   mutante post do pares.csv divergente: nada escrito
+  ok   mutante acusado: exclusao a mais no pares.csv
+  ok   mutante exclusao a mais no pares.csv: nada escrito
+
+== confere-campanha.sh: campanha x lote ==
+  ok   confere-campanha: campanha='deteccao' lote='cves-sast-batch-aa' sai 0
+  ok   confere-campanha: campanha='corrigida' lote='cves-sast-corrigida-batch-aa' sai 0
+  ok   confere-campanha: campanha='corrigida' lote='cves-sast-batch-aa' sai 1
+  ok   confere-campanha: campanha='deteccao' lote='cves-sast-corrigida-batch-aa' sai 1
+  ok   confere-campanha: campanha='deteccao' lote='cves-sast-corrigida.txt' sai 1
+  ok   confere-campanha: campanha='corrigida' lote='cves-sast-corrigida.txt' sai 1
+  ok   confere-campanha: campanha='' lote='cves-sast-batch-aa' sai 1
+  ok   confere-campanha: campanha='Deteccao' lote='cves-sast-batch-aa' sai 1
+  ok   confere-campanha: campanha='corrigida' lote='' sai 1
+  ok   confere-campanha: numero errado de argumentos sai 2
+
+== importa-artifacts.py: destino, commit e sobrescrita ==
+  ok   importa: corrigida grava em results/corrigida/ e logs/campanha-corrigida-<data>/
+  ok   importa: copia byte a byte
+  ok   importa: o .gitkeep do artifact e ignorado — aceito, e nao copiado
+  ok   importa recusa destino existente (mesmo artifact de novo), sem gravar nada
+  ok   importa recusa tratado da corrigida em results/<ferramenta>/treated/, sem gravar nada
+  ok   importa recusa tratado da deteccao em results/corrigida/, sem gravar nada
+  ok   importa recusa tratado com PrePatchCommit na campanha corrigida, sem gravar nada
+  ok   importa recusa log de execucao com o PrePatchCommit analisado (tratado integro), sem gravar nada
+  ok   importa recusa tratado de CVE fora do lote, sem gravar nada
+  ok   importa recusa nome inesperado entre os tratados (.gitignore), apesar do .gitkeep aceito, sem gravar nada
+  ok   importa recusa nome inesperado entre os tratados (CVE-2099-0101.json.bak), apesar do .gitkeep aceito, sem gravar nada
+  ok   importa recusa nome inesperado entre os tratados (notas.txt), apesar do .gitkeep aceito, sem gravar nada
+  ok   importa recusa .gitkeep que e diretorio, e nao arquivo, sem gravar nada
+  ok   importa recusa campanha do README diferente da pedida, sem gravar nada
+  ok   importa recusa lote de deteccao declarado como corrigida, sem gravar nada
+  ok   importa recusa normalize-report contra a lista da outra campanha, sem gravar nada
+  ok   importa: deteccao grava em results/<ferramenta>/treated/ e logs/campanha-<data>/
+
+1468 verificacoes, 0 falha(s)
+temporarios em /tmp/fixtures-normalize-n0wnz8mx

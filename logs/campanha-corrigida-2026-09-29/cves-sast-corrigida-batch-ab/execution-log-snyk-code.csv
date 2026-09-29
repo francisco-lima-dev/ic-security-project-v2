@@ -1,0 +1,30 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2017-16114,https://github.com/markedjs/marked.git,a37bd643f05bf95ff18cafa2b06e7d741d2e2157,OK,snyk 1.1306.1; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 2 achados; snyk exit 1; HEAD conferido,12
+CVE-2017-16117,https://github.com/Trott/node-slug.git,791b7d8ea1804be341561aa5d44d282bbfd2f780,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,7
+CVE-2017-16118,https://github.com/jshttp/forwarded.git,d469116eda4931fbe1c0ccb29497b35930bfa328,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,12
+CVE-2017-16119,https://github.com/jshttp/fresh.git,21a0f0c2a5f447e0d40bc16be0c23fa98a7b46ec,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2017-16136,https://github.com/expressjs/method-override.git,4c58835a61fdf7a8e070d6f8ecd5379a961d0987,OK,2 achados; snyk exit 1; HEAD conferido,10
+CVE-2017-16137,https://github.com/visionmedia/debug.git,c38a0166c266a679c8de012d4eaccec3f944e685,OK,1 achados; snyk exit 1; HEAD conferido,8
+CVE-2017-16138,https://github.com/broofa/node-mime.git,1df903fdeb9ae7eaa048795b8d580ce2c98f40b0,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,8
+CVE-2017-16224,https://github.com/isaacs/st.git,579960c629f12a27428e2da84c54f517e37b0a16,OK,11 achados; snyk exit 1; HEAD conferido,9
+CVE-2017-16226,https://github.com/browserify/static-eval.git,c06f1b8c0a0cd1cc989c025fbb4c5776fc661c2c,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2017-16877,https://github.com/zeit/next.js.git,02fe7cf63f6265d73bdaf8bc50a4f2fb539dcd00,OK,22 achados; snyk exit 1; HEAD conferido,17
+CVE-2017-17461,https://github.com/markedjs/marked.git,3a4f7a5dae661f0844cb7b07e8667b5666ffc83e,OK,2 achados; snyk exit 1; HEAD conferido,65
+CVE-2017-18077,https://github.com/juliangruber/brace-expansion.git,ed46e5ba619bd938e5b84835fca00eed0adc5585,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,8
+CVE-2017-18214,https://github.com/moment/moment.git,69ed9d44957fa6ab12b73d2ae29d286a857b80eb,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,26
+CVE-2017-18352,https://github.com/GoogleChrome/rendertron.git,324ac99732c943d7b16aead2fceaa8b31a458eaa,OK,11 achados; snyk exit 1; HEAD conferido,12
+CVE-2017-18353,https://github.com/GoogleChrome/rendertron.git,324ac99732c943d7b16aead2fceaa8b31a458eaa,OK,11 achados; snyk exit 1; HEAD conferido,9
+CVE-2017-18354,https://github.com/GoogleChrome/rendertron.git,324ac99732c943d7b16aead2fceaa8b31a458eaa,OK,11 achados; snyk exit 1; HEAD conferido,9
+CVE-2017-18355,https://github.com/GoogleChrome/rendertron.git,324ac99732c943d7b16aead2fceaa8b31a458eaa,OK,11 achados; snyk exit 1; HEAD conferido,16
+CVE-2017-18635,https://github.com/novnc/noVNC.git,6048299a138e078aed210f163111698c8c526a13,OK,8 achados; snyk exit 1; HEAD conferido,10
+CVE-2017-5954,https://github.com/commenthol/serialize-to-js.git,1cd433960e5b9db4c0b537afb28366198a319429,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2018-1000086,https://github.com/nprapps/pym.js.git,c3552a6cf2532664c17bd6a318fb3cf8e4cf2f97,OK,12 achados; snyk exit 1; HEAD conferido,18
+CVE-2018-1000620,https://github.com/hapijs/cryptiles.git,9332d4263a32b84e76bf538d7470d01ea63fa047,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,8
+CVE-2018-1002203,https://github.com/ZJONSSON/node-unzipper.git,2220ddd5b58f6252069a4f99f9475441ad0b50cd,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2018-1002204,https://github.com/cthackers/adm-zip.git,62f64004fefb894c523a7143e8a88ebe6c84df25,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,10
+CVE-2018-11093,https://github.com/ckeditor/ckeditor5-link.git,8cb782eceba10fc481e4021cb5d25b2a85d1b04e,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,16
+CVE-2018-11615,https://github.com/moscajs/mosca.git,21ad292f9ff3d49134afd31ae519755866556dd5,OK,10 achados; snyk exit 1; HEAD conferido,13
+CVE-2018-11798,https://github.com/apache/thrift.git,2a2b72f6c8aef200ecee4984f011e06052288ff2,OK,137 achados; snyk exit 1; HEAD conferido,78
+CVE-2018-13797,https://github.com/scravy/node-macaddress.git,358fd594adb196a86b94ac9c691f69fe5dad2332,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,14
+CVE-2018-13863,https://github.com/mongodb/js-bson.git,bd61c45157c53a1698ff23770160cf4783e9ea4a,OK,1 achados; snyk exit 1; HEAD conferido,47
+CVE-2018-14040,https://github.com/twbs/bootstrap.git,2a5ba23ce8f041f3548317acc992ed8a736b609d,OK,9 achados; snyk exit 1; HEAD conferido,17

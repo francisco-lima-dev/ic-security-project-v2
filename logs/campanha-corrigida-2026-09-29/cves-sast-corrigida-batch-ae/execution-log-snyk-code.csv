@@ -1,0 +1,31 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2019-1010091,https://github.com/tinymce/tinymce.git,aa516c52d4f2104c36af3d640b2adb22e379f9a4,OK,snyk 1.1306.1; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 2 achados; snyk exit 1; HEAD conferido,31
+CVE-2019-1010266,https://github.com/lodash/lodash.git,5c08f18d365b64063bfbfa686cbb97cdd6267347,OK,15 achados; snyk exit 1; HEAD conferido,39
+CVE-2019-1020012,https://github.com/parse-community/parse-server.git,8709daf698ea69b59268cb66f0f7cee75b52daa5,OK,206 achados; snyk exit 1; HEAD conferido,28
+CVE-2019-10742,https://github.com/axios/axios.git,0d4fca085b9b44e110f4c5a3dd7384c31abaf756,OK,95 achados; snyk exit 1; HEAD conferido,13
+CVE-2019-10744,https://github.com/lodash/lodash.git,60eb51791171412bdd7a2bb55415c3821c5240c4,OK,15 achados; snyk exit 1; HEAD conferido,35
+CVE-2019-10745,https://github.com/jonschlinkert/assign-deep.git,90bf1c551d05940898168d04066bbf15060f50cc,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,8
+CVE-2019-10746,https://github.com/jonschlinkert/mixin-deep.git,8f464c8ce9761a8c9c2b3457eaeee9d404fa7af9,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,29
+CVE-2019-10747,https://github.com/jonschlinkert/set-value.git,95e9d9923f8a8b4a01da1ea138fcc39ec7b6b15f,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,15
+CVE-2019-10750,https://github.com/alexindigo/deeply.git,6eccb2f03ec8d3eefc6805053c4cc2a36aab1505,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,7
+CVE-2019-10757,https://github.com/knex/knex.git,988fb243898d746a759d422762685a79eddf99ca,OK,34 achados; snyk exit 1; HEAD conferido,19
+CVE-2019-10758,https://github.com/mongo-express/mongo-express.git,c7c9149702d6069aca7913820ad353f52439ab03,OK,22 achados; snyk exit 1; HEAD conferido,30
+CVE-2019-10759,https://github.com/commenthol/safer-eval.git,25fbbe53e46c54d10b4c583b8f5c659933400ccb,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2019-10761,https://github.com/patriksimek/vm2.git,4b22d704e4794af63a5a2d633385fd20948f6f90,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,7
+CVE-2019-10765,https://github.com/ioBroker/ioBroker.admin.git,16b2b325ab47896090bc7f54b77b0a97ed74f5cd,OK,53 achados; snyk exit 1; HEAD conferido,23
+CVE-2019-10767,https://github.com/ioBroker/ioBroker.js-controller.git,f6e292c6750a491a5000d0f851b2fede4f9e2fda,OK,62 achados; snyk exit 1; HEAD conferido,18
+CVE-2019-10771,https://github.com/ioBroker/ioBroker.web.git,53b982d408b1366a1d2b75f38d6068cb668917dd,OK,12 achados; snyk exit 1; HEAD conferido,24
+CVE-2019-10775,https://github.com/jfhbrook/node-ecstatic.git,72044b89941ada4a5e864d77257b4efb20aef498,OK,72 achados; snyk exit 1; HEAD conferido,18
+CVE-2019-10776,https://github.com/kellyselden/git-diff-apply.git,106d61d3ae723b4257c2a13e67b95eb40a27e0b5,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,12
+CVE-2019-10777,https://github.com/awspilot/cli-lambda-deploy.git,0985a18bffb265817bc84836c9a65f2bb04a51ac,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,8
+CVE-2019-10778,https://github.com/guybedford/devcert.git,571f4e6d077f7f21c6aed655ae380d85a7a5d3b8,OK,2 achados; snyk exit 1; HEAD conferido,16
+CVE-2019-10781,https://github.com/Atinux/schema-inspector.git,345a7b2eed11bb6128421150d65f4f83fdbb737d,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2019-10785,https://github.com/dojo/dojox.git,6eb278356ca7b0ac7e9cba6067fcf077d2e3ad9a,OK,68 achados; snyk exit 1; HEAD conferido,30
+CVE-2019-11358,https://github.com/jquery/jquery.git,753d591aea698e57d6db58c9f722cd0808619b1b,OK,19 achados; snyk exit 1; HEAD conferido,17
+CVE-2019-12041,https://github.com/probablyup/markdown-to-jsx.git,dab7b5d7bc82c829920cc74a9f959c7750725b00,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,10
+CVE-2019-12043,https://github.com/jonschlinkert/remarkable.git,92d79a99c39a29665f7f4fabc9593f1b30924ca9,OK,2 achados; snyk exit 1; HEAD conferido,9
+CVE-2019-12313,https://github.com/dollarshaveclub/shave.git,1876911e423c00fdda643ef724d956b3d324d5c2,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,11
+CVE-2019-13127,https://github.com/jgraph/mxgraph.git,76e8e2809b622659a9c5ffdc4f19922b7a68cfa3,OK,27 achados; snyk exit 1; HEAD conferido,72
+CVE-2019-13173,https://github.com/npm/fstream.git,6a77d2fa6e1462693cf8e46f930da96ec1b0bb22,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,7
+CVE-2019-13506,https://github.com/Rich-Harris/devalue.git,14cae90d1fcd5e0083e3a1741238e017684890d7,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,9
+CVE-2019-14772,https://github.com/verdaccio/verdaccio.git,5abf71c5e5b1ad190b9cb489b85d96f5f801342b,OK,27 achados; snyk exit 1; HEAD conferido,14

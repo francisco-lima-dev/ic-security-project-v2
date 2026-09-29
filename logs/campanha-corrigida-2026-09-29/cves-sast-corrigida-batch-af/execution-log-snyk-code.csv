@@ -1,0 +1,31 @@
+cve,repo,commit,status,mensagem,duracao_segundos
+CVE-2019-14862,https://github.com/knockout/knockout.git,7e280b2b8a04cc19176b5171263a5c68bda98efb,SEM_ACHADOS,snyk 1.1306.1; TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900; 0 achados; snyk exit 0; HEAD conferido,12
+CVE-2019-15478,https://github.com/jameswlane/status-board.git,1db3afd9332f5d743bc02143ae059bf21500600d,OK,8 achados; snyk exit 1; HEAD conferido,27
+CVE-2019-15479,https://github.com/jameswlane/status-board.git,19106617865406aa6f8edec036dcb1db427d5f71,ERRO_ANALISE,snyk saiu com 2; HEAD conferido,34
+CVE-2019-15482,https://github.com/SLMNBJ/selectize-plugin-a11y.git,99c14f7644fdfc815625d7b54829e6c2dca31a8b,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,12
+CVE-2019-15532,https://github.com/gchq/CyberChef.git,01f0625d6a177f9c5df9281f12a27c814c2d8bcf,OK,21 achados; snyk exit 1; HEAD conferido,54
+CVE-2019-15657,https://github.com/mysticatea/eslint-utils.git,08158db1c98fd71cf0f32ddefbc147e2620e724c,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,10
+CVE-2019-15658,https://github.com/voxpelli/node-connect-pg-simple.git,df61c9507f804ba72803e4f567c3cbcfa0a9d7e1,OK,6 achados; snyk exit 1; HEAD conferido,17
+CVE-2019-15782,https://github.com/webtorrent/webtorrent.git,22546df6d9ba9ca4523142d98b5e70f6db213f3e,OK,15 achados; snyk exit 1; HEAD conferido,47
+CVE-2019-16763,https://github.com/mpetroff/pannellum.git,cc2f3d99953de59db908e0c6efd1c2c17f7c6914,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,21
+CVE-2019-16769,https://github.com/yahoo/serialize-javascript.git,16a68ab53d9626fc7c942b48a1163108fcd184c8,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,110
+CVE-2019-17495,https://github.com/swagger-api/swagger-ui.git,5f6ec8ce1d0e06ad20a243e1b79a6e68373ce8f5,OK,7 achados; snyk exit 1; HEAD conferido,15
+CVE-2019-17592,https://github.com/adaltas/node-csv-parse.git,b9d35940c6815cdf1dfd6b21857a1f6d0fd51e4a,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,21
+CVE-2019-18350,https://github.com/ant-design/ant-design-pro.git,840034ca90a66ebe7835934cffcb85654e86f593,OK,4 achados; snyk exit 1; HEAD conferido,66
+CVE-2019-18818,https://github.com/strapi/strapi.git,e0424d4b880831dd643afff9c6ba475acdbae0be,OK,49 achados; snyk exit 1; HEAD conferido,28
+CVE-2019-18954,https://github.com/NetEase/pomelo.git,5b999c56c7244e23e5003878402a3c54ab51ed8c,OK,6 achados; snyk exit 1; HEAD conferido,11
+CVE-2019-19507,https://github.com/manvel-khnkoyan/jpv.git,fdab85599fd92aea87af35fb4c52ba26ccbdd427,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,10
+CVE-2019-20149,https://github.com/jonschlinkert/kind-of.git,1df992ce6d5a1292048e5fe9c52c5382f941ee0b,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,10
+CVE-2019-20174,https://github.com/auth0/lock.git,6c15e5659c21cd814ea119af5c51b61399598dd5,OK,88 achados; snyk exit 1; HEAD conferido,47
+CVE-2019-5413,https://github.com/expressjs/morgan.git,e329663836809de4be557b200a5b983ab8b4e6c2,OK,3 achados; snyk exit 1; HEAD conferido,11
+CVE-2019-5414,https://github.com/tiaanduplessis/kill-port.git,52d4e56243557411c558a55c6caffe8675335850,OK,1 achados; snyk exit 1; HEAD conferido,11
+CVE-2019-5423,https://github.com/prahladyeri/http-live-simulator.git,354644525f1626c5921abac10913c0d47f1f1433,SEM_ARQUIVO_ANALISAVEL,nenhum projeto suportado (exit 3); HEAD conferido,2
+CVE-2019-5444,https://github.com/ChristoPy/serve-here.js.git,cefb51d03290b6a88dd13143ab2de31b8cf57c39,OK,2 achados; snyk exit 1; HEAD conferido,11
+CVE-2019-5479,https://github.com/larvit/larvitbase-api.git,0e953337e75770abdcc0a8bb71932a44d2239514,OK,1 achados; snyk exit 1; HEAD conferido,9
+CVE-2019-5483,https://github.com/senecajs/seneca.git,b0565ba52048b83783186876cec23dd3f851e9ff,OK,3 achados; snyk exit 1; HEAD conferido,14
+CVE-2019-5484,https://github.com/bower/bower.git,45c6bfa86f6e57731b153baca9e0b41a1cc699e3,OK,48 achados; snyk exit 1; HEAD conferido,19
+CVE-2019-8331,https://github.com/twbs/bootstrap.git,7bc4d2e0bc65151b6f60dccad50c9c8f50252bd6,OK,1 achados; snyk exit 1; HEAD conferido,14
+CVE-2019-8903,https://github.com/totaljs/framework.git,c37cafbf3e379a98db71c1125533d1e8d5b5aef7,OK,44 achados; snyk exit 1; HEAD conferido,43
+CVE-2019-9844,https://github.com/Khan/simple-markdown.git,8ad751f8333ce136d1a0a120d78596a30eb1e1d9,SEM_ACHADOS,0 achados; snyk exit 0; HEAD conferido,11
+CVE-2020-11021,https://github.com/actions/http-client.git,f6aae3dda4f4c9dc0b49737b36007330f78fd53a,OK,2 achados; snyk exit 1; HEAD conferido,10
+CVE-2020-11022,https://github.com/jquery/jquery.git,1d61fd9407e6fbe82fe55cb0b938307aa0791f77,OK,19 achados; snyk exit 1; HEAD conferido,27
