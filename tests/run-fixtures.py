@@ -2700,6 +2700,8 @@ def _artifact_sintetico(base, campanha, lote, ferramenta, tratados, lista_rel, l
     (art / "README.txt").write_text(
         "Artefato do lote %s — ferramenta %s\n\ncampanha: %s\nlote: %s\nferramenta: %s\n"
         % (lote, ferramenta, campanha, lote, ferramenta), encoding="utf-8")
+    # O marcador versionado vai junto no artifact real (ensaio de 28/09/2026).
+    (art / "results" / ferramenta / "treated" / ".gitkeep").write_bytes(b"")
     for cve, commit in tratados.items():
         _escrever_json(art / "results" / ferramenta / "treated" / (cve + ".json"),
                        {"metadata": {"cve_id": cve, "tool": ferramenta, "commit": commit}, "findings": []})
@@ -2758,6 +2760,9 @@ def secao_importa(tmp):
     checar((raiz / "results/corrigida/semgrep/treated/CVE-2099-0101.json").read_bytes()
            == (a_ok / "results/semgrep/treated/CVE-2099-0101.json").read_bytes(),
            "importa: copia byte a byte")
+    checar((a_ok / "results/semgrep/treated/.gitkeep").is_file()
+           and not (raiz / "results/corrigida/semgrep/treated/.gitkeep").exists(),
+           "importa: o .gitkeep do artifact e ignorado — aceito, e nao copiado")
     estado = arvore()
 
     def recusa(nome, pr, marca):
@@ -2787,6 +2792,16 @@ def secao_importa(tmp):
            "CVE-2099-0101 analisado em")
     a4 = art("corrigida", lote_c, dict(post, **{"CVE-2099-0999": "e" * 40}), rel_c, "codeql")
     recusa("tratado de CVE fora do lote", importar(a4, "corrigida"), "CVE fora do lote")
+    for nome_estranho in (".gitignore", "CVE-2099-0101.json.bak", "notas.txt"):
+        a_x = art("corrigida", lote_c, post, rel_c, "codeql")
+        (a_x / "results" / "codeql" / "treated" / nome_estranho).write_bytes(b"x")
+        recusa("nome inesperado entre os tratados (%s), apesar do .gitkeep aceito" % nome_estranho,
+               importar(a_x, "corrigida"), "arquivo inesperado entre os tratados: %s" % nome_estranho)
+    a_d = art("corrigida", lote_c, post, rel_c, "codeql")
+    (a_d / "results" / "codeql" / "treated" / ".gitkeep").unlink()
+    (a_d / "results" / "codeql" / "treated" / ".gitkeep").mkdir()
+    recusa(".gitkeep que e diretorio, e nao arquivo", importar(a_d, "corrigida"),
+           "arquivo inesperado entre os tratados: .gitkeep")
 
     # acessorias
     a5 = art("deteccao", lote_d, pre, rel_d, "codeql")

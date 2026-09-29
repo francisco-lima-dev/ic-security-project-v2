@@ -1613,6 +1613,16 @@ Preparada em 28/09/2026. Critérios na §11 do `docs/criterios-cruzamento.md`.
   gerador impede de disparar. O texto não foi alterado para preservar as
   imagens e os digests da campanha de detecção. O `check-log.py` e o
   `cruza-deteccao.py` não leem esse texto (verificado em 28/09/2026).
+- **Imagem do runner.** A campanha de detecção rodou em `ubuntu24` /
+  `20260907.300.1`; o ensaio de fumaça da corrigida (28/09/2026, execução
+  `36467129181`), em `20260920.314.1`, com uid:gid `1001:1001` e os mesmos
+  digests das três imagens. O `ubuntu-latest` não é fixável, e a campanha
+  corrigida vai rodar na imagem vigente no dia do disparo, registrada no
+  README de cada artifact (`runner_image_version`).
+- **O importador ignora o `.gitkeep` de `treated/`**, e só ele: o passo de
+  montagem copia o diretório inteiro, e os três artifacts do ensaio o traziam.
+  Até a correção de 28/09/2026 os três eram recusados; qualquer outro nome que
+  não seja `CVE-*.json` continua recusado.
 
 ## Metodologia V10 — natureza e pendências (21/09/2026)
 

@@ -71,6 +71,11 @@ FERRAMENTAS = ("codeql", "semgrep", "snyk-code")
 CAMPANHAS = ("deteccao", "corrigida")
 LISTA_COMPLETA = {"deteccao": "cves-sast.txt", "corrigida": "cves-sast-corrigida.txt"}
 RE_CVE_ARQ = re.compile(r"^CVE-\d{4}-\d{4,}\.json$")
+# O marcador versionado de results/<ferramenta>/treated/ vai junto no artifact:
+# o passo de montagem copia o diretório inteiro. É o ÚNICO nome ignorado ali;
+# qualquer outro que não seja CVE-*.json continua recusado. Medido no ensaio de
+# 28/09/2026 (execução 36467129181), cujos três artifacts o traziam.
+MARCADOR_TREATED = ".gitkeep"
 RE_DATA = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 RE_HEX40 = re.compile(r"^[0-9a-f]{40}$")
 
@@ -188,6 +193,8 @@ def planejar(args) -> list:
     if not origem_treated.is_dir():
         raise Recusa("artifact sem tratados: %s" % origem_treated)
     for arq in sorted(origem_treated.iterdir()):
+        if arq.name == MARCADOR_TREATED and arq.is_file():
+            continue
         if not RE_CVE_ARQ.match(arq.name):
             problemas.append("arquivo inesperado entre os tratados: %s" % arq.name)
             continue
