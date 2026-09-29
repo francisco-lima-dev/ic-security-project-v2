@@ -22,6 +22,7 @@ dbbb3ec48c95473c8a4c610ba1f19b621843258af0059dabcafd96f1a21fe961  datasets/sonda
 14e776c4183f86996e7f6c5adc3ddfd2f3979ab9319808a921bd3d0cbbcc3821  datasets/sondagens/sondagem-home-snyk-code-runner-cves-sast-corrigida-batch-af-2026-09-29.txt
 524e714bbf83a9a3fa4f2697a94cfa5eff983e1b7cf3044f48236d5c21ce1f04  datasets/sondagens/sondagem-home-snyk-code-runner-cves-sast-corrigida-batch-ag-2026-09-29.txt
 7ce64adf47bbf19cd75147ecad103bea3110f76213f37550d0154bf4e008a31b  datasets/sondagens/sondagem-home-snyk-code-runner-cves-sast-corrigida-batch-ah-2026-09-29.txt
+5beabe890b0c3b2b664ad42b260240c4f79c9a335809c203cc60e6c11ff3ce8f  datasets/sondagens/sondagem-home-snyk-code-runner-cves-sast-corrigida-reexec-2026-09-29-2026-09-29.txt
 a3e6b0aa05a6a09de2adb8ef71ecd2c8eb1289bbd8bb160bf04d06fca624da95  datasets/sondagens/sondagem-rede-semgrep-runner-cves-sast-corrigida-batch-aa-2026-09-29.txt
 83f194e305beca6425a20931d2368a42b31be8a351561844196a0526faf1376e  datasets/sondagens/sondagem-rede-semgrep-runner-cves-sast-corrigida-batch-ab-2026-09-29.txt
 0a004bf3bfa9d679ca4764e49a13f66368a1dcdd533dd2161c1fd0d9e6adcb31  datasets/sondagens/sondagem-rede-semgrep-runner-cves-sast-corrigida-batch-ac-2026-09-29.txt
@@ -278,3 +279,13 @@ f6dc7f1f643adcb3fee0fc071c0fe0654da234012ebed07b38c5ba247618efb8  logs/campanha-
 fbefedefce9a7bd66c9aa799ccbfec216c0f4b581b357c83910105ca8a4a0940  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-batch-ah/snyk-code/portoes/normalize.txt
 f56788b92844c6ff53f2b776643307e5e2b9327789006b50a1e0a289f66e004b  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-batch-ah/snyk-code/portoes/run-fixtures.txt
 1cd4001b029bd1ddd4da0593239aa0d90a195d59aba74f95fce50dfc8892e3ed  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-batch-ah/snyk-code/README.txt
+bbc01524acdb5eae45d34df4efa5455158f3a2bc89fcea5f690298f779187952  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/execution-log-snyk-code.csv
+9d59d1fe228e5e614b36e0f62642c5791eb58918d4bb470c25d181aeaf1e2713  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/normalize-report-snyk-code.json
+6aa6ecf97c8fef14db9d4e59a12a523c2a425978a50c199b0c75a30a084e55ab  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/container/lote.txt
+a1269cb31082b2f6a5f2571afb522e75078fc9e675474e826230e4dd1003a9d0  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/container/prevoo.txt
+e89e1f71aa76e45885a78dd201211514c59dbb0b6a5390ec71f0149488b320f2  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/container/resumo.txt
+8f907676870febe96805c198891a5e10afb5cbe1b6a35ca6cd3315aa0c9138ac  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/disco.txt
+367b942a8295fa681cf54d3c49273e4719e0dc3b127e0dd4449618923eb64692  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/portoes/check-log.txt
+c7972adb51712b6ced5bd30e3a27c69ea6ad3931a111f82c0071ab63287e5a5c  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/portoes/normalize.txt
+91477c69dbee7c893d3a4ba849eefcc101f6e34d0d9fc4a80748b173d276e7c4  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/portoes/run-fixtures.txt
+dc309aebbb5f5a405f276f237e21d3448497fc4c2bfa4315548e56dc4e28424a  logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/snyk-code/README.txt

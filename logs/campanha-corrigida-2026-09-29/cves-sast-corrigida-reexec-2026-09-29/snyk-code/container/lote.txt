@@ -1,0 +1,74 @@
+limites efetivos em segundos: TIMEOUT_ANALISE=900; TIMEOUT_FETCH=300; TIMEOUT_CLONE=900
+
+Testing /tmp/src-CVE-2019-15479 ...
+
+Open Issues
+
+ ✗ [MEDIUM] Code Injection
+   Finding ID: 9bc9a066-9576-4a82-841e-c14eb12612a3
+   Path: assets/javascripts/application.js, line 110
+   Info: Unsanitized input from data from a remote resource flows into eval, where it is executed as JavaScript code. This may result in a Code Injection vulnerability.
+
+ ✗ [MEDIUM] Cleartext Transmission - HTTP Instead of HTTPS
+   Finding ID: 9dcd8c4a-85e7-4f8f-96f7-f44af8cdbad5
+   Path: src/webapp/server.ts, line 46
+   Info: http.createServer uses HTTP which is an insecure protocol and should not be used in code due to cleartext transmission of information. Data in cleartext in a communication channel can be sniffed by unauthorized actors. Consider using the https module instead.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 3f6e3d8e-f61f-4ef4-be37-4b1e4e56b7db
+   Path: src/webapp/logic.ts, line 61
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Allocation of Resources Without Limits or Throttling
+   Finding ID: 31988bd1-590f-44a9-89a8-7795328e22b1
+   Path: src/webapp/routes/widget/log.ts, line 4
+   Info: Expensive operation (a file system operation) is performed by an endpoint handler which does not use a rate-limiting mechanism. It may enable the attackers to perform Denial-of-service attacks. Consider using a rate-limiting middleware such as express-limit.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: 1485b685-2157-4433-95ce-2e144612dda8
+   Path: src/webapp/logic.ts, line 44
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [MEDIUM] Information Exposure - Server Error Message
+   Finding ID: f350ab96-81a5-4dc4-a117-497c92ff6ca3
+   Path: src/webapp/routes/dashboard.ts, line 93
+   Info: An error object flows to send and is leaked to the attacker. This may disclose important information about the application to an attacker.
+
+ ✗ [HIGH] Path Traversal
+   Finding ID: cb4c7bd2-9812-4a5b-8dbb-0222785f8d00
+   Path: src/webapp/routes.ts, line 41
+   Info: Unsanitized input from an HTTP parameter flows into sendFile, where it is used as a path. This may result in a Path Traversal vulnerability and allow an attacker to read arbitrary files.
+
+
+
+╭────────────────────────────────────────────────────╮
+│ Test Summary                                       │
+│                                                    │
+│   Organization:                                    │
+│   Test type:         Static code analysis          │
+│   Project path:      /tmp/src-CVE-2019-15479       │
+│                                                    │
+│   Total issues:   7                                │
+│   Ignored issues: 0 [ 0 HIGH  0 MEDIUM  0 LOW ]    │
+│   Open issues:    7 [ 1 HIGH  6 MEDIUM  0 LOW ]    │
+╰────────────────────────────────────────────────────╯
+    
+💡 Tip
+
+   To view ignored issues, use the --include-ignores option.
+                                                            
+
+
+ ERROR   Forbidden (SNYK-CLI-0000)
+         The encountered error only provides basic information, please take a look at   
+         the given details. If they do not help to resolve the issue, consider          
+         debugging or consulting support.                                               
+                                                                                        
+           Forbidden                                                                    
+
+Status:  403 Forbidden 
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0000 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:eb154a81-09fa-4d08-ad22-a22fa2bec734 
+Lote concluido: /workspace/datasets/listas/cves-sast-corrigida-reexec-2026-09-29

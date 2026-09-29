@@ -1666,6 +1666,7 @@ ensaio de 28/09 e distinta da campanha de detecção (`20260907.300.1`); uid:gid
 | CodeQL | 169 | 51 | — | 0 |
 | Semgrep | 179 | 41 | — | 0 |
 | Snyk Code | 132 | 82 | 5 | 1 |
+| Snyk Code, **após o redisparo** | **133** | 82 | 5 | **0** |
 
 **Nenhum `ERRO_FETCH` nem `ERRO_CHECKOUT`**: os 660 pares (CVE, ferramenta)
 foram analisados no `PostPatchCommit` da lista, com `HEAD conferido`,
@@ -1681,7 +1682,8 @@ Expectativa declarada antes do disparo, confirmada 5 de 5.
 com 2"): a CLI não alcançou a API, `SNYK-OS-7001`, `net/http: TLS handshake
 timeout`, status 504, antes de a linha `Testing` do CVE ser impressa. Causa de
 rede, registrada pela própria ferramenta; sem raw. Na detecção o mesmo CVE saiu
-`OK`. Pela §11 conta como **sem análise** no Snyk Code, não como VN nem FP.
+`OK`. Pela §11 contaria como **sem análise** no Snyk Code, não como VN nem FP —
+situação desfeita pelo redisparo registrado abaixo.
 
 **Regra de redisparo, fixada em 29/09/2026 antes de redisparar:** falha de
 infraestrutura de rede — timeout de conexão com a API, antes do início do
@@ -1692,6 +1694,20 @@ teste — é reexecutada **uma única vez**. Se falhar de novo, o CVE fica como
 (linha idêntica à do lote `af`), com `campanha=corrigida` e os três limites em
 900 s; os jobs do CodeQL e do Semgrep são cancelados logo depois do disparo, e
 só o artifact do Snyk Code é importado.
+
+**Redisparo feito em 29/09/2026, 09:56 UTC — execução `36552430822`, commit
+`8039cc7`** (o que versionou a regra e a lista, antes do disparo). **Resultado:
+`OK`, 7 achados, `HEAD conferido` no `PostPatchCommit`, 47 s**; 403 presente,
+como em todo teste com achados; portões, limites, digest e imagem do runner
+(`20260920.314.1`) conferidos como nos lotes. O CVE deixa de ser "sem análise"
+no Snyk Code. Importado em `--dry-run` e depois real, sem recusa; logs em
+`logs/campanha-corrigida-2026-09-29/cves-sast-corrigida-reexec-2026-09-29/`.
+
+**Os jobs do CodeQL e do Semgrep NÃO foram cancelados, ao contrário do que a
+regra acima previa.** O GitHub Actions não cancela job isolado — nem o
+`gh run cancel` nem a API REST —, só a execução inteira, o que mataria também o
+do Snyk Code. Os dois rodaram sobre o único CVE, saíram `success`, não gastam
+teste do Snyk, e **os artifacts deles não foram importados nem versionados**.
 
 **O 403 do Snyk Code** apareceu em 131 dos 132 testes com achados, e em nenhum
 dos 82 sem achados. A exceção é o `CVE-2018-3726` (lote `ad`): no lugar do 403,
@@ -1727,19 +1743,20 @@ foram exercidos.**
 ### Cobertura, volume e normalização
 
 `gt_file_scanned`: CodeQL **220 `true`**, Semgrep **220 `true`**, Snyk Code
-**214 `null`**. Nenhum `false`.
+**214 `null`** nos lotes, **215** com o redisparo. Nenhum `false`.
 
 **Achados brutos — volume reportado, NÃO detecção nem falso positivo:**
-CodeQL **3007**, Semgrep **11724**, Snyk Code **3657**. O `CVE-2018-20801`
+CodeQL **3007**, Semgrep **11724**, Snyk Code **3657** nos lotes (**3664** com
+os 7 do redisparo). O `CVE-2018-20801`
 responde sozinho por **5850** achados do Semgrep, com raw de 144,1 MiB, como na
 detecção.
 
-Tratados: 220 / 220 / 214, em `results/corrigida/<ferramenta>/treated/`, 2,2 /
+Tratados: 220 / 220 / 215 (214 dos lotes e o do redisparo), em `results/corrigida/<ferramenta>/treated/`, 2,2 /
 10,6 / 2,4 MiB. Normalização somada nos oito lotes: 1,00 / 28,46 / 0,26 s.
 
 ### Raws, cópia externa e expiração
 
-Raws: 220 / 220 / 214, **621,5 MiB** descomprimidos (57,3 / 547,9 / 16,3).
+Raws: 220 / 220 / 214 nos lotes, mais 1 do Snyk Code no redisparo; **621,5 MiB** descomprimidos (57,3 / 547,9 / 16,3).
 Cópia externa, fora da árvore, um `tar` por ferramenta com `zstd`:
 
 | Arquivo | bytes | sha256 |
@@ -1747,10 +1764,13 @@ Cópia externa, fora da árvore, um `tar` por ferramenta com `zstd`:
 | `raws-codeql-2026-09-29.tar.zst` | 1.776.490 | `525b68a8130fdac9709ad708acebe6734d49c19278b0e0bbd9f6b76c132bfe31` |
 | `raws-semgrep-2026-09-29.tar.zst` | 8.000.143 | `62e9c02ef472580848010a5b27fbd862dbea032d283726e8bbbf99a56a717d7a` |
 | `raws-snyk-code-2026-09-29.tar.zst` | 747.900 | `27720a9b3ab3fea3256269447724404dc7eea1d959f2ff4e1537155a5aa0face` |
+| `raws-snyk-code-reexec-2026-09-29.tar.zst` | 7.508 | `774e112b551b8e828c7909e89b7362867d9019efdc98d67110fc1e8d193eae16` |
 
 Os três passam em `zstd -t`, e os 654 raws contidos são idênticos, por sha256,
 aos dos artifacts, com a contagem por lote batendo. **Os artifacts das oito
-execuções expiram em 28/12/2026** (90 dias do início, todas de 29/09).
+execuções expiram em 28/12/2026** (90 dias do início, todas de 29/09), e os do
+redisparo também. O `tar` do redisparo passa em `zstd -t`, e o raw contido é
+idêntico, por sha256, ao do artifact.
 
 ## Metodologia V10 — natureza e pendências (21/09/2026)
 

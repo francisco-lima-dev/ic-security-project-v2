@@ -45,7 +45,7 @@ sobre `results/cruzamento` saiu 0: nada da campanha de detecção foi tocado.
 As sondagens mudam de nome pelo mesmo motivo da campanha 1: o nome no artifact
 não traz o lote, e os oito lotes produzem o mesmo nome.
 
-**sha256 dos 280 arquivos** — os de `logs/` deste diretório e as 32
+**sha256 dos 291 arquivos** — os de `logs/` deste diretório e as 33
 sondagens; os tratados não entram — em `SHA256SUMS-artifacts.txt`, com
 caminhos relativos à raiz do repositório:
 
@@ -53,7 +53,7 @@ caminhos relativos à raiz do repositório:
 sha256sum -c logs/campanha-corrigida-2026-09-29/SHA256SUMS-artifacts.txt
 ```
 
-Conferido 280 de 280; a mutação de um dígito numa linha é acusada.
+Conferido 291 de 291; a mutação de um dígito numa linha é acusada.
 
 ## Varredura de segredo antes de versionar, em 29/09/2026
 
@@ -100,3 +100,47 @@ dentro:
 Os três passam em `zstd -t`, e os 654 raws contidos são idênticos, por sha256,
 aos dos artifacts: nenhum falta, nenhum sobra, e a contagem por lote bate.
 Descomprimidos, somam 621,5 MiB (CodeQL 57,3, Semgrep 547,9, Snyk Code 16,3).
+
+## Redisparo do `CVE-2019-15479` no Snyk Code
+
+No lote `af`, o Snyk Code saiu `ERRO_ANALISE` nesse CVE ("snyk saiu com 2"):
+a CLI não alcançou a API (`SNYK-OS-7001`, `net/http: TLS handshake timeout`,
+status 504), antes de a linha `Testing` do CVE ser impressa.
+
+**Regra, fixada e versionada antes de redisparar (commit `8039cc7`):** falha
+de infraestrutura de rede — timeout de conexão com a API, antes do início do
+teste — é reexecutada uma única vez; se falhar de novo, o CVE fica como "sem
+análise" no Snyk Code, pela §11 do `docs/criterios-cruzamento.md`.
+
+| | |
+|---|---|
+| Lista | `datasets/listas/cves-sast-corrigida-reexec-2026-09-29`, gerada por `generate-lists.js --corrigida --ids`; linha idêntica à do lote `af` |
+| Execução | `36552430822`, 29/09/2026 09:56 UTC, commit `8039cc7`, limites em 900 s |
+| Resultado no Snyk Code | `OK`, 7 achados, `HEAD conferido` no `PostPatchCommit`, 47 s; 403 presente |
+| Artifact importado | `lote-corrigida-cves-sast-corrigida-reexec-2026-09-29-snyk-code-36552430822-1`, expira em 28/12/2026 |
+
+Importado em `--dry-run` e depois real, sem recusa. O tratado foi para
+`results/corrigida/snyk-code/treated/CVE-2019-15479.json`; os dois logs e o
+`README.txt` estão em `cves-sast-corrigida-reexec-2026-09-29/`. O restante do
+artifact (`disco.txt`, `container/`, `portoes/`) está em
+`cves-sast-corrigida-reexec-2026-09-29/snyk-code/`, e a sondagem de `HOME` em
+`datasets/sondagens/sondagem-home-snyk-code-runner-cves-sast-corrigida-reexec-2026-09-29-2026-09-29.txt`.
+Os 11 arquivos entram no `SHA256SUMS-artifacts.txt`, que passa a ter 291
+entradas.
+
+**Os jobs do CodeQL e do Semgrep dessa execução NÃO foram cancelados**, ao
+contrário do que o pedido de redisparo previa: o GitHub Actions não cancela job
+isolado, só a execução inteira, o que mataria também o do Snyk Code. Os dois
+rodaram sobre o único CVE, saíram `success`, não gastam teste do Snyk, e os
+artifacts deles **não** foram importados nem versionados.
+
+**Varredura de segredo** nos 11 arquivos, com os mesmos padrões: 9 UUIDs, 7
+`Finding ID:` presentes no raw SARIF do mesmo artifact e 2
+`urn:snyk:interaction:`; nada fora desses contextos, e o token fictício do
+pré-voo não aparece. Controle positivo: um UUID falso enxertado no `lote.txt`
+do redisparo foi acusado.
+
+**Raw:** cópia externa em `raws-snyk-code-reexec-2026-09-29.tar.zst`, 7.508
+bytes, sha256
+`774e112b551b8e828c7909e89b7362867d9019efdc98d67110fc1e8d193eae16`; passa em
+`zstd -t`, e o raw contido é idêntico, por sha256, ao do artifact.
