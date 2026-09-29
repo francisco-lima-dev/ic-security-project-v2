@@ -1,0 +1,1 @@
+CVE-2019-15479,https://github.com/jameswlane/status-board.git,19106617865406aa6f8edec036dcb1db427d5f71,CWE-079|CWE-116,src/webapp/routes/dashboard.ts,94

@@ -1683,6 +1683,16 @@ timeout`, status 504, antes de a linha `Testing` do CVE ser impressa. Causa de
 rede, registrada pela própria ferramenta; sem raw. Na detecção o mesmo CVE saiu
 `OK`. Pela §11 conta como **sem análise** no Snyk Code, não como VN nem FP.
 
+**Regra de redisparo, fixada em 29/09/2026 antes de redisparar:** falha de
+infraestrutura de rede — timeout de conexão com a API, antes do início do
+teste — é reexecutada **uma única vez**. Se falhar de novo, o CVE fica como
+"sem análise" no Snyk Code, pela §11. O redisparo usa a lista
+`cves-sast-corrigida-reexec-2026-09-29`, gerada por
+`node tools/generate-lists.js --corrigida --ids CVE-2019-15479 --saida …`
+(linha idêntica à do lote `af`), com `campanha=corrigida` e os três limites em
+900 s; os jobs do CodeQL e do Semgrep são cancelados logo depois do disparo, e
+só o artifact do Snyk Code é importado.
+
 **O 403 do Snyk Code** apareceu em 131 dos 132 testes com achados, e em nenhum
 dos 82 sem achados. A exceção é o `CVE-2018-3726` (lote `ad`): no lugar do 403,
 a mesma requisição final recebeu o timeout `SNYK-OS-7001` / 504, **depois** do
