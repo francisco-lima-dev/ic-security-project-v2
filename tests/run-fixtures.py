@@ -1391,6 +1391,7 @@ def main():
     secao_gerador(tmp)
     secao_confere_campanha(tmp)
     secao_importa(tmp)
+    secao_cruza_corrigida(tmp)
 
     print("\n%d verificacoes, %d falha(s)" % (verificacoes, len(falhas)))
     for descricao in falhas:
@@ -2820,6 +2821,188 @@ def secao_importa(tmp):
            and not (raiz / "results/corrigida/codeql").exists(),
            "importa: deteccao grava em results/<ferramenta>/treated/ e logs/campanha-<data>/",
            pd8.stderr[-300:])
+
+
+# ============================================================ cruza-corrigida.py
+# As funcoes de classificacao sao exercitadas por casos sinteticos, com o valor
+# esperado por celula; a execucao completa roda sobre o conjunto real e e
+# comparada byte a byte com results/cruzamento-corrigida/.
+CRUZA_CORRIGIDA = RAIZ / "tools" / "cruza-corrigida.py"
+SAIDA_CORRIGIDA = RAIZ / "results" / "cruzamento-corrigida"
+
+
+def _achado_cc(i, caminho, inicio, fim, cwes, regra="R"):
+    return {"finding_id": "t:CVE-0000-0000:%04d" % i, "file_path": caminho,
+            "line_start": inicio, "line_end": fim, "cwe": list(cwes), "rule_id": regra}
+
+
+def secao_cruza_corrigida(tmp):
+    print("\n== cruza-corrigida.py: ponto corrigido, lado corrigido e leitura do benchmark ==")
+    cc = _importar("cruza_corrigida", CRUZA_CORRIGIDA)
+    N3, N4G, N4E = cc.NIVEIS
+
+    # --- o ponto corrigido ---
+    for descricao, args, esperado in (
+            ("inalterada deslocada", ("inalterada", "12", "10", [10]), ("inalterada", [(12, 12)], [12])),
+            ("trecho", ("trecho", "20-24", "21", [21]), ("trecho", [(20, 24)], [20, 21, 22, 23, 24])),
+            ("varias linhas", ("trecho|trecho", "36-36|60-60", "35|59", [35, 59]),
+             ("trecho", [(36, 36), (60, 60)], [36, 60])),
+            ("so_remocao del:N", ("so_remocao", "del:17", "22", [22]), ("so_remocao", [(17, 17)], [17])),
+            ("so_remocao del:N:fim", ("so_remocao", "del:19:fim", "20", [20]),
+             ("so_remocao", [(19, 19)], [19]))):
+        checar(cc.ponto_corrigido(*args) == esperado, "ponto: %s" % descricao,
+               cc.ponto_corrigido(*args))
+    for descricao, args in (("tipos mistos", ("inalterada|trecho", "3|4-5", "1|2", [1, 2])),
+                            ("desalinhado", ("trecho", "3-4|5-6", "1", [1])),
+                            ("gt_linhas diferente da lista", ("inalterada", "3", "2", [1])),
+                            ("trecho invertido", ("trecho", "9-3", "4", [4])),
+                            ("forma de outro tipo", ("inalterada", "3-4", "3", [3])),
+                            ("linha zero", ("inalterada", "0", "1", [1]))):
+        try:
+            cc.ponto_corrigido(*args)
+            recusou = False
+        except ValueError:
+            recusou = True
+        checar(recusou, "ponto: %s e recusado" % descricao)
+
+    # --- lado corrigido, celula a celula ---
+    gt = {"gt_file_path": "a.js", "gt_file_lines": [10], "gt_cwes": ["CWE-079", "CWE-116"],
+          "gt_cwe_primary": "CWE-079"}
+    gt_sem_primario = dict(gt, gt_cwe_primary=None)
+    x = ["CWE-079"]
+
+    def trat(*achados):
+        return {"findings": list(achados)}
+
+    casos = (
+        ("inalterada: achado na linha deslocada", gt, [12], "OK",
+         trat(_achado_cc(1, "a.js", 12, None, x)), ("FP", "FP", "FP")),
+        ("inalterada: achado so na linha antiga", gt, [12], "OK",
+         trat(_achado_cc(1, "a.js", 10, None, x)), ("VN", "VN", "VN")),
+        ("trecho: dentro", gt, list(range(20, 25)), "OK",
+         trat(_achado_cc(1, "a.js", 22, 22, x)), ("FP", "FP", "FP")),
+        ("trecho: na borda final", gt, list(range(20, 25)), "OK",
+         trat(_achado_cc(1, "a.js", 24, 30, x)), ("FP", "FP", "FP")),
+        ("trecho: na borda inicial, vindo de antes", gt, list(range(20, 25)), "OK",
+         trat(_achado_cc(1, "a.js", 15, 20, x)), ("FP", "FP", "FP")),
+        ("trecho: fora, logo depois", gt, list(range(20, 25)), "OK",
+         trat(_achado_cc(1, "a.js", 25, 26, x)), ("VN", "VN", "VN")),
+        ("trecho: fora, logo antes", gt, list(range(20, 25)), "OK",
+         trat(_achado_cc(1, "a.js", 18, 19, x)), ("VN", "VN", "VN")),
+        ("line_end nulo dentro do trecho", gt, list(range(20, 25)), "OK",
+         trat(_achado_cc(1, "a.js", 21, None, x)), ("FP", "FP", "FP")),
+        ("line_end nulo fora do trecho", gt, list(range(20, 25)), "OK",
+         trat(_achado_cc(1, "a.js", 19, None, x)), ("VN", "VN", "VN")),
+        ("varias linhas: casa so a segunda", gt, [36, 60], "OK",
+         trat(_achado_cc(1, "a.js", 60, None, x)), ("FP", "FP", "FP")),
+        ("CWE: casa na generosa, nao na estrita", gt, [12], "OK",
+         trat(_achado_cc(1, "a.js", 12, None, ["CWE-116"])), ("FP", "FP", "VN")),
+        ("CWE: fora do conjunto", gt, [12], "OK",
+         trat(_achado_cc(1, "a.js", 12, None, ["CWE-020"])), ("FP", "VN", "VN")),
+        ("CWE: primario indefinido", gt_sem_primario, [12], "OK",
+         trat(_achado_cc(1, "a.js", 12, None, x)), ("FP", "FP", "nao_se_aplica")),
+        ("arquivo certo, fora do ponto", gt, [12], "OK",
+         trat(_achado_cc(1, "a.js", 300, 310, x)), ("VN", "VN", "VN")),
+        ("outro arquivo, na linha certa", gt, [12], "OK",
+         trat(_achado_cc(1, "b.js", 12, None, x)), ("VN", "VN", "VN")),
+        ("sem achado", gt, [12], "SEM_ACHADOS", trat(), ("VN", "VN", "VN")),
+        ("sem analise: SEM_ARQUIVO_ANALISAVEL", gt, [12], "SEM_ARQUIVO_ANALISAVEL", None,
+         ("sem_analise",) * 3),
+        ("sem analise: ERRO_ANALISE", gt, [12], "ERRO_ANALISE", None, ("sem_analise",) * 3),
+        ("sem analise: tratado ausente com status OK", gt, [12], "OK", None, ("sem_analise",) * 3),
+        ("sem analise e primario indefinido", gt_sem_primario, [12], "ERRO_ANALISE", None,
+         ("sem_analise", "sem_analise", "nao_se_aplica")),
+        ("so_remocao na sensibilidade, del:N", gt, [17], "OK",
+         trat(_achado_cc(1, "a.js", 17, None, x)), ("FP", "FP", "FP")),
+    )
+    for descricao, g, linhas, status, tratado, esperado in casos:
+        obtido, _ = cc.classificar_corrigido(g, linhas, status, tratado)
+        checar(tuple(obtido[n] for n in (N3, N4G, N4E)) == esperado,
+               "corrigido: %s -> %s" % (descricao, "/".join(esperado)), obtido)
+
+    # --- leitura do benchmark ---
+    r_pre = trat(_achado_cc(1, "a.js", 10, None, x, "R"), _achado_cc(2, "z.js", 5, None, x, "R"),
+                 _achado_cc(3, "z.js", 9, None, x, "R"))
+    for descricao, pre, st_pre, post, st_post, esperado in (
+            ("detectado e com queda de alertas", r_pre, "OK",
+             trat(_achado_cc(1, "z.js", 5, None, x, "R")), "OK", "reconhecida"),
+            ("detectado sem queda", r_pre, "OK",
+             trat(*[_achado_cc(i, "z.js", i, None, x, "R") for i in (1, 2, 3)]), "OK",
+             "nao_reconhecida"),
+            ("detectado, regra some no corrigido", r_pre, "OK", trat(), "SEM_ACHADOS", "reconhecida"),
+            ("acerto so por sobreposicao", trat(_achado_cc(1, "a.js", 8, 12, x, "R")), "OK",
+             trat(), "SEM_ACHADOS", "nao_computavel"),
+            ("ausente: corrigido sem analise", r_pre, "OK", None, "SEM_ARQUIVO_ANALISAVEL", "ausente"),
+            ("ausente: vulneravel sem analise", None, "SEM_ARQUIVO_ANALISAVEL", trat(), "SEM_ACHADOS",
+             "ausente"),
+            ("ausente antes de nao computavel", trat(), "SEM_ACHADOS", None, "ERRO_ANALISE", "ausente")):
+        resultado, _, _ = cc.leitura_benchmark(gt, pre, st_pre, post, st_post)
+        checar(resultado == esperado, "leitura: %s -> %s" % (descricao, esperado), resultado)
+    _, _, contagem = cc.leitura_benchmark(gt, r_pre, "OK", trat(_achado_cc(1, "z.js", 5, None, x, "R")),
+                                          "OK")
+    checar(contagem == [("R", 3, 1)], "leitura: alertas da regra no repositorio inteiro, 3 -> 1",
+           contagem)
+
+    # --- metricas ---
+    m = cc.metricas([("VP", "FP"), ("VP", "VN"), ("FN", "VN"), ("FN", "sem_analise"),
+                     ("nao_se_aplica", "nao_se_aplica")])
+    checar((m["VP"], m["FN"], m["FP"], m["VN"], m["sem_analise"], m["base"]) == (2, 2, 1, 2, 1, 4)
+           and m["recall"]["valor"] == 0.5 and m["precisao"]["valor"] == 0.6667
+           and m["especificidade"]["valor"] == 0.5 and m["f1"] == 0.5714,
+           "metricas: contagens, base sem o nao_se_aplica e fracoes", m)
+
+    # --- registro da campanha corrigida, sobre copias dos logs reais ---
+    check_log = cc.CRUZA.importar("check_log", cc.CRUZA.CHECK_LOG)
+    import csv as _csv
+    pares_cc = {l["cve"]: {"post": l["post"]}
+                for l in _csv.DictReader(open(RAIZ / "results/pares/pares.csv", encoding="utf-8"))}
+    reg, _ = cc.carregar_registro_corrigida(cc.LOGS_CORRIGIDA, check_log, pares_cc)
+    checar(reg["snyk-code"]["CVE-2019-15479"] == "OK" and len(reg["snyk-code"]) == 220,
+           "registro corrigido: vale a ultima linha, o redisparo OK do CVE-2019-15479")
+    sem_reexec = tmp / "logs-sem-reexec"
+    shutil.copytree(cc.LOGS_CORRIGIDA, sem_reexec)
+    (sem_reexec / "cves-sast-corrigida-reexec-2026-09-29" / "execution-log-snyk-code.csv").unlink()
+    try:
+        cc.carregar_registro_corrigida(sem_reexec, check_log, pares_cc)
+        parou = ""
+    except cc.Parada as parada:
+        parou = " ".join(parada.motivos)
+    checar("snyk-code: log ausente" in parou,
+           "registro corrigido: log do Snyk Code do redisparo ausente e parada, nao silencio", parou)
+    commit_errado = tmp / "logs-commit-errado"
+    shutil.copytree(cc.LOGS_CORRIGIDA, commit_errado)
+    log_aa = commit_errado / "cves-sast-corrigida-batch-aa" / "execution-log-semgrep.csv"
+    linhas_aa = log_aa.read_text(encoding="utf-8").splitlines(True)
+    partes_aa = linhas_aa[1].split(",")
+    partes_aa[2] = "f" * 40
+    linhas_aa[1] = ",".join(partes_aa)
+    log_aa.write_text("".join(linhas_aa), encoding="utf-8")
+    try:
+        cc.carregar_registro_corrigida(commit_errado, check_log, pares_cc)
+        parou = ""
+    except cc.Parada as parada:
+        parou = " ".join(parada.motivos)
+    checar("commit analisado" in parou and partes_aa[0] in parou,
+           "registro corrigido: coluna commit do log diferente do post e parada", parou[:300])
+
+    # --- execucao completa sobre o conjunto real ---
+    saida = tmp / "cruza-corrigida"
+    p = subprocess.run([sys.executable, str(CRUZA_CORRIGIDA), "--saida-dir", str(saida)],
+                       capture_output=True, text=True, stdin=subprocess.DEVNULL)
+    checar(p.returncode == 0, "cruza-corrigida: execucao sobre o conjunto real sai 0", p.stderr[-800:])
+    if p.returncode != 0:
+        return
+    for f in cc.FERRAMENTAS:
+        rel = json.loads((saida / ("cruzamento-corrigida-%s.json" % f)).read_text(encoding="utf-8"))
+        cp = rel["conferencias"]["controle_positivo"]
+        checar(len(cp) >= 12 and all(c["mutante_acusado"] for c in cp),
+               "cruza-corrigida %s: controle positivo com todos os mutantes acusados (%d)" % (f, len(cp)))
+        checar("/home/" not in json.dumps(rel), "cruza-corrigida %s: JSON sem caminho da maquina" % f)
+    if SAIDA_CORRIGIDA.is_dir():
+        for arq in sorted(saida.iterdir()):
+            versionado = SAIDA_CORRIGIDA / arq.name
+            checar(versionado.is_file() and versionado.read_bytes() == arq.read_bytes(),
+                   "cruza-corrigida: %s identico ao versionado" % arq.name)
 
 
 if __name__ == "__main__":

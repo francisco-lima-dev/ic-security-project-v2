@@ -328,6 +328,7 @@ O gerador exige a flag `--force` para remover lotes existentes.
 `v1-checkids.txt`), `tools/`, `tests/fixtures/` e `tests/run-fixtures.py`,
 `results/*/treated/`, `results/cruzamento/`, `results/proveniencia/`,
 `results/circularidade/`, `results/por-cwe/`, `results/capacidade/`, `results/pares/`,
+`results/cruzamento-corrigida/`,
 `results/zap/`, `datasets/postpatch-expansoes.csv`, `logs/` (incluindo `logs/pares/`),
 `results/corrigida/*/treated/` e `logs/campanha-corrigida-<AAAA-MM-DD>/` (campanha
 da versão corrigida; ver a seção de convenções dela)
@@ -1771,6 +1772,100 @@ aos dos artifacts, com a contagem por lote batendo. **Os artifacts das oito
 execuções expiram em 28/12/2026** (90 dias do início, todas de 29/09), e os do
 redisparo também. O `tar` do redisparo passa em `zstd -t`, e o raw contido é
 idêntico, por sha256, ao do artifact.
+
+## Cruzamento da versão corrigida — resultados (29/09/2026)
+
+Números sem leitura. Os critérios estão na §11 do
+`docs/criterios-cruzamento.md`, que é a fonte; aqui só os números.
+
+Produzidos por `tools/cruza-corrigida.py`, com as saídas em
+`results/cruzamento-corrigida/`: `matriz-corrigida.csv` (uma linha por (CVE,
+ferramenta, nível), 220 × 3 × 3), `leitura-benchmark.csv` (220 × 3),
+`cruzamento-corrigida-<ferramenta>.json`, `cruzamento-corrigida.txt` e o
+`README.md` com a procedência. O lado vulnerável é **lido** da
+`matriz-deteccao.csv` (sha256 `f80158b7…`), nunca recomputado; o casamento é o
+`apurar_cve` do `cruza-deteccao.py`, importado, com o ponto corrigido do
+`pares.csv` (sha256 `fd8fc5da…`) no lugar das linhas vulneráveis. CSV desta
+execução:
+
+```
+matriz-corrigida.csv   359bf3ebb1cef01edf15a08893b933c5f11d093b01904353053effaf8ef87fd9
+leitura-benchmark.csv  50412d6dae59c143053383cadd1f96129ccd2953bb9ed4a2eb4772b3bc535dbc
+```
+
+**Validação: nenhuma parada.** Dez conferências, com 12 mutantes de controle
+positivo todos acusados; recontagem independente, sem as funções importadas,
+batendo no nível 3 e na leitura secundária; saídas idênticas com quatro
+`PYTHONHASHSEED`.
+
+**Universo:** principal **212** (inalterada 99, trecho 113); sensibilidade
+**220**, com os 8 `so_remocao` no ponto `del:N`. **Sem análise no lado
+corrigido:** CodeQL 0, Semgrep 0, Snyk Code **5** — os cinco
+`SEM_ARQUIVO_ANALISAVEL`, todos entre os 212; o `CVE-2019-15479` saiu `OK` no
+redisparo.
+
+### Principal — 212 CVEs
+
+`VP / FN / FP / VN / sem análise`; na estrita, mais `n.s.a.` e base 211.
+
+| nível | CodeQL | Semgrep | Snyk Code |
+|---|---|---|---|
+| 3 | 98 / 114 / 42 / 170 / 0 | 24 / 188 / 13 / 199 / 0 | 22 / 190 / 20 / 187 / 5 |
+| 4 generosa | 92 / 120 / 32 / 180 / 0 | 19 / 193 / 10 / 202 / 0 | 10 / 202 / 6 / 201 / 5 |
+| 4 estrita | 91 / 120 / 31 / 180 / 0 / 1 | 19 / 192 / 10 / 201 / 0 / 1 | 6 / 205 / 3 / 203 / 5 / 1 |
+
+`recall / precisão / especificidade / F1`:
+
+| nível | CodeQL | Semgrep | Snyk Code |
+|---|---|---|---|
+| 3 | 0,4623 / 0,7000 / 0,8019 / 0,5568 | 0,1132 / 0,6486 / 0,9387 / 0,1928 | 0,1038 / 0,5238 / 0,8821 / 0,1732 |
+| 4 generosa | 0,4340 / 0,7419 / 0,8491 / 0,5476 | 0,0896 / 0,6552 / 0,9528 / 0,1577 | 0,0472 / 0,6250 / 0,9481 / 0,0877 |
+| 4 estrita | 0,4313 / 0,7459 / 0,8531 / 0,5465 | 0,0900 / 0,6552 / 0,9526 / 0,1583 | 0,0284 / 0,6667 / 0,9621 / 0,0545 |
+
+Especificidade = VN / base; o sem análise do Snyk Code é 5 / 212 (0,0236) nos
+níveis 3 e 4g e 5 / 211 (0,0237) na estrita, a parte que falta.
+
+**Recall sobre os 212 e sobre os 220 publicados:** CodeQL 98/212 e 101/220,
+92/212 e 95/220, 91/211 e 94/219; Semgrep 24/212 e 25/220, 19/212 e 20/220,
+19/211 e 20/219; Snyk Code 22/212 e 22/220, 10/212 e 10/220, 6/211 e 6/219 —
+níveis 3, 4g e 4e.
+
+### Lado corrigido por grupo — principal, nível 3
+
+`FP / VN / sem análise`:
+
+| grupo | CVEs | CodeQL | Semgrep | Snyk Code |
+|---|---:|---|---|---|
+| inalterada | 99 | 29 / 70 / 0 | 9 / 90 / 0 | 13 / 82 / 4 |
+| trecho | 113 | 13 / 100 / 0 | 4 / 109 / 0 | 7 / 105 / 1 |
+
+Os níveis 4g e 4e por grupo estão no `.txt` e nos JSON.
+
+### Sensibilidade — 220 CVEs, nível 3
+
+CodeQL 101 / 119 / 42 / 178 / 0; Semgrep 25 / 195 / 13 / 207 / 0; Snyk Code
+22 / 198 / 20 / 195 / 5. **Nenhum FP nos 8 `so_remocao`**, em nenhuma
+ferramenta e nível: FP é o mesmo da principal nas nove células.
+
+### Leitura secundária — a do benchmark, 220 CVEs
+
+| | reconhecida | não reconhecida | não computável | ausente | detectados (critério exato) |
+|---|---:|---:|---:|---:|---:|
+| CodeQL | 70 | 30 | 120 | 0 | 100 |
+| Semgrep | 11 | 13 | 196 | 0 | 24 |
+| Snyk Code | 4 | 9 | 202 | 5 | 13 |
+
+Conferida contra o código do benchmark (`91c59fd`): ausente precede não
+computável, como em `getRelevantRuleAlertCountsConclusion`; os cinco ausentes
+do Snyk Code são os `SEM_ARQUIVO_ANALISAVEL`, pela interpretação declarada no
+README do diretório. Divergência declarada: o benchmark compara o arquivo da
+weakness como veio, e aqui o `gt_file_path` normalizado (só o
+`CVE-2019-12041`). Os detectados pelo critério exato são subconjunto dos que
+acertam o nível 3 (100 de 101, 24 de 25, 13 de 22).
+
+**Divergência declarada da §11, fechada:** se algum `so_remocao` ficasse sem
+análise, a §11 o tiraria da sensibilidade, e o pedido da apuração o manteria
+como sem análise; o script para nesse caso. Não ocorreu.
 
 ## Metodologia V10 — natureza e pendências (21/09/2026)
 

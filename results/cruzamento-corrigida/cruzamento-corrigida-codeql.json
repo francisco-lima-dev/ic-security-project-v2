@@ -1,0 +1,534 @@
+{
+  "ferramenta": "codeql",
+  "versao": "1",
+  "criterios": "docs/criterios-cruzamento.md, §11",
+  "fontes": {
+    "matriz_deteccao": {
+      "caminho": "results/cruzamento/matriz-deteccao.csv",
+      "sha256": "f80158b730794c3135701a8631e551d89610775562577322b806fcc180452825"
+    },
+    "pares": {
+      "caminho": "results/pares/pares.csv",
+      "sha256": "fd8fc5daf90de100df949c410d4b554af785fec584d674235e8e2b691db4dbc4"
+    },
+    "lista_deteccao": {
+      "caminho": "datasets/listas/cves-sast.txt",
+      "sha256": "7b300e43c561470a7d4952cdd0789cd231fab2f3b38a00f047967bb6ab49b277"
+    },
+    "lista_corrigida": {
+      "caminho": "datasets/listas/cves-sast-corrigida.txt",
+      "sha256": "cb2865ef0ec0b06af20aa93195c6b85c89e291dac59814ff769a0727373a4882"
+    },
+    "tabela_primario": {
+      "caminho": "datasets/cwe-primario.csv",
+      "sha256": "cf77014f582170df920bbe7200aa8e68c7e7c90f9d561a36f9ac39320dcf9fbe"
+    },
+    "logs_corrigida": {
+      "diretorio": "logs/campanha-corrigida-2026-09-29",
+      "arquivos": 25,
+      "sha256_conjunto": "de02361713e6957ee7fe9ac2bb9d24b0380fb5e99be01a13f53702fb6ba444f9"
+    },
+    "criterios": {
+      "caminho": "docs/criterios-cruzamento.md",
+      "sha256": "cb7423657675afd0fc2ced9a7bb443d4c11e295c826016a6ab8fba71914d7906"
+    },
+    "codigo": {
+      "tools/cruza-corrigida.py": "47b28f287a59192112d0aea662c967fa0207b864ae72bd9212f25982d34f428d",
+      "tools/cruza-deteccao.py": "8fea5aaba3202b019b92fd27ad6472b7c9ef7eab31dfa5a3130f1e266053c44c",
+      "tools/normalize.py": "0e2a0b1229762732a62579fac1a1411a9549249cd5fccd32e17caf45b258b1d0",
+      "tools/check-log.py": "7a94d809b8d733b2751f97ce8fe2241627f26e0e14db4f6a0dfda2d8b879e0eb"
+    },
+    "tratados_corrigidos": {
+      "diretorio": "results/corrigida/codeql/treated",
+      "arquivos": 220,
+      "sha256_conjunto": "5c6e99ebea51d8c9190b9ace16b94a622881e059c95fe1cc9fc9e3078865629e"
+    }
+  },
+  "universo": {
+    "principal": 212,
+    "sensibilidade": 220,
+    "so_remocao_fora_da_principal": [
+      "CVE-2017-16043",
+      "CVE-2017-16118",
+      "CVE-2017-16119",
+      "CVE-2018-16460",
+      "CVE-2018-20801",
+      "CVE-2019-10761",
+      "CVE-2020-26256",
+      "CVE-2020-7720"
+    ],
+    "fora_do_denominador": [
+      "CVE-2016-1000229",
+      "CVE-2018-1000096",
+      "CVE-2018-8035"
+    ],
+    "grupos_principal": {
+      "inalterada": 99,
+      "trecho": 113
+    }
+  },
+  "sem_analise": {
+    "principal": [],
+    "sensibilidade": [],
+    "status": {}
+  },
+  "estrita_nao_se_aplica": [
+    "CVE-2018-16472"
+  ],
+  "principal": {
+    "nivel_3": {
+      "universo": 212,
+      "base": 212,
+      "VP": 98,
+      "FN": 114,
+      "FP": 42,
+      "VN": 170,
+      "sem_analise": 0,
+      "nao_se_aplica_vulneravel": 0,
+      "nao_se_aplica_corrigido": 0,
+      "recall": {
+        "num": 98,
+        "den": 212,
+        "valor": 0.4623
+      },
+      "precisao": {
+        "num": 98,
+        "den": 140,
+        "valor": 0.7
+      },
+      "especificidade": {
+        "num": 170,
+        "den": 212,
+        "valor": 0.8019
+      },
+      "sem_analise_sobre_base": {
+        "num": 0,
+        "den": 212,
+        "valor": 0.0
+      },
+      "f1": 0.5568
+    },
+    "nivel_4_generosa": {
+      "universo": 212,
+      "base": 212,
+      "VP": 92,
+      "FN": 120,
+      "FP": 32,
+      "VN": 180,
+      "sem_analise": 0,
+      "nao_se_aplica_vulneravel": 0,
+      "nao_se_aplica_corrigido": 0,
+      "recall": {
+        "num": 92,
+        "den": 212,
+        "valor": 0.434
+      },
+      "precisao": {
+        "num": 92,
+        "den": 124,
+        "valor": 0.7419
+      },
+      "especificidade": {
+        "num": 180,
+        "den": 212,
+        "valor": 0.8491
+      },
+      "sem_analise_sobre_base": {
+        "num": 0,
+        "den": 212,
+        "valor": 0.0
+      },
+      "f1": 0.5476
+    },
+    "nivel_4_estrita": {
+      "universo": 212,
+      "base": 211,
+      "VP": 91,
+      "FN": 120,
+      "FP": 31,
+      "VN": 180,
+      "sem_analise": 0,
+      "nao_se_aplica_vulneravel": 1,
+      "nao_se_aplica_corrigido": 1,
+      "recall": {
+        "num": 91,
+        "den": 211,
+        "valor": 0.4313
+      },
+      "precisao": {
+        "num": 91,
+        "den": 122,
+        "valor": 0.7459
+      },
+      "especificidade": {
+        "num": 180,
+        "den": 211,
+        "valor": 0.8531
+      },
+      "sem_analise_sobre_base": {
+        "num": 0,
+        "den": 211,
+        "valor": 0.0
+      },
+      "f1": 0.5465
+    }
+  },
+  "recall_sobre_220_publicado": {
+    "nivel_3": {
+      "num": 101,
+      "den": 220,
+      "valor": 0.4591
+    },
+    "nivel_4_generosa": {
+      "num": 95,
+      "den": 220,
+      "valor": 0.4318
+    },
+    "nivel_4_estrita": {
+      "num": 94,
+      "den": 219,
+      "valor": 0.4292
+    }
+  },
+  "decomposicao_por_grupo_principal": {
+    "nivel_3": {
+      "inalterada": {
+        "cves": 99,
+        "FP": 29,
+        "VN": 70,
+        "sem_analise": 0,
+        "nao_se_aplica": 0
+      },
+      "trecho": {
+        "cves": 113,
+        "FP": 13,
+        "VN": 100,
+        "sem_analise": 0,
+        "nao_se_aplica": 0
+      }
+    },
+    "nivel_4_generosa": {
+      "inalterada": {
+        "cves": 99,
+        "FP": 25,
+        "VN": 74,
+        "sem_analise": 0,
+        "nao_se_aplica": 0
+      },
+      "trecho": {
+        "cves": 113,
+        "FP": 7,
+        "VN": 106,
+        "sem_analise": 0,
+        "nao_se_aplica": 0
+      }
+    },
+    "nivel_4_estrita": {
+      "inalterada": {
+        "cves": 99,
+        "FP": 24,
+        "VN": 74,
+        "sem_analise": 0,
+        "nao_se_aplica": 1
+      },
+      "trecho": {
+        "cves": 113,
+        "FP": 7,
+        "VN": 106,
+        "sem_analise": 0,
+        "nao_se_aplica": 0
+      }
+    }
+  },
+  "sensibilidade": {
+    "nivel_3": {
+      "universo": 220,
+      "base": 220,
+      "VP": 101,
+      "FN": 119,
+      "FP": 42,
+      "VN": 178,
+      "sem_analise": 0,
+      "nao_se_aplica_vulneravel": 0,
+      "nao_se_aplica_corrigido": 0,
+      "recall": {
+        "num": 101,
+        "den": 220,
+        "valor": 0.4591
+      },
+      "precisao": {
+        "num": 101,
+        "den": 143,
+        "valor": 0.7063
+      },
+      "especificidade": {
+        "num": 178,
+        "den": 220,
+        "valor": 0.8091
+      },
+      "sem_analise_sobre_base": {
+        "num": 0,
+        "den": 220,
+        "valor": 0.0
+      },
+      "f1": 0.5565
+    },
+    "nivel_4_generosa": {
+      "universo": 220,
+      "base": 220,
+      "VP": 95,
+      "FN": 125,
+      "FP": 32,
+      "VN": 188,
+      "sem_analise": 0,
+      "nao_se_aplica_vulneravel": 0,
+      "nao_se_aplica_corrigido": 0,
+      "recall": {
+        "num": 95,
+        "den": 220,
+        "valor": 0.4318
+      },
+      "precisao": {
+        "num": 95,
+        "den": 127,
+        "valor": 0.748
+      },
+      "especificidade": {
+        "num": 188,
+        "den": 220,
+        "valor": 0.8545
+      },
+      "sem_analise_sobre_base": {
+        "num": 0,
+        "den": 220,
+        "valor": 0.0
+      },
+      "f1": 0.5476
+    },
+    "nivel_4_estrita": {
+      "universo": 220,
+      "base": 219,
+      "VP": 94,
+      "FN": 125,
+      "FP": 31,
+      "VN": 188,
+      "sem_analise": 0,
+      "nao_se_aplica_vulneravel": 1,
+      "nao_se_aplica_corrigido": 1,
+      "recall": {
+        "num": 94,
+        "den": 219,
+        "valor": 0.4292
+      },
+      "precisao": {
+        "num": 94,
+        "den": 125,
+        "valor": 0.752
+      },
+      "especificidade": {
+        "num": 188,
+        "den": 219,
+        "valor": 0.8584
+      },
+      "sem_analise_sobre_base": {
+        "num": 0,
+        "den": 219,
+        "valor": 0.0
+      },
+      "f1": 0.5465
+    }
+  },
+  "leitura_benchmark": {
+    "universo": 220,
+    "reconhecida": 70,
+    "nao_reconhecida": 30,
+    "nao_computavel": 120,
+    "ausente": 0,
+    "detectados_criterio_exato": 100
+  },
+  "achados_casados_nivel_3_corrigido": {
+    "CVE-2017-16100": [
+      "codeql:CVE-2017-16100:0007"
+    ],
+    "CVE-2017-16114": [
+      "codeql:CVE-2017-16114:0001"
+    ],
+    "CVE-2017-18354": [
+      "codeql:CVE-2017-18354:0007"
+    ],
+    "CVE-2017-18355": [
+      "codeql:CVE-2017-18355:0007"
+    ],
+    "CVE-2017-5954": [
+      "codeql:CVE-2017-5954:0001"
+    ],
+    "CVE-2018-1002204": [
+      "codeql:CVE-2018-1002204:0002"
+    ],
+    "CVE-2018-13797": [
+      "codeql:CVE-2018-13797:0001"
+    ],
+    "CVE-2018-16478": [
+      "codeql:CVE-2018-16478:0006"
+    ],
+    "CVE-2018-16479": [
+      "codeql:CVE-2018-16479:0003"
+    ],
+    "CVE-2018-16480": [
+      "codeql:CVE-2018-16480:0004"
+    ],
+    "CVE-2018-16484": [
+      "codeql:CVE-2018-16484:0002"
+    ],
+    "CVE-2018-16487": [
+      "codeql:CVE-2018-16487:0002"
+    ],
+    "CVE-2018-16490": [
+      "codeql:CVE-2018-16490:0003"
+    ],
+    "CVE-2018-3712": [
+      "codeql:CVE-2018-3712:0004"
+    ],
+    "CVE-2018-3718": [
+      "codeql:CVE-2018-3718:0004"
+    ],
+    "CVE-2018-3721": [
+      "codeql:CVE-2018-3721:0002"
+    ],
+    "CVE-2018-3726": [
+      "codeql:CVE-2018-3726:0010"
+    ],
+    "CVE-2018-3747": [
+      "codeql:CVE-2018-3747:0004"
+    ],
+    "CVE-2018-3783": [
+      "codeql:CVE-2018-3783:0009"
+    ],
+    "CVE-2018-6342": [
+      "codeql:CVE-2018-6342:0014",
+      "codeql:CVE-2018-6342:0015"
+    ],
+    "CVE-2018-7651": [
+      "codeql:CVE-2018-7651:0001"
+    ],
+    "CVE-2019-10747": [
+      "codeql:CVE-2019-10747:0003"
+    ],
+    "CVE-2019-10765": [
+      "codeql:CVE-2019-10765:0028"
+    ],
+    "CVE-2019-10767": [
+      "codeql:CVE-2019-10767:0018"
+    ],
+    "CVE-2019-10771": [
+      "codeql:CVE-2019-10771:0015"
+    ],
+    "CVE-2019-10775": [
+      "codeql:CVE-2019-10775:0001"
+    ],
+    "CVE-2019-10776": [
+      "codeql:CVE-2019-10776:0007",
+      "codeql:CVE-2019-10776:0008"
+    ],
+    "CVE-2019-10777": [
+      "codeql:CVE-2019-10777:0003"
+    ],
+    "CVE-2019-10778": [
+      "codeql:CVE-2019-10778:0001"
+    ],
+    "CVE-2019-16763": [
+      "codeql:CVE-2019-16763:0021"
+    ],
+    "CVE-2019-5444": [
+      "codeql:CVE-2019-5444:0002"
+    ],
+    "CVE-2019-5483": [
+      "codeql:CVE-2019-5483:0002"
+    ],
+    "CVE-2020-11079": [
+      "codeql:CVE-2020-11079:0008"
+    ],
+    "CVE-2020-15256": [
+      "codeql:CVE-2020-15256:0001"
+    ],
+    "CVE-2020-4059": [
+      "codeql:CVE-2020-4059:0003",
+      "codeql:CVE-2020-4059:0004"
+    ],
+    "CVE-2020-5258": [
+      "codeql:CVE-2020-5258:0020"
+    ],
+    "CVE-2020-7676": [
+      "codeql:CVE-2020-7676:0011"
+    ],
+    "CVE-2020-7699": [
+      "codeql:CVE-2020-7699:0006"
+    ],
+    "CVE-2020-7763": [
+      "codeql:CVE-2020-7763:0001"
+    ],
+    "CVE-2020-8116": [
+      "codeql:CVE-2020-8116:0002",
+      "codeql:CVE-2020-8116:0003"
+    ],
+    "CVE-2020-8135": [
+      "codeql:CVE-2020-8135:0026"
+    ],
+    "CVE-2020-8205": [
+      "codeql:CVE-2020-8205:0024"
+    ]
+  },
+  "conferencias": {
+    "1_a_7": "passaram",
+    "controle_positivo": [
+      {
+        "conferencia": "1 proveniencia: sha256 da matriz",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "1 proveniencia: metadata.commit",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "1 proveniencia: Snyk com 214, erro novo absorvido",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "2 universo: principal com 213",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "3 reconstrucao: uma celula trocada",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "4 particao: estado fora do vocabulario",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "5 sem analise: CodeQL com um",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "5 sem analise: Snyk com um erro novo no registro",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "6 sensibilidade: CVE da principal alterado",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "7 leitura: detectado sem nivel 3",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "7 leitura: entrada faltante",
+        "mutante_acusado": true
+      },
+      {
+        "conferencia": "8 releitura: CSV adulterado",
+        "mutante_acusado": true
+      }
+    ]
+  }
+}

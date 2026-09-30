@@ -1,0 +1,89 @@
+Cruzamento da versao corrigida — docs/criterios-cruzamento.md, §11
+
+matriz-deteccao.csv sha256 f80158b730794c3135701a8631e551d89610775562577322b806fcc180452825
+pares.csv           sha256 fd8fc5daf90de100df949c410d4b554af785fec584d674235e8e2b691db4dbc4
+principal: 212 CVEs (inalterada 99, trecho 113); sensibilidade: 220
+fora da principal (so_remocao): CVE-2017-16043, CVE-2017-16118, CVE-2017-16119, CVE-2018-16460, CVE-2018-20801, CVE-2019-10761, CVE-2020-26256, CVE-2020-7720
+
+PRINCIPAL — nivel_3
+             VP   FN   FP   VN  s/a  nsa base    recall  precisao  especif.  s/a/base        F1
+codeql       98  114   42  170    0    0  212    0.4623    0.7000    0.8019    0.0000    0.5568
+semgrep      24  188   13  199    0    0  212    0.1132    0.6486    0.9387    0.0000    0.1928
+snyk-code    22  190   20  187    5    0  212    0.1038    0.5238    0.8821    0.0236    0.1732
+
+PRINCIPAL — nivel_4_generosa
+             VP   FN   FP   VN  s/a  nsa base    recall  precisao  especif.  s/a/base        F1
+codeql       92  120   32  180    0    0  212    0.4340    0.7419    0.8491    0.0000    0.5476
+semgrep      19  193   10  202    0    0  212    0.0896    0.6552    0.9528    0.0000    0.1577
+snyk-code    10  202    6  201    5    0  212    0.0472    0.6250    0.9481    0.0236    0.0877
+
+PRINCIPAL — nivel_4_estrita
+             VP   FN   FP   VN  s/a  nsa base    recall  precisao  especif.  s/a/base        F1
+codeql       91  120   31  180    0    1  211    0.4313    0.7459    0.8531    0.0000    0.5465
+semgrep      19  192   10  201    0    1  211    0.0900    0.6552    0.9526    0.0000    0.1583
+snyk-code     6  205    3  203    5    1  211    0.0284    0.6667    0.9621    0.0237    0.0545
+
+SENSIBILIDADE — nivel_3
+             VP   FN   FP   VN  s/a  nsa base    recall  precisao  especif.  s/a/base        F1
+codeql      101  119   42  178    0    0  220    0.4591    0.7063    0.8091    0.0000    0.5565
+semgrep      25  195   13  207    0    0  220    0.1136    0.6579    0.9409    0.0000    0.1938
+snyk-code    22  198   20  195    5    0  220    0.1000    0.5238    0.8864    0.0227    0.1679
+
+SENSIBILIDADE — nivel_4_generosa
+             VP   FN   FP   VN  s/a  nsa base    recall  precisao  especif.  s/a/base        F1
+codeql       95  125   32  188    0    0  220    0.4318    0.7480    0.8545    0.0000    0.5476
+semgrep      20  200   10  210    0    0  220    0.0909    0.6667    0.9545    0.0000    0.1600
+snyk-code    10  210    6  209    5    0  220    0.0455    0.6250    0.9500    0.0227    0.0847
+
+SENSIBILIDADE — nivel_4_estrita
+             VP   FN   FP   VN  s/a  nsa base    recall  precisao  especif.  s/a/base        F1
+codeql       94  125   31  188    0    1  219    0.4292    0.7520    0.8584    0.0000    0.5465
+semgrep      20  199   10  209    0    1  219    0.0913    0.6667    0.9543    0.0000    0.1606
+snyk-code     6  213    3  211    5    1  219    0.0274    0.6667    0.9635    0.0228    0.0526
+
+RECALL — sobre os 212 (principal) e sobre os 220 (matriz publicada)
+           nivel                       212          220
+codeql     nivel_3                  98/212      101/220
+codeql     nivel_4_generosa         92/212       95/220
+codeql     nivel_4_estrita          91/211       94/219
+semgrep    nivel_3                  24/212       25/220
+semgrep    nivel_4_generosa         19/212       20/220
+semgrep    nivel_4_estrita          19/211       20/219
+snyk-code  nivel_3                  22/212       22/220
+snyk-code  nivel_4_generosa         10/212       10/220
+snyk-code  nivel_4_estrita           6/211        6/219
+
+DECOMPOSICAO DO LADO CORRIGIDO POR GRUPO — principal
+           nivel              grupo        CVEs   FP   VN  s/a  nsa
+codeql     nivel_3            inalterada     99   29   70    0    0
+codeql     nivel_3            trecho        113   13  100    0    0
+codeql     nivel_4_generosa   inalterada     99   25   74    0    0
+codeql     nivel_4_generosa   trecho        113    7  106    0    0
+codeql     nivel_4_estrita    inalterada     99   24   74    0    1
+codeql     nivel_4_estrita    trecho        113    7  106    0    0
+semgrep    nivel_3            inalterada     99    9   90    0    0
+semgrep    nivel_3            trecho        113    4  109    0    0
+semgrep    nivel_4_generosa   inalterada     99    8   91    0    0
+semgrep    nivel_4_generosa   trecho        113    2  111    0    0
+semgrep    nivel_4_estrita    inalterada     99    8   90    0    1
+semgrep    nivel_4_estrita    trecho        113    2  111    0    0
+snyk-code  nivel_3            inalterada     99   13   82    4    0
+snyk-code  nivel_3            trecho        113    7  105    1    0
+snyk-code  nivel_4_generosa   inalterada     99    3   92    4    0
+snyk-code  nivel_4_generosa   trecho        113    3  109    1    0
+snyk-code  nivel_4_estrita    inalterada     99    1   93    4    1
+snyk-code  nivel_4_estrita    trecho        113    2  110    1    0
+
+SEM ANALISE NO LADO CORRIGIDO
+codeql     principal 0, sensibilidade 0
+semgrep    principal 0, sensibilidade 0
+snyk-code  principal 5, sensibilidade 5: CVE-2018-16479, CVE-2018-16480, CVE-2018-3731, CVE-2018-3747, CVE-2019-5423
+
+LEITURA SECUNDARIA — a do benchmark, sobre os 220
+            reconhecida  nao_reconhecida  nao_computavel  ausente  detectados
+codeql               70               30             120        0         100
+semgrep              11               13             196        0          24
+snyk-code             4                9             202        5          13
+
+s/a = sem analise; nsa = nao se aplica (estrita, primario indefinido); base = universo - nsa;
+especificidade = VN / base; recall = VP / (VP + FN); precisao = VP / (VP + FP).
