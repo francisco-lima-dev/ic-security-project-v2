@@ -4,7 +4,7 @@
 
 Francisco Sales de Lima Junior
 
-22 de setembro de 2026, revista em 26 de setembro de 2026 — versão parcial: resultados SAST da campanha de detecção, incluídas a decomposição por categoria de CWE e a capacidade empírica; campanha da versão corrigida, DAST e análise comparativa a preencher
+22 de setembro de 2026, revista em 26 e 29 de setembro de 2026 — versão parcial: resultados SAST das campanhas de detecção e da versão corrigida; DAST e análise comparativa a preencher
 
 ---
 
@@ -25,9 +25,10 @@ O estado de cada parte do estudo, nesta versão:
   capacidade empírica com a delimitação por linguagem (Seção 9.11) foram
   apuradas em 26 de setembro de 2026, sobre os mesmos resultados, sem nova
   execução de ferramenta.
-- **Campanha SAST da versão corrigida — a executar.** Mede o falso positivo e o
-  verdadeiro negativo, na forma definida na Seção 7.3, e completa a matriz de
-  confusão. Até ela existir, os resultados SAST são a metade positiva da matriz.
+- **Campanha SAST da versão corrigida — executada.** Rodou em 29 de setembro de
+  2026 (Seção 8.9), com os critérios fixados antes, na §11 do documento de
+  critérios. Completa a matriz de confusão: falso positivo, verdadeiro negativo,
+  precisão, especificidade e F1 estão na Seção 9.8.
 - **Campanha DAST — executada** em 24 de julho de 2026, com dados disponíveis e
   análise a fazer (Seções 6 e 10).
 - **Análise comparativa entre as duas abordagens — a fazer** (Seção 11).
@@ -58,6 +59,19 @@ apuram a proveniência do ground truth integram o repositório desde setembro de
 ## Registro de alterações
 
 ### Versão 10
+
+**Revisão de 29/09/2026.** Acréscimos dentro da Versão 10:
+
+| Seção | Tipo | Alteração |
+|---|---|---|
+| Nota | Correção | Campanha da versão corrigida executada |
+| 2.2.3, 4.2, 7.3, 7.7, 9 | Correção | Remissões à campanha da versão corrigida em trechos que ficaram desatualizados |
+| 7.3, 7.7 | Correção | Decisões da versão corrigida fixadas; precisão, especificidade e F1 apurados |
+| 8.9 | Acréscimo | Nova seção: campanha da versão corrigida |
+| 9.8 | Acréscimo | Resultados da versão corrigida, com a descrição exploratória declarada |
+| 12.1 | Correção | Data das duas campanhas do Snyk Code |
+| 13 | Acréscimo | Decisões 98 a 103 |
+| 14 | Correção | Campanha da versão corrigida retirada das pendências |
 
 **Revisão de 26/09/2026.** Acréscimos dentro da Versão 10, sem mudança de método:
 
@@ -420,6 +434,8 @@ Registram-se as inconsistências identificadas durante a preparação:
 
   **O defeito passa a afetar a campanha da versão corrigida** (Seção 7.3), que roda sobre o `PostPatchCommit`. O pipeline pressupõe identificador completo: a obtenção rasa é por SHA, e a asserção compara o `HEAD` com o valor da lista. A resolução — expandir o identificador abreviado pelo próprio repositório, se o prefixo for único, ou excluir o CVE com motivo declarado — integra o desenho daquela campanha e não está tomada.
 
+  **Resolvido em 28 de setembro de 2026:** os dois foram expandidos pelo próprio repositório, com quatro condições verificadas (`datasets/postpatch-expansoes.csv`), e o gerador os emite no modo da versão corrigida (Seção 8.9).
+
 - **`CVE-2019-12041` declara caminho de arquivo em forma absoluta.** O campo `FilePath` registra `/index.js`, com barra inicial, no próprio benchmark da OpenSSF; o arquivo é `index.js` na raiz do repositório. É o único caso entre os 223, verificado contra dezoito critérios de anomalia — barra inicial, prefixo relativo, referência a diretório anterior, barra invertida, esquema de protocolo, caminho vazio ou composto apenas de espaços, espaços em posição inicial, final ou interna, barra dupla, barra final, segmento isolado, expansão de diretório pessoal, letra de unidade, caractere de controle, caractere fora de ASCII e vírgula.
 
   O tratamento é dado na normalização (Seção 5.3): a barra é removida do valor do ground truth, o valor original é preservado em campo próprio e a ocorrência é registrada. Sem isso, a verificação de varredura do arquivo (Seção 5.2) compararia o caminho do ground truth contra um valor que ferramenta alguma emite, e o CVE seria computado como falso negativo sem que erro algum se manifestasse.
@@ -526,7 +542,7 @@ As listas são autocontidas: cada linha carrega tanto os parâmetros de execuç�
 
 Todos os arquivos gerados terminam com quebra de linha final. A ausência dessa quebra causou, na campanha preliminar, o descarte silencioso da última linha de vários lotes (Seção 8).
 
-O gerador aplica validações bloqueantes — número de registros, integridade dos hashes, ausência de duplicatas, formato dos CWEs — e aborta sem escrever qualquer arquivo caso alguma seja violada. Aplica ainda avisos **não bloqueantes** para as anomalias que são do próprio benchmark e cujo tratamento cabe à normalização: `PostPatchCommit` malformado e caminho de arquivo fora de forma canônica (Seção 2.2.3). O aviso torna a anomalia visível na geração, e não apenas três etapas adiante.
+O gerador aplica validações bloqueantes — número de registros, integridade dos hashes, ausência de duplicatas, formato dos CWEs — e aborta sem escrever qualquer arquivo caso alguma seja violada. Aplica ainda avisos **não bloqueantes** para as anomalias que são do próprio benchmark e cujo tratamento cabe à normalização: `PostPatchCommit` malformado e caminho de arquivo fora de forma canônica (Seção 2.2.3). O aviso torna a anomalia visível na geração, e não apenas três etapas adiante. Para a campanha da versão corrigida, o gerador tem um modo próprio, que emite o `PostPatchCommit` com a mesma partição em lotes (Seção 8.9).
 
 A partir da lista completa são derivados oito lotes de até 30 CVEs, além de um lote de teste com cinco CVEs selecionados para exercitar condições específicas: dois CVEs do mesmo repositório em commits distintos, um repositório extenso, um repositório de pequeno porte e um dos dois repositórios homônimos.
 
@@ -1271,7 +1287,7 @@ Um CVE conta para um nível se ao menos um achado satisfaz o critério; nos nív
 | depois da correção (`PostPatchCommit`) | a falha foi removida | sim | **falso positivo (FP)** |
 | depois da correção | a falha foi removida | não | **verdadeiro negativo (VN)** |
 
-Na versão anterior à correção, "alerta ali" é o nível de acerto da Seção 7.2. Na versão corrigida, o critério de casamento é o que a campanha da versão corrigida precisa fixar (adiante).
+Na versão anterior à correção, "alerta ali" é o nível de acerto da Seção 7.2. Na versão corrigida, o critério de casamento é o que a campanha da versão corrigida precisa fixar (fixado na §11 do documento de critérios; ver o fim desta seção) (adiante).
 
 Isso dá a matriz de confusão completa, num universo definido: um ponto vulnerável e um ponto corrigido por CVE. Precisão, especificidade e F1 passam a ser computáveis **nesse sentido** — que não é a precisão sobre todos os alertas da ferramenta.
 
@@ -1284,11 +1300,13 @@ Isso dá a matriz de confusão completa, num universo definido: um ponto vulner�
 - a correção conta como reconhecida quando ao menos uma dessas regras produz **menos alertas no repositório inteiro** na versão corrigida — sem localizar ponto algum;
 - se não houve detecção, o resultado é *não computável*, e não falso positivo nem verdadeiro negativo.
 
-A diferença é de desenho. A leitura do benchmark é **condicionada à detecção**; a tabela do estudo atribui falso positivo ou verdadeiro negativo a **todos** os CVEs. A leitura condicionada cria, por construção, um denominador distinto por ferramenta — o que a regra da Seção 7.4 veda, por destruir a comparabilidade direta entre elas. A escolha entre as duas leituras, ou a apuração das duas, é **a primeira decisão do desenho da campanha da versão corrigida**, e não está tomada. Registra-se, em favor da leitura do estudo quanto ao restante do código, que o relatório em arquivo do benchmark classifica alerta fora da falha como desconhecido, e não como falso positivo.
+A diferença é de desenho. A leitura do benchmark é **condicionada à detecção**; a tabela do estudo atribui falso positivo ou verdadeiro negativo a **todos** os CVEs. A leitura condicionada cria, por construção, um denominador distinto por ferramenta — o que a regra da Seção 7.4 veda, por destruir a comparabilidade direta entre elas. A escolha entre as duas leituras, ou a apuração das duas, é **a primeira decisão do desenho da campanha da versão corrigida**, e foi tomada na §11 do documento de critérios (ver o fim desta seção). Registra-se, em favor da leitura do estudo quanto ao restante do código, que o relatório em arquivo do benchmark classifica alerta fora da falha como desconhecido, e não como falso positivo.
 
 **Como o erro ocorreu, e não foi falta de informação.** O critério da versão corrigida estava registrado no documento de regras do projeto desde 28 de agosto de 2026, citando a documentação do benchmark: a ferramenta ideal produz ao menos um alerta relevante no commit anterior à correção e nenhum no posterior (Seção 7.4). O documento de critérios, redigido em 18 de setembro, não relacionou esse critério ao falso positivo, e o README, que lhe dá esse nome, não tinha sido lido. O documento de critérios recebeu **emenda datada de 21 de setembro de 2026**, que marca como superado o trecho errado e o preserva. O caso integra os da Seção 12.5.
 
 **A campanha da versão corrigida.** A campanha de detecção rodou apenas antes da correção e fornece a metade VP/FN da matriz, cujos resultados (Seção 9) não são afetados pela correção desta seção. Falso positivo e verdadeiro negativo exigem uma segunda campanha, sobre o `PostPatchCommit`, com as mesmas imagens e o mesmo pipeline. Decisões a fixar no documento de critérios **antes** de qualquer resultado dela, como na primeira:
+
+*Registro do desenho, anterior à campanha; as decisões abaixo foram fixadas na §11 do documento de critérios em 28 de setembro de 2026.*
 
 - **a leitura: matriz de quatro células ou reconhecimento condicionado à detecção**, ou as duas;
 - **como localizar o ponto da falha depois da correção**, cuja linha pode mudar de número ou deixar de existir;
@@ -1297,6 +1315,8 @@ A diferença é de desenho. A leitura do benchmark é **condicionada à detecç�
 - **o denominador da versão corrigida**, que pode diferir do da detecção.
 
 A série de julho de 2026, que analisou o HEAD, **não substitui** esta campanha: o HEAD difere do código vulnerável por todo o histórico posterior à correção, e não só por ela, o que desfaz a comparação controlada que o benchmark propõe; além disso, aquela série foi invalidada por defeitos de coleta (Seção 8).
+
+**Executada em 29 de setembro de 2026.** As decisões que esta seção deixava em aberto foram fixadas na §11 do documento de critérios, em 28 de setembro, antes da campanha: a matriz de quatro células como leitura principal e a do benchmark como secundária; o ponto corrigido conforme o que a correção fez com a linha; os níveis 3 e 4; o denominador de 212; a categoria sem análise; e a análise de sensibilidade. A execução está na Seção 8.9 e os resultados, na Seção 9.8.
 
 ### 7.4 Tratamento do ground truth
 
@@ -1395,7 +1415,7 @@ Registra-se que o conjunto de regras do Semgrep abrange linguagens diversas, de 
 
 ### 7.7 Métricas
 
-**Métricas da matriz de confusão**, no universo definido pela Seção 7.3 — um ponto vulnerável e um ponto corrigido por CVE —, por ferramenta, nos cinco níveis de acerto e nas duas variantes de CWE:
+**Métricas da matriz de confusão**, no universo definido pela Seção 7.3 — um ponto vulnerável e um ponto corrigido por CVE —, por ferramenta, nos níveis 3 e 4, com as duas variantes de CWE (§11 do documento de critérios); o recall existe também nos níveis 0 a 2:
 
 | Métrica | Fórmula | Exige |
 |---|---|---|
@@ -1404,7 +1424,7 @@ Registra-se que o conjunto de regras do Semgrep abrange linguagens diversas, de 
 | Especificidade | VN ÷ (VN + FP) | a campanha da versão corrigida |
 | F1 | média harmônica de precisão e recall | a campanha da versão corrigida |
 
-**Nesta versão, só o recall está apurado.** Precisão, especificidade e F1 dependem da campanha da versão corrigida. A redação dos resultados precisa declarar o escopo em toda ocorrência: "precisão" sem qualificação sugere a leitura sobre todos os alertas, que o conjunto não permite (Seção 7.3).
+**Precisão, especificidade e F1 foram apurados na Seção 9.8**, no universo definido pela §11 do documento de critérios: 212 CVEs, níveis 3 e 4. A redação dos resultados precisa declarar o escopo em toda ocorrência: "precisão" sem qualificação sugere a leitura sobre todos os alertas, que o conjunto não permite (Seção 7.3).
 
 **A apuração por CWE** está na Seção 9.9, pelo critério da §9 do documento de critérios, fixado antes de qualquer número por categoria.
 
@@ -1584,11 +1604,27 @@ A campanha de detecção rodou em oito lotes, sobre os 223 CVEs, no commit anter
 
 Os resultados estão na Seção 9.
 
+### 8.9 Campanha da versão corrigida
+
+Preparada e ensaiada em 28 de setembro de 2026 e executada em 29 de setembro, sobre o `PostPatchCommit` dos 220 CVEs do denominador, com as mesmas imagens, pelos mesmos digests, e os mesmos scripts de análise da campanha de detecção. O commit analisado é decidido pela lista de entrada; os scripts conferem o commit efetivo contra ela, e o workflow recusa lista de uma campanha disparada como a outra.
+
+**Caracterização prévia dos pares.** Antes de qualquer execução, o par (`PrePatchCommit`, `PostPatchCommit`) de cada CVE foi caracterizado sem ferramenta alguma (`results/pares/`): em 221 CVEs o commit corrigido descende do vulnerável, a um commit de distância em 209; os dois `PostPatchCommit` malformados do benchmark (Seção 2.2.3) foram expandidos pelo próprio repositório, com quatro condições verificadas. A caracterização fundamentou os critérios da §11 do documento de critérios, fixados antes da campanha.
+
+**Ensaio de fumaça**, em 28 de setembro, com 7 CVEs escolhidos pela caracterização: passou em todas as conferências e revelou um defeito no programa de importação dos resultados, corrigido antes da campanha.
+
+**Execução.** Oito lotes, com a mesma partição da campanha de detecção: o primeiro sozinho, com leitura antes dos demais; os sete restantes em paralelo. Os 24 jobs terminaram com sucesso. Nos 660 pares (CVE, ferramenta), o commit analisado é o corrigido; não houve falha de obtenção nem de checkout, nem recurso ao clone de contingência. O Snyk Code saiu sem material analisável nos mesmos cinco CVEs da detecção.
+
+**Redisparo.** Um CVE, o `CVE-2019-15479`, falhou no Snyk Code por timeout de conexão com a API, antes do início do teste. A regra — falha de infraestrutura de rede é reexecutada uma única vez; falhando de novo, o CVE fica sem análise — foi registrada e commitada antes do redisparo, que terminou com sucesso.
+
+**Ambiente.** A imagem do runner do serviço de integração contínua mudou entre as campanhas (`20260907.300.1` na detecção, `20260920.314.1` na versão corrigida), com o mesmo identificador de usuário e as mesmas imagens das ferramentas.
+
+Registro completo em `logs/campanha-corrigida-2026-09-29/`.
+
 ## 9. Resultados SAST — campanha de detecção
 
 Resultados da campanha de 16 e 17 de setembro de 2026 (Seção 8.8), cruzados com o ground truth pelos critérios da Seção 7, fixados antes de qualquer número. Produzidos por `tools/cruza-deteccao.py` e `tools/circularidade-proveniencia.py`, com as saídas versionadas em `results/cruzamento/` e `results/circularidade/`.
 
-**Estes resultados são a metade positiva da matriz de confusão** — verdadeiros positivos e falsos negativos, isto é, o recall. A metade negativa depende da campanha da versão corrigida (Seção 7.3) e constará da Seção 9.8.
+**Estes resultados são a metade positiva da matriz de confusão** — verdadeiros positivos e falsos negativos, isto é, o recall. A metade negativa, da campanha da versão corrigida, está na Seção 9.8.
 
 As passagens de interpretação estão marcadas como tal; o restante é medida.
 
@@ -1695,9 +1731,64 @@ Os dez divergentes — `CVE-2018-18282`, `CVE-2018-3738`, `CVE-2019-13127`, `CVE
 
 **Nenhum caso de arquivo não considerado nos 223 CVEs.** O ramo correspondente continua sem exercício sobre dado real, coberto apenas por fixture. No Snyk Code, que informa cobertura agregada por linguagem, sem inventário de caminhos, a condição é indeterminada nos 216: **não se distingue, nele, a análise que examinou o arquivo e não encontrou nada da que não o examinou**.
 
-### 9.8 Resultados da campanha da versão corrigida — a preencher
+### 9.8 Resultados da versão corrigida
 
-Falso positivo e verdadeiro negativo, e com eles precisão, especificidade e F1, na forma que a Seção 7.3 vier a fixar.
+**Critério.** Fixado na §11 de `docs/criterios-cruzamento.md` em 28 de setembro de 2026 (commit `db1b761`), antes da campanha da versão corrigida. Matriz de quatro células: VP e FN no ponto vulnerável, pela campanha de detecção; FP e VN no ponto corrigido, pela campanha da versão corrigida (Seção 8.9). Níveis 3, 4 generosa e 4 estrita, que usam a linha. Universo de **212 CVEs**: os 220 do denominador menos os 8 cuja correção só removeu código, sem ponto correspondente na versão corrigida. O ponto corrigido é a mesma linha, no novo número, quando a correção não a alterou (99 CVEs), ou o trecho que a substituiu (113 CVEs). Quando a ferramenta não analisou o código corrigido, o CVE conta como **sem análise**, e não como VN.
+
+**Procedimento.** Produzido por `tools/cruza-corrigida.py`, com saídas em `results/cruzamento-corrigida/`. O lado vulnerável é lido da matriz de detecção publicada, e não recomputado; o casamento no lado corrigido usa a mesma função do cruzamento da detecção. Controles: o lado vulnerável sobre os 212, somado ao dos 8 excluídos, reconstrói as células publicadas; FP + VN + sem análise fecha em 212 em todas as células; uma recontagem independente, sem as funções importadas, reproduz o nível 3 e a leitura secundária.
+
+**Matriz principal, 212 CVEs.** Na variante estrita, a base é 211: o `CVE-2018-16472`, de primário indefinido, não se aplica.
+
+| Nível | Ferramenta | VP | FN | FP | VN | Sem análise | Recall | Precisão | Especificidade | F1 |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 3 | CodeQL | 98 | 114 | 42 | 170 | 0 | 46,2% | 70,0% | 80,2% | 55,7% |
+| 3 | Semgrep | 24 | 188 | 13 | 199 | 0 | 11,3% | 64,9% | 93,9% | 19,3% |
+| 3 | Snyk Code | 22 | 190 | 20 | 187 | 5 | 10,4% | 52,4% | 88,2% | 17,3% |
+| 4 generosa | CodeQL | 92 | 120 | 32 | 180 | 0 | 43,4% | 74,2% | 84,9% | 54,8% |
+| 4 generosa | Semgrep | 19 | 193 | 10 | 202 | 0 | 9,0% | 65,5% | 95,3% | 15,8% |
+| 4 generosa | Snyk Code | 10 | 202 | 6 | 201 | 5 | 4,7% | 62,5% | 94,8% | 8,8% |
+| 4 estrita | CodeQL | 91 | 120 | 31 | 180 | 0 | 43,1% | 74,6% | 85,3% | 54,7% |
+| 4 estrita | Semgrep | 19 | 192 | 10 | 201 | 0 | 9,0% | 65,5% | 95,3% | 15,8% |
+| 4 estrita | Snyk Code | 6 | 205 | 3 | 203 | 5 | 2,8% | 66,7% | 96,2% | 5,5% |
+
+A especificidade é VN sobre a base; no Snyk Code, os 5 CVEs sem análise — os cinco arquivos sem extensão, também sem análise na detecção — são a parte que falta. O recall sobre os 212 difere pouco do publicado sobre os 220 (Seção 9.2): no nível 3, 98 contra 101 no CodeQL, 24 contra 25 no Semgrep e 22 contra 22 no Snyk Code.
+
+**Sensibilidade.** Com os 8 CVEs de remoção incluídos, usando como ponto a linha vizinha à remoção, os resultados quase não mudam: no nível 3, a precisão passa de 70,0% para 70,6% no CodeQL, de 64,9% para 65,8% no Semgrep, e fica em 52,4% no Snyk Code. Nenhum dos 8 gerou falso positivo em ferramenta alguma.
+
+**Onde está o falso positivo.** No nível 3, a correção deixou a linha vulnerável inalterada em 99 CVEs e a substituiu em 113:
+
+| Ferramenta | FP, linha inalterada (99) | FP, trecho substituído (113) |
+|---|---:|---:|
+| CodeQL | 29 | 13 |
+| Semgrep | 9 | 4 |
+| Snyk Code | 13 | 7 |
+
+**Descrição exploratória, não fixada na §11: o falso positivo por detecção prévia.** O cruzamento abaixo separa, no nível 3, os CVEs que cada ferramenta detectou na versão vulnerável (VP) dos que não detectou (FN), e mostra o que ela fez na versão corrigida. Não integra o critério da §11 e foi calculado depois de conhecidos os resultados; é apresentado como descrição, não como teste da expectativa.
+
+| Ferramenta | Detectados (VP) | … e FP depois | … e VN depois | Não detectados (FN) | … e FP depois |
+|---|---:|---:|---:|---:|---:|
+| CodeQL | 98 | 41 | 57 | 114 | 1 |
+| Semgrep | 24 | 13 | 11 | 188 | 0 |
+| Snyk Code | 22 | 18 | 4 | 190 | 2 |
+
+Entre os detectados, separados pelo que a correção fez com a linha:
+
+| Ferramenta | Linha inalterada: detectados / FP | Trecho substituído: detectados / FP |
+|---|---:|---:|
+| CodeQL | 46 / 29 | 52 / 12 |
+| Semgrep | 9 / 9 | 15 / 4 |
+| Snyk Code | 13 / 12 | 9 / 6 |
+
+**Leitura secundária, a do benchmark.** Entre os CVEs detectados pelo critério do benchmark (igualdade exata de arquivo e linha), a correção foi reconhecida — ao menos uma das regras que acertaram passou a alertar menos no repositório corrigido — em **70 de 100** no CodeQL, **11 de 24** no Semgrep e **4 de 13** no Snyk Code. Os demais CVEs são não computáveis, e os 5 sem análise do Snyk Code, ausentes. O código do benchmark compara o arquivo da weakness sem normalização; aqui a comparação usa o caminho normalizado, o que afeta só o `CVE-2019-12041`.
+
+**Leitura.** *Passagem de interpretação.*
+
+- **A expectativa registrada na §11 se confirmou pela metade.** O falso positivo se concentra onde a linha vulnerável continua no código corrigido, nas três ferramentas. Mas a segunda parte — mais falso positivo nas ferramentas que casam padrão do que no CodeQL — não se confirmou em números absolutos: o CodeQL tem o maior número de falsos positivos e a menor especificidade.
+- **A especificidade, sozinha, favorece quem detecta pouco.** Uma ferramenta só pode deixar de reconhecer uma correção no ponto onde alerta. Quase todo falso positivo vem de CVEs que a ferramenta tinha detectado: 41 de 42 no CodeQL, 13 de 13 no Semgrep e 18 de 20 no Snyk Code. Uma ferramenta que não alertasse nada teria especificidade de 100%.
+- **Condicionado à detecção, o CodeQL é o que mais reconhece a correção.** Entre os CVEs detectados, deixa de alertar no ponto corrigido em 57 de 98 (58%), contra 11 de 24 no Semgrep (46%) e 4 de 22 no Snyk Code (18%). A leitura do benchmark, também condicional à detecção mas por outro critério, vai na mesma direção (70%, 46% e 31%). Isso é compatível com a segunda parte da expectativa, mas por uma análise exploratória, feita depois dos resultados, e com poucos casos no Semgrep e no Snyk Code.
+- **Quando a correção não toca a linha vulnerável, as ferramentas de padrão quase nunca a reconhecem.** Nesse grupo, o Semgrep alertou de novo em 9 de 9 CVEs detectados e o Snyk Code em 12 de 13; o CodeQL, em 29 de 46. É compatível com análise que casa padrão na linha, enquanto a análise de fluxo de dados reconhece em parte uma guarda inserida antes do ponto; o estudo não mede o mecanismo.
+
+**Limites.** Os números do Snyk Code dependem do serviço, cujo motor não é fixado pela imagem; a campanha da versão corrigida rodou cerca de duas semanas depois da de detecção (Seção 12.1). A imagem do runner do GitHub mudou entre as campanhas, com as mesmas imagens das ferramentas (Seção 8.9). Nenhum teste estatístico é aplicado, e os subgrupos do Semgrep e do Snyk Code têm de 9 a 24 casos.
 
 ### 9.9 Detecção por categoria de CWE
 
@@ -1904,7 +1995,7 @@ Estrutura prevista:
 
 **O Semgrep opera sem rede, mas tenta alcançá-la.** Medido com controle positivo no ensaio de fumaça: sob isolamento total de rede, o Semgrep completa a varredura, mas leva cerca de **110 segundos** num único arquivo, contra cerca de 13 segundos de um lote inteiro com rede — reproduzido no hospedeiro local (109 e 113 segundos) e no ambiente da campanha (112 segundos). A afirmação correta é que ele **opera sem rede, tentando alcançá-la e esperando o tempo esgotar** — o que difere de não a usar.
 
-**O Snyk Code depende do serviço, em duas condições.** A primeira, a recusa de acesso ao fim dos testes com achados (Seção 8.8), foi investigada e é cosmética: incide sobre a leitura do nome da organização, antes da análise, e não altera resultado nem código de saída. A segunda permanece: a análise ocorre no serviço, e o motor e as regras dele não são fixados pela imagem, de modo que o mesmo CVE pode dar outro resultado em outra data. A investigação de 26 de setembro de 2026 reproduziu, campo a campo, o resultado de dois CVEs mais de uma semana depois da campanha, o que é indício de estabilidade no intervalo, e não garantia. A campanha da versão corrigida, executada em data distinta, declara essa condição, e as duas campanhas do Snyk Code rodam na mesma conta.
+**O Snyk Code depende do serviço, em duas condições.** A primeira, a recusa de acesso ao fim dos testes com achados (Seção 8.8), foi investigada e é cosmética: incide sobre a leitura do nome da organização, antes da análise, e não altera resultado nem código de saída. A segunda permanece: a análise ocorre no serviço, e o motor e as regras dele não são fixados pela imagem, de modo que o mesmo CVE pode dar outro resultado em outra data. A investigação de 26 de setembro de 2026 reproduziu, campo a campo, o resultado de dois CVEs mais de uma semana depois da campanha, o que é indício de estabilidade no intervalo, e não garantia. A campanha da versão corrigida rodou em 29 de setembro de 2026, cerca de duas semanas depois da de detecção, na mesma conta; a condição é declarada junto aos resultados (Seção 9.8).
 
 **Imagens base — resolvida.** A versão anterior deste documento registrava que as imagens Docker não eram fixadas por identidade de conteúdo, admitindo variação entre reconstruções — condição agravada pela reconstrução a cada execução, que multiplicava as oportunidades de variação ao longo de uma mesma campanha. A construção única com referência por identidade de conteúdo (Seção 4.5) fecha essa ameaça e torna citável, no relatório de cada lote, a imagem efetivamente empregada.
 
@@ -2120,6 +2211,12 @@ A observação tem alcance além deste estudo, e por isso é declarada em lugar 
 | 95 | Delimitação por JS/TS por dois critérios, extensão do arquivo e linguagem da regra, com o da extensão como principal | 9.11 |
 | 96 | Linguagem da regra do Semgrep lida por analisador YAML dentro da imagem da campanha, nunca pelo prefixo do identificador | 9.11 |
 | 97 | Imagens da campanha mantidas públicas, com a leitura das licenças pendente | 5.5 |
+| 98 | Matriz de quatro células como leitura principal da versão corrigida, com a leitura condicional do benchmark como secundária | 7.3, 9.8 |
+| 99 | Ponto corrigido conforme o que a correção fez com a linha: a mesma linha, no novo número, ou o trecho que a substituiu | 9.8 |
+| 100 | Oito CVEs de remoção pura fora da apuração principal, com análise de sensibilidade | 9.8 |
+| 101 | Níveis 3 e 4 na versão corrigida, com denominador de 212 nos dois lados da matriz | 9.8 |
+| 102 | Categoria sem análise no lado corrigido, fora de VN e de FP | 9.8 |
+| 103 | Falha de infraestrutura de rede reexecutada uma única vez, com a regra fixada antes do redisparo | 8.9 |
 
 ---
 
@@ -2128,8 +2225,6 @@ A observação tem alcance além deste estudo, e por isso é declarada em lugar 
 Registram-se as questões ainda em aberto no momento desta redação.
 
 ### Decisões
-
-**Desenho da campanha da versão corrigida** (Seção 7.3). Em ordem: a leitura — matriz de quatro células, reconhecimento condicionado à detecção, ou as duas; o critério de localização do ponto da falha depois da correção; os níveis aplicáveis; o tratamento dos dois `PostPatchCommit` malformados (Seção 2.2.3) e a conferência dos demais; o denominador. Tudo fixado no documento de critérios antes de qualquer resultado.
 
 **Snyk Code.** A recusa de acesso foi investigada em 26 de setembro de 2026 e é cosmética (Seção 8.8): os números da ferramenta na campanha de detecção valem. As duas campanhas do Snyk Code rodam na mesma conta.
 
@@ -2148,10 +2243,9 @@ Registram-se as questões ainda em aberto no momento desta redação.
 
 ### Trabalho restante para fechar esta versão
 
-- a **campanha da versão corrigida** e seus resultados (Seções 7.3 e 9.8);
 - os **resultados DAST** (Seção 10);
 - a **análise comparativa** (Seção 11).
 
-**Nota sobre pendências resolvidas nesta versão.** O universo de referência do verdadeiro negativo resolve-se pela versão corrigida (Seção 7.3). O limite de tempo das análises foi decidido (Seção 4.4). As verificações que a versão anterior remetia ao ambiente da campanha foram todas feitas: o identificador de usuário e o defeito do diretório pessoal (Seção 4.7); a duração do CodeQL no ambiente da campanha (Seções 4.4 e 9.4); o TypeScript atravessando o laço (Seção 8.7); a execução sem rede do Semgrep (Seção 12.1); a completude do inventário do CodeQL em repositórios de grande porte (Seção 9.6); e a duração da normalização sobre o conjunto completo (Seção 5.6). As três apurações prometidas desde as versões anteriores — a detecção por CWE, a tabela de capacidade empírica e a proporção dos alertas do Semgrep fora de JavaScript e TypeScript — foram feitas em 26 de setembro de 2026 (Seções 9.9 e 9.11).
+**Nota sobre pendências resolvidas nesta versão.** O universo de referência do verdadeiro negativo resolve-se pela versão corrigida (Seção 7.3). O limite de tempo das análises foi decidido (Seção 4.4). As verificações que a versão anterior remetia ao ambiente da campanha foram todas feitas: o identificador de usuário e o defeito do diretório pessoal (Seção 4.7); a duração do CodeQL no ambiente da campanha (Seções 4.4 e 9.4); o TypeScript atravessando o laço (Seção 8.7); a execução sem rede do Semgrep (Seção 12.1); a completude do inventário do CodeQL em repositórios de grande porte (Seção 9.6); e a duração da normalização sobre o conjunto completo (Seção 5.6). As três apurações prometidas desde as versões anteriores — a detecção por CWE, a tabela de capacidade empírica e a proporção dos alertas do Semgrep fora de JavaScript e TypeScript — foram feitas em 26 de setembro de 2026 (Seções 9.9 e 9.11). A campanha da versão corrigida foi desenhada, executada e cruzada (Seções 8.9 e 9.8), com os critérios fixados antes, na §11 do documento de critérios.
 
 **Nota.** A pendência relativa ao critério de agrupamento por família de CWE, registrada nesta seção na versão 3, foi resolvida e consta da Seção 7.1.

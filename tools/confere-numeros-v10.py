@@ -1704,7 +1704,7 @@ def _investigacao(f):
     return inv, comp, reqs
 
 
-EXTENSO = {"duas": 2, "dois": 2, "três": 3, "quatro": 4, "cinco": 5, "seis": 6}
+EXTENSO = {"duas": 2, "dois": 2, "três": 3, "quatro": 4, "cinco": 5, "seis": 6, "sete": 7, "oito": 8}
 
 
 @verificacao("8.8-snyk-403", "8.8, 12.1",
@@ -2382,6 +2382,357 @@ def _(doc, f):
     return r
 
 
+# ---- 9.8 e 8.9: versão corrigida (revisão de 29/09/2026) -------------------
+CC_DIR = "results/cruzamento-corrigida"
+LOGS_CORRIGIDA = "logs/campanha-corrigida-2026-09-29"
+NIVEL_DO_ROTULO_98 = {"3": "nivel_3", "4 generosa": "nivel_4_generosa", "4 estrita": "nivel_4_estrita"}
+ORDEM_FERR_98 = (("CodeQL", "codeql"), ("Semgrep", "semgrep"), ("Snyk Code", "snyk-code"))
+
+
+def cc_json(f, ferramenta):
+    return f.relatorio_avulso(f"{CC_DIR}/cruzamento-corrigida-{ferramenta}.json")
+
+
+def pct_exato(num, den, casas=1):
+    """Porcentagem em aritmética exata, arredondada meio para cima."""
+    return arredonda(Decimal(100 * num) / Decimal(den), casas)
+
+
+def f1_exato(vp, fp, fn):
+    """F1 = 2·VP / (2·VP + FP + FN), exato, em porcentagem a uma casa."""
+    return arredonda(Decimal(100 * 2 * vp) / Decimal(2 * vp + fp + fn), 1)
+
+
+def tabela_por_cabecalho(bloco, celulas_iniciais, onde):
+    """A única tabela do bloco cujo cabeçalho começa pelas células dadas."""
+    achadas = [t for t in Documento.tabelas(bloco)
+               if t and t[0][:len(celulas_iniciais)] == list(celulas_iniciais)]
+    if len(achadas) != 1:
+        raise FalhaDeExtracao(f"{onde}: {len(achadas)} tabelas com cabeçalho {celulas_iniciais!r}")
+    return achadas[0]
+
+
+def matriz_corrigida_principal(f):
+    """{(ferramenta, nível): [(tipo, lado vulnerável, lado corrigido)]}, nos 212."""
+    saida = defaultdict(list)
+    for r in f.csv(f"{CC_DIR}/matriz-corrigida.csv"):
+        if r["na_principal"] == "true":
+            saida[(r["ferramenta"], r["nivel"])].append(
+                (r["gt_tipo_ponto"], r["lado_vulneravel"], r["lado_corrigido"]))
+    return saida
+
+
+@verificacao("9.8-principal", "9.8", f"{CC_DIR}/cruzamento-corrigida-*.json")
+def _(doc, f):
+    bloco = doc.secao("### 9.8")
+    texto = "\n".join(bloco)
+    tab = tabela_por_cabecalho(bloco, ["Nível", "Ferramenta", "VP", "FN", "FP", "VN", "Sem análise",
+                                       "Recall", "Precisão", "Especificidade", "F1"], "9.8 matriz principal")
+    linhas = tab[1:]
+    res = [par("linhas da tabela principal", len(linhas), 9)]
+    vistos = set()
+    for linha in linhas:
+        nivel = NIVEL_DO_ROTULO_98.get(linha[0])
+        ferr = FERRAMENTA_DO_ROTULO.get(linha[1])
+        if nivel is None or ferr is None:
+            raise FalhaDeExtracao(f"9.8: linha com rótulo inesperado {linha[:2]!r}")
+        vistos.add((nivel, ferr))
+        m = cc_json(f, ferr)["principal"][nivel]
+        rot = f"{linha[0]} {linha[1]}"
+        for i, chave in enumerate(("VP", "FN", "FP", "VN", "sem_analise"), start=2):
+            res.append(par(f"{rot}: {chave}", um_numero(linha[i]), m[chave]))
+        res.append(par(f"{rot}: recall (%)", um_numero(linha[7]), pct_exato(m["VP"], m["VP"] + m["FN"])))
+        res.append(par(f"{rot}: precisão (%)", um_numero(linha[8]), pct_exato(m["VP"], m["VP"] + m["FP"])))
+        res.append(par(f"{rot}: especificidade (%)", um_numero(linha[9]), pct_exato(m["VN"], m["base"])))
+        res.append(par(f"{rot}: F1 (%)", um_numero(linha[10]), f1_exato(m["VP"], m["FP"], m["FN"])))
+    res.append(par("células distintas (nível, ferramenta)", len(vistos), 9))
+    r0 = cc_json(f, "codeql")
+    res.append(par("universo da principal", int(busca_unica(texto, r"Universo de \*\*(\d+) CVEs\*\*", "9.8")),
+                   r0["universo"]["principal"]))
+    res.append(par("CVEs inalterada", int(busca_unica(texto, r"não a alterou \((\d+) CVEs\)", "9.8")),
+                   r0["universo"]["grupos_principal"]["inalterada"]))
+    res.append(par("CVEs trecho", int(busca_unica(texto, r"que a substituiu \((\d+) CVEs\)", "9.8")),
+                   r0["universo"]["grupos_principal"]["trecho"]))
+    res.append(par("base da estrita", int(busca_unica(texto, r"Na variante estrita, a base é (\d+)", "9.8")),
+                   r0["principal"]["nivel_4_estrita"]["base"]))
+    res.append(par("CVEs excluídos (os 8)", int(busca_unica(texto, r"menos os (\d+) cuja correção só removeu", "9.8")),
+                   len(r0["universo"]["so_remocao_fora_da_principal"])))
+    res.append(par("denominador de que se parte", int(busca_unica(texto, r"os (\d+) do denominador menos os", "9.8")),
+                   r0["universo"]["sensibilidade"]))
+    fecha = int(busca_unica(texto, r"FP \+ VN \+ sem análise fecha em (\d+) em todas as células", "9.8"))
+    for (ferr, nivel), cel in sorted(matriz_corrigida_principal(f).items()):
+        nsa = sum(1 for _, _, cor in cel if cor == "nao_se_aplica")
+        soma = sum(1 for _, _, cor in cel if cor in ("FP", "VN", "sem_analise"))
+        res.append(par(f"{ferr} {nivel}: FP + VN + sem análise (+ n.s.a.)", fecha, soma + nsa))
+    return res
+
+
+@verificacao("9.8-recall-220", "9.8", f"{CC_DIR}/cruzamento-corrigida-*.json + results/cruzamento/matriz-deteccao.csv")
+def _(doc, f):
+    texto = "\n".join(doc.secao("### 9.8"))
+    g = busca_unica(texto, r"(\d+) contra (\d+) no CodeQL, (\d+) contra (\d+) no Semgrep e (\d+) contra (\d+) no Snyk Code", "9.8")
+    res = []
+    matriz = f.matriz
+    for i, (rotulo, ferr) in enumerate(ORDEM_FERR_98):
+        r = cc_json(f, ferr)
+        res.append(par(f"{rotulo}: VP nos 212, nível 3", int(g[2 * i]), r["principal"]["nivel_3"]["recall"]["num"]))
+        res.append(par(f"{rotulo}: VP nos 220 (JSON)", int(g[2 * i + 1]), r["recall_sobre_220_publicado"]["nivel_3"]["num"]))
+        publicados = sum(1 for l in matriz if l["ferramenta"] == ferr and l["no_denominador"] == "true" and l["nivel_3"] == "true")
+        res.append(par(f"{rotulo}: VP nos 220 (matriz publicada)", int(g[2 * i + 1]), publicados))
+    return res
+
+
+@verificacao("9.8-sensibilidade", "9.8", f"{CC_DIR}/cruzamento-corrigida-*.json + matriz-corrigida.csv")
+def _(doc, f):
+    texto = "\n".join(doc.secao("### 9.8"))
+    g = busca_unica(texto, r"a precisão passa de ([\d,]+)% para ([\d,]+)% no CodeQL, de ([\d,]+)% para ([\d,]+)% no Semgrep, e fica em ([\d,]+)% no Snyk Code", "9.8")
+    res = []
+    valores = [um_numero(x) for x in g]
+    for i, (rotulo, ferr) in enumerate(ORDEM_FERR_98[:2]):
+        r = cc_json(f, ferr)
+        p, s = r["principal"]["nivel_3"], r["sensibilidade"]["nivel_3"]
+        res.append(par(f"{rotulo}: precisão principal", valores[2 * i], pct_exato(p["VP"], p["VP"] + p["FP"])))
+        res.append(par(f"{rotulo}: precisão sensibilidade", valores[2 * i + 1], pct_exato(s["VP"], s["VP"] + s["FP"])))
+    r = cc_json(f, "snyk-code")
+    p, s = r["principal"]["nivel_3"], r["sensibilidade"]["nivel_3"]
+    res.append(par("Snyk Code: precisão principal ('fica em')", valores[4], pct_exato(p["VP"], p["VP"] + p["FP"])))
+    res.append(par("Snyk Code: precisão sensibilidade ('fica em')", valores[4], pct_exato(s["VP"], s["VP"] + s["FP"])))
+    busca_unica(texto, r"Nenhum dos 8 gerou falso positivo em ferramenta alguma", "9.8")
+    for _, ferr in ORDEM_FERR_98:
+        r = cc_json(f, ferr)
+        for nivel in NIVEL_DO_ROTULO_98.values():
+            res.append(par(f"{ferr} {nivel}: FP da sensibilidade = FP da principal",
+                           r["principal"][nivel]["FP"], r["sensibilidade"][nivel]["FP"]))
+    fp_nos_8 = sum(1 for l in f.csv(f"{CC_DIR}/matriz-corrigida.csv")
+                   if l["na_principal"] == "false" and l["lado_corrigido"] == "FP")
+    res.append(par("FP nos 8 so_remocao (matriz-corrigida.csv)", 0, fp_nos_8))
+    return res
+
+
+@verificacao("9.8-grupo", "9.8", f"{CC_DIR}/cruzamento-corrigida-*.json")
+def _(doc, f):
+    bloco = doc.secao("### 9.8")
+    achadas = [t for t in Documento.tabelas(bloco)
+               if t and len(t[0]) == 3 and t[0][0] == "Ferramenta" and t[0][1].startswith("FP, linha inalterada")
+               and t[0][2].startswith("FP, trecho substituído")]
+    if len(achadas) != 1:
+        raise FalhaDeExtracao(f"9.8 por grupo: {len(achadas)} tabelas com o cabeçalho esperado")
+    tab = achadas[0]
+    cab = tab[0]
+    if len(cab) != 3 or "inalterada" not in cab[1] or "trecho" not in cab[2]:
+        raise FalhaDeExtracao(f"9.8 por grupo: cabeçalho inesperado {cab!r}")
+    res = []
+    r0 = cc_json(f, "codeql")["decomposicao_por_grupo_principal"]["nivel_3"]
+    res.append(par("CVEs inalterada (cabeçalho)", um_numero(cab[1]), r0["inalterada"]["cves"]))
+    res.append(par("CVEs trecho (cabeçalho)", um_numero(cab[2]), r0["trecho"]["cves"]))
+    ini, tre = busca_unica("\n".join(bloco), r"inalterada em (\d+) CVEs e a substituiu em (\d+):", "9.8")
+    res.append(par("CVEs inalterada (texto)", int(ini), r0["inalterada"]["cves"]))
+    res.append(par("CVEs trecho (texto)", int(tre), r0["trecho"]["cves"]))
+    for rotulo, ferr in ORDEM_FERR_98:
+        linha = Documento.linha_da_tabela(tab[1:], rotulo)
+        g = cc_json(f, ferr)["decomposicao_por_grupo_principal"]["nivel_3"]
+        res.append(par(f"{rotulo}: FP inalterada", um_numero(linha[1]), g["inalterada"]["FP"]))
+        res.append(par(f"{rotulo}: FP trecho", um_numero(linha[2]), g["trecho"]["FP"]))
+    return res
+
+
+def cruzado_98(f, ferr):
+    """Contagens do nível 3 por lado vulnerável, recalculadas da matriz-corrigida.csv."""
+    celulas = matriz_corrigida_principal(f)[(ferr, "nivel_3")]
+    c = Counter((vul, cor) for _, vul, cor in celulas)
+    grupo = Counter((tipo, vul, cor) for tipo, vul, cor in celulas)
+    vp = sum(n for (v, _), n in c.items() if v == "VP")
+    fn = sum(n for (v, _), n in c.items() if v == "FN")
+    return {"vp": vp, "vp_fp": c[("VP", "FP")], "vp_vn": c[("VP", "VN")], "fn": fn,
+            "fn_fp": c[("FN", "FP")], "fp": sum(n for (_, k), n in c.items() if k == "FP"),
+            "grupo": {t: {"vp": sum(n for (tt, v, _), n in grupo.items() if tt == t and v == "VP"),
+                          "vp_fp": grupo[(t, "VP", "FP")]} for t in ("inalterada", "trecho")}}
+
+
+@verificacao("9.8-exploratoria", "9.8", f"{CC_DIR}/matriz-corrigida.csv (recalculado)")
+def _(doc, f):
+    bloco = doc.secao("### 9.8")
+    t1 = tabela_por_cabecalho(bloco, ["Ferramenta", "Detectados (VP)", "… e FP depois", "… e VN depois",
+                                      "Não detectados (FN)", "… e FP depois"], "9.8 exploratória 1")
+    t2 = tabela_por_cabecalho(bloco, ["Ferramenta", "Linha inalterada: detectados / FP",
+                                      "Trecho substituído: detectados / FP"], "9.8 exploratória 2")
+    res = []
+    for rotulo, ferr in ORDEM_FERR_98:
+        x = cruzado_98(f, ferr)
+        l1 = Documento.linha_da_tabela(t1[1:], rotulo)
+        for i, chave in enumerate(("vp", "vp_fp", "vp_vn", "fn", "fn_fp"), start=1):
+            res.append(par(f"{rotulo}: {chave}", um_numero(l1[i]), x[chave]))
+        l2 = Documento.linha_da_tabela(t2[1:], rotulo)
+        for i, tipo in ((1, "inalterada"), (2, "trecho")):
+            det, fp = numeros(l2[i])
+            res.append(par(f"{rotulo}: {tipo} detectados", det, x["grupo"][tipo]["vp"]))
+            res.append(par(f"{rotulo}: {tipo} FP", fp, x["grupo"][tipo]["vp_fp"]))
+    return res
+
+
+@verificacao("9.8-benchmark", "9.8", f"{CC_DIR}/cruzamento-corrigida-*.json + leitura-benchmark.csv")
+def _(doc, f):
+    texto = "\n".join(doc.secao("### 9.8"))
+    g = busca_unica(texto, r"em \*\*(\d+) de (\d+)\*\* no CodeQL, \*\*(\d+) de (\d+)\*\* no Semgrep e \*\*(\d+) de (\d+)\*\* no Snyk Code", "9.8")
+    aus = int(busca_unica(texto, r"e os (\d+) sem análise do Snyk Code, ausentes", "9.8"))
+    leitura = f.csv(f"{CC_DIR}/leitura-benchmark.csv")
+    res = []
+    for i, (rotulo, ferr) in enumerate(ORDEM_FERR_98):
+        lb = cc_json(f, ferr)["leitura_benchmark"]
+        linhas = [l for l in leitura if l["ferramenta"] == ferr]
+        res.append(par(f"{rotulo}: reconhecida (JSON)", int(g[2 * i]), lb["reconhecida"]))
+        res.append(par(f"{rotulo}: reconhecida (CSV)", int(g[2 * i]), sum(l["resultado"] == "reconhecida" for l in linhas)))
+        res.append(par(f"{rotulo}: detectados (JSON)", int(g[2 * i + 1]), lb["detectados_criterio_exato"]))
+        res.append(par(f"{rotulo}: detectados (CSV)", int(g[2 * i + 1]), sum(l["detectado_criterio_benchmark"] == "true" for l in linhas)))
+    lb = cc_json(f, "snyk-code")["leitura_benchmark"]
+    res.append(par("Snyk Code: ausentes (JSON)", aus, lb["ausente"]))
+    res.append(par("Snyk Code: ausentes (CSV)", aus, sum(1 for l in leitura if l["ferramenta"] == "snyk-code" and l["resultado"] == "ausente")))
+    return res
+
+
+@verificacao("9.8-leitura", "9.8", f"{CC_DIR}/matriz-corrigida.csv (recalculado) + cruzamento-corrigida-*.json")
+def _(doc, f):
+    texto = "\n".join(doc.secao("### 9.8"))
+    res = []
+    x = {ferr: cruzado_98(f, ferr) for _, ferr in ORDEM_FERR_98}
+    g = busca_unica(texto, r"(\d+) de (\d+) no CodeQL, (\d+) de (\d+) no Semgrep e (\d+) de (\d+) no Snyk Code\. Uma ferramenta", "9.8")
+    for i, (rotulo, ferr) in enumerate(ORDEM_FERR_98):
+        res.append(par(f"{rotulo}: FP vindo de VP", int(g[2 * i]), x[ferr]["vp_fp"]))
+        res.append(par(f"{rotulo}: FP total", int(g[2 * i + 1]), x[ferr]["fp"]))
+    g = busca_unica(texto, r"em (\d+) de (\d+) \((\d+)%\), contra (\d+) de (\d+) no Semgrep \((\d+)%\) e (\d+) de (\d+) no Snyk Code \((\d+)%\)", "9.8")
+    for i, (rotulo, ferr) in enumerate(ORDEM_FERR_98):
+        a, b, pc = (int(v) for v in g[3 * i:3 * i + 3])
+        res.append(par(f"{rotulo}: VN entre detectados", a, x[ferr]["vp_vn"]))
+        res.append(par(f"{rotulo}: detectados", b, x[ferr]["vp"]))
+        res.append(par(f"{rotulo}: % VN entre detectados", pc, pct_exato(x[ferr]["vp_vn"], x[ferr]["vp"], 0)))
+    g = busca_unica(texto, r"vai na mesma direção \((\d+)%, (\d+)% e (\d+)%\)", "9.8")
+    for i, (rotulo, ferr) in enumerate(ORDEM_FERR_98):
+        lb = cc_json(f, ferr)["leitura_benchmark"]
+        res.append(par(f"{rotulo}: % reconhecida (benchmark)", int(g[i]),
+                       pct_exato(lb["reconhecida"], lb["detectados_criterio_exato"], 0)))
+    g = busca_unica(texto, r"o Semgrep alertou de novo em (\d+) de (\d+) CVEs detectados e o Snyk Code em (\d+) de (\d+); o CodeQL, em (\d+) de (\d+)", "9.8")
+    for i, ferr in enumerate(("semgrep", "snyk-code", "codeql")):
+        res.append(par(f"{ferr}: FP entre detectados, linha inalterada", int(g[2 * i]), x[ferr]["grupo"]["inalterada"]["vp_fp"]))
+        res.append(par(f"{ferr}: detectados, linha inalterada", int(g[2 * i + 1]), x[ferr]["grupo"]["inalterada"]["vp"]))
+    lo, hi = busca_unica(texto, r"têm de (\d+) a (\d+) casos", "9.8")
+    # "subgrupos": os detectados de cada uma e a divisão deles pelo que a
+    # correção fez com a linha — as bases das frações da leitura.
+    sub = [x[ferr]["vp"] for ferr in ("semgrep", "snyk-code")] + \
+          [x[ferr]["grupo"][t]["vp"] for ferr in ("semgrep", "snyk-code") for t in ("inalterada", "trecho")]
+    res.append(par("menor subgrupo de Semgrep e Snyk Code", int(lo), min(sub)))
+    res.append(par("maior subgrupo de Semgrep e Snyk Code", int(hi), max(sub)))
+    busca_unica(texto, r"o CodeQL tem o maior número de falsos positivos e a menor especificidade", "9.8")
+    for nivel in NIVEL_DO_ROTULO_98.values():
+        fp = {ferr: cc_json(f, ferr)["principal"][nivel]["FP"] for _, ferr in ORDEM_FERR_98}
+        # Fração exata, não o valor arredondado do JSON: dois valores distintos
+        # podem colidir a quatro casas.
+        esp = {ferr: Decimal(cc_json(f, ferr)["principal"][nivel]["especificidade"]["num"])
+                     / Decimal(cc_json(f, ferr)["principal"][nivel]["especificidade"]["den"])
+               for _, ferr in ORDEM_FERR_98}
+        # Empate não conta a favor de ninguém: "o maior" exige máximo único.
+        maiores = [k for k, v in fp.items() if v == max(fp.values())]
+        menores = [k for k, v in esp.items() if v == min(esp.values())]
+        res.append(par(f"{nivel}: ferramenta(s) com mais FP", ["codeql"], maiores))
+        res.append(par(f"{nivel}: ferramenta(s) com menor especificidade", ["codeql"], menores))
+    return res
+
+
+def logs_corrigida(f):
+    """(registro final {ferramenta: {cve: linha}}, linhas todas) — oito lotes e o redisparo, em ordem."""
+    base = f.raiz / LOGS_CORRIGIDA
+    ordem = sorted(base.glob("cves-sast-corrigida-batch-*")) + sorted(base.glob("cves-sast-corrigida-reexec-*"))
+    final, todas = defaultdict(dict), []
+    for lote in ordem:
+        for ferr in FERRAMENTAS:
+            arq = lote / f"execution-log-{ferr}.csv"
+            if not arq.is_file():
+                continue
+            with open(arq, encoding="utf-8") as fh:
+                for reg in csv.DictReader(fh):
+                    reg["lote"], reg["ferramenta"] = lote.name, ferr
+                    final[ferr][reg["cve"]] = reg
+                    todas.append(reg)
+    return final, todas
+
+
+@verificacao("8.9", "8.9", "results/pares/pares.csv + datasets/listas/ + logs/campanha-corrigida-2026-09-29/ + README dos artifacts")
+def _(doc, f):
+    texto = "\n".join(doc.secao("### 8.9"))
+    res = []
+    pares = f.csv("results/pares/pares.csv")
+    desc, dist1 = busca_unica(texto, r"em (\d+) CVEs o commit corrigido descende do vulnerável, a um commit de distância em (\d+)", "8.9")
+    res.append(par("CVEs com post descendendo do pre", int(desc), sum(p["relacao"] == "post_descende_de_pre" for p in pares)))
+    res.append(par("CVEs a um commit de distância", int(dist1), sum(p["relacao"] == "post_descende_de_pre" and p["distancia"] == "1" for p in pares)))
+    fumaca = [l for l in (f.raiz / "datasets/listas/cves-sast-corrigida-fumaca").read_text(encoding="utf-8").splitlines() if l]
+    res.append(par("CVEs do ensaio", int(busca_unica(texto, r"com (\d+) CVEs escolhidos pela caracterização", "8.9")), len(fumaca)))
+    final, todas = logs_corrigida(f)
+    post = {p["cve"]: p["post"] for p in pares}
+    n_pares = int(busca_unica(texto, r"Nos (\d+) pares \(CVE, ferramenta\)", "8.9"))
+    res.append(par("pares (CVE, ferramenta) no registro final", n_pares, sum(len(v) for v in final.values())))
+    res.append(par("pares com commit analisado = post", n_pares,
+                   sum(1 for v in final.values() for c, r in v.items() if r["commit"] == post[c])))
+    # Os zeros abaixo so valem presos a frase do texto que os afirma.
+    busca_unica(texto, r"o commit analisado é o corrigido; não houve falha de obtenção nem de checkout, "
+                       r"nem recurso ao clone de contingência", "8.9")
+    res.append(par("linhas de log com commit diferente do post", 0, sum(1 for r in todas if r["commit"] != post[r["cve"]])))
+    res.append(par("ERRO_FETCH ou ERRO_CHECKOUT", 0, sum(1 for r in todas if r["status"] in ("ERRO_FETCH", "ERRO_CHECKOUT"))))
+    fallback = 0
+    check_logs = sorted((f.raiz / LOGS_CORRIGIDA).glob("cves-sast-corrigida-*/*/portoes/check-log.txt"))
+    for arq in check_logs:
+        fallback += int(busca_unica(arq.read_text(encoding="utf-8"), r"fallback de clone completo: (\d+)", str(arq)))
+    # "Nao ha" x "nao perguntei": um check-log.txt por job importado.
+    jobs_importados = sorted((f.raiz / LOGS_CORRIGIDA).glob("cves-sast-corrigida-*/*/README.txt"))
+    res.append(par("check-log.txt lidos = jobs importados", len(jobs_importados), len(check_logs)))
+    res.append(par("recurso ao clone de contingência", 0, fallback))
+    lotes = sorted((f.raiz / LOGS_CORRIGIDA).glob("cves-sast-corrigida-batch-*"))
+    res.append(par("lotes", EXTENSO.get(busca_unica(texto, r"\*\*Execução\.\*\* (\w+) lotes", "8.9").lower()), len(lotes)))
+    busca_unica(texto, r"com a mesma partição da campanha de detecção", "8.9")
+    listas = f.raiz / "datasets/listas"
+    fora = {l.split(",")[0] for l in (listas / "cves-sast.txt").read_text(encoding="utf-8").splitlines() if l} - \
+           {l.split(",")[0] for l in (listas / "cves-sast-corrigida.txt").read_text(encoding="utf-8").splitlines() if l}
+    mesma = all([l.split(",")[0] for l in (listas / lote.name).read_text(encoding="utf-8").splitlines() if l] ==
+                [c for c in (l.split(",")[0] for l in (listas / lote.name.replace("-corrigida", "")).read_text(encoding="utf-8").splitlines() if l)
+                 if c not in fora] for lote in lotes)
+    res.append(par("lote corrigido = lote de detecção de mesma letra menos as exclusões", True, mesma))
+    unico = busca_unica(texto, r"\*\*Redisparo\.\*\* (\w+) CVE, o `CVE", "8.9")
+    erros_lotes = [r for r in todas if r["lote"].startswith("cves-sast-corrigida-batch-") and r["status"].startswith("ERRO")]
+    res.append(par("CVEs com erro nos lotes ('Um CVE')", {"um": 1, "Um": 1}.get(unico), len(erros_lotes)))
+    leias = [lote / ferr / "README.txt" for lote in lotes for ferr in FERRAMENTAS]
+    n_jobs = int(busca_unica(texto, r"Os (\d+) jobs terminaram com sucesso", "8.9"))
+    res.append(par("jobs com README", n_jobs, sum(1 for x in leias if x.is_file())))
+    sucesso = 0
+    for x in leias:
+        t = x.read_text(encoding="utf-8")
+        desfecho = re.findall(r"^(preparar|portao previo \(fixtures\)|imagem por digest|lote|normalize\.py|check-log\.py|portao de lote sem raw): (\w+)$", t, re.M)
+        sucesso += len(desfecho) == 7 and all(v == "success" for _, v in desfecho)
+    res.append(par("jobs com todos os passos em success", n_jobs, sucesso))
+    extenso = busca_unica(texto, r"sem material analisável nos mesmos (\w+) CVEs da detecção", "8.9")
+    sem_corr = {c for c, r in final["snyk-code"].items() if r["status"] == "SEM_ARQUIVO_ANALISAVEL"}
+    sem_det = {c for c, r in f.logs_campanha("snyk-code").items() if r["status"] == "SEM_ARQUIVO_ANALISAVEL"}
+    res.append(par("sem material analisável no Snyk Code", EXTENSO.get(extenso), len(sem_corr)))
+    res.append(par("os mesmos da detecção", True, sem_corr == sem_det))
+    res.append(par("sem análise do Snyk Code (JSON do cruzamento) = os da detecção", True,
+                   set(cc_json(f, "snyk-code")["sem_analise"]["sensibilidade"]) == sem_det))
+    res.append(par("sem material analisável no CodeQL e no Semgrep", 0,
+                   sum(1 for ferr in ("codeql", "semgrep") for r in final[ferr].values() if r["status"] == "SEM_ARQUIVO_ANALISAVEL")))
+    v_det, v_cor = busca_unica(texto, r"\(`([\d.]+)` na detecção, `([\d.]+)` na versão corrigida\)", "8.9")
+    def versoes(padrao):
+        vs = set()
+        for x in sorted((f.raiz).glob(padrao)):
+            m = re.search(r"^runner_image_version: (\S+)$", x.read_text(encoding="utf-8"), re.M)
+            vs.add(m.group(1) if m else None)
+        return vs
+    res.append(par("imagem do runner na detecção", {v_det}, versoes("logs/campanha-2026-09-17/cves-sast-batch-*/*/README.txt")))
+    res.append(par("imagem do runner na versão corrigida", {v_cor}, versoes(f"{LOGS_CORRIGIDA}/cves-sast-corrigida-*/*/README.txt")))
+    cve_redisp = busca_unica(texto, r"Um CVE, o `(CVE-\d+-\d+)`, falhou no Snyk Code", "8.9")
+    busca_unica(texto, r"antes do redisparo, que terminou com sucesso", "8.9")
+    res.append(par(f"status final do {cve_redisp} no Snyk Code", "OK", final["snyk-code"][cve_redisp]["status"]))
+    res.append(par(f"status do {cve_redisp} no lote, antes do redisparo", "ERRO_ANALISE",
+                   next(r["status"] for r in todas if r["cve"] == cve_redisp and r["ferramenta"] == "snyk-code"
+                        and r["lote"].startswith("cves-sast-corrigida-batch-"))))
+    return res
+
+
 # Afirmações declaradas NÃO conferíveis a partir do repositório: impressas na
 # saída, nunca contadas como falha. (padrão no texto, seção, motivo)
 NAO_CONFERIVEIS = [
@@ -2389,6 +2740,14 @@ NAO_CONFERIVEIS = [
      "SARIF e tratados das invocações de 26/09/2026 não são versionados; o repositório guarda só o resumo da comparação"),
     (r"só 20,7% dos alertas do Semgrep", "### 9.11", "campanha preliminar: dados não versionados neste repositório"),
     (r"respondia por 56,5% do total", "### 9.11", "campanha preliminar: dados não versionados neste repositório"),
+    (r"por timeout de conexão com a API, antes do início do teste", "### 8.9",
+     "a causa está no container/lote.txt do Snyk Code do lote af; o log de execução diz só 'snyk saiu com 2'"),
+    (r"o primeiro sozinho, com leitura antes dos demais", "### 8.9",
+     "ordem de disparo e leitura: horários de execução no GitHub Actions, não versionados"),
+    (r"foi registrada e commitada antes do redisparo", "### 8.9",
+     "ordem entre commit e disparo: está no histórico do git (8039cc7) e no horário da execução, não em arquivo versionado"),
+    (r"passou em todas as conferências e revelou um defeito", "### 8.9",
+     "conferências do ensaio feitas no relatório da sessão; o repositório guarda os registros, não o resultado das conferências"),
 ]
 
 
@@ -2505,6 +2864,20 @@ MUTACOES = [
     ("8.8: amostra", "mas a amostra é de dois.", "mas a amostra é de três.", "8.8-snyk-403"),
     ("12.1: CVEs reproduzidos", "o resultado de dois CVEs mais de uma semana", "o resultado de três CVEs mais de uma semana", "8.8-snyk-403"),
     ("9.9: limiar do critério", "qualquer limiar de 10 a 14 produziria", "qualquer limiar de 10 a 15 produziria", "9.9-leitura"),
+    ("9.8: precisão do CodeQL no nível 3", "| 3 | CodeQL | 98 | 114 | 42 | 170 | 0 | 46,2% | 70,0%", "| 3 | CodeQL | 98 | 114 | 42 | 170 | 0 | 46,2% | 70,1%", "9.8-principal"),
+    ("9.8: recall sobre os 220 do Semgrep", "24 contra 25 no Semgrep", "24 contra 26 no Semgrep", "9.8-recall-220"),
+    ("9.8: precisão da sensibilidade do CodeQL", "de 70,0% para 70,6% no CodeQL", "de 70,0% para 70,7% no CodeQL", "9.8-sensibilidade"),
+    ("9.8: FP por grupo do Semgrep", "| Semgrep | 9 | 4 |", "| Semgrep | 9 | 5 |", "9.8-grupo"),
+    ("9.8: FN seguidos de FP no Snyk Code", "| Snyk Code | 22 | 18 | 4 | 190 | 2 |", "| Snyk Code | 22 | 18 | 4 | 190 | 3 |", "9.8-exploratoria"),
+    ("9.8: reconhecidos no benchmark, Semgrep", "**11 de 24** no Semgrep", "**12 de 24** no Semgrep", "9.8-benchmark"),
+    ("9.8: percentual inteiro da leitura", "4 de 22 no Snyk Code (18%)", "4 de 22 no Snyk Code (19%)", "9.8-leitura"),
+    ("8.9: CVEs a um commit de distância", "a um commit de distância em 209", "a um commit de distância em 208", "8.9"),
+    ("8.9: pares (CVE, ferramenta)", "Nos 660 pares (CVE, ferramenta)", "Nos 661 pares (CVE, ferramenta)", "8.9"),
+    ("8.9: jobs", "Os 24 jobs terminaram com sucesso", "Os 23 jobs terminaram com sucesso", "8.9"),
+    ("8.9: CVEs sem material analisável", "nos mesmos cinco CVEs da detecção", "nos mesmos seis CVEs da detecção", "8.9"),
+    ("8.9: versão da imagem do runner", "`20260920.314.1` na versão corrigida", "`20260920.315.1` na versão corrigida", "8.9"),
+    ("8.9: número de lotes", "**Execução.** Oito lotes", "**Execução.** Sete lotes", "8.9"),
+    ("9.8: fechamento das células", "FP + VN + sem análise fecha em 212", "FP + VN + sem análise fecha em 211", "9.8-principal"),
 ]
 
 

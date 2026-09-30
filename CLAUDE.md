@@ -1872,9 +1872,9 @@ como sem análise; o script para nesse caso. Não ocorreu.
 **A versão vigente é a `docs/metodologia-V10.md`, de 22/09/2026, e ela é
 parcial.** Documento de método **e resultados**, cobrindo as campanhas SAST e
 DAST; revoga a frase da V9 de que "nenhum resultado de detecção é apresentado
-aqui". As seções **9.8** (resultados da versão corrigida), **10** (resultados
-DAST) e **11** (análise comparativa) estão **a preencher**, e a versão só fecha
-com as três.
+aqui". As seções **10** (resultados DAST) e **11** (análise comparativa)
+estão **a preencher**, e a versão só fecha com as duas. A **9.8** (resultados
+da versão corrigida) foi escrita em 29/09/2026.
 
 **Numeração nova:** as seções 9, 10 e 11 da V9 passaram a **12** (ameaças), **13**
 (decisões) e **14** (pendências), para que os resultados venham depois do método.
@@ -1890,7 +1890,7 @@ versionou a V10, por ter cumprido a função; está no histórico, versionada em
 (§9.9 da V10, critério na §9 do `criterios-cruzamento.md`), a tabela de
 capacidade empírica e a proporção dos achados do Semgrep fora de JS/TS (§9.11
 da V10, critério na §10). As seções que ainda faltam para fechar a V10 são a
-9.8, a 10 e a 11.
+10 e a 11.
 
 **Registrado noutras seções, e não repetido aqui:**
 
