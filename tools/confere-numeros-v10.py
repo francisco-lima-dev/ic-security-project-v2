@@ -19,6 +19,7 @@ afirmável.
 import argparse
 import datetime
 import csv
+import hashlib
 import json
 import pathlib
 import re
@@ -2751,6 +2752,76 @@ NAO_CONFERIVEIS = [
 ]
 
 
+# ---- 7.7: fórmulas da tabela de métricas (revisão de 09/10/2026) ---------
+# A tabela da 7.7 dava a especificidade como VN ÷ (VN + FP), contra a §11 dos
+# critérios e o cruza-corrigida.py, que dividem pela base; as famílias de
+# números não o pegavam, porque os números da 9.8 seguiam a §11. Aqui a fórmula
+# do texto é comparada à do código que produziu os números, lida do fonte — e
+# o fonte só vale se for o mesmo, por sha256, que o JSON registra.
+CRUZA_CORRIGIDA = "tools/cruza-corrigida.py"
+
+
+def _formula(texto):
+    """Fórmula em forma canônica: sem espaço nem negrito, '÷' como '/'."""
+    return re.sub(r"\s+|\*", "", texto).replace("÷", "/")
+
+
+def formulas_do_cruzamento(f):
+    """{métrica: fórmula canônica}, lidas de metricas() no cruza-corrigida.py.
+
+    Falha se o fonte não for o que produziu os JSON publicados: comparar o
+    texto com código que não gerou os números não confere nada.
+    """
+    bruto = (f.raiz / CRUZA_CORRIGIDA).read_bytes()
+    registrado = cc_json(f, "codeql")["fontes"]["codigo"][CRUZA_CORRIGIDA]
+    if hashlib.sha256(bruto).hexdigest() != registrado:
+        raise FalhaDeExtracao(f"{CRUZA_CORRIGIDA} difere do que produziu os JSON (sha256 {registrado[:8]}…)")
+    fonte = bruto.decode("utf-8")
+    onde = f"{CRUZA_CORRIGIDA}: metricas()"
+    m = re.search(r"^def metricas\(celulas\):\n((?:[ \t]+.*\n|\n)+)", fonte, re.M)
+    if not m:
+        raise FalhaDeExtracao(f"{onde}: função não encontrada")
+    corpo = m.group(1)
+    c = r'c\["(\w+)"\]'
+    base = busca_unica(corpo, r"\n\s*base = (.+)\n", onde)
+    if _formula(base) != 'len(celulas)-c["nao_se_aplica_corrigido"]':
+        raise FalhaDeExtracao(f"{onde}: base definida como {base!r}, não como o universo menos n.s.a.")
+    num, d1, d2 = busca_unica(corpo, rf"recall = fracao\({c}, {c} \+ {c}\)", onde)
+    saida = {"Recall": f"{num}/({d1}+{d2})"}
+    num, d1, d2 = busca_unica(corpo, rf"precisao = fracao\({c}, {c} \+ {c}\)", onde)
+    saida["Precisão"] = f"{num}/({d1}+{d2})"
+    num, den = busca_unica(corpo, rf'"especificidade": fracao\({c}, (\w+)\)', onde)
+    saida["Especificidade"] = f"{num}/{den}"
+    busca_unica(corpo, r"f1 = round\(float\(2 \* p \* r / \(p \+ r\)\), 4\)", onde)
+    saida["F1"] = "médiaharmônicadeprecisãoerecall"
+    return saida
+
+
+@verificacao("7.7-formulas", "7.7", f"{CRUZA_CORRIGIDA} (metricas, sha256 do JSON) + {CC_DIR}/cruzamento-corrigida-*.json")
+def _(doc, f):
+    bloco = doc.secao("### 7.7")
+    tab = tabela_por_cabecalho(bloco, ["Métrica", "Fórmula", "Exige"], "7.7 tabela de métricas")
+    esperadas = formulas_do_cruzamento(f)
+    res = [par("linhas da tabela de métricas", len(tab) - 1, len(esperadas))]
+    for metrica, formula in esperadas.items():
+        linha = Documento.linha_da_tabela(tab, metrica)
+        res.append(par(f"fórmula de {metrica}", _formula(linha[1]), formula))
+    texto = "\n".join(bloco)
+    # A base é conferida no Snyk Code, a única ferramenta em que ela difere de
+    # VN + FP: no CodeQL os dois dão 212, e a conferência não distinguiria.
+    base, estrita = busca_unica(texto, r"o universo da matriz\*\* — (\d+) CVEs; (\d+) na variante estrita", "7.7")
+    for (rotulo, nivel), valor in zip((("base", "nivel_3"), ("base, estrita", "nivel_4_estrita")), (base, estrita)):
+        m = cc_json(f, "snyk-code")["principal"][nivel]
+        res.append(par(f"{rotulo} da especificidade (Snyk Code)", int(valor), m["base"]))
+        res.append(par(f"Snyk Code {nivel}: base = VN + FP + sem análise", m["base"],
+                       m["VN"] + m["FP"] + m["sem_analise"]))
+    busca_unica(texto, r"a diferença só aparece no Snyk Code", "7.7")
+    for ferr in FERRAMENTAS:
+        sa = cc_json(f, ferr)["principal"]["nivel_3"]["sem_analise"]
+        res.append(par(f"{ferr}: base difere de VN + FP (há sem análise)", ferr == "snyk-code", sa > 0))
+    return res
+
+
 # ---- coerência interna do próprio documento ------------------------------
 @verificacao("coerencia-interna", "várias", "o próprio documento")
 def _(doc, f):
@@ -2878,6 +2949,13 @@ MUTACOES = [
     ("8.9: versão da imagem do runner", "`20260920.314.1` na versão corrigida", "`20260920.315.1` na versão corrigida", "8.9"),
     ("8.9: número de lotes", "**Execução.** Oito lotes", "**Execução.** Sete lotes", "8.9"),
     ("9.8: fechamento das células", "FP + VN + sem análise fecha em 212", "FP + VN + sem análise fecha em 211", "9.8-principal"),
+    ("7.7: especificidade com a fórmula anterior a 09/10/2026", "| Especificidade | VN ÷ base |",
+     "| Especificidade | VN ÷ (VN + FP) |", "7.7-formulas"),
+    ("7.7: recall com FP no denominador", "| **Recall** | VP ÷ (VP + FN) |", "| **Recall** | VP ÷ (VP + FP) |", "7.7-formulas"),
+    ("7.7: precisão com FN no denominador", "| Precisão | VP ÷ (VP + FP) |", "| Precisão | VP ÷ (VP + FN) |", "7.7-formulas"),
+    ("7.7: F1 como média aritmética", "| F1 | média harmônica de precisão e recall |",
+     "| F1 | média aritmética de precisão e recall |", "7.7-formulas"),
+    ("7.7: base da especificidade", "o universo da matriz** — 212 CVEs", "o universo da matriz** — 207 CVEs", "7.7-formulas"),
 ]
 
 

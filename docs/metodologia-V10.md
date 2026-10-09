@@ -4,7 +4,7 @@
 
 Francisco Sales de Lima Junior
 
-22 de setembro de 2026, revista em 26 e 29 de setembro de 2026 — versão parcial: resultados SAST das campanhas de detecção e da versão corrigida; DAST e análise comparativa a preencher
+22 de setembro de 2026, revista em 26 e 29 de setembro e 9 de outubro de 2026 — versão parcial: resultados SAST das campanhas de detecção e da versão corrigida; DAST e análise comparativa a preencher
 
 ---
 
@@ -59,6 +59,13 @@ apuram a proveniência do ground truth integram o repositório desde setembro de
 ## Registro de alterações
 
 ### Versão 10
+
+**Revisão de 09/10/2026.** Correção de redação, sem mudança de método nem de número:
+
+| Seção | Tipo | Alteração |
+|---|---|---|
+| 7.7 | Correção | A fórmula da especificidade passa a coincidir com a §11 do documento de critérios: VN ÷ base, com os CVEs sem análise no denominador; os números publicados na Seção 9.8 já seguiam a §11 e não mudam |
+| 13 | Acréscimo | Decisão 104 |
 
 **Revisão de 29/09/2026.** Acréscimos dentro da Versão 10:
 
@@ -1421,8 +1428,10 @@ Registra-se que o conjunto de regras do Semgrep abrange linguagens diversas, de 
 |---|---|---|
 | **Recall** | VP ÷ (VP + FN) | só a campanha de detecção |
 | Precisão | VP ÷ (VP + FP) | a campanha da versão corrigida |
-| Especificidade | VN ÷ (VN + FP) | a campanha da versão corrigida |
+| Especificidade | VN ÷ base | a campanha da versão corrigida |
 | F1 | média harmônica de precisão e recall | a campanha da versão corrigida |
+
+**A base da especificidade é o universo da matriz** — 212 CVEs; 211 na variante estrita, que não se aplica ao CVE de primário indefinido. Os CVEs sem análise no lado corrigido ficam fora do numerador e dentro do denominador, e são reportados ao lado, como a parte que falta (§11 do documento de critérios): não contam como VN, o que premiaria a ferramenta por não analisar, e tirá-los da base teria o mesmo efeito. Sem CVEs sem análise, a base coincide com VN + FP; a diferença só aparece no Snyk Code.
 
 **Precisão, especificidade e F1 foram apurados na Seção 9.8**, no universo definido pela §11 do documento de critérios: 212 CVEs, níveis 3 e 4. A redação dos resultados precisa declarar o escopo em toda ocorrência: "precisão" sem qualificação sugere a leitura sobre todos os alertas, que o conjunto não permite (Seção 7.3).
 
@@ -2217,6 +2226,7 @@ A observação tem alcance além deste estudo, e por isso é declarada em lugar 
 | 101 | Níveis 3 e 4 na versão corrigida, com denominador de 212 nos dois lados da matriz | 9.8 |
 | 102 | Categoria sem análise no lado corrigido, fora de VN e de FP | 9.8 |
 | 103 | Falha de infraestrutura de rede reexecutada uma única vez, com a regra fixada antes do redisparo | 8.9 |
+| 104 | Especificidade sobre a base, com os CVEs sem análise no denominador: a §11 do documento de critérios, fixada antes dos números, prevalece sobre a redação anterior da Seção 7.7, que dava VN ÷ (VN + FP). A divergência foi achada em verificação somente leitura de 09/10/2026; o conferidor da metodologia não a pegava porque comparava números, e não fórmulas, e passou a conferir as fórmulas da tabela | 7.7 |
 
 ---
 
